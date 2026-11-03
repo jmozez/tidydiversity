@@ -35,7 +35,8 @@ of \code{knots} sizes from 1 to \code{endpoint} is used, always including the
 observed sample size.}
 
 \item{endpoint}{Largest sample size of the default grid. Defaults to
-twice the observed sample size of each site.}
+twice the observed sample size of each site, the recommended limit for
+extrapolating richness. Larger values give a warning.}
 
 \item{knots}{Number of sizes in the default grid.}
 

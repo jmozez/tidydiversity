@@ -47,12 +47,24 @@ div_hill <- function(data,
 #' @param q Orders of diversity: any of 0, 1 and 2.
 #' @param conf Confidence level of the intervals.
 #' @param nboot Number of bootstrap replicates. Use 0 to skip them.
+#' @param ci How to build the confidence intervals from the bootstrap
+#'   standard error. With `"lognormal"` (the default) the richness (q = 0)
+#'   interval uses the log-transformation of Chao (1987), as in SpadeR, so
+#'   it is asymmetric and its lower limit never falls below the observed
+#'   richness; orders 1 and 2 use `estimate +/- z * se`. With `"normal"`
+#'   every order uses `estimate +/- z * se`, as in [iNEXT::iNEXT()]. In both
+#'   cases the lower limit is truncated at the observed diversity, which the
+#'   asymptotic diversity cannot fall below.
 #' @return A tibble with the grouping columns, the site column, `q`,
 #'   `observed`, `estimate`, `se`, `lower` and `upper`.
 #' @references Chao, A., Gotelli, N. J., Hsieh, T. C., Sander, E. L.,
 #'   Ma, K. H., Colwell, R. K. and Ellison, A. M. (2014). Rarefaction and
 #'   extrapolation with Hill numbers. Ecological Monographs, 84, 45-67.
 #'   \doi{10.1890/13-0133.1}
+#'
+#'   Chao, A. (1987). Estimating the population size for capture-recapture
+#'   data with unequal catchability. Biometrics, 43, 783-791.
+#'   \doi{10.2307/2531532}
 #' @export
 #' @examples
 #' set.seed(1)
@@ -64,7 +76,9 @@ div_estimate <- function(data,
                          q = c(0, 1, 2),
                          conf = 0.95,
                          nboot = 50,
+                         ci = c("lognormal", "normal"),
                          .by = NULL) {
+  ci <- rlang::arg_match(ci)
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by),
     counts = TRUE
@@ -78,13 +92,15 @@ div_estimate <- function(data,
     est <- hill_asy(x, q)
     draws <- boot_draws(x, nboot, function(xb) hill_asy(xb, q))
     se <- as.vector(boot_se(draws, length(q)))
+    obs <- hill_obs(x, q)
+    lim <- asy_ci(obs, est, se, z, ci, q)
     tibble::tibble(
       q = q,
-      observed = hill_obs(x, q),
+      observed = obs,
       estimate = est,
       se = se,
-      lower = pmax(est - z * se, 0),
-      upper = est + z * se
+      lower = lim$lower,
+      upper = lim$upper
     )
   })
   td_new(out, "td_estimate")
@@ -125,4 +141,19 @@ div_coverage <- function(data,
     )
   })
   td_new(out, "td_coverage")
+}
+
+# Confidence limits for asymptotic estimates, never below the observed value.
+# The log-normal interval of Chao (1987) applies to richness (q = 0) only.
+asy_ci <- function(obs, est, se, z, type, q) {
+  lower <- pmax(est - z * se, obs)
+  upper <- est + z * se
+  if (type == "lognormal") {
+    t <- est - obs
+    use <- q == 0 & t > 0 & !is.na(se)
+    k <- exp(z * sqrt(log(1 + se[use]^2 / t[use]^2)))
+    lower[use] <- obs[use] + t[use] / k
+    upper[use] <- obs[use] + t[use] * k
+  }
+  list(lower = lower, upper = upper)
 }

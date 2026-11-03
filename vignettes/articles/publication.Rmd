@@ -1,0 +1,165 @@
+---
+title: "Publication figures and tables"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
+```
+
+Every `autoplot()` method returns an ordinary ggplot, so anything can be
+changed with `+`. The common changes for a journal figure are built in.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(1)
+north <- filter(ant_gradient, transect == "north")
+curves <- div_rarefy(north, nboot = 100)
+```
+
+## Plot options {.tabset}
+
+### Default
+
+Okabe-Ito colours, solid rarefaction and dashed extrapolation, 95%
+bootstrap ribbons and the publication theme.
+
+```{r default, fig.alt = "Default rarefaction plot"}
+autoplot(curves)
+```
+
+### Labels and facets
+
+```{r labels, fig.alt = "Rarefaction plot with custom labels and two columns"}
+autoplot(filter(curves, q == 0),
+  xlab = "Number of ant workers",
+  ylab = "Species richness", ncol = 2, scales = "fixed"
+)
+```
+
+### Greyscale
+
+`palette = "grey"` is for print journals; line type still separates
+rarefaction and extrapolation.
+
+```{r grey, fig.alt = "Greyscale rarefaction plot"}
+autoplot(curves, palette = "grey")
+```
+
+### Own colours
+
+Pass a vector of colours, or `theme = NULL` to start from the ggplot2
+default and add your own theme.
+
+```{r own, fig.alt = "Rarefaction plot with custom colours and theme"}
+autoplot(curves,
+  palette = hcl.colors(8, "Dark 3"), ci = FALSE,
+  theme = NULL
+) +
+  theme_classic(base_size = 10) +
+  theme(legend.position = "right")
+```
+
+### One panel
+
+```{r onepanel, fig.alt = "All orders of q on one panel"}
+autoplot(div_rarefy(filter(north, site == "n_0200"), nboot = 100),
+  facet = FALSE
+)
+```
+
+## The publication theme
+
+`theme_tidydiversity()` has a white background, light horizontal grid,
+bold strip labels and the legend at the bottom. It takes `base_size`,
+`base_family`, `legend_position` and `grid` (`"y"`, `"xy"` or `"none"`).
+The palettes are also available as ggplot2 scales.
+
+```{r theme, fig.alt = "Custom ggplot using the package theme and palette"}
+div_hill(ant_gradient, .by = c(transect, elevation)) |>
+  filter(q == 1) |>
+  ggplot(aes(elevation, diversity, colour = transect)) +
+  geom_line() +
+  geom_point() +
+  scale_colour_tidydiversity() +
+  labs(x = "Elevation (m)", y = "Shannon diversity") +
+  theme_tidydiversity(base_size = 12, grid = "xy")
+```
+
+## Tables {.tabset}
+
+`div_table()` formats any result with the estimate and an APA-style
+interval, for example `12.3 [9.8, 15.1]`, and renders it as a tibble,
+**knitr** kable, **gt** table or **flextable** (for Word).
+
+### Long
+
+```{r table-long}
+est <- div_estimate(north, nboot = 100)
+div_table(est,
+  digits = 1, output = "kable",
+  caption = "Asymptotic diversity, north transect"
+)
+```
+
+### Wide
+
+```{r table-wide}
+div_table(est, digits = 1, wide = TRUE, output = "kable")
+```
+
+### gt
+
+```{r table-gt}
+div_table(est,
+  digits = 1, wide = TRUE, output = "gt",
+  caption = "Asymptotic diversity"
+)
+```
+
+### flextable (Word)
+
+```{r table-flex}
+ft <- div_table(est,
+  digits = 1, ci_style = "parentheses",
+  output = "flextable"
+)
+ft
+```
+
+Save it to Word with `flextable::save_as_docx(ft, path = "table1.docx")`.
+
+## Saving figures
+
+Journals usually ask for a set width (single column about 85 mm, double
+column about 175 mm) and 300 dpi or more for raster images, or a vector
+format such as PDF or EPS.
+
+```{r save, eval = FALSE}
+p <- autoplot(curves, theme = theme_tidydiversity(base_size = 8))
+
+# Single column, 300 dpi TIFF with LZW compression
+ggsave("figure1.tiff", p,
+  width = 85, height = 70, units = "mm",
+  dpi = 300, compression = "lzw"
+)
+
+# Double column, vector PDF (embed fonts with cairo)
+ggsave("figure1.pdf", p,
+  width = 175, height = 90, units = "mm",
+  device = cairo_pdf
+)
+
+# High-resolution PNG for slides or preprints
+ggsave("figure1.png", p,
+  width = 175, height = 90, units = "mm",
+  dpi = 600, bg = "white"
+)
+```
+
+Set `base_size` to the font size the journal asks for (often 8 to 10 pt)
+because ggsave does not rescale text when the figure is made smaller.

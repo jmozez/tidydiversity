@@ -14,3 +14,4 @@
 ^tidydiversity.*\.tar\.gz$
 ^README\.html$
 ^vignettes/articles$
+^inst/logo$

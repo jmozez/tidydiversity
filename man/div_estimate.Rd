@@ -12,6 +12,7 @@ div_estimate(
   q = c(0, 1, 2),
   conf = 0.95,
   nboot = 50,
+  ci = c("lognormal", "normal"),
   .by = NULL
 )
 }
@@ -30,6 +31,15 @@ used when present, otherwise every row counts as one individual.}
 \item{conf}{Confidence level of the intervals.}
 
 \item{nboot}{Number of bootstrap replicates. Use 0 to skip them.}
+
+\item{ci}{How to build the confidence intervals from the bootstrap
+standard error. With \code{"lognormal"} (the default) the richness (q = 0)
+interval uses the log-transformation of Chao (1987), as in SpadeR, so
+it is asymmetric and its lower limit never falls below the observed
+richness; orders 1 and 2 use \verb{estimate +/- z * se}. With \code{"normal"}
+every order uses \verb{estimate +/- z * se}, as in \code{\link[iNEXT:iNEXT]{iNEXT::iNEXT()}}. In both
+cases the lower limit is truncated at the observed diversity, which the
+asymptotic diversity cannot fall below.}
 
 \item{.by}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optional grouping
 columns, kept in the output. Grouped data frames are also respected.}
@@ -54,4 +64,8 @@ Chao, A., Gotelli, N. J., Hsieh, T. C., Sander, E. L.,
 Ma, K. H., Colwell, R. K. and Ellison, A. M. (2014). Rarefaction and
 extrapolation with Hill numbers. Ecological Monographs, 84, 45-67.
 \doi{10.1890/13-0133.1}
+
+Chao, A. (1987). Estimating the population size for capture-recapture
+data with unequal catchability. Biometrics, 43, 783-791.
+\doi{10.2307/2531532}
 }

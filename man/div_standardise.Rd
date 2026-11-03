@@ -43,8 +43,10 @@ group.}
 columns, kept in the output. Grouped data frames are also respected.}
 }
 \value{
-A tibble with the grouping columns, the site column, \code{q}, \code{m},
-\code{method}, \code{coverage}, \code{diversity}, \code{se}, \code{lower} and \code{upper}.
+A \code{td_standardise} tibble with the grouping columns, the site
+column, \code{q}, \code{m}, \code{method}, \code{coverage}, \code{diversity}, \code{se}, \code{lower} and
+\code{upper}. A warning is given when a site has to be extrapolated beyond
+twice its sample size, where richness estimates become unreliable.
 }
 \description{
 Compares sites at equal sample completeness (coverage) or equal sample

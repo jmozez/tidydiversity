@@ -4,195 +4,320 @@ title: "Gallery"
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  out.width = "100%",
-  dpi = 150
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7
 )
 ```
 
-```{r load, message = FALSE}
+Every plot that `autoplot()` draws, using the simulated `ant_gradient`
+data. Each entry has three tabs: the plot, the tidy table behind it, and
+the code. All plots use the colour-blind-safe Okabe-Ito palette and
+`theme_tidydiversity()` by default; see the
+[publication figures](publication.html) article for customisation.
+
+```{r setup, message = FALSE}
 library(tidydiversity)
 library(dplyr)
-```
-
-Every plot that `autoplot()` draws, using the simulated `ant_gradient` data.
-
-```{r gallery-setup, message = FALSE}
 library(ggplot2)
-theme_set(
-  theme_minimal(base_size = 11) +
-    theme(
-      plot.background = element_rect(fill = "white", colour = NA),
-      legend.position = "bottom"
-    )
-)
+set.seed(1)
 north <- filter(ant_gradient, transect == "north")
-curves <- div_rarefy(north, q = c(0, 1, 2), knots = 30)
 ```
 
-### Rarefaction and extrapolation by sample size
+## Rarefaction and extrapolation by sample size {.tabset}
 
-Solid lines are rarefied, dashed lines extrapolated to twice the sample size; points are the observed samples (north transect).
+```{r rarefy-data, include = FALSE}
+curves <- div_rarefy(north, nboot = 50)
+```
 
-```{r size, echo = TRUE, fig.height = 3.6, fig.alt = "Rarefaction and extrapolation by sample size"}
+### Plot
+
+```{r rarefy, echo = FALSE, fig.height = 4, fig.alt = "Rarefaction and extrapolation by sample size"}
 autoplot(curves)
 ```
 
-### Rarefaction and extrapolation by sample coverage
+### Table
 
-The same curves plotted against estimated sample coverage, the basis for coverage-standardised comparison.
+```{r rarefy-table}
+curves
+```
 
-```{r coverage-curve, echo = TRUE, fig.height = 3.6, fig.alt = "Rarefaction and extrapolation by sample coverage"}
+### Code
+
+```r
+curves <- div_rarefy(north, nboot = 50)
+autoplot(curves)
+```
+
+## Rarefaction and extrapolation by sample coverage {.tabset}
+
+```{r rarefy-cov-data, include = FALSE}
+curves <- div_rarefy(north, nboot = 50)
+```
+
+### Plot
+
+```{r rarefy-cov, echo = FALSE, fig.height = 4, fig.alt = "Rarefaction and extrapolation by sample coverage"}
 autoplot(curves, x = "coverage")
 ```
 
-### Hill diversity profile
+### Table
 
-Observed Hill numbers across orders q from 0 (richness) to 3 (dominant species), one line per site.
-
-```{r profile, echo = TRUE, fig.height = 3.6, fig.alt = "Hill diversity profile"}
-div_hill(north, q = seq(0, 3, by = 0.25)) |>
-  autoplot()
+```{r rarefy-cov-table}
+curves
 ```
 
-### Alpha diversity along elevation
+### Code
 
-Observed q = 0, 1 and 2 diversity at each elevation, one line per transect.
-
-```{r elevation, echo = TRUE, fig.height = 3.6, fig.alt = "Alpha diversity along elevation"}
-div_hill(ant_gradient, .by = c(transect, elevation)) |>
-  autoplot(gradient = elevation)
+```r
+curves <- div_rarefy(north, nboot = 50)
+autoplot(curves, x = "coverage")
 ```
 
-### Observed and asymptotic diversity
+## Curves for several groups {.tabset}
 
-Open circles are observed values, filled circles the asymptotic estimates, with 95% bootstrap intervals.
-
-```{r estimate, echo = TRUE, fig.height = 5, fig.alt = "Observed and asymptotic diversity"}
-set.seed(1)
-div_estimate(ant_gradient, .by = transect, nboot = 50) |>
-  autoplot()
+```{r grouped-data, include = FALSE}
+grouped <- div_rarefy(ant_gradient, q = c(0, 1), .by = transect)
 ```
 
-### Sample coverage
+### Plot
 
-Estimated sample coverage of each site against its number of individuals.
-
-```{r sample-coverage, echo = TRUE, fig.height = 3.4, fig.alt = "Sample coverage"}
-div_coverage(ant_gradient, .by = transect) |>
-  autoplot()
+```{r grouped, echo = FALSE, fig.height = 5, fig.alt = "Curves for several groups"}
+autoplot(grouped)
 ```
 
-### Pairwise beta diversity heatmap
+### Table
 
-Total Sorensen dissimilarity between every pair of sites within each transect.
-
-```{r beta-pair, echo = TRUE, fig.height = 4.4, fig.alt = "Pairwise beta diversity heatmap"}
-beta_pair(ant_gradient, .by = transect) |>
-  autoplot()
+```{r grouped-table}
+grouped
 ```
 
-### Multi-site beta partition
+### Code
 
-Multi-site Sorensen dissimilarity of each transect split into turnover and nestedness.
-
-```{r beta-multi, echo = TRUE, fig.height = 3.4, fig.alt = "Multi-site beta partition"}
-beta_multi(ant_gradient, .by = transect) |>
-  autoplot()
+```r
+grouped <- div_rarefy(ant_gradient, q = c(0, 1), .by = transect)
+autoplot(grouped)
 ```
 
-### Distance decay
+## Diversity at equal coverage {.tabset}
 
-Pairwise total, turnover and nestedness dissimilarity against elevation difference, with linear trends.
-
-```{r beta-decay, echo = TRUE, fig.height = 3.6, fig.alt = "Distance decay"}
-beta_decay(ant_gradient, gradient = elevation, .by = transect) |>
-  autoplot()
+```{r standardise-data, include = FALSE}
+std <- div_standardise(ant_gradient, .by = transect, nboot = 50)
 ```
 
-## Output tables
+### Plot
 
-Example output of every main function on the simulated data. Long tables
-show their first rows.
-
-```{r tables-setup, include = FALSE}
-show <- function(x, n = 8) {
-  knitr::kable(utils::head(tibble::as_tibble(x), n), digits = 3)
-}
+```{r standardise, echo = FALSE, fig.height = 5, fig.alt = "Diversity at equal coverage"}
+autoplot(std)
 ```
 
-### `div_hill()`
+### Table
 
-Observed Hill numbers: `n` individuals, `diversity` of order `q` per site.
-
-```{r table-1}
-div_hill(ant_gradient, .by = transect) |>
-  show()
+```{r standardise-table}
+std
 ```
 
-### `div_estimate()`
+### Code
 
-Asymptotic estimates: `observed` and `estimate` Hill numbers with bootstrap `se`, `lower` and `upper` 95% limits.
-
-```{r table-2}
-set.seed(1)
-div_estimate(ant_gradient, .by = transect, nboot = 50) |>
-  show()
+```r
+std <- div_standardise(ant_gradient, .by = transect, nboot = 50)
+autoplot(std)
 ```
 
-### `div_coverage()`
+## Observed and asymptotic diversity {.tabset}
 
-Sample coverage: `n` individuals, `s_obs` observed species, `f1` singletons, `f2` doubletons and estimated `coverage`.
-
-```{r table-3}
-div_coverage(ant_gradient, .by = transect) |>
-  show()
+```{r estimate-data, include = FALSE}
+est <- div_estimate(north, nboot = 50)
 ```
 
-### `div_rarefy()`
+### Plot
 
-Rarefaction and extrapolation: diversity of order `q` at sample size `m`, whether `method` is rarefaction, observed or extrapolation, the expected `coverage`, and `lower` and `upper` limits (`NA` when `nboot = 0`).
-
-```{r table-4}
-div_rarefy(north, q = 0, knots = 8) |>
-  show()
+```{r estimate, echo = FALSE, fig.height = 4, fig.alt = "Observed and asymptotic diversity"}
+autoplot(est)
 ```
 
-### `div_standardise()`
+### Table
 
-Coverage standardisation: `diversity` of order `q` at a common `coverage` for every site, with the matching sample size `m`, the `method` used, and bootstrap `se`, `lower` and `upper` limits.
-
-```{r table-5}
-set.seed(1)
-div_standardise(ant_gradient, coverage = 0.9, .by = transect, nboot = 50) |>
-  show()
+```{r estimate-table}
+est
 ```
 
-### `beta_pair()`
+### Code
 
-Pairwise beta diversity: Sorensen `turnover` (Simpson) and `nestedness` components, which sum to `total` dissimilarity.
-
-```{r table-6}
-beta_pair(ant_gradient, .by = transect) |>
-  show()
+```r
+est <- div_estimate(north, nboot = 50)
+autoplot(est)
 ```
 
-### `beta_multi()`
+## Hill diversity profile {.tabset}
 
-Multi-site beta diversity: `n_sites` in each group with the multi-site `turnover`, `nestedness` and `total`.
-
-```{r table-7}
-beta_multi(ant_gradient, .by = transect) |>
-  show()
+```{r profile-data, include = FALSE}
+profile <- div_hill(north, q = seq(0, 3, by = 0.25))
 ```
 
-### `beta_decay()`
+### Plot
 
-Distance decay: the pairwise components plus each site's `gradient_1` and `gradient_2` values and their `distance`.
-
-```{r table-8}
-beta_decay(ant_gradient, gradient = elevation, .by = transect) |>
-  show()
+```{r profile, echo = FALSE, fig.height = 4, fig.alt = "Hill diversity profile"}
+autoplot(profile)
 ```
 
+### Table
+
+```{r profile-table}
+profile
+```
+
+### Code
+
+```r
+profile <- div_hill(north, q = seq(0, 3, by = 0.25))
+autoplot(profile)
+```
+
+## Diversity along a gradient {.tabset}
+
+```{r elevation-data, include = FALSE}
+hill <- div_hill(ant_gradient, .by = c(transect, elevation))
+```
+
+### Plot
+
+```{r elevation, echo = FALSE, fig.height = 3.6, fig.alt = "Diversity along a gradient"}
+autoplot(hill, gradient = elevation, xlab = "Elevation (m)")
+```
+
+### Table
+
+```{r elevation-table}
+hill
+```
+
+### Code
+
+```r
+hill <- div_hill(ant_gradient, .by = c(transect, elevation))
+autoplot(hill, gradient = elevation, xlab = "Elevation (m)")
+```
+
+## Sample coverage {.tabset}
+
+```{r coverage-data, include = FALSE}
+cov <- div_coverage(ant_gradient, .by = transect)
+```
+
+### Plot
+
+```{r coverage, echo = FALSE, fig.height = 3.4, fig.alt = "Sample coverage"}
+autoplot(cov)
+```
+
+### Table
+
+```{r coverage-table}
+cov
+```
+
+### Code
+
+```r
+cov <- div_coverage(ant_gradient, .by = transect)
+autoplot(cov)
+```
+
+## Pairwise beta diversity heatmap {.tabset}
+
+```{r pair-data, include = FALSE}
+pair <- beta_pair(north)
+```
+
+### Plot
+
+```{r pair, echo = FALSE, fig.height = 4.4, fig.alt = "Pairwise beta diversity heatmap"}
+autoplot(pair)
+```
+
+### Table
+
+```{r pair-table}
+pair
+```
+
+### Code
+
+```r
+pair <- beta_pair(north)
+autoplot(pair)
+```
+
+## Multiple-site beta partition {.tabset}
+
+```{r multi-data, include = FALSE}
+multi <- beta_multi(ant_gradient, .by = transect)
+```
+
+### Plot
+
+```{r multi, echo = FALSE, fig.height = 3.4, fig.alt = "Multiple-site beta partition"}
+autoplot(multi)
+```
+
+### Table
+
+```{r multi-table}
+multi
+```
+
+### Code
+
+```r
+multi <- beta_multi(ant_gradient, .by = transect)
+autoplot(multi)
+```
+
+## Distance decay {.tabset}
+
+```{r decay-data, include = FALSE}
+decay <- beta_decay(ant_gradient, elevation, .by = transect)
+```
+
+### Plot
+
+```{r decay, echo = FALSE, fig.height = 3.8, fig.alt = "Distance decay"}
+autoplot(decay, xlab = "Difference in elevation (m)")
+```
+
+### Table
+
+```{r decay-table}
+decay
+```
+
+### Code
+
+```r
+decay <- beta_decay(ant_gradient, elevation, .by = transect)
+autoplot(decay, xlab = "Difference in elevation (m)")
+```
+
+## Greyscale for print {.tabset}
+
+### Plot
+
+```{r grey, echo = FALSE, fig.height = 4, fig.alt = "Greyscale for print"}
+autoplot(curves,
+  palette = "grey", facet = FALSE,
+  theme = theme_tidydiversity(base_size = 9, grid = "none")
+)
+```
+
+### Table
+
+```{r grey-table}
+curves
+```
+
+### Code
+
+```r
+autoplot(curves, palette = "grey", facet = FALSE,
+  theme = theme_tidydiversity(base_size = 9, grid = "none"))
+```

@@ -10,7 +10,8 @@
 #'   of `knots` sizes from 1 to `endpoint` is used, always including the
 #'   observed sample size.
 #' @param endpoint Largest sample size of the default grid. Defaults to
-#'   twice the observed sample size of each site.
+#'   twice the observed sample size of each site, the recommended limit for
+#'   extrapolating richness. Larger values give a warning.
 #' @param knots Number of sizes in the default grid.
 #' @param nboot Number of bootstrap replicates for confidence intervals. The
 #'   default, 0, skips them.
@@ -49,11 +50,13 @@ div_rarefy <- function(data,
   td_check_number(conf, "conf", 0, 1)
   td_check_number(nboot, "nboot", 0, whole = TRUE)
   z <- stats::qnorm(1 - (1 - conf) / 2)
+  far <- character()
 
   out <- td_per_site(prep, function(x, i) {
     n <- sum(x)
     m <- if (is.null(size)) size_grid(n, endpoint %||% (2 * n), knots) else size
     m <- sort(unique(m))
+    if (any(m > 2 * n) && 0 %in% q) far <<- c(far, "x")
     d <- hill_at_size(x, m, q)
     cov <- coverage_at_size(x, m)
     draws <- boot_draws(x, nboot, function(xb) hill_at_size(xb, m, q))
@@ -73,6 +76,7 @@ div_rarefy <- function(data,
       upper = as.vector(d + z * se)
     )
   })
+  warn_far(length(far))
   td_new(out, c("td_rarefy", "td_curve"))
 }
 
@@ -106,8 +110,10 @@ size_method <- function(m, n) {
 #'   `coverage` and `size` are `NULL`, a default coverage is chosen for each
 #'   group.
 #' @param size Target sample size. Supply either `coverage` or `size`.
-#' @return A tibble with the grouping columns, the site column, `q`, `m`,
-#'   `method`, `coverage`, `diversity`, `se`, `lower` and `upper`.
+#' @return A `td_standardise` tibble with the grouping columns, the site
+#'   column, `q`, `m`, `method`, `coverage`, `diversity`, `se`, `lower` and
+#'   `upper`. A warning is given when a site has to be extrapolated beyond
+#'   twice its sample size, where richness estimates become unreliable.
 #' @export
 #' @examples
 #' set.seed(1)
@@ -149,7 +155,8 @@ div_standardise <- function(data,
     level <- stats::ave(c2n, grp, FUN = min)
   }
 
-  td_per_site(prep, function(x, i) {
+  far <- 0
+  out <- td_per_site(prep, function(x, i) {
     n <- sum(x)
     if (!is.null(size)) {
       m <- size
@@ -157,6 +164,7 @@ div_standardise <- function(data,
       target <- coverage %||% level[i]
       m <- size_for_coverage(x, target)
     }
+    if (m > 2 * n && 0 %in% q) far <<- far + 1
     d <- as.vector(hill_at_size(x, m, q))
     draws <- boot_draws(x, nboot, function(xb) {
       as.vector(hill_at_size(xb, m, q))
@@ -173,4 +181,17 @@ div_standardise <- function(data,
       upper = d + z * se
     )
   })
+  warn_far(far)
+  td_new(out, "td_standardise")
+}
+
+warn_far <- function(k) {
+  if (k > 0) {
+    cli::cli_warn(c(
+      "Extrapolation beyond twice the observed sample size at \\
+      {k} site{?s}.",
+      "i" = "Richness (q = 0) estimates there may be strongly biased \\
+      (Chao et al. 2014)."
+    ))
+  }
 }

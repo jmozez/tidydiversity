@@ -10,15 +10,17 @@ beta_decay(
   site = site,
   species = species,
   abundance = NULL,
-  index = c("sorensen", "jaccard"),
+  index = c("sorensen", "jaccard", "bray"),
   .by = NULL
 )
 }
 \arguments{
 \item{data}{A data frame in long format, with one row per record.}
 
-\item{gradient}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> A numeric
-site attribute, constant within each site.}
+\item{gradient}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> One or more
+numeric site attributes, constant within each site. With one column
+(such as \code{elevation}) the distance is the absolute difference; with
+several (such as \code{c(x, y)} coordinates) it is the Euclidean distance.}
 
 \item{site, species}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> The
 column holding site identifiers and the column holding species names.}
@@ -27,14 +29,16 @@ column holding site identifiers and the column holding species names.}
 holding counts. If \code{NULL} (the default), a column called \code{abundance} is
 used when present, otherwise every row counts as one individual.}
 
-\item{index}{Family of dissimilarity, \code{"sorensen"} or \code{"jaccard"}.}
+\item{index}{Family of dissimilarity: \code{"sorensen"} or \code{"jaccard"}
+(presence and absence) or \code{"bray"} (abundance-based Bray-Curtis).}
 
 \item{.by}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optional grouping
 columns, kept in the output. Grouped data frames are also respected.}
 }
 \value{
 A \code{td_beta_decay} tibble like the output of \code{\link[=beta_pair]{beta_pair()}}, with
-\code{gradient_1}, \code{gradient_2} and \code{distance} (absolute difference). Use
+\code{distance} and, for a single gradient column, \code{gradient_1} and
+\code{gradient_2}. Use
 \code{\link[ggplot2:autoplot]{ggplot2::autoplot()}} to plot it.
 }
 \description{

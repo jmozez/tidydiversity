@@ -1,0 +1,147 @@
+---
+title: "Case study: desert rodents under experimental exclosures"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
+```
+
+The Portal Project is a long-term experiment in the Chihuahuan Desert,
+Arizona, where rodents have been live-trapped on 24 fenced plots since
+1977. Some plots are open to all rodents (controls), some exclude kangaroo
+rats (*Dipodomys*) through small gates, and some exclude every rodent. The
+bundled `portal_rodents` dataset holds counts of identified rodents on
+each plot in each year from 2016 to 2019.
+
+**Source and licence.** PortalData, released under CC0 1.0. Cite as Ernest
+et al. (2020), below. See `?portal_rodents` and
+`data-raw/portal_rodents.R` for how it was built.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(2026)
+portal_rodents
+count(distinct(portal_rodents, site, treatment), treatment)
+```
+
+The removal plots catch very few animals by design, so diversity is
+compared between control and kangaroo rat exclosure plots.
+
+```{r subset}
+rodents <- filter(portal_rodents, treatment != "removal")
+plots <- distinct(rodents, site, plot, year, treatment)
+```
+
+## Sampling completeness
+
+```{r coverage, fig.alt = "Sample coverage of each plot-year against number of rodents caught"}
+cov <- div_coverage(rodents)
+autoplot(cov)
+range(cov$coverage)
+```
+
+Coverage is above 90% almost everywhere, so differences in trapping
+success matter far less than they would for raw species counts.
+
+## Curves for each treatment
+
+Pooling plots within each treatment and year gives one curve per
+treatment, with 95% bootstrap ribbons. Results computed with `.by` are
+faceted by group automatically.
+
+```{r curves, fig.height = 6, fig.alt = "Rarefaction and extrapolation by treatment, faceted by year"}
+pooled <- rodents |>
+  mutate(site = treatment) |>
+  as_community(.by = year)
+curves <- div_rarefy(pooled, q = c(0, 1), .by = year, nboot = 100)
+autoplot(curves)
+```
+
+## Plot-level diversity and a mixed model
+
+Each plot is visited every year, so plot is a random effect. The
+coverage-standardised Shannon diversity of each plot-year is modelled
+against treatment and year, weighted by inverse variance. Plot-years with
+a single species have a standard error of zero and no finite weight, so
+they are dropped; weights are rescaled to a mean of one.
+
+```{r std}
+std <- div_standardise(rodents, q = 1, nboot = 100)
+shannon <- std |>
+  tidy() |>
+  add_site_data(plots) |>
+  filter(!is.na(weight))
+shannon
+```
+
+```{r lmer, message = FALSE}
+library(lme4)
+fit <- lmer(estimate ~ treatment + factor(year) + (1 | plot),
+  data = shannon, weights = weight / mean(weight)
+)
+summary(fit)$coefficients
+```
+
+```{r plot-model, fig.alt = "Shannon diversity of each plot by year and treatment"}
+ggplot(shannon, aes(factor(year), estimate,
+  colour = treatment,
+  group = interaction(treatment, plot)
+)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
+    size = 0.25,
+    position = position_dodge(width = 0.8)
+  ) +
+  scale_colour_tidydiversity() +
+  labs(
+    x = "Year", y = "Shannon diversity (effective number of species)",
+    colour = "Treatment"
+  ) +
+  theme_tidydiversity()
+```
+
+In these years, Shannon diversity on kangaroo rat exclosures is lower
+than on controls, with a confidence interval for the treatment effect
+that excludes zero:
+
+```{r confint}
+confint(fit, parm = "treatmentkrat_exclosure", method = "Wald")
+```
+
+Excluding the three *Dipodomys* species removes part of the community
+outright, and the remaining assemblage is dominated by the desert pocket
+mouse *Chaetodipus penicillatus*, so the effective number of species
+falls. Diversity also declined on both treatments from 2016 to 2019.
+
+## Beta diversity
+
+Multi-site Sorensen dissimilarity among plots within each treatment and
+year, split into turnover and nestedness.
+
+```{r beta, fig.alt = "Multiple-site dissimilarity by treatment and year"}
+multi <- beta_multi(rodents, .by = c(treatment, year))
+multi
+autoplot(multi, xlab = "Treatment")
+```
+
+## Reporting
+
+```{r table}
+div_table(div_estimate(filter(pooled, year == 2019), nboot = 100),
+  digits = 1, output = "kable",
+  caption = "Asymptotic diversity by treatment, 2019"
+)
+```
+
+## References
+
+Brown, J. H., Valone, T. J. and Curtin, C. G. (1997). Reorganization of an
+arid ecosystem in response to recent climate change. *PNAS* 94: 9729-9733.
+
+Ernest, S. K. M., Yenni, G. M., Allington, G., et al. (2020). The Portal
+Project: a long-term study of a Chihuahuan desert ecosystem. *bioRxiv*.
+<https://doi.org/10.1101/332783>

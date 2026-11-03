@@ -19,22 +19,34 @@ Depends:
 Imports: 
     cli (>= 3.6.0),
     dplyr (>= 1.1.0),
+    generics,
+    grDevices,
     pillar,
     rlang (>= 1.1.0),
     stats,
     utils,
     tibble (>= 3.2.0),
     tidyselect (>= 1.2.0),
+    tools,
     vctrs (>= 0.6.0)
 Suggests: 
+    ade4,
     betapart,
-    ggplot2 (>= 3.4.0),
+    broom,
+    flextable,
+    gt,
+    hillR,
+    ggplot2 (>= 3.5.0),
     iNEXT,
     knitr,
+    lme4,
+    mgcv,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    vegan
 VignetteBuilder: 
     knitr
+Config/Needs/website: tidyr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-NZ
