@@ -4,33 +4,80 @@
 \alias{autoplot-tidydiversity}
 \alias{autoplot.td_rarefy}
 \alias{autoplot.td_beta_decay}
+\alias{autoplot.td_hill}
+\alias{autoplot.td_estimate}
+\alias{autoplot.td_coverage}
+\alias{autoplot.td_beta_pair}
+\alias{autoplot.td_beta_multi}
 \title{Plot tidydiversity results}
 \usage{
 \method{autoplot}{td_rarefy}(object, x = c("size", "coverage"), ...)
 
 \method{autoplot}{td_beta_decay}(object, ...)
+
+\method{autoplot}{td_hill}(object, gradient = NULL, ...)
+
+\method{autoplot}{td_estimate}(object, ...)
+
+\method{autoplot}{td_coverage}(object, ...)
+
+\method{autoplot}{td_beta_pair}(object, component = c("total", "turnover", "nestedness"), ...)
+
+\method{autoplot}{td_beta_multi}(object, ...)
 }
 \arguments{
-\item{object}{A \code{td_rarefy} or \code{td_beta_decay} tibble.}
+\item{object}{A tibble returned by one of the functions above.}
 
 \item{x}{For curves, plot against sample size (\code{"size"}) or sample
 coverage (\code{"coverage"}).}
 
 \item{...}{Not used.}
+
+\item{gradient}{For \code{\link[=div_hill]{div_hill()}} results, an optional numeric column
+(such as \code{elevation}, kept by \code{.by}) to plot diversity along.}
+
+\item{component}{For \code{\link[=beta_pair]{beta_pair()}} results, the component to map to
+colour: \code{"total"}, \code{"turnover"} or \code{"nestedness"}.}
 }
 \value{
 A ggplot object.
 }
 \description{
-\code{autoplot()} methods draw rarefaction and extrapolation curves from
-\code{\link[=div_rarefy]{div_rarefy()}} and distance decay plots from \code{\link[=beta_decay]{beta_decay()}}. They need
-the ggplot2 package.
+\code{autoplot()} methods draw a ggplot for every result type:
+}
+\details{
+\itemize{
+\item \code{\link[=div_hill]{div_hill()}}: a Hill diversity profile across \code{q}, or diversity along a
+gradient column when \code{gradient} is given.
+\item \code{\link[=div_estimate]{div_estimate()}}: observed and asymptotic diversity with intervals.
+\item \code{\link[=div_coverage]{div_coverage()}}: sample coverage against sample size.
+\item \code{\link[=div_rarefy]{div_rarefy()}}: rarefaction and extrapolation curves by sample size or
+by sample coverage.
+\item \code{\link[=beta_pair]{beta_pair()}}: a pairwise dissimilarity heatmap.
+\item \code{\link[=beta_multi]{beta_multi()}}: multi-site turnover and nestedness as stacked bars.
+\item \code{\link[=beta_decay]{beta_decay()}}: distance decay of dissimilarity components.
+}
+
+They need the ggplot2 package.
 }
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(ggplot2)
 curves <- div_rarefy(ant_gradient, q = c(0, 1), .by = transect, knots = 20)
 autoplot(curves)
+autoplot(curves, x = "coverage")
+
+div_hill(ant_gradient, q = seq(0, 3, by = 0.25), .by = transect) |>
+  autoplot()
+div_hill(ant_gradient, .by = c(transect, elevation)) |>
+  autoplot(gradient = elevation)
+
+set.seed(1)
+autoplot(div_estimate(ant_gradient, .by = transect, nboot = 20))
+autoplot(div_coverage(ant_gradient, .by = transect))
+
+autoplot(beta_pair(ant_gradient, .by = transect))
+autoplot(beta_multi(ant_gradient, .by = transect))
 
 beta_decay(ant_gradient, gradient = elevation, .by = transect) |>
   autoplot()

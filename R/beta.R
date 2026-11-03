@@ -40,7 +40,8 @@ beta_pair <- function(data,
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by)
   )
-  td_per_group(prep, function(d) beta_pair_impl(d, index, call = call))
+  out <- td_per_group(prep, function(d) beta_pair_impl(d, index, call = call))
+  td_new(out, "td_beta_pair")
 }
 
 #' @rdname beta_pair
@@ -56,7 +57,8 @@ beta_multi <- function(data,
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by)
   )
-  td_per_group(prep, function(d) beta_multi_impl(d, index, call = call))
+  out <- td_per_group(prep, function(d) beta_multi_impl(d, index, call = call))
+  td_new(out, "td_beta_multi")
 }
 
 #' Distance decay of similarity

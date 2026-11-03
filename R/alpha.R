@@ -29,9 +29,10 @@ div_hill <- function(data,
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by)
   )
   q <- td_check_q(q)
-  td_per_site(prep, function(x, i) {
+  out <- td_per_site(prep, function(x, i) {
     tibble::tibble(q = q, n = sum(x), diversity = hill_obs(x, q))
   })
+  td_new(out, "td_hill")
 }
 
 #' Asymptotic diversity estimates
@@ -73,7 +74,7 @@ div_estimate <- function(data,
   td_check_number(conf, "conf", 0, 1)
   td_check_number(nboot, "nboot", 0, whole = TRUE)
   z <- stats::qnorm(1 - (1 - conf) / 2)
-  td_per_site(prep, function(x, i) {
+  out <- td_per_site(prep, function(x, i) {
     est <- hill_asy(x, q)
     draws <- boot_draws(x, nboot, function(xb) hill_asy(xb, q))
     se <- as.vector(boot_se(draws, length(q)))
@@ -86,6 +87,7 @@ div_estimate <- function(data,
       upper = est + z * se
     )
   })
+  td_new(out, "td_estimate")
 }
 
 #' Sample coverage
@@ -113,7 +115,7 @@ div_coverage <- function(data,
     counts = TRUE
   )
   td_check_min_n(prep)
-  td_per_site(prep, function(x, i) {
+  out <- td_per_site(prep, function(x, i) {
     tibble::tibble(
       n = sum(x),
       s_obs = length(x),
@@ -122,4 +124,5 @@ div_coverage <- function(data,
       coverage = coverage_at_size(x, sum(x))
     )
   })
+  td_new(out, "td_coverage")
 }
