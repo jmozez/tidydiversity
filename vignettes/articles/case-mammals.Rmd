@@ -3,8 +3,10 @@ title: "Case study: desert rodents under experimental exclosures"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
-  dpi = 150, fig.width = 7, fig.height = 4)
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
 ```
 
 The Portal Project is a long-term experiment in the Chihuahuan Desert,
@@ -80,18 +82,25 @@ shannon
 ```{r lmer, message = FALSE}
 library(lme4)
 fit <- lmer(estimate ~ treatment + factor(year) + (1 | plot),
-  data = shannon, weights = weight / mean(weight))
+  data = shannon, weights = weight / mean(weight)
+)
 summary(fit)$coefficients
 ```
 
 ```{r plot-model, fig.alt = "Shannon diversity of each plot by year and treatment"}
-ggplot(shannon, aes(factor(year), estimate, colour = treatment,
-  group = interaction(treatment, plot))) +
-  geom_pointrange(aes(ymin = conf.low, ymax = conf.high), size = 0.25,
-    position = position_dodge(width = 0.8)) +
+ggplot(shannon, aes(factor(year), estimate,
+  colour = treatment,
+  group = interaction(treatment, plot)
+)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
+    size = 0.25,
+    position = position_dodge(width = 0.8)
+  ) +
   scale_colour_tidydiversity() +
-  labs(x = "Year", y = "Shannon diversity (effective number of species)",
-    colour = "Treatment") +
+  labs(
+    x = "Year", y = "Shannon diversity (effective number of species)",
+    colour = "Treatment"
+  ) +
   theme_tidydiversity()
 ```
 
@@ -124,7 +133,8 @@ autoplot(multi, xlab = "Treatment")
 ```{r table}
 div_table(div_estimate(filter(pooled, year == 2019), nboot = 100),
   digits = 1, output = "kable",
-  caption = "Asymptotic diversity by treatment, 2019")
+  caption = "Asymptotic diversity by treatment, 2019"
+)
 ```
 
 ## References

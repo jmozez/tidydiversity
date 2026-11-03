@@ -109,8 +109,10 @@ autoplot.td_rarefy <- function(object,
   rlang::check_installed("ggplot2")
   x <- rlang::arg_match(x)
   xvar <- if (x == "size") "m" else "coverage"
-  known <- c("q", "m", "method", "diversity", "coverage", "se", "lower",
-    "upper")
+  known <- c(
+    "q", "m", "method", "diversity", "coverage", "se", "lower",
+    "upper"
+  )
   site_col <- td_site_col(object, known)
   by_cols <- setdiff(names(object), c(site_col, known))
   df <- tibble::as_tibble(unclass(object))
@@ -129,8 +131,10 @@ autoplot.td_rarefy <- function(object,
   aes_col <- if (facet) {
     ggplot2::aes(.data$.x, .data$diversity, colour = .data$.site)
   } else {
-    ggplot2::aes(.data$.x, .data$diversity, colour = .data$.site,
-      shape = .data$.q)
+    ggplot2::aes(.data$.x, .data$diversity,
+      colour = .data$.site,
+      shape = .data$.q
+    )
   }
   p <- ggplot2::ggplot(lines, aes_col)
   if (ci && !all(is.na(df$lower))) {
@@ -143,8 +147,10 @@ autoplot.td_rarefy <- function(object,
     )
   }
   p <- p +
-    ggplot2::geom_line(ggplot2::aes(linetype = .data$.line,
-      group = .data$.grp), linewidth = 0.7) +
+    ggplot2::geom_line(ggplot2::aes(
+      linetype = .data$.line,
+      group = .data$.grp
+    ), linewidth = 0.7) +
     ggplot2::geom_point(data = df[df$method == "observed", ], size = 2.2) +
     ggplot2::scale_linetype_manual(
       values = c(rarefaction = "solid", extrapolation = "dashed"),
@@ -168,13 +174,19 @@ autoplot.td_rarefy <- function(object,
   }
   if (facet && length(by_cols)) {
     p <- p + ggplot2::facet_grid(ggplot2::vars(.data$.by),
-      ggplot2::vars(.data$.q), scales = scales)
+      ggplot2::vars(.data$.q),
+      scales = scales
+    )
   } else if (facet) {
-    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.q), scales = scales,
-      ncol = ncol)
+    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.q),
+      scales = scales,
+      ncol = ncol
+    )
   } else if (length(by_cols)) {
-    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.by), scales = scales,
-      ncol = ncol)
+    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.by),
+      scales = scales,
+      ncol = ncol
+    )
   }
   td_style(p, palette, theme)
 }
@@ -194,26 +206,33 @@ autoplot.td_standardise <- function(object,
   rlang::check_installed("ggplot2")
   df <- tibble::as_tibble(unclass(object))
   site_col <- td_site_col(
-    df, c("q", "m", "method", "coverage", "diversity", "se", "lower",
-      "upper")
+    df, c(
+      "q", "m", "method", "coverage", "diversity", "se", "lower",
+      "upper"
+    )
   )
   by_cols <- setdiff(
-    names(df), c(site_col, "q", "m", "method", "coverage", "diversity",
-      "se", "lower", "upper")
+    names(df), c(
+      site_col, "q", "m", "method", "coverage", "diversity",
+      "se", "lower", "upper"
+    )
   )
   df$.group <- td_label_col(df, by_cols)
   lab <- td_label_col(df, c(by_cols, site_col))
   df$.site <- factor(lab, levels = rev(unique(lab)))
   df$.q <- q_label(df$q)
-  df$method <- factor(df$method,
-    c("rarefaction", "observed", "extrapolation"))
+  df$method <- factor(
+    df$method,
+    c("rarefaction", "observed", "extrapolation")
+  )
   cov <- unique(round(df$coverage, 3))
   sub <- if (length(cov) <= 3) {
-    paste0("Sample coverage: ", paste(format(cov * 100, nsmall = 1),
-      collapse = ", "), "%")
+    pct <- paste(format(cov * 100, nsmall = 1), collapse = ", ")
+    paste0("Sample coverage: ", pct, "%")
   }
   p <- ggplot2::ggplot(df, ggplot2::aes(.data$diversity, .data$.site,
-    colour = .data$.group))
+    colour = .data$.group
+  ))
   if (ci && !all(is.na(df$lower))) {
     p <- p + ggplot2::geom_errorbar(
       ggplot2::aes(xmin = .data$lower, xmax = .data$upper),
@@ -233,8 +252,10 @@ autoplot.td_standardise <- function(object,
     )
   if (!length(by_cols)) p <- p + ggplot2::guides(colour = "none")
   if (facet) {
-    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.q), scales = scales,
-      ncol = ncol)
+    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.q),
+      scales = scales,
+      ncol = ncol
+    )
   }
   td_style(p, palette, theme, fill = FALSE)
 }
@@ -258,12 +279,16 @@ autoplot.td_beta_decay <- function(object,
   )
   p <- ggplot2::ggplot(
     long,
-    ggplot2::aes(.data$distance, .data$value, colour = .data$component,
-      fill = .data$component)
+    ggplot2::aes(.data$distance, .data$value,
+      colour = .data$component,
+      fill = .data$component
+    )
   ) +
     ggplot2::geom_point(alpha = 0.6, size = 1.6, shape = 16) +
-    ggplot2::geom_smooth(method = "lm", formula = y ~ x, se = ci,
-      alpha = 0.15, linewidth = 0.8) +
+    ggplot2::geom_smooth(
+      method = "lm", formula = y ~ x, se = ci,
+      alpha = 0.15, linewidth = 0.8
+    ) +
     ggplot2::scale_y_continuous(limits = c(0, 1)) +
     ggplot2::labs(x = xlab, y = ylab, colour = NULL, fill = NULL)
   td_style(p, palette, theme)
@@ -309,8 +334,10 @@ autoplot.td_hill <- function(object,
       )
     if (!length(by_cols)) p <- p + ggplot2::guides(colour = "none")
     if (facet) {
-      p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.q), scales = scales,
-        ncol = ncol)
+      p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.q),
+        scales = scales,
+        ncol = ncol
+      )
     }
     return(td_style(p, palette, theme, fill = FALSE))
   }
@@ -318,8 +345,10 @@ autoplot.td_hill <- function(object,
   df$.site <- as.character(df[[site_col]])
   df$.by <- td_label_col(df, by_cols)
   p <- ggplot2::ggplot(
-    df, ggplot2::aes(.data$q, .data$diversity, colour = .data$.site,
-      group = paste(.data$.by, .data$.site))
+    df, ggplot2::aes(.data$q, .data$diversity,
+      colour = .data$.site,
+      group = paste(.data$.by, .data$.site)
+    )
   ) +
     ggplot2::geom_line(linewidth = 0.7) +
     ggplot2::geom_point(size = 1.5) +
@@ -365,16 +394,22 @@ autoplot.td_estimate <- function(object,
   }
   p <- p +
     ggplot2::geom_point(
-      ggplot2::aes(x = .data$.value, shape = .data$.type,
-        colour = .data$.type),
+      ggplot2::aes(
+        x = .data$.value, shape = .data$.type,
+        colour = .data$.type
+      ),
       size = 2.2
     ) +
     ggplot2::scale_shape_manual(values = c(1, 16)) +
-    ggplot2::labs(x = xlab, y = ylab %||% site_col, shape = NULL,
-      colour = NULL)
+    ggplot2::labs(
+      x = xlab, y = ylab %||% site_col, shape = NULL,
+      colour = NULL
+    )
   if (facet) {
-    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.q), scales = scales,
-      ncol = ncol)
+    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.q),
+      scales = scales,
+      ncol = ncol
+    )
   }
   td_style(p, palette, theme, fill = FALSE)
 }
@@ -398,8 +433,10 @@ autoplot.td_coverage <- function(object,
     df, ggplot2::aes(.data$n, .data$coverage, colour = .data$.group)
   ) +
     ggplot2::geom_point(size = 2.5) +
-    ggplot2::scale_y_continuous(limits = c(NA, 1),
-      labels = function(x) paste0(x * 100, "%")) +
+    ggplot2::scale_y_continuous(
+      limits = c(NA, 1),
+      labels = function(x) paste0(x * 100, "%")
+    ) +
     ggplot2::labs(
       x = xlab, y = ylab,
       colour = if (length(by_cols)) paste(by_cols, collapse = " ")
@@ -411,16 +448,20 @@ autoplot.td_coverage <- function(object,
 #' @rdname autoplot-tidydiversity
 #' @exportS3Method ggplot2::autoplot
 autoplot.td_beta_pair <- function(object,
-                                  component = c("total", "turnover",
-                                                "nestedness"),
+                                  component = c(
+                                    "total", "turnover",
+                                    "nestedness"
+                                  ),
                                   theme = theme_tidydiversity(grid = "none"),
                                   ...) {
   rlang::check_installed("ggplot2")
   component <- rlang::arg_match(component)
   df <- tibble::as_tibble(unclass(object))
   by_cols <- setdiff(
-    names(df), c("site_1", "site_2", "turnover", "nestedness", "total",
-      "gradient_1", "gradient_2", "distance")
+    names(df), c(
+      "site_1", "site_2", "turnover", "nestedness", "total",
+      "gradient_1", "gradient_2", "distance"
+    )
   )
   lev <- unique(c(as.character(df$site_1), as.character(df$site_2)))
   swap <- df
@@ -435,8 +476,10 @@ autoplot.td_beta_pair <- function(object,
   ) +
     ggplot2::geom_tile(colour = "white") +
     ggplot2::scale_fill_viridis_c(limits = c(0, 1), option = "D") +
-    ggplot2::labs(x = NULL, y = NULL,
-      fill = paste0(tools::toTitleCase(component), "\ndissimilarity"))
+    ggplot2::labs(
+      x = NULL, y = NULL,
+      fill = paste0(tools::toTitleCase(component), "\ndissimilarity")
+    )
   if (length(by_cols)) {
     both$.group <- td_label_col(both, by_cols)
     p <- ggplot2::`%+%`(p, both) +

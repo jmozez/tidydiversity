@@ -101,8 +101,8 @@ beta_decay <- function(data,
   call <- rlang::current_env()
   td_check_data(data)
   gcols <- names(tidyselect::eval_select(enquo(gradient), data))
-  if (length(gcols) == 0 ||
-      !all(vapply(data[gcols], is.numeric, logical(1)))) {
+  numeric_ok <- all(vapply(data[gcols], is.numeric, logical(1)))
+  if (length(gcols) == 0 || !numeric_ok) {
     cli::cli_abort(
       "{.arg gradient} must select one or more numeric columns."
     )
@@ -123,7 +123,8 @@ beta_decay <- function(data,
     key <- pairs[prep$by]
     key$.site <- s
     sites$.g[vctrs::vec_match(key, sites[c(prep$by, ".site")]), ,
-      drop = FALSE]
+      drop = FALSE
+    ]
   }
   g1 <- look(pairs$site_1)
   g2 <- look(pairs$site_2)
@@ -243,8 +244,10 @@ beta_dist <- function(x, component = c("total", "turnover", "nestedness")) {
   }
   extra <- setdiff(
     names(x),
-    c("site_1", "site_2", "turnover", "nestedness", "total",
-      "gradient_1", "gradient_2", "distance")
+    c(
+      "site_1", "site_2", "turnover", "nestedness", "total",
+      "gradient_1", "gradient_2", "distance"
+    )
   )
   if (length(extra) > 0) {
     cli::cli_abort(c(

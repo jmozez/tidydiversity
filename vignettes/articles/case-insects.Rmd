@@ -3,8 +3,10 @@ title: "Case study: caddisflies at a light trap"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
-  dpi = 150, fig.width = 7, fig.height = 4)
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
 ```
 
 This case study runs the full workflow on nightly light-trap catches of
@@ -67,10 +69,15 @@ different size on a common scale. Solid lines are interpolated, dashed
 lines extrapolated, and ribbons are 95% bootstrap intervals.
 
 ```{r curves, fig.height = 3.8, fig.alt = "Rarefaction and extrapolation curves for four nights"}
-pick <- cov |> arrange(n) |> slice(c(15, 25, 35, 45)) |> pull(site)
+pick <- cov |>
+  arrange(n) |>
+  slice(c(15, 25, 35, 45)) |>
+  pull(site)
 curves <- div_rarefy(filter(moths, site %in% pick), nboot = 100)
-autoplot(curves, x = "coverage", ncol = 3,
-  ylab = "Diversity (effective number of genera)")
+autoplot(curves,
+  x = "coverage", ncol = 3,
+  ylab = "Diversity (effective number of genera)"
+)
 ```
 
 ## Standardised diversity for every night
@@ -78,9 +85,13 @@ autoplot(curves, x = "coverage", ncol = 3,
 Nights with too few insects to estimate anything are dropped first.
 
 ```{r standardise}
-keep <- cov |> filter(n >= 20, s_obs >= 2) |> pull(site)
-std <- div_standardise(filter(moths, site %in% keep), q = c(0, 1, 2),
-  nboot = 100)
+keep <- cov |>
+  filter(n >= 20, s_obs >= 2) |>
+  pull(site)
+std <- div_standardise(filter(moths, site %in% keep),
+  q = c(0, 1, 2),
+  nboot = 100
+)
 distinct(std, coverage)
 std
 ```
@@ -96,17 +107,24 @@ shannon <- std |>
   filter(q == 1) |>
   add_site_data(nights)
 
-fit <- lm(estimate ~ evening_temp + wind + humidity, data = shannon,
-  weights = weight)
+fit <- lm(estimate ~ evening_temp + wind + humidity,
+  data = shannon,
+  weights = weight
+)
 broom::tidy(fit, conf.int = TRUE)
 
 ggplot(shannon, aes(evening_temp, estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
-    colour = td_palette(1)) +
-  geom_smooth(method = "lm", formula = y ~ x,
-    mapping = aes(weight = weight), colour = "grey30") +
-  labs(x = "Evening air temperature (\u00b0C)",
-    y = "Shannon diversity (effective number of genera)") +
+    colour = td_palette(1)
+  ) +
+  geom_smooth(
+    method = "lm", formula = y ~ x,
+    mapping = aes(weight = weight), colour = "grey30"
+  ) +
+  labs(
+    x = "Evening air temperature (\u00b0C)",
+    y = "Shannon diversity (effective number of genera)"
+  ) +
   theme_tidydiversity()
 ```
 
@@ -127,8 +145,10 @@ autoplot(decay, xlab = "Difference in evening temperature (\u00b0C)")
 ## Reporting
 
 ```{r table}
-div_table(filter(std, site %in% keep[1:6]), digits = 1, wide = TRUE,
-  output = "kable", caption = "Coverage-standardised diversity, first six nights")
+div_table(filter(std, site %in% keep[1:6]),
+  digits = 1, wide = TRUE,
+  output = "kable", caption = "Coverage-standardised diversity, first six nights"
+)
 ```
 
 ## References

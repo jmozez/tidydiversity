@@ -3,8 +3,10 @@ title: "Case study: forest birds and North American bird communities"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
-  dpi = 150, fig.width = 7, fig.height = 4)
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
 ```
 
 Two bird datasets cover the alpha and beta parts of the workflow.
@@ -37,8 +39,10 @@ birds <- tibble::tibble(
   North = bird$North.site,
   South = bird$South.site
 ) |>
-  tidyr::pivot_longer(-species, names_to = "site",
-    values_to = "abundance") |>
+  tidyr::pivot_longer(-species,
+    names_to = "site",
+    values_to = "abundance"
+  ) |>
   as_community()
 div_coverage(birds)
 ```
@@ -111,8 +115,10 @@ temporal |>
   ggplot(aes(value, fill = component)) +
   geom_histogram(bins = 20, position = "identity", alpha = 0.7) +
   scale_fill_tidydiversity() +
-  labs(x = "Dissimilarity between 1980 and 2000", y = "Number of states",
-    fill = NULL) +
+  labs(
+    x = "Dissimilarity between 1980 and 2000", y = "Number of states",
+    fill = NULL
+  ) +
   theme_tidydiversity()
 ```
 

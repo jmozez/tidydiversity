@@ -3,8 +3,10 @@ title: "Modelling diversity against covariates"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
-  dpi = 150, fig.width = 7, fig.height = 4)
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
 ```
 
 Diversity estimates are often the response in a model of environmental
@@ -28,8 +30,10 @@ inverse-variance `weight`; `add_site_data()` joins covariates that are
 constant within each site.
 
 ```{r tidy}
-est <- div_standardise(ant_gradient, q = c(0, 1, 2), .by = transect,
-  nboot = 200) |>
+est <- div_standardise(ant_gradient,
+  q = c(0, 1, 2), .by = transect,
+  nboot = 200
+) |>
   tidy() |>
   add_site_data(sites)
 est
@@ -44,7 +48,8 @@ Inverse-variance weights give less influence to imprecise estimates.
 ```{r lm}
 shannon <- filter(est, q == 1)
 fit_lm <- lm(estimate ~ elevation + I(elevation^2) + transect,
-  data = shannon, weights = weight)
+  data = shannon, weights = weight
+)
 broom::tidy(fit_lm, conf.int = TRUE)
 ```
 
@@ -55,7 +60,8 @@ With repeated sites or blocks, add a random effect with **lme4** (or
 
 ```{r lmer, message = FALSE}
 fit_mm <- lme4::lmer(estimate ~ elevation + (1 | transect),
-  data = shannon, weights = weight / mean(weight))
+  data = shannon, weights = weight / mean(weight)
+)
 summary(fit_mm)$coefficients
 ```
 
@@ -65,24 +71,31 @@ summary(fit_mm)$coefficients
 
 ```{r gam, fig.alt = "GAM smooth of Shannon diversity along elevation"}
 fit_gam <- mgcv::gam(estimate ~ s(elevation, k = 5) + transect,
-  data = shannon, weights = weight / mean(weight), method = "REML")
+  data = shannon, weights = weight / mean(weight), method = "REML"
+)
 summary(fit_gam)$s.table
-grid <- tidyr::expand_grid(elevation = seq(200, 1600, by = 20),
-  transect = c("north", "south"))
+grid <- tidyr::expand_grid(
+  elevation = seq(200, 1600, by = 20),
+  transect = c("north", "south")
+)
 pred <- predict(fit_gam, grid, se.fit = TRUE)
 grid$fit <- pred$fit
 grid$se <- pred$se.fit
 ggplot(grid, aes(elevation, fit, colour = transect, fill = transect)) +
   geom_ribbon(aes(ymin = fit - 1.96 * se, ymax = fit + 1.96 * se),
-    alpha = 0.2, colour = NA) +
+    alpha = 0.2, colour = NA
+  ) +
   geom_line() +
   geom_pointrange(aes(y = estimate, ymin = conf.low, ymax = conf.high),
-    data = shannon) +
+    data = shannon
+  ) +
   scale_colour_tidydiversity() +
   scale_fill_tidydiversity() +
-  labs(x = "Elevation (m)",
+  labs(
+    x = "Elevation (m)",
     y = "Shannon diversity (effective number of species)",
-    colour = NULL, fill = NULL) +
+    colour = NULL, fill = NULL
+  ) +
   theme_tidydiversity()
 ```
 
@@ -94,11 +107,14 @@ richness with a Poisson GLM and log sample size as an offset.
 
 ```{r glm}
 rich <- filter(est, q == 0)
-broom::tidy(glm(estimate ~ elevation + transect, data = rich,
-  family = Gamma(link = "log"), weights = weight / mean(weight)))
+broom::tidy(glm(estimate ~ elevation + transect,
+  data = rich,
+  family = Gamma(link = "log"), weights = weight / mean(weight)
+))
 obs <- div_hill(ant_gradient, q = 0) |> add_site_data(sites)
 broom::tidy(glm(diversity ~ elevation + transect + offset(log(n)),
-  data = obs, family = poisson))
+  data = obs, family = poisson
+))
 ```
 
 ## Propagating uncertainty with bootstrap draws
@@ -109,15 +125,16 @@ replicate and the spread of the coefficients includes the estimation
 uncertainty in the response.
 
 ```{r boot}
-draws <- div_boot(ant_gradient, q = 1, type = "standardised",
-  coverage = 0.9, nboot = 200) |>
+draws <- div_boot(ant_gradient,
+  q = 1, type = "standardised",
+  coverage = 0.9, nboot = 200
+) |>
   add_site_data(sites)
 draws
 
 slopes <- draws |>
   group_by(.draw) |>
-  group_modify(~ broom::tidy(lm(diversity ~ elevation + transect,
-    data = .x))) |>
+  group_modify(\(d) broom::tidy(lm(diversity ~ elevation + transect, data = d))) |>
   ungroup() |>
   filter(term == "elevation")
 quantile(slopes$estimate, c(0.025, 0.5, 0.975))
@@ -157,8 +174,10 @@ vegan::mantel(d_beta, d_elev, permutations = 999)
 
 ```{r permanova, message = FALSE}
 bray <- beta_dist(beta_pair(ant_gradient, index = "bray"))
-vegan::adonis2(bray ~ elevation + transect, data = sites,
-  permutations = 999)
+vegan::adonis2(bray ~ elevation + transect,
+  data = sites,
+  permutations = 999
+)
 ```
 
 ```{r nmds, fig.height = 4, fig.alt = "NMDS ordination of sites coloured by elevation"}

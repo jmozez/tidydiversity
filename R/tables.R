@@ -47,8 +47,10 @@ div_table <- function(x,
     est <- fmt(df[[value]])
     df[[value]] <- switch(ci_style,
       apa = paste0(est, " [", fmt(df$lower), ", ", fmt(df$upper), "]"),
-      parentheses = paste0(est, " (", fmt(df$lower), "-", fmt(df$upper),
-        ")"),
+      parentheses = paste0(
+        est, " (", fmt(df$lower), "-", fmt(df$upper),
+        ")"
+      ),
       pm = paste0(est, " \u00b1 ", fmt(df$se))
     )
     df$lower <- NULL
@@ -64,11 +66,17 @@ div_table <- function(x,
       fmt(df[[col]])
     }
   }
-  if ("m" %in% names(df)) df$m <- formatC(as.numeric(df$m), format = "f",
-    digits = 1)
+  if ("m" %in% names(df)) {
+    df$m <- formatC(as.numeric(df$m),
+      format = "f",
+      digits = 1
+    )
+  }
   if (wide && "q" %in% names(df)) {
-    ids <- setdiff(names(df), c("q", value, "observed", "m", "method",
-      "coverage", "se", "lower", "upper", "n"))
+    ids <- setdiff(names(df), c(
+      "q", value, "observed", "m", "method",
+      "coverage", "se", "lower", "upper", "n"
+    ))
     vals <- intersect(c("observed", value), names(df))
     df <- tidy_wide(df, ids, vals)
   } else if ("q" %in% names(df)) {
@@ -85,8 +93,11 @@ tidy_wide <- function(df, ids, vals) {
     rows <- df[df$q == qq, ]
     idx <- vctrs::vec_match(key, rows[ids])
     for (v in vals) {
-      lab <- if (length(vals) > 1) paste0(v, " (q = ", qq, ")") else
+      lab <- if (length(vals) > 1) {
+        paste0(v, " (q = ", qq, ")")
+      } else {
         paste0("q = ", qq)
+      }
       out[[lab]] <- rows[[v]][idx]
     }
   }
@@ -102,8 +113,11 @@ pretty_names <- function(nms, ci, style, x) {
     total = "Total", site_1 = "Site 1", site_2 = "Site 2",
     distance = "Distance", se = "SE"
   )
-  ci_lab <- switch(style, apa = " [95% CI]", parentheses = " (95% CI)",
-    pm = " \u00b1 SE")
+  ci_lab <- switch(style,
+    apa = " [95% CI]",
+    parentheses = " (95% CI)",
+    pm = " \u00b1 SE"
+  )
   lab["estimate"] <- paste0("Estimate", if (ci) ci_lab)
   lab["diversity"] <- paste0("Diversity", if (ci) ci_lab)
   out <- ifelse(nms %in% names(lab), lab[nms], nms)
@@ -115,8 +129,10 @@ render_table <- function(df, output, caption) {
     tibble = df,
     kable = {
       rlang::check_installed("knitr")
-      knitr::kable(df, caption = caption, align = c("l",
-        rep("r", ncol(df) - 1)))
+      knitr::kable(df, caption = caption, align = c(
+        "l",
+        rep("r", ncol(df) - 1)
+      ))
     },
     gt = {
       rlang::check_installed("gt")

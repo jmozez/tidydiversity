@@ -3,8 +3,10 @@
 spider_df <- function(col = "Girdled") {
   skip_if_not_installed("iNEXT")
   x <- pkg_data("spider", "iNEXT")[[col]]
-  tibble::tibble(site = col, species = paste0("s", seq_along(x)),
-    abundance = x)
+  tibble::tibble(
+    site = col, species = paste0("s", seq_along(x)),
+    abundance = x
+  )
 }
 
 test_that("size-based rarefaction and extrapolation match iNEXT", {
@@ -29,25 +31,33 @@ test_that("default curves stop at twice the sample size", {
 })
 
 test_that("extrapolating richness beyond 2n warns", {
-  expect_warning(div_rarefy(spider_df(), q = 0, endpoint = 1000),
-    "twice the observed")
+  expect_warning(
+    div_rarefy(spider_df(), q = 0, endpoint = 1000),
+    "twice the observed"
+  )
   expect_no_warning(div_rarefy(spider_df(), q = 1, endpoint = 1000))
-  expect_warning(div_standardise(spider_df(), coverage = 0.999, nboot = 0),
-    "twice the observed")
+  expect_warning(
+    div_standardise(spider_df(), coverage = 0.999, nboot = 0),
+    "twice the observed"
+  )
 })
 
 test_that("coverage-based standardisation matches iNEXT::estimateD", {
   skip_if_not_installed("iNEXT")
   x <- pkg_data("spider", "iNEXT")$Girdled
   for (lev in c(0.8, 0.9, 0.95)) {
-    ref <- iNEXT::estimateD(x, datatype = "abundance", base = "coverage",
-      level = lev, nboot = 0)
+    ref <- iNEXT::estimateD(x,
+      datatype = "abundance", base = "coverage",
+      level = lev, nboot = 0
+    )
     mine <- div_standardise(spider_df(), coverage = lev, nboot = 0)
     expect_equal(mine$diversity, ref$qD, tolerance = 1e-5)
     expect_equal(mine$m, ref$m, tolerance = 1e-4)
   }
-  ref <- iNEXT::estimateD(x, datatype = "abundance", base = "size",
-    level = 100, nboot = 0)
+  ref <- iNEXT::estimateD(x,
+    datatype = "abundance", base = "size",
+    level = 100, nboot = 0
+  )
   mine <- div_standardise(spider_df(), size = 100, nboot = 0)
   expect_equal(mine$diversity, ref$qD, tolerance = 1e-6)
 })
@@ -59,7 +69,9 @@ test_that("asymptotic estimates match iNEXT on real data", {
     df <- tibble::tibble(site = col, species = seq_along(x), abundance = x)
     ref <- iNEXT::iNEXT(x, q = c(0, 1, 2), nboot = 0)$AsyEst
     expect_equal(div_estimate(df, nboot = 0)$estimate,
-      unname(ref$Estimator), tolerance = 1e-8)
+      unname(ref$Estimator),
+      tolerance = 1e-8
+    )
   }
 })
 
@@ -72,12 +84,18 @@ test_that("observed Hill numbers match hillR and vegan", {
   wide <- wide[unique(bci$site), ]
   expect_equal(mine$diversity[mine$q == 0], unname(vegan::specnumber(wide)))
   expect_equal(mine$diversity[mine$q == 1],
-    unname(exp(vegan::diversity(wide))), tolerance = 1e-10)
+    unname(exp(vegan::diversity(wide))),
+    tolerance = 1e-10
+  )
   expect_equal(mine$diversity[mine$q == 2],
-    unname(vegan::diversity(wide, "invsimpson")), tolerance = 1e-10)
+    unname(vegan::diversity(wide, "invsimpson")),
+    tolerance = 1e-10
+  )
   skip_if_not_installed("hillR")
   expect_equal(mine$diversity[mine$q == 1],
-    unname(hillR::hill_taxa(wide, q = 1)), tolerance = 1e-10)
+    unname(hillR::hill_taxa(wide, q = 1)),
+    tolerance = 1e-10
+  )
 })
 
 test_that("Chao1 log-normal interval follows Chao (1987)", {
@@ -91,7 +109,8 @@ test_that("Chao1 log-normal interval follows Chao (1987)", {
   set.seed(1)
   nrm <- div_estimate(spider_df(), nboot = 50, ci = "normal")
   expect_equal(nrm$upper, nrm$estimate + 1.959964 * nrm$se,
-    tolerance = 1e-6)
+    tolerance = 1e-6
+  )
   expect_true(all(nrm$lower >= nrm$observed))
 })
 
@@ -119,24 +138,30 @@ test_that("abundance-based beta partitions match betapart and vegan", {
   expect_equal(mine$total, as.vector(vegan::vegdist(wide)))
   m <- betapart::beta.multi.abund(wide)
   mm <- beta_multi(bci, index = "bray")
-  expect_equal(c(mm$turnover, mm$nestedness, mm$total),
-    unname(unlist(m)))
+  expect_equal(
+    c(mm$turnover, mm$nestedness, mm$total),
+    unname(unlist(m))
+  )
   expect_equal(as.vector(beta_dist(mine)), as.vector(vegan::vegdist(wide)))
 })
 
 test_that("incidence beta partitions match betapart on real data", {
   skip_if_not_installed("betapart")
-  ceram.s <- pkg_data("ceram.s", "betapart")
-  long <- do.call(rbind, lapply(seq_len(nrow(ceram.s)), function(i) {
-    data.frame(site = rownames(ceram.s)[i],
-      species = colnames(ceram.s)[ceram.s[i, ] > 0])
+  ceram_s <- pkg_data("ceram.s", "betapart")
+  long <- do.call(rbind, lapply(seq_len(nrow(ceram_s)), function(i) {
+    data.frame(
+      site = rownames(ceram_s)[i],
+      species = colnames(ceram_s)[ceram_s[i, ] > 0]
+    )
   }))
   for (idx in c("sorensen", "jaccard")) {
-    ref <- betapart::beta.multi(ceram.s, index.family = idx)
+    ref <- betapart::beta.multi(ceram_s, index.family = idx)
     mine <- beta_multi(long, index = idx)
-    expect_equal(c(mine$turnover, mine$nestedness, mine$total),
-      unname(unlist(ref)))
-    refp <- betapart::beta.pair(ceram.s, index.family = idx)
+    expect_equal(
+      c(mine$turnover, mine$nestedness, mine$total),
+      unname(unlist(ref))
+    )
+    refp <- betapart::beta.pair(ceram_s, index.family = idx)
     expect_equal(beta_pair(long, index = idx)$total, as.vector(refp[[3]]))
   }
 })

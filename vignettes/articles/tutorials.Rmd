@@ -3,8 +3,10 @@ title: "Real-world tutorials"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
-  dpi = 150, fig.width = 7, fig.height = 3.6)
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 3.6
+)
 ```
 
 Four tutorials run the full workflow (tidy the data, check completeness,
@@ -59,10 +61,14 @@ and temporal beta diversity. [Full tutorial](case-birds.html).
 
 ```{r birds, fig.alt = "Asymptotic diversity of two bird assemblages"}
 data(bird, package = "iNEXT")
-birds <- tibble::tibble(species = seq_len(nrow(bird)),
-  North = bird$North.site, South = bird$South.site) |>
-  tidyr::pivot_longer(-species, names_to = "site",
-    values_to = "abundance") |>
+birds <- tibble::tibble(
+  species = seq_len(nrow(bird)),
+  North = bird$North.site, South = bird$South.site
+) |>
+  tidyr::pivot_longer(-species,
+    names_to = "site",
+    values_to = "abundance"
+  ) |>
   as_community()
 autoplot(div_estimate(birds, nboot = 50))
 ```
@@ -76,7 +82,8 @@ habitat models, spatial distance decay, NMDS and PERMANOVA.
 ```{r plants, fig.alt = "Hill number profiles for two hectares"}
 data(BCI, package = "vegan")
 trees <- community_long(bind_cols(site = c("ha01", "ha02"), BCI[1:2, ]),
-  cols = -site)
+  cols = -site
+)
 autoplot(div_hill(trees, q = seq(0, 3, by = 0.25)))
 ```
 

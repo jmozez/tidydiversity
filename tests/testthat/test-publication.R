@@ -2,12 +2,16 @@ test_that("autoplot options give customisable ggplots", {
   skip_if_not_installed("ggplot2")
   set.seed(1)
   curves <- div_rarefy(toy(), q = c(0, 1), knots = 10, nboot = 5)
-  p <- ggplot2::autoplot(curves, palette = "grey", facet = FALSE,
-    xlab = "Workers")
+  p <- ggplot2::autoplot(curves,
+    palette = "grey", facet = FALSE,
+    xlab = "Workers"
+  )
   expect_s3_class(p, "ggplot")
   expect_equal(p$labels$x, "Workers")
-  expect_s3_class(ggplot2::autoplot(curves, palette = c("red", "blue"),
-    theme = NULL, ci = FALSE), "ggplot")
+  own <- ggplot2::autoplot(curves,
+    palette = c("red", "blue"), theme = NULL, ci = FALSE
+  )
+  expect_s3_class(own, "ggplot")
   expect_error(ggplot2::autoplot(curves, palette = 1), "palette")
   std <- div_standardise(ant_gradient, .by = transect, nboot = 5)
   expect_s3_class(std, "td_standardise")
@@ -22,8 +26,10 @@ test_that("div_table() formats estimates in APA style", {
   set.seed(1)
   est <- div_estimate(toy(), nboot = 10)
   tab <- div_table(est, digits = 1)
-  expect_match(tab[["Estimate [95% CI]"]][1],
-    "^[0-9]+\\.[0-9] \\[[0-9]+\\.[0-9], [0-9]+\\.[0-9]\\]$")
+  expect_match(
+    tab[["Estimate [95% CI]"]][1],
+    "^[0-9]+\\.[0-9] \\[[0-9]+\\.[0-9], [0-9]+\\.[0-9]\\]$"
+  )
   wide <- div_table(est, wide = TRUE)
   expect_equal(nrow(wide), 2)
   expect_true("estimate (q = 0)" %in% names(wide))
@@ -38,12 +44,16 @@ test_that("tidy() and add_site_data() give model-ready output", {
   set.seed(1)
   est <- div_estimate(ant_gradient, q = 0, nboot = 10)
   td <- generics::tidy(add_site_data(est, ant_gradient))
-  expect_true(all(c("estimate", "std.error", "conf.low", "conf.high",
-    "weight", "elevation", "transect") %in% names(td)))
+  expect_true(all(c(
+    "estimate", "std.error", "conf.low", "conf.high",
+    "weight", "elevation", "transect"
+  ) %in% names(td)))
   expect_equal(nrow(td), length(unique(ant_gradient$site)))
   expect_equal(td$weight, 1 / td$std.error^2)
-  expect_error(add_site_data(est, ant_gradient, cols = species),
-    "constant")
+  expect_error(
+    add_site_data(est, ant_gradient, cols = species),
+    "constant"
+  )
 })
 
 test_that("div_boot() returns replicates", {
@@ -69,8 +79,10 @@ test_that("beta_decay() accepts coordinates and beta_dist() builds dist", {
   d <- beta_dist(north, "turnover")
   expect_s3_class(d, "dist")
   expect_equal(attr(d, "Size"), 8L)
-  expect_error(beta_dist(beta_pair(ant_gradient, .by = transect)),
-    "single group")
+  expect_error(
+    beta_dist(beta_pair(ant_gradient, .by = transect)),
+    "single group"
+  )
 })
 
 test_that("grouped results are not drawn on top of each other", {
@@ -79,8 +91,10 @@ test_that("grouped results are not drawn on top of each other", {
   p <- ggplot2::autoplot(curves)
   expect_s3_class(p$facet, "FacetGrid")
   b <- ggplot2::ggplot_build(p)
-  expect_equal(length(unique(b$data[[1]]$group)),
-    2 * length(unique(ant_gradient$site)))
+  expect_equal(
+    length(unique(b$data[[1]]$group)),
+    2 * length(unique(ant_gradient$site))
+  )
   hill <- div_hill(ant_gradient, .by = transect)
   expect_s3_class(ggplot2::autoplot(hill)$facet, "FacetWrap")
   single <- div_hill(toy())

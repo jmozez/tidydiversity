@@ -3,8 +3,10 @@ title: "Case study: trees on Barro Colorado Island"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
-  dpi = 150, fig.width = 7, fig.height = 4)
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
 ```
 
 The 50 ha forest dynamics plot on Barro Colorado Island, Panama, is one of
@@ -53,8 +55,10 @@ The richness curves are far from flat, while Shannon and Simpson
 diversity are much closer to their asymptotes.
 
 ```{r curves, fig.alt = "Rarefaction and extrapolation for four hectares"}
-curves <- div_rarefy(filter(trees, site %in% c("ha01", "ha13", "ha25",
-  "ha50")), nboot = 100)
+curves <- div_rarefy(filter(trees, site %in% c(
+  "ha01", "ha13", "ha25",
+  "ha50"
+)), nboot = 100)
 autoplot(curves, ylab = "Diversity (effective number of tree species)")
 ```
 
@@ -62,7 +66,8 @@ autoplot(curves, ylab = "Diversity (effective number of tree species)")
 
 ```{r profile, fig.alt = "Hill number profiles for four hectares"}
 div_hill(filter(trees, site %in% c("ha01", "ha13", "ha25", "ha50")),
-  q = seq(0, 3, by = 0.25)) |>
+  q = seq(0, 3, by = 0.25)
+) |>
   autoplot()
 ```
 
@@ -72,8 +77,10 @@ div_hill(filter(trees, site %in% c("ha01", "ha13", "ha25", "ha50")),
 est <- div_estimate(trees, q = c(0, 1, 2), nboot = 100) |>
   tidy() |>
   add_site_data(env)
-fit <- lm(estimate ~ habitat + env_het, data = filter(est, q == 1),
-  weights = weight)
+fit <- lm(estimate ~ habitat + env_het,
+  data = filter(est, q == 1),
+  weights = weight
+)
 broom::tidy(fit, conf.int = TRUE)
 ```
 
@@ -85,8 +92,10 @@ ggplot(est, aes(habitat, estimate, colour = habitat)) +
   scale_colour_tidydiversity() +
   labs(x = NULL, y = "Diversity (effective number of species)") +
   theme_tidydiversity() +
-  theme(legend.position = "none",
-    axis.text.x = element_text(angle = 30, hjust = 1))
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 30, hjust = 1)
+  )
 ```
 
 ## Distance decay

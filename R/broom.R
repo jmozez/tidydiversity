@@ -25,8 +25,10 @@
 #'
 #' # Join elevation and fit a weighted model
 #' est <- add_site_data(est, ant_gradient)
-#' fit <- lm(estimate ~ elevation, data = generics::tidy(est),
-#'   weights = weight)
+#' fit <- lm(estimate ~ elevation,
+#'   data = generics::tidy(est),
+#'   weights = weight
+#' )
 #' coef(fit)
 NULL
 

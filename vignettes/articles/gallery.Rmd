@@ -3,8 +3,10 @@ title: "Gallery"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
-  dpi = 150, fig.width = 7)
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7
+)
 ```
 
 Every plot that `autoplot()` draws, using the simulated `ant_gradient`
@@ -301,8 +303,10 @@ autoplot(decay, xlab = "Difference in elevation (m)")
 ### Plot
 
 ```{r grey, echo = FALSE, fig.height = 4, fig.alt = "Greyscale for print"}
-autoplot(curves, palette = "grey", facet = FALSE,
-  theme = theme_tidydiversity(base_size = 9, grid = "none"))
+autoplot(curves,
+  palette = "grey", facet = FALSE,
+  theme = theme_tidydiversity(base_size = 9, grid = "none")
+)
 ```
 
 ### Table

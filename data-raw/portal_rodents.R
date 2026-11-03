@@ -16,8 +16,10 @@ trt <- trt[!duplicated(trt$plot), c("plot", "Apr2015_present")]
 names(trt)[2] <- "treatment"
 trt$treatment <- factor(
   trt$treatment,
-  levels = c("Unmanipulated control", "Kangaroo rats removed",
-             "All rodents removed"),
+  levels = c(
+    "Unmanipulated control", "Kangaroo rats removed",
+    "All rodents removed"
+  ),
   labels = c("control", "krat_exclosure", "removal")
 )
 

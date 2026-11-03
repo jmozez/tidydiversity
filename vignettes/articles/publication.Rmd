@@ -3,8 +3,10 @@ title: "Publication figures and tables"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
-  dpi = 150, fig.width = 7, fig.height = 4)
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
 ```
 
 Every `autoplot()` method returns an ordinary ggplot, so anything can be
@@ -33,8 +35,10 @@ autoplot(curves)
 ### Labels and facets
 
 ```{r labels, fig.alt = "Rarefaction plot with custom labels and two columns"}
-autoplot(filter(curves, q == 0), xlab = "Number of ant workers",
-  ylab = "Species richness", ncol = 2, scales = "fixed")
+autoplot(filter(curves, q == 0),
+  xlab = "Number of ant workers",
+  ylab = "Species richness", ncol = 2, scales = "fixed"
+)
 ```
 
 ### Greyscale
@@ -52,8 +56,10 @@ Pass a vector of colours, or `theme = NULL` to start from the ggplot2
 default and add your own theme.
 
 ```{r own, fig.alt = "Rarefaction plot with custom colours and theme"}
-autoplot(curves, palette = hcl.colors(8, "Dark 3"), ci = FALSE,
-  theme = NULL) +
+autoplot(curves,
+  palette = hcl.colors(8, "Dark 3"), ci = FALSE,
+  theme = NULL
+) +
   theme_classic(base_size = 10) +
   theme(legend.position = "right")
 ```
@@ -62,7 +68,8 @@ autoplot(curves, palette = hcl.colors(8, "Dark 3"), ci = FALSE,
 
 ```{r onepanel, fig.alt = "All orders of q on one panel"}
 autoplot(div_rarefy(filter(north, site == "n_0200"), nboot = 100),
-  facet = FALSE)
+  facet = FALSE
+)
 ```
 
 ## The publication theme
@@ -93,8 +100,10 @@ interval, for example `12.3 [9.8, 15.1]`, and renders it as a tibble,
 
 ```{r table-long}
 est <- div_estimate(north, nboot = 100)
-div_table(est, digits = 1, output = "kable",
-  caption = "Asymptotic diversity, north transect")
+div_table(est,
+  digits = 1, output = "kable",
+  caption = "Asymptotic diversity, north transect"
+)
 ```
 
 ### Wide
@@ -106,15 +115,19 @@ div_table(est, digits = 1, wide = TRUE, output = "kable")
 ### gt
 
 ```{r table-gt}
-div_table(est, digits = 1, wide = TRUE, output = "gt",
-  caption = "Asymptotic diversity")
+div_table(est,
+  digits = 1, wide = TRUE, output = "gt",
+  caption = "Asymptotic diversity"
+)
 ```
 
 ### flextable (Word)
 
 ```{r table-flex}
-ft <- div_table(est, digits = 1, ci_style = "parentheses",
-  output = "flextable")
+ft <- div_table(est,
+  digits = 1, ci_style = "parentheses",
+  output = "flextable"
+)
 ft
 ```
 
@@ -130,16 +143,22 @@ format such as PDF or EPS.
 p <- autoplot(curves, theme = theme_tidydiversity(base_size = 8))
 
 # Single column, 300 dpi TIFF with LZW compression
-ggsave("figure1.tiff", p, width = 85, height = 70, units = "mm",
-  dpi = 300, compression = "lzw")
+ggsave("figure1.tiff", p,
+  width = 85, height = 70, units = "mm",
+  dpi = 300, compression = "lzw"
+)
 
 # Double column, vector PDF (embed fonts with cairo)
-ggsave("figure1.pdf", p, width = 175, height = 90, units = "mm",
-  device = cairo_pdf)
+ggsave("figure1.pdf", p,
+  width = 175, height = 90, units = "mm",
+  device = cairo_pdf
+)
 
 # High-resolution PNG for slides or preprints
-ggsave("figure1.png", p, width = 175, height = 90, units = "mm",
-  dpi = 600, bg = "white")
+ggsave("figure1.png", p,
+  width = 175, height = 90, units = "mm",
+  dpi = 600, bg = "white"
+)
 ```
 
 Set `base_size` to the font size the journal asks for (often 8 to 10 pt)

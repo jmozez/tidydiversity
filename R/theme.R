@@ -50,14 +50,20 @@ theme_tidydiversity <- function(base_size = 11,
       panel.grid.minor = blank,
       panel.grid.major.x = if (grid %in% c("x", "xy")) line else blank,
       panel.grid.major.y = if (grid %in% c("y", "xy")) line else blank,
-      panel.border = ggplot2::element_rect(colour = "grey30", fill = NA,
-        linewidth = 0.4),
+      panel.border = ggplot2::element_rect(
+        colour = "grey30", fill = NA,
+        linewidth = 0.4
+      ),
       axis.ticks = ggplot2::element_line(colour = "grey30", linewidth = 0.3),
       axis.text = ggplot2::element_text(colour = "black"),
-      strip.background = ggplot2::element_rect(fill = "grey95",
-        colour = "grey30", linewidth = 0.4),
-      strip.text = ggplot2::element_text(colour = "black",
-        face = "bold"),
+      strip.background = ggplot2::element_rect(
+        fill = "grey95",
+        colour = "grey30", linewidth = 0.4
+      ),
+      strip.text = ggplot2::element_text(
+        colour = "black",
+        face = "bold"
+      ),
       legend.position = legend_position,
       legend.key = blank,
       legend.background = blank,
@@ -91,7 +97,8 @@ scale_colour_tidydiversity <- function(palette = c("okabe_ito", "grey"),
   rlang::check_installed("ggplot2")
   palette <- rlang::arg_match(palette)
   ggplot2::discrete_scale(
-    "colour", palette = function(n) td_palette(n, palette), ...
+    "colour",
+    palette = function(n) td_palette(n, palette), ...
   )
 }
 
@@ -101,14 +108,16 @@ scale_fill_tidydiversity <- function(palette = c("okabe_ito", "grey"), ...) {
   rlang::check_installed("ggplot2")
   palette <- rlang::arg_match(palette)
   ggplot2::discrete_scale(
-    "fill", palette = function(n) td_palette(n, palette), ...
+    "fill",
+    palette = function(n) td_palette(n, palette), ...
   )
 }
 
 # Add the palette and theme chosen in an autoplot() call.
 td_style <- function(p, palette, theme, fill = TRUE) {
-  if (is.character(palette) && length(palette) == 1 &&
-      palette %in% c("okabe_ito", "grey")) {
+  named <- is.character(palette) && length(palette) == 1 &&
+    palette %in% c("okabe_ito", "grey")
+  if (named) {
     p <- p + scale_colour_tidydiversity(palette)
     if (fill) p <- p + scale_fill_tidydiversity(palette)
   } else if (is.character(palette)) {

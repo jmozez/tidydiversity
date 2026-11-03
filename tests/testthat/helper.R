@@ -16,8 +16,10 @@ vegan_bci <- function(rows = 1:10) {
   m <- as.matrix(e$BCI[rows, ])
   out <- lapply(seq_len(nrow(m)), function(i) {
     keep <- m[i, ] > 0
-    data.frame(site = paste0("plot", rows[i]), species = colnames(m)[keep],
-      abundance = m[i, keep])
+    data.frame(
+      site = paste0("plot", rows[i]), species = colnames(m)[keep],
+      abundance = m[i, keep]
+    )
   })
   tibble::as_tibble(do.call(rbind, out))
 }
