@@ -47,10 +47,41 @@ hill_asy <- function(x, q) {
       tab <- as.numeric(tab)
       h <- sum(tab * sx / n * (digamma(n) - digamma(sx)))
       exp(h + d1_second(n, f1, f2))
-    } else {
+    } else if (qq == 2) {
       1 / (sum(x * (x - 1)) / (n * (n - 1)))
+    } else {
+      hill_asy_q(x, qq, n, f1, f2)^(1 / (1 - qq))
     }
   }, numeric(1))
+}
+
+# Estimated sum of p^q for any order q (Chao and Jost 2015, eq. 9),
+# as used by iNEXT.3D and iNEXT.4steps.
+hill_asy_q <- function(x, q, n, f1, f2) {
+  big_a <- coverage_big_a(n, f1, f2)
+  tab <- table(x)
+  z <- as.numeric(names(tab))
+  term <- vapply(z, function(zz) {
+    k <- 0:(n - zz)
+    sum(choose(k - q, k) * exp(lchoose(n - k - 1, zz - 1) - lchoose(n, zz)))
+  }, numeric(1))
+  out <- sum(as.numeric(tab) * term)
+  if (f1 > 0 && big_a != 1) {
+    r <- 0:(n - 1)
+    out <- out + f1 / n * (1 - big_a)^(1 - n) *
+      (big_a^(q - 1) - sum(choose(q - 1, r) * (big_a - 1)^r))
+  }
+  out
+}
+
+coverage_big_a <- function(n, f1, f2) {
+  if (f2 > 0) {
+    2 * f2 / ((n - 1) * f1 + 2 * f2)
+  } else if (f1 > 0) {
+    2 / ((n - 1) * (f1 - 1) + 2)
+  } else {
+    1
+  }
 }
 
 # Expected Hill numbers in a subsample of integer size m < n.
