@@ -134,7 +134,9 @@ draws
 
 slopes <- draws |>
   group_by(.draw) |>
-  group_modify(\(d) broom::tidy(lm(diversity ~ elevation + transect, data = d))) |>
+  group_modify(\(d, key) {
+    broom::tidy(lm(diversity ~ elevation + transect, data = d))
+  }) |>
   ungroup() |>
   filter(term == "elevation")
 quantile(slopes$estimate, c(0.025, 0.5, 0.975))
