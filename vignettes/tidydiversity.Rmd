@@ -1,0 +1,69 @@
+---
+title: "Getting started with tidydiversity"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with tidydiversity}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+tidydiversity brings biodiversity estimation into the tidyverse. Every
+function takes a long data frame, with one row per site and species, and
+returns a tibble you can filter, join and plot with the tools you already
+use.
+
+```{r setup}
+library(tidydiversity)
+library(dplyr)
+```
+
+## The example data
+
+`ant_gradient` is a **simulated** dataset: counts of 40 ant morphospecies
+at eight elevations on two transects. It is synthetic, made for examples,
+and is not field data.
+
+```{r}
+ant_gradient
+```
+
+## Tidy the community
+
+`as_community()` sums repeated records, drops zeros and gives standard
+column names. Use your own column names through the `site`, `species` and
+`abundance` arguments.
+
+```{r}
+ants <- as_community(ant_gradient, .by = transect)
+ants
+```
+
+If your data arrive as a site by species matrix, `community_long()` turns
+it into long format, and `community_wide()` goes the other way.
+
+```{r}
+wide <- community_wide(ants, .by = transect)
+wide[, 1:6]
+```
+
+## Grouping
+
+All verbs accept `.by`, and they respect `group_by()`:
+
+```{r}
+ant_gradient |>
+  group_by(transect) |>
+  div_hill(q = 0) |>
+  arrange(desc(diversity))
+```
+
+## What next
+
+* `vignette("alpha-rarefaction")` covers Hill numbers, asymptotic estimates
+  and rarefaction.
+* `vignette("beta-partitioning")` covers turnover, nestedness and distance
+  decay.

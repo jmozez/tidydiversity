@@ -1,0 +1,95 @@
+---
+title: "Alpha diversity and rarefaction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Alpha diversity and rarefaction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4
+)
+```
+
+```{r setup}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(42)
+```
+
+The examples use `ant_gradient`, a simulated dataset.
+
+## Hill numbers
+
+Hill numbers express diversity as an effective number of species. Order
+`q = 0` is richness, `q = 1` weights species by their abundance and
+`q = 2` emphasises the dominant species.
+
+```{r}
+div_hill(ant_gradient, q = c(0, 1, 2), .by = transect)
+```
+
+## Sample coverage
+
+Raw counts depend on sampling effort. Sample coverage estimates how
+complete each sample is.
+
+```{r}
+div_coverage(ant_gradient, .by = transect)
+```
+
+## Asymptotic estimates
+
+`div_estimate()` gives Chao1 richness, the Chao et al. (2013) Shannon
+estimator and the unbiased Simpson estimator, with bootstrap intervals.
+
+```{r}
+div_estimate(ant_gradient, .by = transect, nboot = 50) |>
+  filter(q == 0)
+```
+
+## Rarefaction and extrapolation
+
+`div_rarefy()` interpolates each sample down to smaller sizes and
+extrapolates up to twice its size. The values match the iNEXT package.
+
+```{r}
+curves <- ant_gradient |>
+  filter(transect == "north") |>
+  div_rarefy(q = c(0, 1, 2), nboot = 30)
+curves
+```
+
+```{r, fig.alt = "Rarefaction and extrapolation curves for each site"}
+autoplot(curves)
+```
+
+Plotting against coverage shows how complete each sample is:
+
+```{r, fig.alt = "Diversity plotted against sample coverage"}
+autoplot(curves, x = "coverage")
+```
+
+## Fair comparisons
+
+Compare sites at equal completeness with `div_standardise()`. With no level
+given, each group is standardised to the lowest coverage that its sites
+reach at twice their sample size.
+
+```{r}
+std <- div_standardise(ant_gradient, .by = transect, nboot = 50)
+std
+```
+
+```{r, fig.alt = "Coverage-standardised richness by elevation"}
+std |>
+  left_join(distinct(ant_gradient, site, elevation), by = "site") |>
+  filter(q == 0) |>
+  ggplot(aes(elevation, diversity, colour = transect)) +
+  geom_pointrange(aes(ymin = lower, ymax = upper)) +
+  geom_line() +
+  labs(x = "Elevation (m)", y = "Richness at equal coverage")
+```

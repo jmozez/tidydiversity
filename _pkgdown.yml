@@ -42,3 +42,9 @@ reference:
     contents:
       - autoplot-tidydiversity
 
+articles:
+  - title: Guides
+    navbar: ~
+    contents:
+      - alpha-rarefaction
+      - beta-partitioning
