@@ -1,0 +1,107 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%",
+  dpi = 150
+)
+```
+
+# tidydiversity <a href="https://jmozez.github.io/tidydiversity/"><img src="man/figures/logo.png" align="right" height="139" alt="tidydiversity website" /></a>
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/jmozez/tidydiversity/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jmozez/tidydiversity/actions/workflows/R-CMD-check.yaml)
+[![test-coverage](https://github.com/jmozez/tidydiversity/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/jmozez/tidydiversity/actions/workflows/test-coverage.yaml)
+[![lint](https://github.com/jmozez/tidydiversity/actions/workflows/lint.yaml/badge.svg)](https://github.com/jmozez/tidydiversity/actions/workflows/lint.yaml)
+[![pkgdown](https://github.com/jmozez/tidydiversity/actions/workflows/pkgdown.yaml/badge.svg)](https://jmozez.github.io/tidydiversity/)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jmozez/tidydiversity/blob/main/LICENSE.md)
+<!-- badges: end -->
+
+tidydiversity brings biodiversity estimation into the tidyverse. It
+computes Hill numbers, asymptotic estimates, sample coverage, rarefaction
+and extrapolation, and turnover and nestedness partitions of beta
+diversity, all from a long data frame and all returning tibbles.
+
+* **Tidy in, tidy out.** One row per site and species goes in, a tibble
+  comes out.
+* **Data-masking.** Name your columns with `site`, `species` and
+  `abundance`, as you would in dplyr.
+* **Grouping.** Every verb takes `.by` and respects `group_by()`.
+* **Checked.** Estimates match iNEXT and betapart in the test suite.
+
+## Installation
+
+Install the development version from GitHub:
+
+```r
+# install.packages("pak")
+pak::pak("jmozez/tidydiversity")
+```
+
+## Example
+
+`ant_gradient` is a simulated dataset of ants along two elevational
+transects, made for examples. It is not field data.
+
+```{r example, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+
+div_hill(ant_gradient, q = c(0, 1, 2), .by = transect)
+```
+
+Compare sites at equal sample completeness:
+
+```{r}
+set.seed(1)
+div_standardise(ant_gradient, coverage = 0.9, .by = transect, nboot = 50) |>
+  filter(q == 0)
+```
+
+Draw rarefaction and extrapolation curves:
+
+```{r curves, fig.height = 3.5, fig.alt = "Rarefaction curves"}
+library(ggplot2)
+ant_gradient |>
+  filter(transect == "north") |>
+  div_rarefy(q = c(0, 1)) |>
+  autoplot()
+```
+
+Split beta diversity into turnover and nestedness:
+
+```{r}
+beta_multi(ant_gradient, .by = transect)
+```
+
+## Functions
+
+| Task | Function |
+|---|---|
+| Tidy community data | `as_community()`, `community_wide()`, `community_long()` |
+| Observed Hill numbers | `div_hill()` |
+| Asymptotic estimates | `div_estimate()` |
+| Sample coverage | `div_coverage()` |
+| Rarefaction and extrapolation | `div_rarefy()` |
+| Coverage or size standardisation | `div_standardise()` |
+| Beta partitioning | `beta_pair()`, `beta_multi()`, `beta_decay()` |
+| Plots | `autoplot()` |
+
+## References
+
+* Chao, A. et al. (2014). Rarefaction and extrapolation with Hill numbers.
+  *Ecological Monographs*, 84, 45-67.
+* Chao, A. and Jost, L. (2012). Coverage-based rarefaction and
+  extrapolation. *Ecology*, 93, 2533-2547.
+* Baselga, A. (2010). Partitioning the turnover and nestedness components
+  of beta diversity. *Global Ecology and Biogeography*, 19, 134-143.
+
+## Licence
+
+MIT © Jimmy Moses
