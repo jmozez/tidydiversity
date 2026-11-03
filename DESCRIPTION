@@ -38,6 +38,7 @@ Suggests:
     hillR,
     ggplot2 (>= 3.5.0),
     iNEXT,
+    iNEXT.4steps,
     knitr,
     lme4,
     mgcv,

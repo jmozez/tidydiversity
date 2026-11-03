@@ -71,6 +71,10 @@ reference:
       - div_hill
       - div_estimate
       - div_coverage
+  - title: Completeness and evenness
+    contents:
+      - div_completeness
+      - div_evenness
   - title: Rarefaction and standardisation
     contents:
       - div_rarefy
