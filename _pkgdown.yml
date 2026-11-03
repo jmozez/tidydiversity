@@ -28,7 +28,11 @@ reference:
   - title: Community data
     contents:
       - as_community
+      - add_site_data
+  - title: Datasets
+    contents:
       - ant_gradient
+      - portal_rodents
   - title: Alpha diversity
     contents:
       - div_hill
@@ -38,13 +42,20 @@ reference:
     contents:
       - div_rarefy
       - div_standardise
+      - div_boot
   - title: Beta diversity
     contents:
       - beta_pair
       - beta_decay
-  - title: Plotting
+      - beta_dist
+  - title: Plots and tables for publication
     contents:
       - autoplot-tidydiversity
+      - theme_tidydiversity
+      - div_table
+  - title: Modelling
+    contents:
+      - tidy-tidydiversity
 
 articles:
   - title: Guides
@@ -52,6 +63,15 @@ articles:
     contents:
       - alpha-rarefaction
       - beta-partitioning
+      - publication
+      - modelling
+  - title: Real-world case studies
+    navbar: Case studies
+    contents:
+      - case-insects
+      - case-mammals
+      - case-birds
+      - case-plants
   - title: Gallery
     contents:
       - articles/gallery

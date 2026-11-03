@@ -3,6 +3,7 @@
 \name{autoplot-tidydiversity}
 \alias{autoplot-tidydiversity}
 \alias{autoplot.td_rarefy}
+\alias{autoplot.td_standardise}
 \alias{autoplot.td_beta_decay}
 \alias{autoplot.td_hill}
 \alias{autoplot.td_estimate}
@@ -11,25 +12,119 @@
 \alias{autoplot.td_beta_multi}
 \title{Plot tidydiversity results}
 \usage{
-\method{autoplot}{td_rarefy}(object, x = c("size", "coverage"), ...)
+\method{autoplot}{td_rarefy}(
+  object,
+  x = c("size", "coverage"),
+  palette = "okabe_ito",
+  theme = theme_tidydiversity(),
+  ci = TRUE,
+  facet = TRUE,
+  scales = "free_y",
+  ncol = NULL,
+  xlab = NULL,
+  ylab = y_hill,
+  ...
+)
 
-\method{autoplot}{td_beta_decay}(object, ...)
+\method{autoplot}{td_standardise}(
+  object,
+  palette = "okabe_ito",
+  theme = theme_tidydiversity(),
+  ci = TRUE,
+  facet = TRUE,
+  scales = "free_x",
+  ncol = NULL,
+  xlab = NULL,
+  ylab = NULL,
+  ...
+)
 
-\method{autoplot}{td_hill}(object, gradient = NULL, ...)
+\method{autoplot}{td_beta_decay}(
+  object,
+  palette = "okabe_ito",
+  theme = theme_tidydiversity(),
+  ci = TRUE,
+  xlab = "Distance between sites",
+  ylab = "Dissimilarity",
+  ...
+)
 
-\method{autoplot}{td_estimate}(object, ...)
+\method{autoplot}{td_hill}(
+  object,
+  gradient = NULL,
+  palette = "okabe_ito",
+  theme = theme_tidydiversity(),
+  facet = TRUE,
+  scales = "free_y",
+  ncol = NULL,
+  xlab = NULL,
+  ylab = y_hill,
+  ...
+)
 
-\method{autoplot}{td_coverage}(object, ...)
+\method{autoplot}{td_estimate}(
+  object,
+  palette = "okabe_ito",
+  theme = theme_tidydiversity(),
+  ci = TRUE,
+  facet = TRUE,
+  scales = "free_x",
+  ncol = NULL,
+  xlab = y_hill,
+  ylab = NULL,
+  ...
+)
 
-\method{autoplot}{td_beta_pair}(object, component = c("total", "turnover", "nestedness"), ...)
+\method{autoplot}{td_coverage}(
+  object,
+  palette = "okabe_ito",
+  theme = theme_tidydiversity(),
+  xlab = "Number of individuals",
+  ylab = "Sample coverage",
+  ...
+)
 
-\method{autoplot}{td_beta_multi}(object, ...)
+\method{autoplot}{td_beta_pair}(
+  object,
+  component = c("total", "turnover", "nestedness"),
+  theme = theme_tidydiversity(grid = "none"),
+  ...
+)
+
+\method{autoplot}{td_beta_multi}(
+  object,
+  palette = "okabe_ito",
+  theme = theme_tidydiversity(),
+  xlab = NULL,
+  ylab = "Multiple-site dissimilarity",
+  ...
+)
 }
 \arguments{
 \item{object}{A tibble returned by one of the functions above.}
 
 \item{x}{For curves, plot against sample size (\code{"size"}) or sample
 coverage (\code{"coverage"}).}
+
+\item{palette}{Colours for sites or groups: \code{"okabe_ito"} (default),
+\code{"grey"}, a character vector of colours, or \code{NULL} to keep the ggplot2
+default so you can add your own scale.}
+
+\item{theme}{A ggplot2 theme added to the plot, by default
+\code{\link[=theme_tidydiversity]{theme_tidydiversity()}}. Use \code{NULL} to keep the ggplot2 default.}
+
+\item{ci}{Draw confidence intervals when the result has them.}
+
+\item{facet}{For results with several orders \code{q}, facet by \code{q}
+(\code{TRUE}, the default) or draw all orders on one panel with \code{q} mapped
+to line type or shape (\code{FALSE}).}
+
+\item{scales}{Facet scales, passed to \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}}.}
+
+\item{ncol}{Number of facet columns.}
+
+\item{xlab, ylab}{Axis titles. The defaults describe the quantity and,
+where relevant, its unit.}
 
 \item{...}{Not used.}
 
@@ -53,10 +148,19 @@ gradient column when \code{gradient} is given.
 \item \code{\link[=div_coverage]{div_coverage()}}: sample coverage against sample size.
 \item \code{\link[=div_rarefy]{div_rarefy()}}: rarefaction and extrapolation curves by sample size or
 by sample coverage.
+\item \code{\link[=div_standardise]{div_standardise()}}: standardised diversity with intervals.
 \item \code{\link[=beta_pair]{beta_pair()}}: a pairwise dissimilarity heatmap.
 \item \code{\link[=beta_multi]{beta_multi()}}: multi-site turnover and nestedness as stacked bars.
 \item \code{\link[=beta_decay]{beta_decay()}}: distance decay of dissimilarity components.
 }
+
+Every method returns an ordinary ggplot object, so labels, scales,
+themes and facets can be changed afterwards with \code{+}, for example
+\code{+ labs(x = "Number of workers")}, and saved with \code{\link[ggplot2:ggsave]{ggplot2::ggsave()}}.
+The defaults use \code{\link[=theme_tidydiversity]{theme_tidydiversity()}} and the colour-blind-safe
+Okabe-Ito palette. Solid lines show rarefaction (interpolation), dashed
+lines extrapolation, points the observed sample, and shaded ribbons or
+bars the bootstrap confidence intervals when they were computed.
 
 They need the ggplot2 package.
 }
@@ -67,19 +171,25 @@ curves <- div_rarefy(ant_gradient, q = c(0, 1), .by = transect, knots = 20)
 autoplot(curves)
 autoplot(curves, x = "coverage")
 
+# Customise like any ggplot
+autoplot(curves, palette = "grey", ncol = 1) +
+  labs(x = "Number of workers") +
+  theme_tidydiversity(base_size = 9)
+
 div_hill(ant_gradient, q = seq(0, 3, by = 0.25), .by = transect) |>
   autoplot()
 div_hill(ant_gradient, .by = c(transect, elevation)) |>
-  autoplot(gradient = elevation)
+  autoplot(gradient = elevation, xlab = "Elevation (m)")
 
 set.seed(1)
 autoplot(div_estimate(ant_gradient, .by = transect, nboot = 20))
 autoplot(div_coverage(ant_gradient, .by = transect))
+autoplot(div_standardise(ant_gradient, .by = transect, nboot = 20))
 
 autoplot(beta_pair(ant_gradient, .by = transect))
 autoplot(beta_multi(ant_gradient, .by = transect))
 
 beta_decay(ant_gradient, gradient = elevation, .by = transect) |>
-  autoplot()
+  autoplot(xlab = "Difference in elevation (m)")
 \dontshow{\}) # examplesIf}
 }

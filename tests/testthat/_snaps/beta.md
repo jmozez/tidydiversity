@@ -6,10 +6,10 @@
       Error in `beta_pair()`:
       ! Beta diversity needs at least two sites in each group.
     Code
-      beta_pair(toy(), index = "bray")
+      beta_pair(toy(), index = "chao")
     Condition
       Error in `beta_pair()`:
-      ! `index` must be one of "sorensen" or "jaccard", not "bray".
+      ! `index` must be one of "sorensen", "jaccard", or "bray", not "chao".
     Code
       beta_decay(toy(), gradient = abundance)
     Condition

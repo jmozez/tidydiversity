@@ -42,7 +42,7 @@ test_that("beta_decay() adds gradient distances", {
 test_that("beta errors are informative", {
   expect_snapshot(error = TRUE, {
     beta_pair(toy()[toy()$site == "a", ])
-    beta_pair(toy(), index = "bray")
+    beta_pair(toy(), index = "chao")
     beta_decay(toy(), gradient = abundance)
   })
 })

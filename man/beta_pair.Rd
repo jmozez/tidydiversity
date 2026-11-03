@@ -10,7 +10,7 @@ beta_pair(
   site = site,
   species = species,
   abundance = NULL,
-  index = c("sorensen", "jaccard"),
+  index = c("sorensen", "jaccard", "bray"),
   .by = NULL
 )
 
@@ -19,7 +19,7 @@ beta_multi(
   site = site,
   species = species,
   abundance = NULL,
-  index = c("sorensen", "jaccard"),
+  index = c("sorensen", "jaccard", "bray"),
   .by = NULL
 )
 }
@@ -33,7 +33,8 @@ column holding site identifiers and the column holding species names.}
 holding counts. If \code{NULL} (the default), a column called \code{abundance} is
 used when present, otherwise every row counts as one individual.}
 
-\item{index}{Family of dissimilarity, \code{"sorensen"} or \code{"jaccard"}.}
+\item{index}{Family of dissimilarity: \code{"sorensen"} or \code{"jaccard"}
+(presence and absence) or \code{"bray"} (abundance-based Bray-Curtis).}
 
 \item{.by}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optional grouping
 columns, kept in the output. Grouped data frames are also respected.}
@@ -53,7 +54,11 @@ absence, so any positive abundance counts as presence.
 
 With \code{index = "sorensen"} the components are Simpson turnover, the
 nestedness-resultant component and Sorensen dissimilarity. With
-\code{index = "jaccard"} they are the Jaccard equivalents.
+\code{index = "jaccard"} they are the Jaccard equivalents. With
+\code{index = "bray"} abundances are used: \code{turnover} is the balanced
+variation in abundance and \code{nestedness} the abundance gradient component
+of Bray-Curtis dissimilarity (Baselga 2013), matching
+\code{\link[betapart:beta.pair.abund]{betapart::beta.pair.abund()}} and \code{\link[betapart:beta.multi.abund]{betapart::beta.multi.abund()}}.
 }
 \examples{
 beta_pair(ant_gradient, .by = transect)
@@ -68,4 +73,9 @@ components of beta diversity. Global Ecology and Biogeography, 19,
 Baselga, A. (2012). The relationship between species replacement,
 dissimilarity derived from nestedness, and nestedness. Global Ecology
 and Biogeography, 21, 1223-1232. \doi{10.1111/j.1466-8238.2011.00756.x}
+
+Baselga, A. (2013). Separating the two components of abundance-based
+dissimilarity: balanced changes in abundance vs. abundance gradients.
+Methods in Ecology and Evolution, 4, 552-557.
+\doi{10.1111/2041-210X.12029}
 }

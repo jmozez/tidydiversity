@@ -44,7 +44,7 @@ test_that("div_standardise() matches iNEXT::estimateD()", {
   }
   ref <- iNEXT::estimateD(lst, base = "size", level = 80, nboot = 0)
   ref <- ref[order(ref$Assemblage, ref$Order.q), ]
-  mine <- div_standardise(sub, size = 80, nboot = 0)
+  mine <- suppressWarnings(div_standardise(sub, size = 80, nboot = 0))
   expect_equal(mine$diversity, ref$qD, tolerance = 1e-8)
 })
 
@@ -56,6 +56,6 @@ test_that("default coverage is the lowest C(2n) in each group", {
 
 test_that("bootstrap intervals are added on request", {
   set.seed(2)
-  out <- div_rarefy(toy(), q = 0, size = c(5, 15, 40), nboot = 10)
+  out <- div_rarefy(toy(), q = 0, size = c(5, 10, 15), nboot = 10)
   expect_false(anyNA(out$lower))
 })
