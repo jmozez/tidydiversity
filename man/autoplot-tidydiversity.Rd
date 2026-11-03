@@ -117,7 +117,8 @@ default so you can add your own scale.}
 
 \item{facet}{For results with several orders \code{q}, facet by \code{q}
 (\code{TRUE}, the default) or draw all orders on one panel with \code{q} mapped
-to line type or shape (\code{FALSE}).}
+to line type or shape (\code{FALSE}). Curves computed with \code{.by} groups are
+also faceted by group.}
 
 \item{scales}{Facet scales, passed to \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}}.}
 

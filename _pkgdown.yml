@@ -14,12 +14,45 @@ template:
 navbar:
   bg: dark
   structure:
-    left: [intro, gallery, reference, articles, news]
+    left: [intro, tutorials, gallery, modelling, publication, reference, news]
+    right: [search, github, lightswitch]
   components:
+    intro:
+      text: Get started
+      href: articles/tidydiversity.html
+    tutorials:
+      text: Tutorials
+      menu:
+        - text: Overview by taxon
+          href: articles/tutorials.html
+        - text: -------
+        - text: Real-world data
+        - text: Insects (caddisflies)
+          href: articles/case-insects.html
+        - text: Mammals (desert rodents)
+          href: articles/case-mammals.html
+        - text: Birds (Taiwan and North America)
+          href: articles/case-birds.html
+        - text: Plants (Barro Colorado Island trees)
+          href: articles/case-plants.html
+        - text: -------
+        - text: Guides
+        - text: Alpha diversity and rarefaction
+          href: articles/alpha-rarefaction.html
+        - text: Beta diversity partitioning
+          href: articles/beta-partitioning.html
     gallery:
       text: Gallery
       href: articles/gallery.html
-    right: [search, github, lightswitch]
+    modelling:
+      text: Modelling
+      href: articles/modelling.html
+    news:
+      text: News
+      href: news/index.html
+    publication:
+      text: Publication figures
+      href: articles/publication.html
 
 home:
   title: Tidy biodiversity estimation with Hill numbers
@@ -58,20 +91,23 @@ reference:
       - tidy-tidydiversity
 
 articles:
-  - title: Guides
+  - title: Get started
     navbar: ~
+    contents:
+      - tidydiversity
+  - title: Guides
     contents:
       - alpha-rarefaction
       - beta-partitioning
-      - publication
-      - modelling
-  - title: Real-world case studies
-    navbar: Case studies
+      - articles/modelling
+      - articles/publication
+  - title: Real-world tutorials
     contents:
-      - case-insects
-      - case-mammals
-      - case-birds
-      - case-plants
+      - articles/tutorials
+      - articles/case-insects
+      - articles/case-mammals
+      - articles/case-birds
+      - articles/case-plants
   - title: Gallery
     contents:
       - articles/gallery

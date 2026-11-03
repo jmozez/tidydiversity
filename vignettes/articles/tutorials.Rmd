@@ -1,0 +1,93 @@
+---
+title: "Real-world tutorials"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 3.6)
+```
+
+Four tutorials run the full workflow (tidy the data, check completeness,
+draw curves, standardise, model against covariates, partition beta
+diversity and report) on published, properly cited datasets. Each tab
+gives a short preview; follow the link for the whole analysis.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(1)
+```
+
+## Taxa {.tabset}
+
+### Insects
+
+Caddisflies at a light trap on the Rhône (ade4 `trichometeo`), 49 nights
+with weather covariates. Coverage-based standardisation, weighted
+regression on temperature and Bray-Curtis decay.
+[Full tutorial](case-insects.html).
+
+```{r insects, fig.alt = "Sample coverage of caddisfly catches"}
+data(trichometeo, package = "ade4")
+moths <- community_long(
+  bind_cols(site = sprintf("night%02d", 1:49), trichometeo$fau),
+  cols = -site
+)
+autoplot(div_coverage(moths)) + ggplot2::scale_x_log10()
+```
+
+### Mammals
+
+Desert rodents on the Portal Project exclosure experiment (bundled
+`portal_rodents`, CC0). Mixed models with plot as a random effect and
+multiple-site beta partitions. [Full tutorial](case-mammals.html).
+
+```{r mammals, fig.alt = "Rodent rarefaction curves by treatment in 2019"}
+portal_rodents |>
+  filter(year == 2019, treatment != "removal") |>
+  mutate(site = treatment) |>
+  div_rarefy(q = c(0, 1), nboot = 50) |>
+  autoplot()
+```
+
+### Birds
+
+Forest birds in Taiwan (iNEXT `bird`) for alpha diversity, and the North
+American Breeding Bird Survey (betapart `bbs1980`, `bbs2000`) for spatial
+and temporal beta diversity. [Full tutorial](case-birds.html).
+
+```{r birds, fig.alt = "Asymptotic diversity of two bird assemblages"}
+data(bird, package = "iNEXT")
+birds <- tibble::tibble(species = seq_len(nrow(bird)),
+  North = bird$North.site, South = bird$South.site) |>
+  tidyr::pivot_longer(-species, names_to = "site",
+    values_to = "abundance") |>
+  as_community()
+autoplot(div_estimate(birds, nboot = 50))
+```
+
+### Plants
+
+Trees in fifty 1 ha plots on Barro Colorado Island (vegan `BCI`), with
+habitat models, spatial distance decay, NMDS and PERMANOVA.
+[Full tutorial](case-plants.html).
+
+```{r plants, fig.alt = "Hill number profiles for two hectares"}
+data(BCI, package = "vegan")
+trees <- community_long(bind_cols(site = c("ha01", "ha02"), BCI[1:2, ]),
+  cols = -site)
+autoplot(div_hill(trees, q = seq(0, 3, by = 0.25)))
+```
+
+## Which tutorial to start with
+
+- **Insects** shows coverage-based standardisation when sampling effort varies a lot between samples.
+- **Mammals** shows mixed models with repeated surveys of the same plots.
+- **Birds** compares assemblages directly against iNEXT and betapart reference data.
+- **Plants** covers spatial beta diversity, PERMANOVA and ordination.
+
+## Data licences
+
+All datasets come from CRAN packages (ade4, iNEXT, betapart, vegan) under GPL
+licences, or from the Portal Project (CC0). Each tutorial cites the original source.

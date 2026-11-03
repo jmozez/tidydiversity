@@ -47,8 +47,9 @@ A tibble.
 Every tidydiversity result is already a tidy tibble with one row per
 site and order \code{q}. The \code{\link[generics:tidy]{generics::tidy()}} methods rename the columns to
 the broom conventions (\code{estimate}, \code{std.error}, \code{conf.low},
-\code{conf.high}) and add an inverse-variance weight (\code{weight}, \code{1 / se^2}),
-so results stack with other broom output and can go straight into
+\code{conf.high}) and add an inverse-variance weight (\code{weight}, \code{1 / se^2},
+or \code{NA} when the standard error is zero, as at a site with a single
+species), so results stack with other broom output and can go straight into
 weighted models. \code{\link[generics:glance]{generics::glance()}} gives one row per site with its
 sample size, observed richness and coverage.
 

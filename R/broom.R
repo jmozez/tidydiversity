@@ -4,8 +4,9 @@
 #' Every tidydiversity result is already a tidy tibble with one row per
 #' site and order `q`. The [generics::tidy()] methods rename the columns to
 #' the broom conventions (`estimate`, `std.error`, `conf.low`,
-#' `conf.high`) and add an inverse-variance weight (`weight`, `1 / se^2`),
-#' so results stack with other broom output and can go straight into
+#' `conf.high`) and add an inverse-variance weight (`weight`, `1 / se^2`,
+#' or `NA` when the standard error is zero, as at a site with a single
+#' species), so results stack with other broom output and can go straight into
 #' weighted models. [generics::glance()] gives one row per site with its
 #' sample size, observed richness and coverage.
 #'

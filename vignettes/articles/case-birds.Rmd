@@ -1,0 +1,132 @@
+---
+title: "Case study: forest birds and North American bird communities"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4)
+```
+
+Two bird datasets cover the alpha and beta parts of the workflow.
+
+**Sources and licences.**
+
+- `bird` in **iNEXT** (GPL-3 or later): counts of 41 species at a northern
+  and a southern site in a Taiwanese forest, from Chao et al. (2014).
+- `bbs1980` and `bbs2000` in **betapart** (GPL-2 or later): presence or
+  absence of 569 breeding bird species in 49 states of the contiguous USA,
+  from the North American Breeding Bird Survey (Sauer et al. 2011), as
+  used by Baselga and Orme (2012).
+
+Both are loaded from their packages at run time and are not redistributed
+with tidydiversity.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(2026)
+```
+
+## Alpha diversity at two forest sites
+
+```{r bird-data}
+data(bird, package = "iNEXT")
+birds <- tibble::tibble(
+  species = sprintf("sp%02d", seq_len(nrow(bird))),
+  North = bird$North.site,
+  South = bird$South.site
+) |>
+  tidyr::pivot_longer(-species, names_to = "site",
+    values_to = "abundance") |>
+  as_community()
+div_coverage(birds)
+```
+
+### Asymptotic estimates
+
+These match `iNEXT::iNEXT()` to numerical precision (see the package
+tests). The richness interval is the asymmetric log-normal interval of
+Chao (1987), so it never falls below the observed richness.
+
+```{r estimate, fig.height = 3, fig.alt = "Observed and estimated diversity at two sites"}
+est <- div_estimate(birds, nboot = 200)
+div_table(est, digits = 1, output = "kable")
+autoplot(est)
+```
+
+### Curves
+
+```{r curves, fig.alt = "Rarefaction and extrapolation curves at two forest sites"}
+curves <- div_rarefy(birds, nboot = 200)
+autoplot(curves)
+autoplot(curves, x = "coverage")
+```
+
+### Comparing at equal coverage
+
+```{r standardise, fig.height = 3, fig.alt = "Diversity at equal sample coverage"}
+std <- div_standardise(birds, nboot = 200)
+autoplot(std)
+```
+
+## Beta diversity across the USA
+
+```{r bbs-data}
+data(bbsData, package = "betapart")
+to_long <- function(m, year) {
+  community_long(
+    tibble::as_tibble(m, rownames = "site") |> mutate(year = year),
+    cols = -c(site, year)
+  )
+}
+bbs <- bind_rows(to_long(bbs1980, 1980), to_long(bbs2000, 2000))
+bbs
+```
+
+### Multiple-site partitions
+
+Sorensen dissimilarity among all 49 states, split into turnover
+(replacement of species) and nestedness (loss of species).
+
+```{r multi, fig.height = 3.5, fig.alt = "Multiple-site dissimilarity in 1980 and 2000"}
+multi <- beta_multi(bbs, .by = year)
+multi
+autoplot(multi, xlab = "Year")
+```
+
+### Change in each state
+
+Pairing each state with itself 20 years later gives the temporal beta
+diversity of each state.
+
+```{r temporal, fig.alt = "Histogram of temporal turnover and nestedness for 49 states"}
+temporal <- bbs |>
+  mutate(site = paste(site, year)) |>
+  beta_pair() |>
+  filter(sub(" .*", "", site_1) == sub(" .*", "", site_2)) |>
+  mutate(state = sub(" .*", "", site_1))
+temporal |>
+  tidyr::pivot_longer(c(turnover, nestedness), names_to = "component") |>
+  ggplot(aes(value, fill = component)) +
+  geom_histogram(bins = 20, position = "identity", alpha = 0.7) +
+  scale_fill_tidydiversity() +
+  labs(x = "Dissimilarity between 1980 and 2000", y = "Number of states",
+    fill = NULL) +
+  theme_tidydiversity()
+```
+
+## References
+
+Baselga, A. and Orme, C. D. L. (2012). betapart: an R package for the
+study of beta diversity. *Methods in Ecology and Evolution* 3: 808-812.
+
+Chao, A. (1987). Estimating the population size for capture-recapture data
+with unequal catchability. *Biometrics* 43: 783-791.
+
+Chao, A., Gotelli, N. J., Hsieh, T. C., et al. (2014). Rarefaction and
+extrapolation with Hill numbers. *Ecological Monographs* 84: 45-67.
+
+Sauer, J. R., Hines, J. E., Fallon, J. E., et al. (2011). The North
+American Breeding Bird Survey, results and analysis 1966-2009. USGS
+Patuxent Wildlife Research Center.

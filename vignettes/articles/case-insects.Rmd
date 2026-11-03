@@ -1,0 +1,140 @@
+---
+title: "Case study: caddisflies at a light trap"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4)
+```
+
+This case study runs the full workflow on nightly light-trap catches of
+adult caddisflies (Trichoptera) from the Rhône, France. The data are the
+`trichometeo` dataset in the **ade4** package: counts of 17 genera on 49
+nights, with weather recorded on each night. Sampling effort differs
+greatly between nights, which makes it a good example of why diversity has
+to be standardised before it is compared.
+
+**Source and licence.** Usseglio-Polatera, P. and Auda, Y. (1987).
+Influence des facteurs météorologiques sur les résultats de piégeage
+lumineux. *Annales de Limnologie* 23: 65-79. Distributed with ade4
+(Dray and Dufour 2007; licence GPL-2 or later). The data are loaded from
+ade4 at run time and are not redistributed with tidydiversity.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(2026)
+```
+
+## Tidy the data
+
+`community_long()` turns a site by species table into the long format used
+throughout the package. Covariate columns that are not selected stay with
+each record, and `add_site_data()` joins them back on later.
+
+```{r data}
+data(trichometeo, package = "ade4")
+nights <- tibble::tibble(
+  site = sprintf("night%02d", seq_len(nrow(trichometeo$fau))),
+  evening_temp = trichometeo$meteo$T.soir,
+  wind = trichometeo$meteo$Vent,
+  humidity = trichometeo$meteo$Humidite,
+  cloud = trichometeo$meteo$Nebu.Nuit
+)
+wide <- bind_cols(site = nights$site, trichometeo$fau)
+moths <- community_long(wide, cols = -site)
+moths
+```
+
+## How complete is each night?
+
+```{r coverage, fig.alt = "Sample coverage against number of caddisflies caught on each night"}
+cov <- div_coverage(moths)
+summary(cov$n)
+autoplot(cov) + scale_x_log10()
+```
+
+Catches range from a handful of insects to more than a thousand, so raw
+counts of genera mostly track trap effort. Sample coverage is high on
+most nights, so coverage-based standardisation is reliable here.
+
+## Rarefaction and extrapolation
+
+A few contrasting nights show the shape of the curves. Plotting against
+sample coverage rather than the number of insects puts nights of very
+different size on a common scale. Solid lines are interpolated, dashed
+lines extrapolated, and ribbons are 95% bootstrap intervals.
+
+```{r curves, fig.height = 3.8, fig.alt = "Rarefaction and extrapolation curves for four nights"}
+pick <- cov |> arrange(n) |> slice(c(15, 25, 35, 45)) |> pull(site)
+curves <- div_rarefy(filter(moths, site %in% pick), nboot = 100)
+autoplot(curves, x = "coverage", ncol = 3,
+  ylab = "Diversity (effective number of genera)")
+```
+
+## Standardised diversity for every night
+
+Nights with too few insects to estimate anything are dropped first.
+
+```{r standardise}
+keep <- cov |> filter(n >= 20, s_obs >= 2) |> pull(site)
+std <- div_standardise(filter(moths, site %in% keep), q = c(0, 1, 2),
+  nboot = 100)
+distinct(std, coverage)
+std
+```
+
+## Diversity and weather
+
+`tidy()` gives model-ready columns, including an inverse-variance weight,
+and `add_site_data()` brings the weather covariates in.
+
+```{r model, fig.alt = "Shannon diversity against evening temperature with a weighted regression line"}
+shannon <- std |>
+  tidy() |>
+  filter(q == 1) |>
+  add_site_data(nights)
+
+fit <- lm(estimate ~ evening_temp + wind + humidity, data = shannon,
+  weights = weight)
+broom::tidy(fit, conf.int = TRUE)
+
+ggplot(shannon, aes(evening_temp, estimate)) +
+  geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
+    colour = td_palette(1)) +
+  geom_smooth(method = "lm", formula = y ~ x,
+    mapping = aes(weight = weight), colour = "grey30") +
+  labs(x = "Evening air temperature (\u00b0C)",
+    y = "Shannon diversity (effective number of genera)") +
+  theme_tidydiversity()
+```
+
+## Beta diversity between nights
+
+Abundance-based Bray-Curtis dissimilarity, split into balanced variation
+(turnover) and abundance gradients (nestedness), against the difference
+in evening temperature.
+
+```{r beta, fig.alt = "Bray-Curtis dissimilarity between nights against difference in temperature"}
+decay <- moths |>
+  filter(site %in% keep) |>
+  left_join(nights, by = "site") |>
+  beta_decay(gradient = evening_temp, index = "bray")
+autoplot(decay, xlab = "Difference in evening temperature (\u00b0C)")
+```
+
+## Reporting
+
+```{r table}
+div_table(filter(std, site %in% keep[1:6]), digits = 1, wide = TRUE,
+  output = "kable", caption = "Coverage-standardised diversity, first six nights")
+```
+
+## References
+
+Chao, A., Gotelli, N. J., Hsieh, T. C., et al. (2014). Rarefaction and
+extrapolation with Hill numbers. *Ecological Monographs* 84: 45-67.
+
+Dray, S. and Dufour, A.-B. (2007). The ade4 package. *Journal of
+Statistical Software* 22(4): 1-20.

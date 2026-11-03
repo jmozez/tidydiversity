@@ -72,3 +72,17 @@ test_that("beta_decay() accepts coordinates and beta_dist() builds dist", {
   expect_error(beta_dist(beta_pair(ant_gradient, .by = transect)),
     "single group")
 })
+
+test_that("grouped results are not drawn on top of each other", {
+  skip_if_not_installed("ggplot2")
+  curves <- div_rarefy(ant_gradient, q = 0, knots = 5, .by = transect)
+  p <- ggplot2::autoplot(curves)
+  expect_s3_class(p$facet, "FacetGrid")
+  b <- ggplot2::ggplot_build(p)
+  expect_equal(length(unique(b$data[[1]]$group)),
+    2 * length(unique(ant_gradient$site)))
+  hill <- div_hill(ant_gradient, .by = transect)
+  expect_s3_class(ggplot2::autoplot(hill)$facet, "FacetWrap")
+  single <- div_hill(toy())
+  expect_s3_class(ggplot2::autoplot(single)$facet, "FacetNull")
+})

@@ -38,7 +38,8 @@
 #' @param ci Draw confidence intervals when the result has them.
 #' @param facet For results with several orders `q`, facet by `q`
 #'   (`TRUE`, the default) or draw all orders on one panel with `q` mapped
-#'   to line type or shape (`FALSE`).
+#'   to line type or shape (`FALSE`). Curves computed with `.by` groups are
+#'   also faceted by group.
 #' @param scales Facet scales, passed to [ggplot2::facet_wrap()].
 #' @param ncol Number of facet columns.
 #' @param xlab,ylab Axis titles. The defaults describe the quantity and,
@@ -108,12 +109,14 @@ autoplot.td_rarefy <- function(object,
   rlang::check_installed("ggplot2")
   x <- rlang::arg_match(x)
   xvar <- if (x == "size") "m" else "coverage"
-  site_col <- td_site_col(
-    object, c("q", "m", "method", "diversity", "coverage", "lower", "upper")
-  )
+  known <- c("q", "m", "method", "diversity", "coverage", "se", "lower",
+    "upper")
+  site_col <- td_site_col(object, known)
+  by_cols <- setdiff(names(object), c(site_col, known))
   df <- tibble::as_tibble(unclass(object))
   df$.x <- df[[xvar]]
   df$.site <- as.character(df[[site_col]])
+  df$.by <- td_label_col(df, by_cols)
   df$.q <- q_label(df$q)
   # Split into rarefied and extrapolated parts that share the observed point.
   rare <- df[df$method != "extrapolation", ]
@@ -122,7 +125,7 @@ autoplot.td_rarefy <- function(object,
   extra$.line <- "extrapolation"
   lines <- vctrs::vec_rbind(rare, extra)
   lines$.line <- factor(lines$.line, c("rarefaction", "extrapolation"))
-  lines$.grp <- paste(lines$.site, lines$q, lines$.line)
+  lines$.grp <- paste(lines$.by, lines$.site, lines$q, lines$.line)
   aes_col <- if (facet) {
     ggplot2::aes(.data$.x, .data$diversity, colour = .data$.site)
   } else {
@@ -134,7 +137,7 @@ autoplot.td_rarefy <- function(object,
     p <- p + ggplot2::geom_ribbon(
       ggplot2::aes(
         x = .data$.x, ymin = .data$lower, ymax = .data$upper,
-        fill = .data$.site, group = paste(.data$.site, .data$q)
+        fill = .data$.site, group = paste(.data$.by, .data$.site, .data$q)
       ),
       data = df, alpha = 0.2, colour = NA, inherit.aes = FALSE
     )
@@ -163,8 +166,14 @@ autoplot.td_rarefy <- function(object,
   if (x == "coverage") {
     p <- p + ggplot2::scale_x_continuous(limits = c(NA, 1))
   }
-  if (facet) {
+  if (facet && length(by_cols)) {
+    p <- p + ggplot2::facet_grid(ggplot2::vars(.data$.by),
+      ggplot2::vars(.data$.q), scales = scales)
+  } else if (facet) {
     p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.q), scales = scales,
+      ncol = ncol)
+  } else if (length(by_cols)) {
+    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.by), scales = scales,
       ncol = ncol)
   }
   td_style(p, palette, theme)
@@ -192,8 +201,9 @@ autoplot.td_standardise <- function(object,
     names(df), c(site_col, "q", "m", "method", "coverage", "diversity",
       "se", "lower", "upper")
   )
-  df$.site <- factor(df[[site_col]], levels = rev(unique(df[[site_col]])))
   df$.group <- td_label_col(df, by_cols)
+  lab <- td_label_col(df, c(by_cols, site_col))
+  df$.site <- factor(lab, levels = rev(unique(lab)))
   df$.q <- q_label(df$q)
   df$method <- factor(df$method,
     c("rarefaction", "observed", "extrapolation"))
@@ -304,14 +314,20 @@ autoplot.td_hill <- function(object,
     }
     return(td_style(p, palette, theme, fill = FALSE))
   }
+  by_cols <- setdiff(names(df), c(site_col, "q", "n", "diversity"))
   df$.site <- as.character(df[[site_col]])
+  df$.by <- td_label_col(df, by_cols)
   p <- ggplot2::ggplot(
-    df, ggplot2::aes(.data$q, .data$diversity, colour = .data$.site)
+    df, ggplot2::aes(.data$q, .data$diversity, colour = .data$.site,
+      group = paste(.data$.by, .data$.site))
   ) +
     ggplot2::geom_line(linewidth = 0.7) +
     ggplot2::geom_point(size = 1.5) +
     ggplot2::scale_y_continuous(limits = c(0, NA)) +
     ggplot2::labs(x = xlab %||% "Order q", y = ylab, colour = site_col)
+  if (length(by_cols)) {
+    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.by), ncol = ncol)
+  }
   td_style(p, palette, theme, fill = FALSE)
 }
 
@@ -329,10 +345,11 @@ autoplot.td_estimate <- function(object,
                                  ...) {
   rlang::check_installed("ggplot2")
   df <- tibble::as_tibble(unclass(object))
-  site_col <- td_site_col(
-    df, c("q", "observed", "estimate", "se", "lower", "upper")
-  )
-  df$.site <- factor(df[[site_col]], levels = rev(unique(df[[site_col]])))
+  known <- c("q", "observed", "estimate", "se", "lower", "upper")
+  site_col <- td_site_col(df, known)
+  by_cols <- setdiff(names(df), c(site_col, known))
+  lab <- td_label_col(df, c(by_cols, site_col))
+  df$.site <- factor(lab, levels = rev(unique(lab)))
   df$.q <- q_label(df$q)
   long <- vctrs::vec_rbind(
     transform(df, .value = df$observed, .type = "observed"),
@@ -447,23 +464,26 @@ autoplot.td_beta_multi <- function(object,
   by_cols <- setdiff(
     names(df), c("n_sites", "turnover", "nestedness", "total")
   )
-  df$.group <- td_label_col(df, by_cols)
-  long <- data.frame(
-    group = rep(df$.group, 2),
-    component = factor(
-      rep(c("nestedness", "turnover"), each = nrow(df)),
-      levels = c("nestedness", "turnover")
-    ),
-    value = c(df$nestedness, df$turnover)
+  # With several grouping columns, the first goes on the x axis and the
+  # rest become facets.
+  df$.group <- td_label_col(df, by_cols[1])
+  df$.panel <- td_label_col(df, by_cols[-1])
+  long <- vctrs::vec_rbind(
+    transform(df, .component = "nestedness", .value = df$nestedness),
+    transform(df, .component = "turnover", .value = df$turnover)
   )
+  long$.component <- factor(long$.component, c("nestedness", "turnover"))
   p <- ggplot2::ggplot(
-    long, ggplot2::aes(.data$group, .data$value, fill = .data$component)
+    long, ggplot2::aes(.data$.group, .data$.value, fill = .data$.component)
   ) +
     ggplot2::geom_col(width = 0.6) +
     ggplot2::scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
     ggplot2::labs(
-      x = xlab %||% if (length(by_cols)) paste(by_cols, collapse = " "),
+      x = xlab %||% if (length(by_cols)) by_cols[1],
       y = ylab, fill = NULL
     )
+  if (length(by_cols) > 1) {
+    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.panel), nrow = 1)
+  }
   td_style(p, palette, theme)
 }

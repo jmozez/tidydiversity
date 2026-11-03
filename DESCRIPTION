@@ -46,6 +46,7 @@ Suggests:
     vegan
 VignetteBuilder: 
     knitr
+Config/Needs/website: tidyr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-NZ
