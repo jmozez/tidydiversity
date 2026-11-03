@@ -64,22 +64,6 @@ div_standardise(ant_gradient, coverage = 0.9, .by = transect, nboot = 50) |>
   filter(q == 0)
 ```
 
-Draw rarefaction and extrapolation curves:
-
-```{r curves, fig.height = 3.5, fig.alt = "Rarefaction curves"}
-library(ggplot2)
-ant_gradient |>
-  filter(transect == "north") |>
-  div_rarefy(q = c(0, 1)) |>
-  autoplot()
-```
-
-Split beta diversity into turnover and nestedness:
-
-```{r}
-beta_multi(ant_gradient, .by = transect)
-```
-
 ## Functions
 
 | Task | Function |
@@ -92,6 +76,189 @@ beta_multi(ant_gradient, .by = transect)
 | Coverage or size standardisation | `div_standardise()` |
 | Beta partitioning | `beta_pair()`, `beta_multi()`, `beta_decay()` |
 | Plots | `autoplot()` |
+
+## Gallery
+
+Every plot that `autoplot()` draws, using the simulated `ant_gradient` data.
+
+```{r gallery-setup, message = FALSE, echo = FALSE}
+library(ggplot2)
+theme_set(
+  theme_minimal(base_size = 11) +
+    theme(
+      plot.background = element_rect(fill = "white", colour = NA),
+      legend.position = "bottom"
+    )
+)
+north <- filter(ant_gradient, transect == "north")
+curves <- div_rarefy(north, q = c(0, 1, 2), knots = 30)
+```
+
+### Rarefaction and extrapolation by sample size
+
+Solid lines are rarefied, dashed lines extrapolated to twice the sample size; points are the observed samples (north transect).
+
+```{r size, echo = FALSE, fig.height = 3.6, fig.alt = "Rarefaction and extrapolation by sample size"}
+autoplot(curves)
+```
+
+### Rarefaction and extrapolation by sample coverage
+
+The same curves plotted against estimated sample coverage, the basis for coverage-standardised comparison.
+
+```{r coverage-curve, echo = FALSE, fig.height = 3.6, fig.alt = "Rarefaction and extrapolation by sample coverage"}
+autoplot(curves, x = "coverage")
+```
+
+### Hill diversity profile
+
+Observed Hill numbers across orders q from 0 (richness) to 3 (dominant species), one line per site.
+
+```{r profile, echo = FALSE, fig.height = 3.6, fig.alt = "Hill diversity profile"}
+div_hill(north, q = seq(0, 3, by = 0.25)) |>
+  autoplot()
+```
+
+### Alpha diversity along elevation
+
+Observed q = 0, 1 and 2 diversity at each elevation, one line per transect.
+
+```{r elevation, echo = FALSE, fig.height = 3.6, fig.alt = "Alpha diversity along elevation"}
+div_hill(ant_gradient, .by = c(transect, elevation)) |>
+  autoplot(gradient = elevation)
+```
+
+### Observed and asymptotic diversity
+
+Open circles are observed values, filled circles the asymptotic estimates, with 95% bootstrap intervals.
+
+```{r estimate, echo = FALSE, fig.height = 5, fig.alt = "Observed and asymptotic diversity"}
+set.seed(1)
+div_estimate(ant_gradient, .by = transect, nboot = 50) |>
+  autoplot()
+```
+
+### Sample coverage
+
+Estimated sample coverage of each site against its number of individuals.
+
+```{r sample-coverage, echo = FALSE, fig.height = 3.4, fig.alt = "Sample coverage"}
+div_coverage(ant_gradient, .by = transect) |>
+  autoplot()
+```
+
+### Pairwise beta diversity heatmap
+
+Total Sorensen dissimilarity between every pair of sites within each transect.
+
+```{r beta-pair, echo = FALSE, fig.height = 4.4, fig.alt = "Pairwise beta diversity heatmap"}
+beta_pair(ant_gradient, .by = transect) |>
+  autoplot()
+```
+
+### Multi-site beta partition
+
+Multi-site Sorensen dissimilarity of each transect split into turnover and nestedness.
+
+```{r beta-multi, echo = FALSE, fig.height = 3.4, fig.alt = "Multi-site beta partition"}
+beta_multi(ant_gradient, .by = transect) |>
+  autoplot()
+```
+
+### Distance decay
+
+Pairwise total, turnover and nestedness dissimilarity against elevation difference, with linear trends.
+
+```{r beta-decay, echo = FALSE, fig.height = 3.6, fig.alt = "Distance decay"}
+beta_decay(ant_gradient, gradient = elevation, .by = transect) |>
+  autoplot()
+```
+
+## Output tables
+
+Example output of every main function on the simulated data. Long tables
+show their first rows.
+
+```{r tables-setup, include = FALSE}
+show <- function(x, n = 8) {
+  knitr::kable(utils::head(tibble::as_tibble(x), n), digits = 3)
+}
+```
+
+### `div_hill()`
+
+Observed Hill numbers: `n` individuals, `diversity` of order `q` per site.
+
+```{r table-1, echo = FALSE}
+div_hill(ant_gradient, .by = transect) |>
+  show()
+```
+
+### `div_estimate()`
+
+Asymptotic estimates: `observed` and `estimate` Hill numbers with bootstrap `se`, `lower` and `upper` 95% limits.
+
+```{r table-2, echo = FALSE}
+set.seed(1)
+div_estimate(ant_gradient, .by = transect, nboot = 50) |>
+  show()
+```
+
+### `div_coverage()`
+
+Sample coverage: `n` individuals, `s_obs` observed species, `f1` singletons, `f2` doubletons and estimated `coverage`.
+
+```{r table-3, echo = FALSE}
+div_coverage(ant_gradient, .by = transect) |>
+  show()
+```
+
+### `div_rarefy()`
+
+Rarefaction and extrapolation: diversity of order `q` at sample size `m`, whether `method` is rarefaction, observed or extrapolation, the expected `coverage`, and `lower` and `upper` limits (`NA` when `nboot = 0`).
+
+```{r table-4, echo = FALSE}
+div_rarefy(north, q = 0, knots = 8) |>
+  show()
+```
+
+### `div_standardise()`
+
+Coverage standardisation: `diversity` of order `q` at a common `coverage` for every site, with the matching sample size `m`, the `method` used, and bootstrap `se`, `lower` and `upper` limits.
+
+```{r table-5, echo = FALSE}
+set.seed(1)
+div_standardise(ant_gradient, coverage = 0.9, .by = transect, nboot = 50) |>
+  show()
+```
+
+### `beta_pair()`
+
+Pairwise beta diversity: Sorensen `turnover` (Simpson) and `nestedness` components, which sum to `total` dissimilarity.
+
+```{r table-6, echo = FALSE}
+beta_pair(ant_gradient, .by = transect) |>
+  show()
+```
+
+### `beta_multi()`
+
+Multi-site beta diversity: `n_sites` in each group with the multi-site `turnover`, `nestedness` and `total`.
+
+```{r table-7, echo = FALSE}
+beta_multi(ant_gradient, .by = transect) |>
+  show()
+```
+
+### `beta_decay()`
+
+Distance decay: the pairwise components plus each site's `gradient_1` and `gradient_2` values and their `distance`.
+
+```{r table-8, echo = FALSE}
+beta_decay(ant_gradient, gradient = elevation, .by = transect) |>
+  show()
+```
+
 
 ## References
 
