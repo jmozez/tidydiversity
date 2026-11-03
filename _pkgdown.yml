@@ -1,0 +1,22 @@
+url: https://jmozez.github.io/tidydiversity/
+
+template:
+  bootstrap: 5
+  light-switch: true
+  bslib:
+    primary: "#14a7b4"
+    base_font: {google: "Inter"}
+    heading_font: {google: "Inter"}
+    code_font: {google: "JetBrains Mono"}
+    link-color: "#0f8a95"
+    navbar-bg: "#0f2742"
+
+navbar:
+  bg: dark
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github, lightswitch]
+
+home:
+  title: Tidy biodiversity estimation with Hill numbers
+
