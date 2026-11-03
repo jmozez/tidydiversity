@@ -23,7 +23,7 @@
 #'
 #'   Baselga, A. (2012). The relationship between species replacement,
 #'   dissimilarity derived from nestedness, and nestedness. Global Ecology
-#'   and Biogeography, 21, 1223-1232. \doi{10.1111/j.1466-8238.2012.00756.x}
+#'   and Biogeography, 21, 1223-1232. \doi{10.1111/j.1466-8238.2011.00756.x}
 #' @export
 #' @examples
 #' beta_pair(ant_gradient, .by = transect)
