@@ -1,0 +1,28 @@
+Package: tidydiversity
+Title: Tidy Biodiversity Estimation with Hill Numbers
+Version: 0.0.0.9000
+Authors@R: 
+    person("Jimmy", "Moses", , "jimmy.moses@pnguot.ac.pg", role = c("aut", "cre", "cph"))
+Description: Tidy, pipe-friendly tools for estimating biodiversity from
+    long-format community data. Computes Hill numbers, asymptotic diversity
+    estimates, sample coverage, size- and coverage-based rarefaction and
+    extrapolation following Chao et al. (2014) <doi:10.1890/13-0133.1>, and
+    partitions beta diversity into turnover and nestedness components
+    following Baselga (2010) <doi:10.1111/j.1466-8238.2009.00490.x>. Every
+    function takes a data frame and returns a tibble, uses data-masking for
+    column arguments, and supports grouped data and the '.by' argument.
+License: MIT + file LICENSE
+URL: https://github.com/jmozez/tidydiversity, https://jmozez.github.io/tidydiversity/
+BugReports: https://github.com/jmozez/tidydiversity/issues
+Depends: 
+    R (>= 4.1.0)
+Imports: 
+    rlang (>= 1.1.0)
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-NZ
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
