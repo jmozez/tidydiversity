@@ -1,0 +1,61 @@
+test_that("div_rarefy() matches iNEXT size-based curves", {
+  skip_if_not_installed("iNEXT")
+  x <- ant_gradient$abundance[ant_gradient$site == "n_0600"]
+  n <- sum(x)
+  m <- c(1, 10, 40, n - 1, n, n + 30, 2 * n)
+  ref <- iNEXT::iNEXT(x, q = c(0, 1, 2), size = m, nboot = 0)
+  ref <- ref$iNextEst$size_based
+  ref <- ref[ref$m %in% m, ]
+  ref <- ref[order(ref$Order.q, ref$m), ]
+  mine <- div_rarefy(ant_gradient[ant_gradient$site == "n_0600", ], size = m)
+  expect_equal(mine$m, ref$m)
+  expect_equal(mine$diversity, ref$qD, tolerance = 1e-8)
+  expect_equal(mine$coverage, ref$SC, tolerance = 1e-8)
+  expect_equal(
+    mine$method,
+    c("rarefaction", "observed", "extrapolation")[
+      match(ref$Method, c("Rarefaction", "Observed", "Extrapolation"))
+    ]
+  )
+})
+
+test_that("rarefaction reaches the observed values at m = n", {
+  out <- div_rarefy(toy(), q = 0)
+  obs <- out[out$method == "observed", ]
+  expect_equal(obs$diversity, c(6, 5))
+  expect_s3_class(out, "td_rarefy")
+  expect_true(all(diff(out$diversity[out$site == "a"]) >= 0))
+})
+
+test_that("div_standardise() matches iNEXT::estimateD()", {
+  skip_if_not_installed("iNEXT")
+  sub <- ant_gradient[ant_gradient$transect == "north", ]
+  lst <- split(sub$abundance, sub$site)
+  for (lev in c(0.85, 0.97)) {
+    ref <- suppressWarnings(
+      iNEXT::estimateD(lst, base = "coverage", level = lev, nboot = 0)
+    )
+    ref <- ref[order(ref$Assemblage, ref$Order.q), ]
+    mine <- suppressWarnings(
+      div_standardise(sub, coverage = lev, nboot = 0)
+    )
+    expect_equal(mine$diversity, ref$qD, tolerance = 1e-6)
+    expect_equal(mine$m, ref$m, tolerance = 1e-6)
+  }
+  ref <- iNEXT::estimateD(lst, base = "size", level = 80, nboot = 0)
+  ref <- ref[order(ref$Assemblage, ref$Order.q), ]
+  mine <- div_standardise(sub, size = 80, nboot = 0)
+  expect_equal(mine$diversity, ref$qD, tolerance = 1e-8)
+})
+
+test_that("default coverage is the lowest C(2n) in each group", {
+  out <- div_standardise(ant_gradient, .by = transect, nboot = 0)
+  cov <- tapply(out$coverage, out$transect, function(x) diff(range(x)))
+  expect_true(all(cov < 1e-3))
+})
+
+test_that("bootstrap intervals are added on request", {
+  set.seed(2)
+  out <- div_rarefy(toy(), q = 0, size = c(5, 15, 40), nboot = 10)
+  expect_false(anyNA(out$lower))
+})
