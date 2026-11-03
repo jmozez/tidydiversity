@@ -116,3 +116,34 @@ test_that("PD and FD reproduce iNEXT.3D", {
     expect_equal(ours$diversity, ref[[paste0("q", dv)]], tolerance = 1e-6)
   }
 })
+
+test_that("observed PD matches hillR::hill_phylo", {
+  skip_if_not_installed("hillR")
+  skip_if_not_installed("iNEXT.3D")
+  e <- new.env()
+  utils::data(list = c(
+    "Brazil_rainforest_abun_data", "Brazil_rainforest_phylo_tree"
+  ), package = "iNEXT.3D", envir = e)
+  d <- e$Brazil_rainforest_abun_data
+  d <- d[rowSums(d) > 0, ]
+  tr <- ape::drop.tip(
+    e$Brazil_rainforest_phylo_tree,
+    setdiff(e$Brazil_rainforest_phylo_tree$tip.label, rownames(d))
+  )
+  long <- tibble::tibble(
+    site = rep(colnames(d), each = nrow(d)),
+    species = rep(rownames(d), ncol(d)),
+    n = unlist(d, use.names = FALSE)
+  )
+  long <- long[long$n > 0, ]
+  ours <- div_hill(long,
+    abundance = n, type = "PD", tree = tr,
+    pd_unit = "total"
+  )
+  for (q in 0:2) {
+    ref <- hillR::hill_phylo(t(d), tr, q = q)
+    expect_equal(ours$diversity[ours$q == q], unname(ref[c("Edge", "Interior")]),
+      tolerance = 1e-8
+    )
+  }
+})
