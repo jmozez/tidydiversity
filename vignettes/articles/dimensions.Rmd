@@ -1,0 +1,130 @@
+---
+title: "TD, PD and FD on one scale"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", dpi = 150)
+```
+
+tidydiversity measures three dimensions of diversity with the same Hill
+number framework:
+
+* **Taxonomic diversity (TD)** treats every species as equally distinct.
+* **Phylogenetic diversity (PD)** weights species by the branch lengths of
+  a phylogeny (Chao, Chiu and Jost 2010, 2014).
+* **Functional diversity (FD)** weights species by their trait distances,
+  using the attribute-diversity approach of Chao et al. (2019).
+
+Each is an effective number of species of order `q`, so the three can be
+plotted on the same axis. The estimators reproduce
+[iNEXT.3D](https://CRAN.R-project.org/package=iNEXT.3D) and this is checked
+in the package test suite.
+
+## Data
+
+The example uses the Brazilian rainforest tree data shipped with iNEXT.3D:
+abundances at two sites (`Edge` and `Interior`), a time-calibrated
+phylogeny and a Gower distance matrix of traits.
+
+```{r, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+
+data(list = c(
+  "Brazil_rainforest_abun_data", "Brazil_rainforest_phylo_tree",
+  "Brazil_rainforest_distance_matrix"
+), package = "iNEXT.3D")
+wide <- Brazil_rainforest_abun_data
+brazil <- tibble(
+  site = rep(colnames(wide), each = nrow(wide)),
+  species = rep(rownames(wide), ncol(wide)),
+  n = unlist(wide, use.names = FALSE)
+) |>
+  filter(n > 0)
+tree <- Brazil_rainforest_phylo_tree
+traits <- as.matrix(Brazil_rainforest_distance_matrix)
+```
+
+## Observed and asymptotic diversity {.tabset}
+
+### TD
+
+```{r}
+div_estimate(brazil, abundance = n, nboot = 0)
+```
+
+### PD
+
+`reftime` defaults to the age of the root of the tree pruned to the observed
+species. With `pd_unit = "mean"` (the default) PD is divided by `reftime`,
+giving the effective number of lineages.
+
+```{r}
+div_estimate(brazil, abundance = n, type = "PD", tree = tree)
+```
+
+### FD
+
+`tau` defaults to the mean distance between two individuals in the pooled
+data. Species closer than `tau` count as functionally identical.
+
+```{r}
+div_estimate(brazil, abundance = n, type = "FD", distance = traits)
+```
+
+### FD (area under the tau profile)
+
+`tau = "auc"` integrates FD over every threshold from 0 to 1, so no single
+threshold has to be chosen.
+
+```{r}
+div_estimate(brazil, abundance = n, type = "FD", distance = traits, tau = "auc")
+```
+
+## Standardised comparison
+
+Standardise every dimension to the same sample coverage. Coverage is
+computed from the species counts, as in iNEXT.3D, and the PD and FD values
+are then evaluated at the matching sample size.
+
+```{r}
+dims <- list(
+  TD = list(),
+  PD = list(type = "PD", tree = tree),
+  FD = list(type = "FD", distance = traits)
+)
+std <- bind_rows(lapply(names(dims), function(d) {
+  args <- c(list(brazil, abundance = quote(n), coverage = 0.97, nboot = 0), dims[[d]])
+  do.call(div_standardise, args) |> mutate(type = d)
+}))
+std |> select(type, site, q, m, coverage, diversity)
+```
+
+```{r, fig.width = 8, fig.height = 4, fig.alt = "Diversity profiles at 97 percent coverage for TD, PD and FD at two sites."}
+ggplot(std, aes(q, diversity, colour = site)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~type, scales = "free_y") +
+  labs(y = "Effective number of species", colour = NULL) +
+  theme_tidydiversity()
+```
+
+## Current limits
+
+* Bootstrap standard errors and confidence intervals are available for TD
+  only. For PD and FD, `se`, `lower` and `upper` are `NA`.
+* Incidence data are not yet supported for PD and FD.
+
+## References
+
+Chao, A., Chiu, C.-H. and Jost, L. (2014). Unifying species diversity,
+phylogenetic diversity, functional diversity, and related similarity and
+differentiation measures through Hill numbers. *Annual Review of Ecology,
+Evolution, and Systematics*, 45, 297-324.
+<https://doi.org/10.1146/annurev-ecolsys-120213-091540>
+
+Chao, A., Chiu, C.-H., Villeger, S. et al. (2019). An attribute-diversity
+approach to functional diversity, functional beta diversity, and related
+(dis)similarity measures. *Ecological Monographs*, 89, e01343.
+<https://doi.org/10.1002/ecm.1343>

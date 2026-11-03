@@ -1,11 +1,15 @@
 Package: tidydiversity
-Title: Tidy Biodiversity Estimation with Hill Numbers
+Title: Taxonomic, Phylogenetic and Functional Diversity with Tidy Hill Numbers
 Version: 0.0.0.9000
 Authors@R: 
     person("Jimmy", "Moses", , "jimmy.moses@pnguot.ac.pg", role = c("aut", "cre", "cph"))
-Description: Tidy, pipe-friendly tools for estimating biodiversity from
-    long-format community data. Computes Hill numbers, asymptotic diversity
-    estimates, sample coverage, size- and coverage-based rarefaction and
+Description: Tidy, pipe-friendly tools for estimating taxonomic,
+    phylogenetic and functional diversity from long-format community data.
+    All three dimensions are expressed as Hill numbers of the same order q
+    (effective numbers of species), following Chao, Chiu and Jost (2014)
+    <doi:10.1146/annurev-ecolsys-120213-091540> and Chao et al. (2019)
+    <doi:10.1002/ecm.1343>. Computes observed and asymptotic diversity,
+    sample coverage, and size- and coverage-based rarefaction and
     extrapolation following Chao et al. (2014) <doi:10.1890/13-0133.1>, and
     partitions beta diversity into turnover and nestedness components
     following Baselga (2010) <doi:10.1111/j.1466-8238.2009.00490.x>. Every
@@ -31,6 +35,7 @@ Imports:
     vctrs (>= 0.6.0)
 Suggests: 
     ade4,
+    ape,
     betapart,
     broom,
     flextable,
@@ -38,6 +43,7 @@ Suggests:
     hillR,
     ggplot2 (>= 3.5.0),
     iNEXT,
+    iNEXT.3D,
     knitr,
     lme4,
     mgcv,

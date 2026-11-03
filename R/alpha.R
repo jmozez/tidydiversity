@@ -6,11 +6,45 @@
 #'
 #' @inheritParams as_community
 #' @param q Orders of diversity, non-negative numbers.
+#' @param type Diversity dimension: `"TD"` (taxonomic, the default), `"PD"`
+#'   (phylogenetic, needs `tree`) or `"FD"` (functional, needs `distance`).
+#'   All three are Hill numbers of the same order `q`, in units of
+#'   effective numbers of species (Chao, Chiu and Jost 2014), and reproduce
+#'   [iNEXT.3D](https://CRAN.R-project.org/package=iNEXT.3D).
+#' @param tree For `type = "PD"`, a rooted [ape::phylo] tree with branch
+#'   lengths whose tip labels include every species.
+#' @param reftime For `type = "PD"`, the reference time (tree depth) at
+#'   which diversity is measured. Defaults to the age of the root of the tree
+#'   pruned to the species in `data`.
+#' @param pd_unit For `type = "PD"`, `"mean"` (the default) divides
+#'   phylogenetic diversity by `reftime`, giving the effective number of
+#'   lineages on the same scale as species; `"total"` gives effective total
+#'   branch length.
+#' @param distance For `type = "FD"`, a species-by-species distance matrix
+#'   (or [stats::dist] object) with names matching the species, scaled to
+#'   lie between 0 and 1, for example from Gower distances of traits.
+#' @param tau For `type = "FD"`, the distance threshold below which species
+#'   are treated as functionally identical. Defaults to the mean distance
+#'   between two individuals in the pooled data. Use `"auc"` to integrate
+#'   over all thresholds from 0 to 1 (Chao et al. 2019).
 #' @return A tibble with the grouping columns, the site column, `q`,
-#'   `n` (number of individuals) and `diversity`.
+#'   `n` (number of individuals) and `diversity`. Phylogenetic and
+#'   functional results also have `type` and `reftime` or `tau`.
 #' @references Hill, M. O. (1973). Diversity and evenness: a unifying
 #'   notation and its consequences. Ecology, 54, 427-432.
 #'   \doi{10.2307/1934352}
+#'
+#'   Chao, A., Chiu, C.-H. and Jost, L. (2014). Unifying species diversity,
+#'   phylogenetic diversity, functional diversity, and related similarity and
+#'   differentiation measures through Hill numbers. Annual Review of Ecology,
+#'   Evolution, and Systematics, 45, 297-324.
+#'   \doi{10.1146/annurev-ecolsys-120213-091540}
+#'
+#'   Chao, A., Chiu, C.-H., Villeger, S., Sun, I.-F., Thorn, S., Lin, Y.-C.,
+#'   Chiang, J.-M. and Sherwin, W. B. (2019). An attribute-diversity
+#'   approach to functional diversity, functional beta diversity, and related
+#'   (dis)similarity measures. Ecological Monographs, 89, e01343.
+#'   \doi{10.1002/ecm.1343}
 #' @export
 #' @examples
 #' div_hill(ant_gradient, .by = transect)
@@ -24,15 +58,25 @@ div_hill <- function(data,
                      species = species,
                      abundance = NULL,
                      q = c(0, 1, 2),
+                     type = c("TD", "PD", "FD"),
+                     tree = NULL,
+                     reftime = NULL,
+                     pd_unit = c("mean", "total"),
+                     distance = NULL,
+                     tau = NULL,
                      .by = NULL) {
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by)
   )
   q <- td_check_q(q)
+  dim <- td_dimension(
+    rlang::arg_match(type), prep, tree, reftime, rlang::arg_match(pd_unit),
+    distance, tau
+  )
   out <- td_per_site(prep, function(x, i) {
-    tibble::tibble(q = q, n = sum(x), diversity = hill_obs(x, q))
+    tibble::tibble(q = q, n = sum(x), diversity = dim_obs(x, q, dim))
   })
-  td_new(out, "td_hill")
+  td_new(add_dim_cols(out, dim), "td_hill")
 }
 
 #' Asymptotic diversity estimates
@@ -47,6 +91,8 @@ div_hill <- function(data,
 #' @param q Orders of diversity: any of 0, 1 and 2.
 #' @param conf Confidence level of the intervals.
 #' @param nboot Number of bootstrap replicates. Use 0 to skip them.
+#'   Bootstrap intervals are currently available for `type = "TD"` only;
+#'   for PD and FD `se`, `lower` and `upper` are `NA`.
 #' @param ci How to build the confidence intervals from the bootstrap
 #'   standard error. With `"lognormal"` (the default) the richness (q = 0)
 #'   interval uses the log-transformation of Chao (1987), as in SpadeR, so
@@ -77,6 +123,12 @@ div_estimate <- function(data,
                          conf = 0.95,
                          nboot = 50,
                          ci = c("lognormal", "normal"),
+                         type = c("TD", "PD", "FD"),
+                         tree = NULL,
+                         reftime = NULL,
+                         pd_unit = c("mean", "total"),
+                         distance = NULL,
+                         tau = NULL,
                          .by = NULL) {
   ci <- rlang::arg_match(ci)
   prep <- td_prepare(
@@ -88,11 +140,16 @@ div_estimate <- function(data,
   td_check_number(conf, "conf", 0, 1)
   td_check_number(nboot, "nboot", 0, whole = TRUE)
   z <- stats::qnorm(1 - (1 - conf) / 2)
+  dim <- td_dimension(
+    rlang::arg_match(type), prep, tree, reftime, rlang::arg_match(pd_unit),
+    distance, tau
+  )
+  if (dim$type != "TD") nboot <- 0
   out <- td_per_site(prep, function(x, i) {
-    est <- hill_asy(x, q)
+    est <- dim_asy(x, q, dim)
     draws <- boot_draws(x, nboot, function(xb) hill_asy(xb, q))
     se <- as.vector(boot_se(draws, length(q)))
-    obs <- hill_obs(x, q)
+    obs <- dim_obs(x, q, dim)
     lim <- asy_ci(obs, est, se, z, ci, q)
     tibble::tibble(
       q = q,
@@ -103,7 +160,7 @@ div_estimate <- function(data,
       upper = lim$upper
     )
   })
-  td_new(out, "td_estimate")
+  td_new(add_dim_cols(out, dim), "td_estimate")
 }
 
 #' Sample coverage
