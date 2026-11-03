@@ -20,3 +20,25 @@ navbar:
 home:
   title: Tidy biodiversity estimation with Hill numbers
 
+reference:
+  - title: Community data
+    contents:
+      - as_community
+      - ant_gradient
+  - title: Alpha diversity
+    contents:
+      - div_hill
+      - div_estimate
+      - div_coverage
+  - title: Rarefaction and standardisation
+    contents:
+      - div_rarefy
+      - div_standardise
+  - title: Beta diversity
+    contents:
+      - beta_pair
+      - beta_decay
+  - title: Plotting
+    contents:
+      - autoplot-tidydiversity
+

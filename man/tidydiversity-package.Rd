@@ -6,6 +6,8 @@
 \alias{tidydiversity-package}
 \title{tidydiversity: Tidy Biodiversity Estimation with Hill Numbers}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Tidy, pipe-friendly tools for estimating biodiversity from long-format community data. Computes Hill numbers, asymptotic diversity estimates, sample coverage, size- and coverage-based rarefaction and extrapolation following Chao et al. (2014) \doi{10.1890/13-0133.1}, and partitions beta diversity into turnover and nestedness components following Baselga (2010) \doi{10.1111/j.1466-8238.2009.00490.x}. Every function takes a data frame and returns a tibble, uses data-masking for column arguments, and supports grouped data and the '.by' argument.
 }
 \seealso{
