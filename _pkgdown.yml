@@ -74,6 +74,8 @@ navbar:
           href: articles/modelling.html
         - text: "Ordination: biplots and triplots"
           href: articles/ordination.html
+        - text: Testing community composition
+          href: articles/composition-tests.html
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
     news:
@@ -124,10 +126,14 @@ reference:
       - beta_pair
       - beta_decay
       - beta_dist
+      - beta_permanova
+      - td_indicator
   - title: Ordination
     contents:
       - ord_fit
       - ord_test
+      - ord_select
+      - ord_varpart
       - autoplot.td_ordination
       - tidy.td_ordination
   - title: Plots and tables for publication
@@ -156,6 +162,7 @@ articles:
       - beta-partitioning
       - articles/modelling
       - articles/ordination
+      - articles/composition-tests
       - articles/tidymodels
       - articles/publication
   - title: Papua New Guinea case studies

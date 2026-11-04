@@ -1,0 +1,131 @@
+---
+title: "Testing community composition"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  dev.args = list(bg = "white"),
+  collapse = TRUE, comment = "#>", out.width = "70%",
+  dpi = 150, fig.width = 5, fig.height = 4
+)
+```
+
+Ordination shows patterns in composition. This article covers how to test
+them, following the standard workflow (Borcard, Gillet and Legendre 2018):
+
+1. Does composition differ with site variables? (PERMANOVA)
+2. Is that result caused by groups differing in spread? (dispersion test)
+3. Which variables should enter the model? (forward selection)
+4. How much does each group of variables explain on its own? (variation
+   partitioning)
+5. Which species characterise each group? (indicator species)
+
+All results are tidy tibbles. The computations are done by vegan and
+indicspecies, and the test suite checks that the results are identical.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(2026)
+```
+
+The units are the 20 transects of the Mt Wilhelm ant survey: 5
+elevations x 2 seasons x 2 transects.
+
+```{r data}
+ants <- png_ants |>
+  mutate(
+    unit = paste(site, season, transect),
+    zone = if_else(elevation <= 700, "lowland", "montane")
+  )
+```
+
+## 1. PERMANOVA
+
+```{r permanova}
+beta_permanova(ants, site = unit, formula = ~ elevation + season)
+```
+
+Elevation explains 17% of the variation in composition (Bray-Curtis). To
+test season while respecting the paired design, permute only within
+sites:
+
+```{r permanova-strata}
+beta_permanova(ants, site = unit, formula = ~season, strata = site)
+```
+
+The season effect, hidden by the large differences between elevations,
+becomes clear once each transect is compared only with transects on its
+own site.
+
+## 2. Homogeneity of dispersion
+
+PERMANOVA can also give a significant result when groups differ in spread
+rather than in location (Anderson 2006). Check this:
+
+```{r dispersion, fig.alt = "Boxplots of each transect's distance to its season's spatial median: dry and wet seasons overlap."}
+disp <- beta_dispersion(ants, site = unit, group = season)
+attr(disp, "test")
+autoplot(disp)
+```
+
+The seasons have similar dispersion, so a season effect is a real shift
+in composition, not a difference in spread.
+
+## 3. Forward selection
+
+With many candidate variables, select them by forward selection with the
+double stopping rule of Blanchet et al. (2008). It stops before the model
+explains more than the full model, to avoid inflated Type I error and an
+overfitted model:
+
+```{r select}
+sel <- ord_select(ants, site = unit, formula = ~ elevation + season)
+sel
+attr(sel, "adj_r2_full")
+```
+
+## 4. Variation partitioning
+
+How much do elevation and season explain on their own and together
+(adjusted R², Peres-Neto et al. 2006)?
+
+```{r varpart}
+ord_varpart(ants, site = unit, elevation = ~elevation, season = ~season)
+```
+
+Up to four groups of variables are allowed, for example climate, soil,
+space (from `elevation` or coordinates) and time.
+
+## 5. Indicator species
+
+Which species characterise lowland and montane transects (IndVal, De
+Caceres et al. 2010)? `A` is specificity, the probability that a site
+holding the species belongs to the group; `B` is fidelity, the proportion
+of the group's sites holding the species.
+
+```{r indicator}
+td_indicator(ants, site = unit, group = zone)
+```
+
+## References
+
+Anderson, M. J. (2001). A new method for non-parametric multivariate
+analysis of variance. *Austral Ecology*, 26, 32-46.
+
+Anderson, M. J. (2006). Distance-based tests for homogeneity of
+multivariate dispersions. *Biometrics*, 62, 245-253.
+
+Blanchet, F. G., Legendre, P. and Borcard, D. (2008). Forward selection
+of explanatory variables. *Ecology*, 89, 2623-2632.
+
+Borcard, D., Gillet, F. and Legendre, P. (2018). *Numerical Ecology with
+R*, 2nd edn. Springer.
+
+De Caceres, M., Legendre, P. and Moretti, M. (2010). Improving indicator
+species analysis by combining groups of sites. *Oikos*, 119, 1674-1684.
+
+Peres-Neto, P. R. et al. (2006). Variation partitioning of species data
+matrices: estimation and comparison of fractions. *Ecology*, 87,
+2614-2625.

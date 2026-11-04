@@ -1,6 +1,12 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* Testing community composition: `beta_permanova()` (PERMANOVA, with
+  restricted permutations), `beta_dispersion()` (homogeneity of
+  dispersion, with `autoplot()`), `ord_select()` (forward selection with
+  double stopping), `ord_varpart()` (variation partitioning with tests)
+  and `td_indicator()` (indicator species). Results match vegan and
+  indicspecies exactly. New article "Testing community composition".
 * tidymodels integration: `td_group_folds()` (site-blocked
   cross-validation), `td_case_weights()` (inverse-variance weights from
   diversity SEs) and the recipe step `step_hill()`. New article
