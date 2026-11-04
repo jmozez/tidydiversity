@@ -148,6 +148,10 @@ reference:
       - td_ses
       - td_itv
       - td_fourth_corner
+      - td_tpd
+      - td_phylo_signal
+      - td_phylo_dist
+      - td_combine_dist
       - aravo_long
   - title: Plots and tables for publication
     contents:

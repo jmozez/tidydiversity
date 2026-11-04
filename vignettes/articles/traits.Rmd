@@ -25,7 +25,10 @@ each method. It covers:
 * alpha, beta and gamma functional diversity: `td_rao()`;
 * null models: `td_ses()`;
 * intraspecific trait variability: `td_itv()`;
-* trait-environment links: `td_fourth_corner()`.
+* trait-environment links: `td_fourth_corner()`;
+* trait probability densities: `td_tpd()`, `td_tpd_dissim()`;
+* phylogenetic signal and distances: `td_phylo_signal()`,
+  `td_phylo_dist()`, `td_combine_dist()`.
 
 ```{r setup, message = FALSE}
 library(tidydiversity)
@@ -202,11 +205,85 @@ Most of the response of SLA to the slope is intraspecific: the same
 species change their leaves along the gradient. Studies that use a
 single mean trait value per species would miss most of it.
 
+## Trait probability densities
+
+The TPD approach describes each species by the probability density of its
+trait values, estimated from the individual measurements (Carmona et al.
+2016, 2019), so intraspecific variability is part of every index. With the
+same grassland data:
+
+```{r tpd, eval = online}
+indiv <- indiv |> mutate(log_height = log(height), log_sla = log(sla))
+tpd <- td_tpd(grass, indiv,
+  site = quadrat, abundance = cover, cols = c(log_height, log_sla)
+)
+tpd |>
+  left_join(distinct(grass, quadrat = as.character(quadrat), position),
+            by = "quadrat") |>
+  arrange(position)
+```
+
+`td_tpd_dissim()` gives the functional dissimilarity between quadrats and
+splits it into the part due to different use of shared trait space and the
+part due to non-shared trait space:
+
+```{r tpd-dissim, eval = online}
+td_tpd_dissim(grass, indiv,
+  site = quadrat, abundance = cover, cols = c(log_height, log_sla)
+) |>
+  arrange(desc(dissimilarity)) |>
+  head()
+```
+
+The species densities are estimated with `TPD::TPDs()` (kernel density
+estimation with a plug-in bandwidth, package ks). Everything after that
+(community densities, richness, evenness, divergence, redundancy and
+dissimilarity) is computed in tidydiversity with matrix algebra. The
+results are identical to those of the TPD package.
+
+## Phylogenetic signal
+
+Do closely related species have similar traits? The Handbook's chapter 8
+data combine the DaPhnE phylogeny of the Central European flora (Durka
+and Michalski 2012) with leaf-height-seed traits from the LEDA database
+(Kleyer et al. 2008):
+
+```{r phylo-data, eval = online}
+base8 <- "https://raw.githubusercontent.com/larsito/traitbook_data/main/chapter8/"
+tree <- ape::read.tree(paste0(base8, "DaPhnE_01.tre"))
+lhs <- read.table(paste0(base8, "lhs.txt"), header = TRUE)
+lhs$species <- gsub(" ", "_", rownames(lhs))
+```
+
+```{r phylo-signal, eval = online}
+td_phylo_signal(lhs, tree, cols = c(log_sla, log_height, log_sm))
+```
+
+Blomberg's K is far below 1 for all three traits: they carry much less
+phylogenetic signal than expected under Brownian motion, although seed
+mass and height are more conserved than SLA. All three are still
+significantly greater than zero (p = 0.001). K is computed with
+phylogenetic independent contrasts, so the randomisation test is fast even
+for this tree of 5122 species. The values are identical to those of
+`phytools::phylosig()`.
+
+Phylogenetic distances (`td_phylo_dist()`) can replace trait distances in
+`td_rao()`, `td_ses()` or `td_fd_indices()`, and `td_combine_dist()`
+merges trait and phylogenetic distances into one.
+
 ## References
 
 Carmona, C. P. et al. (2015). Fine-scale trait structure along a
 productivity gradient: intraspecific variability makes the difference.
 *Journal of Vegetation Science*, 26, 1101-1111.
+
+Carmona, C. P. et al. (2016). Traits without borders: integrating
+functional diversity across scales. *Trends in Ecology & Evolution*, 31,
+382-394.
+
+Carmona, C. P. et al. (2019). Trait probability density (TPD): measuring
+functional diversity across scales based on TPD with R. *Ecology*, 100,
+e02876.
 
 Choler, P. (2005). Consistent shifts in Alpine plant traits along a
 mesotopographical gradient. *Arctic, Antarctic, and Alpine Research*, 37,
@@ -223,6 +300,14 @@ to R Tools*. Cambridge University Press.
 de Bello, F. et al. (2021b). Towards a more balanced combination of
 multiple traits when computing functional differences between species.
 *Methods in Ecology and Evolution*, 12, 443-448.
+
+Durka, W. and Michalski, S. G. (2012). Daphne: a dated phylogeny of a
+large European flora for phylogenetically informed ecological analyses.
+*Ecology*, 93, 2297.
+
+Kleyer, M. et al. (2008). The LEDA Traitbase: a database of life-history
+traits of the Northwest European flora. *Journal of Ecology*, 96,
+1266-1274.
 
 Leps, J. et al. (2011). Community trait response to environment:
 disentangling species turnover vs intraspecific trait variability
