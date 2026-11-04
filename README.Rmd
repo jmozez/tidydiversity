@@ -83,23 +83,38 @@ pak::pak("jmozez/tidydiversity")
 
 ## Example
 
-`ant_gradient` is a simulated dataset of ants along two elevational
-transects, made for examples. It is not field data.
+`png_ants` records ground-foraging ants at nutrient baits along the
+Mt Wilhelm elevational gradient in Papua New Guinea, in the dry and the wet
+season (Moses et al. 2023). Each row is one species at one bait, so
+diversity is estimated from the number of baits at which each species was
+found.
 
 ```{r example, message = FALSE}
 library(tidydiversity)
 library(dplyr)
 
-div_hill(ant_gradient, q = c(0, 1, 2), .by = transect)
+div_hill(png_ants, q = c(0, 1, 2), .by = season)
 ```
 
 Compare sites at equal sample completeness:
 
 ```{r}
 set.seed(1)
-div_standardise(ant_gradient, coverage = 0.9, .by = transect, nboot = 50) |>
+div_standardise(png_ants, coverage = 0.8, .by = season, nboot = 50) |>
   filter(q == 0)
 ```
+
+## Example data from Papua New Guinea
+
+Every example uses published field data, rebuilt from the original
+deposits by scripts in `data-raw/`.
+
+| Dataset | What it holds | Source |
+|---|---|---|
+| `png_ants` | Ants at nutrient baits, Mt Wilhelm, 200-3700 m, dry and wet season | Moses et al. (2023) *Global Ecology and Biogeography*, [doi:10.1111/geb.13757](https://doi.org/10.1111/geb.13757) |
+| `png_tree_ants` | Every ant nest in 1254 trees at 200, 900 and 1800 m | Plowman et al. (2020) *Ecography*, [doi:10.1111/ecog.04730](https://doi.org/10.1111/ecog.04730) |
+| `png_frogs` | 3390 frogs of 55 species at eight elevations, Mt Wilhelm | Dahl et al. (2023) *Biotropica*, [doi:10.1111/btp.13283](https://doi.org/10.1111/btp.13283) |
+| `wanang_butterflies` | Butterflies on 36 days over three years, Wanang forest plot | Luk et al. (2019) *Biotropica*, [doi:10.1111/btp.12671](https://doi.org/10.1111/btp.12671) |
 
 ## TD, PD and FD on one scale
 
@@ -172,12 +187,15 @@ the effect of unequal sampling effort before you compare sites.
 | Sample coverage | `div_coverage()` |
 | Rarefaction and extrapolation | `div_rarefy()` |
 | Coverage or size standardisation | `div_standardise()` |
-| Beta partitioning | `beta_pair()`, `beta_multi()`, `beta_decay()` |
-| Plots | `autoplot()` |
+| Sample completeness and evenness | `div_completeness()`, `div_evenness()` |
+| Bootstrap replicates | `div_boot()` |
+| Beta partitioning | `beta_pair()`, `beta_multi()`, `beta_decay()`, `beta_dist()` |
+| Plots and tables | `autoplot()`, `theme_tidydiversity()`, `div_table()` |
+| Model-ready output | `tidy()`, `glance()`, `add_site_data()` |
 
 ## Gallery
 
-Every plot that `autoplot()` draws, using the simulated `ant_gradient` data.
+Every plot that `autoplot()` draws, using `png_ants`.
 
 ```{r gallery-setup, message = FALSE, echo = FALSE}
 library(ggplot2)
@@ -188,13 +206,13 @@ theme_set(
       legend.position = "bottom"
     )
 )
-north <- filter(ant_gradient, transect == "north")
-curves <- div_rarefy(north, q = c(0, 1, 2), knots = 30)
+wet <- filter(png_ants, season == "wet")
+curves <- div_rarefy(wet, q = c(0, 1, 2), knots = 30)
 ```
 
 ### Rarefaction and extrapolation by sample size
 
-Solid lines are rarefied, dashed lines extrapolated to twice the sample size; points are the observed samples (north transect).
+Solid lines are rarefied, dashed lines extrapolated to twice the sample size; points are the observed samples (wet season).
 
 ```{r size, echo = FALSE, fig.height = 3.6, fig.alt = "Rarefaction and extrapolation by sample size"}
 autoplot(curves)
@@ -213,16 +231,16 @@ autoplot(curves, x = "coverage")
 Observed Hill numbers across orders q from 0 (richness) to 3 (dominant species), one line per site.
 
 ```{r profile, echo = FALSE, fig.height = 3.6, fig.alt = "Hill diversity profile"}
-div_hill(north, q = seq(0, 3, by = 0.25)) |>
+div_hill(wet, q = seq(0, 3, by = 0.25)) |>
   autoplot()
 ```
 
 ### Alpha diversity along elevation
 
-Observed q = 0, 1 and 2 diversity at each elevation, one line per transect.
+Observed q = 0, 1 and 2 diversity at each elevation, one line per season.
 
 ```{r elevation, echo = FALSE, fig.height = 3.6, fig.alt = "Alpha diversity along elevation"}
-div_hill(ant_gradient, .by = c(transect, elevation)) |>
+div_hill(png_ants, .by = c(season, elevation)) |>
   autoplot(gradient = elevation)
 ```
 
@@ -232,34 +250,34 @@ Open circles are observed values, filled circles the asymptotic estimates, with 
 
 ```{r estimate, echo = FALSE, fig.height = 5, fig.alt = "Observed and asymptotic diversity"}
 set.seed(1)
-div_estimate(ant_gradient, .by = transect, nboot = 50) |>
+div_estimate(png_ants, .by = season, nboot = 50) |>
   autoplot()
 ```
 
 ### Sample coverage
 
-Estimated sample coverage of each site against its number of individuals.
+Estimated sample coverage of each site against its number of bait occurrences.
 
 ```{r sample-coverage, echo = FALSE, fig.height = 3.4, fig.alt = "Sample coverage"}
-div_coverage(ant_gradient, .by = transect) |>
+div_coverage(png_ants, .by = season) |>
   autoplot()
 ```
 
 ### Pairwise beta diversity heatmap
 
-Total Sorensen dissimilarity between every pair of sites within each transect.
+Total Sorensen dissimilarity between every pair of sites within each season.
 
 ```{r beta-pair, echo = FALSE, fig.height = 4.4, fig.alt = "Pairwise beta diversity heatmap"}
-beta_pair(ant_gradient, .by = transect) |>
+beta_pair(png_ants, .by = season) |>
   autoplot()
 ```
 
 ### Multi-site beta partition
 
-Multi-site Sorensen dissimilarity of each transect split into turnover and nestedness.
+Multi-site Sorensen dissimilarity of each season split into turnover and nestedness.
 
 ```{r beta-multi, echo = FALSE, fig.height = 3.4, fig.alt = "Multi-site beta partition"}
-beta_multi(ant_gradient, .by = transect) |>
+beta_multi(png_ants, .by = season) |>
   autoplot()
 ```
 
@@ -268,13 +286,13 @@ beta_multi(ant_gradient, .by = transect) |>
 Pairwise total, turnover and nestedness dissimilarity against elevation difference, with linear trends.
 
 ```{r beta-decay, echo = FALSE, fig.height = 3.6, fig.alt = "Distance decay"}
-beta_decay(ant_gradient, gradient = elevation, .by = transect) |>
+beta_decay(png_ants, gradient = elevation, .by = season) |>
   autoplot()
 ```
 
 ## Output tables
 
-Example output of every main function on the simulated data. Long tables
+Example output of every main function on `png_ants`. Long tables
 show their first rows.
 
 ```{r tables-setup, include = FALSE}
@@ -285,10 +303,10 @@ show <- function(x, n = 8) {
 
 ### `div_hill()`
 
-Observed Hill numbers: `n` individuals, `diversity` of order `q` per site.
+Observed Hill numbers: `n` occurrences, `diversity` of order `q` per site.
 
 ```{r table-1, echo = FALSE}
-div_hill(ant_gradient, .by = transect) |>
+div_hill(png_ants, .by = season) |>
   show()
 ```
 
@@ -298,16 +316,16 @@ Asymptotic estimates: `observed` and `estimate` Hill numbers with bootstrap `se`
 
 ```{r table-2, echo = FALSE}
 set.seed(1)
-div_estimate(ant_gradient, .by = transect, nboot = 50) |>
+div_estimate(png_ants, .by = season, nboot = 50) |>
   show()
 ```
 
 ### `div_coverage()`
 
-Sample coverage: `n` individuals, `s_obs` observed species, `f1` singletons, `f2` doubletons and estimated `coverage`.
+Sample coverage: `n` occurrences, `s_obs` observed species, `f1` singletons, `f2` doubletons and estimated `coverage`.
 
 ```{r table-3, echo = FALSE}
-div_coverage(ant_gradient, .by = transect) |>
+div_coverage(png_ants, .by = season) |>
   show()
 ```
 
@@ -316,7 +334,7 @@ div_coverage(ant_gradient, .by = transect) |>
 Rarefaction and extrapolation: diversity of order `q` at sample size `m`, whether `method` is rarefaction, observed or extrapolation, the expected `coverage`, and `lower` and `upper` limits (`NA` when `nboot = 0`).
 
 ```{r table-4, echo = FALSE}
-div_rarefy(north, q = 0, knots = 8) |>
+div_rarefy(wet, q = 0, knots = 8) |>
   show()
 ```
 
@@ -326,7 +344,7 @@ Coverage standardisation: `diversity` of order `q` at a common `coverage` for ev
 
 ```{r table-5, echo = FALSE}
 set.seed(1)
-div_standardise(ant_gradient, coverage = 0.9, .by = transect, nboot = 50) |>
+div_standardise(png_ants, coverage = 0.8, .by = season, nboot = 50) |>
   show()
 ```
 
@@ -335,7 +353,7 @@ div_standardise(ant_gradient, coverage = 0.9, .by = transect, nboot = 50) |>
 Pairwise beta diversity: Sorensen `turnover` (Simpson) and `nestedness` components, which sum to `total` dissimilarity.
 
 ```{r table-6, echo = FALSE}
-beta_pair(ant_gradient, .by = transect) |>
+beta_pair(png_ants, .by = season) |>
   show()
 ```
 
@@ -344,7 +362,7 @@ beta_pair(ant_gradient, .by = transect) |>
 Multi-site beta diversity: `n_sites` in each group with the multi-site `turnover`, `nestedness` and `total`.
 
 ```{r table-7, echo = FALSE}
-beta_multi(ant_gradient, .by = transect) |>
+beta_multi(png_ants, .by = season) |>
   show()
 ```
 
@@ -353,7 +371,7 @@ beta_multi(ant_gradient, .by = transect) |>
 Distance decay: the pairwise components plus each site's `gradient_1` and `gradient_2` values and their `distance`.
 
 ```{r table-8, echo = FALSE}
-beta_decay(ant_gradient, gradient = elevation, .by = transect) |>
+beta_decay(png_ants, gradient = elevation, .by = season) |>
   show()
 ```
 
@@ -366,6 +384,9 @@ beta_decay(ant_gradient, gradient = elevation, .by = transect) |>
   extrapolation. *Ecology*, 93, 2533-2547.
 * Baselga, A. (2010). Partitioning the turnover and nestedness components
   of beta diversity. *Global Ecology and Biogeography*, 19, 134-143.
+* Moses, J. et al. (2023). Nutrient use by tropical ant communities varies
+  among three extensive elevational gradients: a cross-continental
+  comparison. *Global Ecology and Biogeography*, 32, 1958-1973.
 
 ## Licence
 

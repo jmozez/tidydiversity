@@ -1,6 +1,53 @@
+/* tidydiversity site styles. Colours follow the logo:
+   navy #0E2A47, teal #1A9E93 / #2BB3A6, gold #E3B455. */
+:root {
+  --td-navy: #0E2A47;
+  --td-teal: #1A9E93;
+  --td-teal-light: #2BB3A6;
+  --td-gold: #E3B455;
+  --td-surface: #F6F8FA;
+}
+[data-bs-theme="dark"] { --td-surface: #16202B; }
+
+/* Navbar */
+.navbar { box-shadow: 0 1px 0 rgba(255, 255, 255, .06), 0 2px 12px rgba(0, 0, 0, .18); }
+.navbar-brand { font-weight: 700; letter-spacing: -.01em; }
+.navbar .nav-link { font-weight: 500; }
+.dropdown-menu { border: 0; box-shadow: 0 8px 28px rgba(14, 42, 71, .18); padding: .4rem; }
+.dropdown-header { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--td-teal); }
+.dropdown-item { border-radius: .35rem; }
+
+/* Typography and layout */
+main h1, main h2, main h3 { letter-spacing: -.015em; }
+main h2 { margin-top: 2.2rem; padding-bottom: .35rem; border-bottom: 1px solid var(--bs-border-color); }
+main > .page-header h1 { font-weight: 800; }
+img.logo { filter: drop-shadow(0 6px 16px rgba(14, 42, 71, .25)); }
+
+/* Code */
+pre { background: var(--td-surface); border: 1px solid var(--bs-border-color); border-left: 3px solid var(--td-teal); border-radius: .5rem; padding: .9rem 1rem; }
+code { font-size: .88em; }
+:not(pre) > code { background: var(--td-surface); padding: .1em .35em; border-radius: .3rem; }
+
+/* Tables */
+main table { font-size: .92rem; }
+main table thead th { border-bottom: 2px solid var(--td-teal); font-weight: 600; }
+main table tbody tr:hover { background: var(--td-surface); }
+
+/* Figures */
+main img:not(.logo) { border-radius: .5rem; }
+
+/* Callouts and cards used on the home page */
 .td-hero { padding: 1.5rem 0 1rem; border-bottom: 1px solid var(--bs-border-color); margin-bottom: 1.5rem; }
 .td-hero .lead { font-size: 1.2rem; }
 .td-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin: 1rem 0 1.5rem; }
-.td-card { border: 1px solid var(--bs-border-color); border-top: 4px solid #14a7b4; border-radius: .5rem; padding: 1rem 1.1rem; background: var(--bs-body-bg); }
+.td-card { border: 1px solid var(--bs-border-color); border-top: 4px solid var(--td-teal); border-radius: .6rem; padding: 1rem 1.1rem; background: var(--bs-body-bg); transition: box-shadow .15s ease, transform .15s ease; }
+.td-card:hover { box-shadow: 0 8px 24px rgba(14, 42, 71, .12); transform: translateY(-2px); }
 .td-card h3 { font-size: 1.05rem; margin-top: 0; }
 .td-card p { margin-bottom: 0; font-size: .95rem; }
+
+/* Reference index */
+.ref-index h2 { border-bottom: 0; }
+.ref-index dt a { font-weight: 600; }
+
+/* Footer */
+footer { border-top: 1px solid var(--bs-border-color); margin-top: 3rem; padding-top: 1.2rem; font-size: .88rem; }
