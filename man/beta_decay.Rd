@@ -47,6 +47,6 @@ between sites along a gradient, such as elevation, to study how
 dissimilarity and its components change with distance.
 }
 \examples{
-decay <- beta_decay(ant_gradient, gradient = elevation, .by = transect)
+decay <- beta_decay(png_ants, gradient = elevation, .by = season)
 decay
 }

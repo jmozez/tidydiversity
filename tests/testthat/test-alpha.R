@@ -8,18 +8,19 @@ test_that("div_hill() gives richness, Shannon and Simpson", {
 })
 
 test_that(".by and group_by() agree", {
-  a <- div_hill(ant_gradient, .by = transect)
-  b <- div_hill(dplyr::group_by(ant_gradient, transect))
+  a <- div_hill(png_ants, .by = season)
+  b <- div_hill(dplyr::group_by(png_ants, season))
   expect_equal(a, b)
-  expect_named(a, c("transect", "site", "q", "n", "diversity"))
+  expect_named(a, c("season", "site", "q", "n", "diversity"))
 })
 
 test_that("div_estimate() matches iNEXT asymptotic estimates", {
   skip_if_not_installed("iNEXT")
-  for (s in unique(ant_gradient$site)[c(1, 6, 16)]) {
-    x <- ant_gradient$abundance[ant_gradient$site == s]
+  # Three sites with several species each; the 2700 m site has only one
+  for (s in c("MW0200", "MW0700", "MW1700")) {
+    x <- as.vector(table(png_ants$species[png_ants$site == s]))
     ref <- iNEXT::iNEXT(x, q = c(0, 1, 2), nboot = 0)$AsyEst
-    mine <- div_estimate(ant_gradient[ant_gradient$site == s, ], nboot = 0)
+    mine <- div_estimate(png_ants[png_ants$site == s, ], nboot = 0)
     expect_equal(mine$estimate, unname(ref$Estimator), tolerance = 1e-8)
     expect_equal(mine$observed, unname(ref$Observed), tolerance = 1e-8)
   }
@@ -35,9 +36,9 @@ test_that("div_estimate() bootstrap gives intervals", {
 
 test_that("div_coverage() matches iNEXT", {
   skip_if_not_installed("iNEXT")
-  out <- div_coverage(ant_gradient)
+  out <- div_coverage(png_ants)
   ref <- iNEXT::DataInfo(
-    split(ant_gradient$abundance, ant_gradient$site),
+    lapply(split(png_ants$species, png_ants$site), function(s) as.vector(table(s))),
     datatype = "abundance"
   )
   expect_equal(out$coverage, ref$SC, tolerance = 1e-4)

@@ -78,56 +78,68 @@ pak::pak("jmozez/tidydiversity")
 
 ## Example
 
-`ant_gradient` is a simulated dataset of ants along two elevational
-transects, made for examples. It is not field data.
+`png_ants` records ground-foraging ants at nutrient baits along the Mt
+Wilhelm elevational gradient in Papua New Guinea, in the dry and the wet
+season (Moses et al. 2023). Each row is one species at one bait, so
+diversity is estimated from the number of baits at which each species
+was found.
 
 ``` r
 library(tidydiversity)
 library(dplyr)
 
-div_hill(ant_gradient, q = c(0, 1, 2), .by = transect)
-#> # A tibble: 48 × 5
-#>    transect site       q     n diversity
-#>    <chr>    <chr>  <dbl> <int>     <dbl>
-#>  1 north    n_0200     0   137     15   
-#>  2 north    n_0200     1   137      7.12
-#>  3 north    n_0200     2   137      4.80
-#>  4 north    n_0400     0   116     19   
-#>  5 north    n_0400     1   116     11.1 
-#>  6 north    n_0400     2   116      7.44
-#>  7 north    n_0600     0    77     20   
-#>  8 north    n_0600     1    77     12.7 
-#>  9 north    n_0600     2    77      9.11
-#> 10 north    n_0800     0   118     20   
-#> # ℹ 38 more rows
+div_hill(png_ants, q = c(0, 1, 2), .by = season)
+#> # A tibble: 33 x 5
+#>    season site       q     n diversity
+#>    <chr>  <chr>  <dbl> <dbl>     <dbl>
+#>  1 dry    MW0200     0    47     16   
+#>  2 dry    MW0200     1    47     12.3 
+#>  3 dry    MW0200     2    47      9.91
+#>  4 wet    MW0200     0    76     21   
+#>  5 wet    MW0200     1    76     10.9 
+#>  6 wet    MW0200     2    76      6.99
+#>  7 dry    MW0700     0    23     15   
+#>  8 dry    MW0700     1    23     11.8 
+#>  9 dry    MW0700     2    23      8.67
+#> 10 wet    MW0700     0    58     28   
+#> # i 23 more rows
 ```
 
 Compare sites at equal sample completeness:
 
 ``` r
 set.seed(1)
-div_standardise(ant_gradient, coverage = 0.9, .by = transect, nboot = 50) |>
+div_standardise(png_ants, coverage = 0.8, .by = season, nboot = 50) |>
   filter(q == 0)
-#> # A tibble: 16 × 10
-#>    transect site       q     m method       coverage diversity    se lower upper
-#>    <chr>    <chr>  <dbl> <dbl> <chr>           <dbl>     <dbl> <dbl> <dbl> <dbl>
-#>  1 north    n_0200     0  38.4 rarefaction     0.900      9.89 0.594  8.73 11.1 
-#>  2 north    n_0400     0  53.3 rarefaction     0.900     15.0  1.02  13.0  17.0 
-#>  3 north    n_0600     0 129.  extrapolati…    0.900     25.7  4.71  16.4  34.9 
-#>  4 north    n_0800     0  64.8 rarefaction     0.900     15.7  1.63  12.6  18.9 
-#>  5 north    n_1000     0  89.2 extrapolati…    0.900     20.7  2.24  16.3  25.1 
-#>  6 north    n_1200     0  69.9 rarefaction     0.900     19.7  1.44  16.9  22.5 
-#>  7 north    n_1400     0  28.6 rarefaction     0.900      6.89 0.864  5.19  8.58
-#>  8 north    n_1600     0  63.2 extrapolati…    0.900     14.1  2.80   8.58 19.5 
-#>  9 south    s_0200     0  50.0 rarefaction     0.900     13.2  0.864 11.5  14.9 
-#> 10 south    s_0400     0  55.8 extrapolati…    0.900     17.6  1.47  14.8  20.5 
-#> 11 south    s_0600     0  72.5 rarefaction     0.900     14.6  1.46  11.7  17.4 
-#> 12 south    s_0800     0 103.  extrapolati…    0.900     23.4  3.57  16.5  30.4 
-#> 13 south    s_1000     0  53.9 rarefaction     0.900      9.35 1.12   7.15 11.6 
-#> 14 south    s_1200     0  35.2 extrapolati…    0.900     13.1  1.31  10.6  15.7 
-#> 15 south    s_1400     0  19.3 rarefaction     0.900      5.71 0.395  4.94  6.49
-#> 16 south    s_1600     0  12.1 rarefaction     0.900      3.61 0.260  3.10  4.12
+#> Warning: Extrapolation beyond twice the observed sample size at 2 sites.
+#> i Richness (q = 0) estimates there may be strongly biased (Chao et al. 2014).
+#> # A tibble: 11 x 10
+#>    season site       q      m method       coverage diversity     se lower upper
+#>    <chr>  <chr>  <dbl>  <dbl> <chr>           <dbl>     <dbl>  <dbl> <dbl> <dbl>
+#>  1 dry    MW0200     0  29.8  rarefaction     0.800     13.4   1.01  11.5  15.4 
+#>  2 wet    MW0200     0  46.7  rarefaction     0.800     16.0   1.46  13.1  18.8 
+#>  3 dry    MW0700     0 149.   extrapolati~    0.800     57.3  18.5   21.1  93.5 
+#>  4 wet    MW0700     0 119.   extrapolati~    0.800     42.8   6.52  30.0  55.6 
+#>  5 dry    MW1200     0  34.2  extrapolati~    0.800     14.2   1.80  10.6  17.7 
+#>  6 wet    MW1200     0  41.5  rarefaction     0.800     17.3   1.85  13.6  20.9 
+#>  7 dry    MW1700     0   8.01 rarefaction     0.800      3.89  0.544  2.83  4.96
+#>  8 wet    MW1700     0  26.4  rarefaction     0.800      8.57  1.62   5.39 11.7 
+#>  9 dry    MW2200     0  14.6  extrapolati~    0.800      6.35  1.26   3.88  8.83
+#> 10 wet    MW2200     0   9.16 rarefaction     0.800      4.05  0.593  2.88  5.21
+#> 11 dry    MW2700     0   3.00 rarefaction     1          1     0      1     1
 ```
+
+## Example data from Papua New Guinea
+
+Every example uses published field data, rebuilt from the original
+deposits by scripts in `data-raw/`.
+
+| Dataset              | What it holds                                                      | Source                                                                                                            |
+|----------------------|--------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `png_ants`           | Ants at nutrient baits, Mt Wilhelm, 200-3700 m, dry and wet season | Moses et al. (2023) *Global Ecology and Biogeography*, [doi:10.1111/geb.13757](https://doi.org/10.1111/geb.13757) |
+| `png_tree_ants`      | Every ant nest in 1254 trees at 200, 900 and 1800 m                | Plowman et al. (2020) *Ecography*, [doi:10.1111/ecog.04730](https://doi.org/10.1111/ecog.04730)                   |
+| `png_frogs`          | 3390 frogs of 55 species at eight elevations, Mt Wilhelm           | Dahl et al. (2023) *Biotropica*, [doi:10.1111/btp.13283](https://doi.org/10.1111/btp.13283)                       |
+| `wanang_butterflies` | Butterflies on 36 days over three years, Wanang forest plot        | Luk et al. (2019) *Biotropica*, [doi:10.1111/btp.12671](https://doi.org/10.1111/btp.12671)                        |
 
 ## TD, PD and FD on one scale
 
@@ -196,26 +208,32 @@ of unequal sampling effort before you compare sites.
 
 ## Functions
 
-| Task                               | Function                                                 |
-|------------------------------------|----------------------------------------------------------|
-| Tidy community data                | `as_community()`, `community_wide()`, `community_long()` |
-| Observed Hill numbers (TD, PD, FD) | `div_hill()`                                             |
-| Asymptotic estimates               | `div_estimate()`                                         |
-| Sample coverage                    | `div_coverage()`                                         |
-| Rarefaction and extrapolation      | `div_rarefy()`                                           |
-| Coverage or size standardisation   | `div_standardise()`                                      |
-| Beta partitioning                  | `beta_pair()`, `beta_multi()`, `beta_decay()`            |
-| Plots                              | `autoplot()`                                             |
+| Task                               | Function                                                     |
+|------------------------------------|--------------------------------------------------------------|
+| Tidy community data                | `as_community()`, `community_wide()`, `community_long()`     |
+| Observed Hill numbers (TD, PD, FD) | `div_hill()`                                                 |
+| Asymptotic estimates               | `div_estimate()`                                             |
+| Sample coverage                    | `div_coverage()`                                             |
+| Rarefaction and extrapolation      | `div_rarefy()`                                               |
+| Coverage or size standardisation   | `div_standardise()`                                          |
+| Sample completeness and evenness   | `div_completeness()`, `div_evenness()`                       |
+| Bootstrap replicates               | `div_boot()`                                                 |
+| Beta partitioning                  | `beta_pair()`, `beta_multi()`, `beta_decay()`, `beta_dist()` |
+| Plots and tables                   | `autoplot()`, `theme_tidydiversity()`, `div_table()`         |
+| Model-ready output                 | `tidy()`, `glance()`, `add_site_data()`                      |
 
 ## Gallery
 
-Every plot that `autoplot()` draws, using the simulated `ant_gradient`
-data.
+Every plot that `autoplot()` draws, using `png_ants`.
 
 ### Rarefaction and extrapolation by sample size
 
 Solid lines are rarefied, dashed lines extrapolated to twice the sample
-size; points are the observed samples (north transect).
+size; points are the observed samples (wet season).
+
+    #> Ignoring unknown labels:
+    #> * fill : "site"
+    #> * shape : "Order"
 
 <img src="man/figures/README-size-1.png" alt="Rarefaction and extrapolation by sample size" width="100%" />
 
@@ -223,6 +241,10 @@ size; points are the observed samples (north transect).
 
 The same curves plotted against estimated sample coverage, the basis for
 coverage-standardised comparison.
+
+    #> Ignoring unknown labels:
+    #> * fill : "site"
+    #> * shape : "Order"
 
 <img src="man/figures/README-coverage-curve-1.png" alt="Rarefaction and extrapolation by sample coverage" width="100%" />
 
@@ -236,7 +258,7 @@ species), one line per site.
 ### Alpha diversity along elevation
 
 Observed q = 0, 1 and 2 diversity at each elevation, one line per
-transect.
+season.
 
 <img src="man/figures/README-elevation-1.png" alt="Alpha diversity along elevation" width="100%" />
 
@@ -249,22 +271,22 @@ estimates, with 95% bootstrap intervals.
 
 ### Sample coverage
 
-Estimated sample coverage of each site against its number of
-individuals.
+Estimated sample coverage of each site against its number of bait
+occurrences.
 
 <img src="man/figures/README-sample-coverage-1.png" alt="Sample coverage" width="100%" />
 
 ### Pairwise beta diversity heatmap
 
 Total Sorensen dissimilarity between every pair of sites within each
-transect.
+season.
 
 <img src="man/figures/README-beta-pair-1.png" alt="Pairwise beta diversity heatmap" width="100%" />
 
 ### Multi-site beta partition
 
-Multi-site Sorensen dissimilarity of each transect split into turnover
-and nestedness.
+Multi-site Sorensen dissimilarity of each season split into turnover and
+nestedness.
 
 <img src="man/figures/README-beta-multi-1.png" alt="Multi-site beta partition" width="100%" />
 
@@ -273,60 +295,63 @@ and nestedness.
 Pairwise total, turnover and nestedness dissimilarity against elevation
 difference, with linear trends.
 
+    #> Warning: Removed 66 rows containing missing values or values outside the scale range
+    #> (`geom_smooth()`).
+
 <img src="man/figures/README-beta-decay-1.png" alt="Distance decay" width="100%" />
 
 ## Output tables
 
-Example output of every main function on the simulated data. Long tables
-show their first rows.
+Example output of every main function on `png_ants`. Long tables show
+their first rows.
 
 ### `div_hill()`
 
-Observed Hill numbers: `n` individuals, `diversity` of order `q` per
+Observed Hill numbers: `n` occurrences, `diversity` of order `q` per
 site.
 
-| transect | site   |   q |   n | diversity |
-|:---------|:-------|----:|----:|----------:|
-| north    | n_0200 |   0 | 137 |    15.000 |
-| north    | n_0200 |   1 | 137 |     7.122 |
-| north    | n_0200 |   2 | 137 |     4.801 |
-| north    | n_0400 |   0 | 116 |    19.000 |
-| north    | n_0400 |   1 | 116 |    11.138 |
-| north    | n_0400 |   2 | 116 |     7.442 |
-| north    | n_0600 |   0 |  77 |    20.000 |
-| north    | n_0600 |   1 |  77 |    12.686 |
+| season | site   |   q |   n | diversity |
+|:-------|:-------|----:|----:|----------:|
+| dry    | MW0200 |   0 |  47 |    16.000 |
+| dry    | MW0200 |   1 |  47 |    12.278 |
+| dry    | MW0200 |   2 |  47 |     9.906 |
+| wet    | MW0200 |   0 |  76 |    21.000 |
+| wet    | MW0200 |   1 |  76 |    10.876 |
+| wet    | MW0200 |   2 |  76 |     6.993 |
+| dry    | MW0700 |   0 |  23 |    15.000 |
+| dry    | MW0700 |   1 |  23 |    11.758 |
 
 ### `div_estimate()`
 
 Asymptotic estimates: `observed` and `estimate` Hill numbers with
 bootstrap `se`, `lower` and `upper` 95% limits.
 
-| transect | site   |   q | observed | estimate |     se |  lower |   upper |
-|:---------|:-------|----:|---------:|---------:|-------:|-------:|--------:|
-| north    | n_0200 |   0 |   15.000 |   24.927 |  8.706 | 17.259 |  58.625 |
-| north    | n_0200 |   1 |    7.122 |    7.781 |  0.690 |  7.122 |   9.132 |
-| north    | n_0200 |   2 |    4.801 |    4.940 |  0.466 |  4.801 |   5.853 |
-| north    | n_0400 |   0 |   19.000 |   25.196 | 10.103 | 19.665 |  76.750 |
-| north    | n_0400 |   1 |   11.138 |   12.470 |  1.372 | 11.138 |  15.159 |
-| north    | n_0400 |   2 |    7.442 |    7.884 |  1.146 |  7.442 |  10.130 |
-| north    | n_0600 |   0 |   20.000 |   59.974 | 31.751 | 30.150 | 177.429 |
-| north    | n_0600 |   1 |   12.686 |   17.134 |  4.002 | 12.686 |  24.977 |
+| season | site   |   q | observed | estimate |     se |  lower |   upper |
+|:-------|:-------|----:|---------:|---------:|-------:|-------:|--------:|
+| dry    | MW0200 |   0 |   16.000 |   18.447 |  5.913 | 16.162 |  53.059 |
+| dry    | MW0200 |   1 |   12.278 |   15.183 |  1.700 | 12.278 |  18.515 |
+| dry    | MW0200 |   2 |    9.906 |   12.284 |  1.859 |  9.906 |  15.928 |
+| wet    | MW0200 |   0 |   21.000 |   32.941 | 11.434 | 23.457 |  79.036 |
+| wet    | MW0200 |   1 |   10.876 |   13.793 |  2.024 | 10.876 |  17.761 |
+| wet    | MW0200 |   2 |    6.993 |    7.600 |  1.099 |  6.993 |   9.754 |
+| dry    | MW0700 |   0 |   15.000 |   83.870 | 39.982 | 38.949 | 213.049 |
+| dry    | MW0700 |   1 |   11.758 |   38.453 | 30.595 | 11.758 |  98.417 |
 
 ### `div_coverage()`
 
-Sample coverage: `n` individuals, `s_obs` observed species, `f1`
+Sample coverage: `n` occurrences, `s_obs` observed species, `f1`
 singletons, `f2` doubletons and estimated `coverage`.
 
-| transect | site   |   n | s_obs |  f1 |  f2 | coverage |
-|:---------|:-------|----:|------:|----:|----:|---------:|
-| north    | n_0200 | 137 |    15 |   5 |   0 |    0.964 |
-| north    | n_0400 | 116 |    19 |   5 |   2 |    0.957 |
-| north    | n_0600 |  77 |    20 |   9 |   1 |    0.883 |
-| north    | n_0800 | 118 |    20 |   8 |   2 |    0.932 |
-| north    | n_1000 |  74 |    19 |   9 |   4 |    0.880 |
-| north    | n_1200 |  73 |    20 |   7 |   5 |    0.906 |
-| north    | n_1400 |  76 |    10 |   3 |   3 |    0.962 |
-| north    | n_1600 |  37 |    11 |   5 |   1 |    0.866 |
+| season | site   |   n | s_obs |  f1 |  f2 | coverage |
+|:-------|:-------|----:|------:|----:|----:|---------:|
+| dry    | MW0200 |  47 |    16 |   5 |   5 |    0.898 |
+| wet    | MW0200 |  76 |    21 |  11 |   5 |    0.857 |
+| dry    | MW0700 |  23 |    15 |  12 |   1 |    0.482 |
+| wet    | MW0700 |  58 |    28 |  17 |   3 |    0.709 |
+| dry    | MW1200 |  29 |    13 |   7 |   3 |    0.766 |
+| wet    | MW1200 |  57 |    20 |   9 |   3 |    0.844 |
+| dry    | MW1700 |  17 |     5 |   1 |   2 |    0.953 |
+| wet    | MW1700 |  34 |    10 |   6 |   2 |    0.827 |
 
 ### `div_rarefy()`
 
@@ -337,14 +362,14 @@ expected `coverage`, and `lower` and `upper` limits (`NA` when
 
 | site   |   q |   m | method        | diversity | coverage | lower | upper |
 |:-------|----:|----:|:--------------|----------:|---------:|------:|------:|
-| n_0200 |   0 |   1 | rarefaction   |     1.000 |    0.202 |    NA |    NA |
-| n_0200 |   0 |  68 | rarefaction   |    12.096 |    0.944 |    NA |    NA |
-| n_0200 |   0 | 136 | rarefaction   |    14.964 |    0.964 |    NA |    NA |
-| n_0200 |   0 | 137 | observed      |    15.000 |    0.964 |    NA |    NA |
-| n_0200 |   0 | 138 | extrapolation |    15.036 |    0.964 |    NA |    NA |
-| n_0200 |   0 | 183 | extrapolation |    16.542 |    0.969 |    NA |    NA |
-| n_0200 |   0 | 228 | extrapolation |    17.818 |    0.974 |    NA |    NA |
-| n_0200 |   0 | 274 | extrapolation |    18.923 |    0.978 |    NA |    NA |
+| MW0200 |   0 |   1 | rarefaction   |     1.000 |    0.132 |    NA |    NA |
+| MW0200 |   0 |  38 | rarefaction   |    14.140 |    0.780 |    NA |    NA |
+| MW0200 |   0 |  75 | rarefaction   |    20.855 |    0.855 |    NA |    NA |
+| MW0200 |   0 |  76 | observed      |    21.000 |    0.857 |    NA |    NA |
+| MW0200 |   0 |  77 | extrapolation |    21.143 |    0.859 |    NA |    NA |
+| MW0200 |   0 | 102 | extrapolation |    24.211 |    0.895 |    NA |    NA |
+| MW0200 |   0 | 127 | extrapolation |    26.482 |    0.923 |    NA |    NA |
+| MW0200 |   0 | 152 | extrapolation |    28.162 |    0.943 |    NA |    NA |
 
 ### `div_standardise()`
 
@@ -352,58 +377,61 @@ Coverage standardisation: `diversity` of order `q` at a common
 `coverage` for every site, with the matching sample size `m`, the
 `method` used, and bootstrap `se`, `lower` and `upper` limits.
 
-| transect | site   |   q |       m | method        | coverage | diversity |    se |  lower |  upper |
-|:---------|:-------|----:|--------:|:--------------|---------:|----------:|------:|-------:|-------:|
-| north    | n_0200 |   0 |  38.396 | rarefaction   |      0.9 |     9.895 | 0.594 |  8.730 | 11.060 |
-| north    | n_0200 |   1 |  38.396 | rarefaction   |      0.9 |     6.147 | 0.478 |  5.211 |  7.084 |
-| north    | n_0200 |   2 |  38.396 | rarefaction   |      0.9 |     4.480 | 0.377 |  3.740 |  5.220 |
-| north    | n_0400 |   0 |  53.281 | rarefaction   |      0.9 |    15.037 | 1.020 | 13.038 | 17.036 |
-| north    | n_0400 |   1 |  53.281 | rarefaction   |      0.9 |     9.946 | 0.852 |  8.276 | 11.616 |
-| north    | n_0400 |   2 |  53.281 | rarefaction   |      0.9 |     6.982 | 0.881 |  5.256 |  8.708 |
-| north    | n_0600 |   0 | 129.431 | extrapolation |      0.9 |    25.674 | 4.709 | 16.445 | 34.903 |
-| north    | n_0600 |   1 | 129.431 | extrapolation |      0.9 |    14.059 | 2.196 |  9.755 | 18.363 |
+    #> Warning: Extrapolation beyond twice the observed sample size at 2 sites.
+    #> i Richness (q = 0) estimates there may be strongly biased (Chao et al. 2014).
+
+| season | site   |   q |       m | method        | coverage | diversity |     se |  lower |  upper |
+|:-------|:-------|----:|--------:|:--------------|---------:|----------:|-------:|-------:|-------:|
+| dry    | MW0200 |   0 |  29.841 | rarefaction   |      0.8 |    13.431 |  1.009 | 11.453 | 15.409 |
+| dry    | MW0200 |   1 |  29.841 | rarefaction   |      0.8 |    10.805 |  1.032 |  8.782 | 12.829 |
+| dry    | MW0200 |   2 |  29.841 | rarefaction   |      0.8 |     8.913 |  1.046 |  6.862 | 10.964 |
+| wet    | MW0200 |   0 |  46.735 | rarefaction   |      0.8 |    15.984 |  1.455 | 13.132 | 18.836 |
+| wet    | MW0200 |   1 |  46.735 | rarefaction   |      0.8 |     9.664 |  1.089 |  7.530 | 11.797 |
+| wet    | MW0200 |   2 |  46.735 | rarefaction   |      0.8 |     6.659 |  0.824 |  5.045 |  8.274 |
+| dry    | MW0700 |   0 | 149.047 | extrapolation |      0.8 |    57.270 | 18.463 | 21.082 | 93.457 |
+| dry    | MW0700 |   1 | 149.047 | extrapolation |      0.8 |    32.013 | 16.525 |  0.000 | 64.401 |
 
 ### `beta_pair()`
 
 Pairwise beta diversity: Sorensen `turnover` (Simpson) and `nestedness`
 components, which sum to `total` dissimilarity.
 
-| transect | site_1 | site_2 | turnover | nestedness | total |
-|:---------|:-------|:-------|---------:|-----------:|------:|
-| north    | n_0200 | n_0400 |    0.200 |      0.094 | 0.294 |
-| north    | n_0200 | n_0600 |    0.467 |      0.076 | 0.543 |
-| north    | n_0200 | n_0800 |    0.600 |      0.057 | 0.657 |
-| north    | n_0200 | n_1000 |    0.600 |      0.047 | 0.647 |
-| north    | n_0200 | n_1200 |    0.533 |      0.067 | 0.600 |
-| north    | n_0200 | n_1400 |    0.800 |      0.040 | 0.840 |
-| north    | n_0200 | n_1600 |    0.818 |      0.028 | 0.846 |
-| north    | n_0400 | n_0600 |    0.368 |      0.016 | 0.385 |
+| season | site_1 | site_2 | turnover | nestedness | total |
+|:-------|:-------|:-------|---------:|-----------:|------:|
+| dry    | MW0200 | MW0700 |    0.667 |      0.011 | 0.677 |
+| dry    | MW0200 | MW1200 |    0.769 |      0.024 | 0.793 |
+| dry    | MW0200 | MW1700 |    0.800 |      0.105 | 0.905 |
+| dry    | MW0200 | MW2200 |    1.000 |      0.000 | 1.000 |
+| dry    | MW0200 | MW2700 |    1.000 |      0.000 | 1.000 |
+| dry    | MW0700 | MW1200 |    0.615 |      0.027 | 0.643 |
+| dry    | MW0700 | MW1700 |    0.800 |      0.100 | 0.900 |
+| dry    | MW0700 | MW2200 |    0.833 |      0.071 | 0.905 |
 
 ### `beta_multi()`
 
 Multi-site beta diversity: `n_sites` in each group with the multi-site
 `turnover`, `nestedness` and `total`.
 
-| transect | n_sites | turnover | nestedness | total |
-|:---------|--------:|---------:|-----------:|------:|
-| north    |       8 |    0.674 |      0.060 | 0.733 |
-| south    |       8 |    0.660 |      0.078 | 0.738 |
+| season | n_sites | turnover | nestedness | total |
+|:-------|--------:|---------:|-----------:|------:|
+| dry    |       6 |    0.825 |      0.072 | 0.897 |
+| wet    |       5 |    0.790 |      0.074 | 0.864 |
 
 ### `beta_decay()`
 
 Distance decay: the pairwise components plus each site’s `gradient_1`
 and `gradient_2` values and their `distance`.
 
-| transect | site_1 | site_2 | turnover | nestedness | total | gradient_1 | gradient_2 | distance |
-|:---------|:-------|:-------|---------:|-----------:|------:|-----------:|-----------:|---------:|
-| north    | n_0200 | n_0400 |    0.200 |      0.094 | 0.294 |        200 |        400 |      200 |
-| north    | n_0200 | n_0600 |    0.467 |      0.076 | 0.543 |        200 |        600 |      400 |
-| north    | n_0200 | n_0800 |    0.600 |      0.057 | 0.657 |        200 |        800 |      600 |
-| north    | n_0200 | n_1000 |    0.600 |      0.047 | 0.647 |        200 |       1000 |      800 |
-| north    | n_0200 | n_1200 |    0.533 |      0.067 | 0.600 |        200 |       1200 |     1000 |
-| north    | n_0200 | n_1400 |    0.800 |      0.040 | 0.840 |        200 |       1400 |     1200 |
-| north    | n_0200 | n_1600 |    0.818 |      0.028 | 0.846 |        200 |       1600 |     1400 |
-| north    | n_0400 | n_0600 |    0.368 |      0.016 | 0.385 |        400 |        600 |      200 |
+| season | site_1 | site_2 | turnover | nestedness | total | gradient_1 | gradient_2 | distance |
+|:-------|:-------|:-------|---------:|-----------:|------:|-----------:|-----------:|---------:|
+| dry    | MW0200 | MW0700 |    0.667 |      0.011 | 0.677 |        200 |        700 |      500 |
+| dry    | MW0200 | MW1200 |    0.769 |      0.024 | 0.793 |        200 |       1200 |     1000 |
+| dry    | MW0200 | MW1700 |    0.800 |      0.105 | 0.905 |        200 |       1700 |     1500 |
+| dry    | MW0200 | MW2200 |    1.000 |      0.000 | 1.000 |        200 |       2200 |     2000 |
+| dry    | MW0200 | MW2700 |    1.000 |      0.000 | 1.000 |        200 |       2700 |     2500 |
+| dry    | MW0700 | MW1200 |    0.615 |      0.027 | 0.643 |        700 |       1200 |      500 |
+| dry    | MW0700 | MW1700 |    0.800 |      0.100 | 0.900 |        700 |       1700 |     1000 |
+| dry    | MW0700 | MW2200 |    0.833 |      0.071 | 0.905 |        700 |       2200 |     1500 |
 
 ## References
 
@@ -414,6 +442,10 @@ and `gradient_2` values and their `distance`.
 - Baselga, A. (2010). Partitioning the turnover and nestedness
   components of beta diversity. *Global Ecology and Biogeography*, 19,
   134-143.
+- Moses, J. et al. (2023). Nutrient use by tropical ant communities
+  varies among three extensive elevational gradients: a
+  cross-continental comparison. *Global Ecology and Biogeography*, 32,
+  1958-1973.
 
 ## Licence
 

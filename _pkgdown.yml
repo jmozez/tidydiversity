@@ -8,12 +8,17 @@ template:
       alt: "tidydiversity hex logo"
   light-switch: true
   bslib:
-    primary: "#14a7b4"
+    primary: "#1A9E93"
+    secondary: "#0E2A47"
     base_font: {google: "Inter"}
     heading_font: {google: "Inter"}
     code_font: {google: "JetBrains Mono"}
-    link-color: "#0f8a95"
-    navbar-bg: "#0f2742"
+    font-size-base: 1rem
+    line-height-base: 1.65
+    headings-font-weight: 700
+    link-color: "#13857B"
+    navbar-bg: "#0E2A47"
+    border-radius: 0.5rem
 
 navbar:
   bg: dark
@@ -30,7 +35,15 @@ navbar:
         - text: Overview by taxon
           href: articles/tutorials.html
         - text: -------
-        - text: Real-world data
+        - text: Papua New Guinea
+        - text: Ants along Mt Wilhelm and in canopies
+          href: articles/case-png-ants.html
+        - text: Frogs along Mt Wilhelm
+          href: articles/case-png-frogs.html
+        - text: Butterflies at Wanang
+          href: articles/case-png-butterflies.html
+        - text: -------
+        - text: Other regions
         - text: Insects (caddisflies)
           href: articles/case-insects.html
         - text: Mammals (desert rodents)
@@ -65,7 +78,8 @@ home:
   description: >
     Taxonomic, phylogenetic and functional diversity as Hill numbers of the
     same order q, standardised by sample size or coverage, in one tidy R
-    workflow. Estimates match iNEXT and iNEXT.3D.
+    workflow, demonstrated on published field data from Papua New Guinea.
+    Estimates match iNEXT and iNEXT.3D.
   sidebar:
     structure: [links, license, community, citation, authors, dev]
 
@@ -76,7 +90,10 @@ reference:
       - add_site_data
   - title: Datasets
     contents:
-      - ant_gradient
+      - png_ants
+      - png_tree_ants
+      - png_frogs
+      - wanang_butterflies
       - portal_rodents
   - title: Alpha diversity
     contents:
@@ -118,6 +135,11 @@ articles:
       - beta-partitioning
       - articles/modelling
       - articles/publication
+  - title: Papua New Guinea case studies
+    contents:
+      - articles/case-png-ants
+      - articles/case-png-frogs
+      - articles/case-png-butterflies
   - title: Real-world tutorials
     contents:
       - articles/tutorials
@@ -128,3 +150,8 @@ articles:
   - title: Gallery
     contents:
       - articles/gallery
+
+footer:
+  structure:
+    left: [developed_by]
+    right: [built_with]

@@ -94,8 +94,8 @@ each site, with the matching sample coverage. Rarefaction is exact
 estimators, reproducing iNEXT.
 }
 \examples{
-curves <- div_rarefy(ant_gradient, q = 0, .by = transect, knots = 20)
+curves <- div_rarefy(png_ants, q = 0, .by = season, knots = 20)
 curves
 
-div_rarefy(ant_gradient, size = c(50, 100, 200), .by = transect)
+div_rarefy(png_ants, size = c(10, 20, 40), .by = season)
 }

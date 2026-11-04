@@ -1,9 +1,50 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="518" height="600" viewBox="0 0 518 600"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description><dc:creator>RealFaviconGenerator</dc:creator><dc:source>https://realfavicongenerator.net</dc:source></rdf:Description></rdf:RDF></metadata><polygon points="259,4 515,152 515,448 259,596 3,448 3,152" fill="#14a7b4"></polygon><polygon points="259,18 503,159 503,441 259,582 15,441 15,159" fill="#0f2742"></polygon><circle cx="259" cy="198" r="92" fill="#1aa3b3" fill-opacity="0.62"></circle><circle cx="207" cy="286" r="92" fill="#e0952c" fill-opacity="0.62"></circle><circle cx="311" cy="286" r="92" fill="#78b043" fill-opacity="0.62"></circle><path d="M220,302 L248,272 L262,286 L276,274 L302,302Z" fill="#e3eff2"></path><path d="M242,278 L248,272 L254,278 L250,276 L246,280Z" fill="#ffffff"></path><g fill="#ffffff" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M255,247 L262,253 L268,261 M249,248 L249,255 L244,262 M243,247 L236,253 L227,260" stroke-width="2.4" fill="none"></path>
-    <path d="M276,234 L279,225 L288,227 M272,233 L271,224 L278,219" stroke-width="2" fill="none"></path>
-    <ellipse cx="217" cy="244" rx="14" ry="10" transform="rotate(-12 217 244)" stroke="none"></ellipse>
-    <ellipse cx="234" cy="245" rx="4" ry="3.6" stroke="none"></ellipse>
-    <path d="M239,246 C240,239 250,237 258,239 C264,240 266,245 262,248 C254,251 244,251 239,246Z" stroke="none"></path>
-    <path d="M230,245 L262,244" stroke-width="2" fill="none"></path>
-    <ellipse cx="271" cy="240" rx="8" ry="6.5" transform="rotate(-15 271 240)" stroke="none"></ellipse>
-  </g><path d="M282,232 C284,208 302,196 326,194 C322,218 306,232 282,232Z" fill="#8ccf4a"></path><path d="M284,230 L318,201" stroke="#f4f7f8" stroke-width="2" stroke-linecap="round"></path><text x="259" y="450" text-anchor="middle" font-family="DejaVu Sans, Helvetica, Arial, sans-serif" font-weight="bold" font-size="54" fill="#ffffff" textLength="380" lengthAdjust="spacingAndGlyphs">tidydiversity</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 600" width="520" height="600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14365A"/><stop offset="1" stop-color="#0B2340"/>
+    </linearGradient>
+    <linearGradient id="mtn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E5F8A"/><stop offset="1" stop-color="#1B4670"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F3CF7A"/><stop offset="1" stop-color="#C99A3E"/>
+    </linearGradient>
+    <clipPath id="hex"><path d="M260 14 L506 156 L506 444 L260 586 L14 444 L14 156 Z"/></clipPath>
+  </defs>
+
+  <!-- Hexagon -->
+  <path d="M260 14 L506 156 L506 444 L260 586 L14 444 L14 156 Z" fill="url(#bg)"/>
+
+  <g clip-path="url(#hex)"><g transform="translate(260 318) scale(1.55) translate(-262 -262)">
+    <!-- Mountains -->
+    <path d="M70 330 L178 196 L238 270 L330 152 L452 330 Z" fill="url(#mtn)"/>
+    <!-- Snow caps -->
+    <path d="M178 196 L199 222 L190 218 L182 228 L172 219 L160 219 Z" fill="#DCE6F0"/>
+    <path d="M330 152 L357 187 L345 181 L334 194 L322 182 L306 183 Z" fill="#E9F0F6"/>
+
+    <!-- Phylogenetic branching inside the peaks (ultrametric tree, tips on the ground line) -->
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <g stroke="#E3EEF7" stroke-width="7">
+        <path d="M330 196 V226 H290 V252 M330 226 H372 V252"/>
+        <path d="M178 236 V258 H150 V282 M178 258 H206 V282"/>
+      </g>
+      <g stroke="#BCD4EA" stroke-width="6">
+        <path d="M290 252 H268 V280 M290 252 H312 V280 M372 252 H350 V280 M372 252 H396 V280"/>
+        <path d="M150 282 H134 V300 M150 282 H164 V300 M206 282 H192 V300 M206 282 H220 V300"/>
+      </g>
+      <g stroke="#93B6D6" stroke-width="4.5">
+        <path d="M268 280 H258 V318 M268 280 H278 V318 M312 280 H302 V318 M312 280 H322 V318"/>
+        <path d="M350 280 H340 V318 M350 280 H360 V318 M396 280 H386 V318 M396 280 H410 V318"/>
+        <path d="M134 300 V318 M164 300 V318 M192 300 V318 M220 300 V318"/>
+      </g>
+    </g>
+
+    <!-- Ground line -->
+    <rect x="40" y="328" width="440" height="11" rx="5.5" fill="#2BB3A6"/>
+
+      </g>
+</g>
+  <!-- Border on top -->
+  <path d="M260 14 L506 156 L506 444 L260 586 L14 444 L14 156 Z" fill="none" stroke="#2BB3A6" stroke-width="30" stroke-linejoin="round"/>
+
+  </svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 600" width="520" height="600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14365A"/><stop offset="1" stop-color="#0B2340"/>
+    </linearGradient>
+    <linearGradient id="mtn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E5F8A"/><stop offset="1" stop-color="#1B4670"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F3CF7A"/><stop offset="1" stop-color="#C99A3E"/>
+    </linearGradient>
+    <clipPath id="hex"><path d="M260 14 L506 156 L506 444 L260 586 L14 444 L14 156 Z"/></clipPath>
+  </defs>
+
+  <!-- Hexagon -->
+  <path d="M260 14 L506 156 L506 444 L260 586 L14 444 L14 156 Z" fill="url(#bg)"/>
+
+  <g clip-path="url(#hex)"><g transform="translate(260 318) scale(1.55) translate(-262 -262)">
+    <!-- Mountains -->
+    <path d="M70 330 L178 196 L238 270 L330 152 L452 330 Z" fill="url(#mtn)"/>
+    <!-- Snow caps -->
+    <path d="M178 196 L199 222 L190 218 L182 228 L172 219 L160 219 Z" fill="#DCE6F0"/>
+    <path d="M330 152 L357 187 L345 181 L334 194 L322 182 L306 183 Z" fill="#E9F0F6"/>
+
+    <!-- Phylogenetic branching inside the peaks (ultrametric tree, tips on the ground line) -->
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <g stroke="#E3EEF7" stroke-width="7">
+        <path d="M330 196 V226 H290 V252 M330 226 H372 V252"/>
+        <path d="M178 236 V258 H150 V282 M178 258 H206 V282"/>
+      </g>
+      <g stroke="#BCD4EA" stroke-width="6">
+        <path d="M290 252 H268 V280 M290 252 H312 V280 M372 252 H350 V280 M372 252 H396 V280"/>
+        <path d="M150 282 H134 V300 M150 282 H164 V300 M206 282 H192 V300 M206 282 H220 V300"/>
+      </g>
+      <g stroke="#93B6D6" stroke-width="4.5">
+        <path d="M268 280 H258 V318 M268 280 H278 V318 M312 280 H302 V318 M312 280 H322 V318"/>
+        <path d="M350 280 H340 V318 M350 280 H360 V318 M396 280 H386 V318 M396 280 H410 V318"/>
+        <path d="M134 300 V318 M164 300 V318 M192 300 V318 M220 300 V318"/>
+      </g>
+    </g>
+
+    <!-- Ground line -->
+    <rect x="40" y="328" width="440" height="11" rx="5.5" fill="#2BB3A6"/>
+
+      </g>
+</g>
+  <!-- Border on top -->
+  <path d="M260 14 L506 156 L506 444 L260 586 L14 444 L14 156 Z" fill="none" stroke="#2BB3A6" stroke-width="30" stroke-linejoin="round"/>
+
+  </svg>

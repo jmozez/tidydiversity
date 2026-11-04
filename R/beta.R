@@ -36,9 +36,9 @@
 #'   \doi{10.1111/2041-210X.12029}
 #' @export
 #' @examples
-#' beta_pair(ant_gradient, .by = transect)
+#' beta_pair(png_ants, .by = season)
 #'
-#' beta_multi(ant_gradient, .by = transect, index = "jaccard")
+#' beta_multi(png_ants, .by = season, index = "jaccard")
 beta_pair <- function(data,
                       site = site,
                       species = species,
@@ -88,7 +88,7 @@ beta_multi <- function(data,
 #'   [ggplot2::autoplot()] to plot it.
 #' @export
 #' @examples
-#' decay <- beta_decay(ant_gradient, gradient = elevation, .by = transect)
+#' decay <- beta_decay(png_ants, gradient = elevation, .by = season)
 #' decay
 beta_decay <- function(data,
                        gradient,
@@ -235,7 +235,7 @@ beta_components <- function(a, mn, mx, bc, index, multi = FALSE) {
 #'   first appearance.
 #' @export
 #' @examples
-#' d <- beta_dist(beta_pair(ant_gradient[ant_gradient$transect == "north", ]))
+#' d <- beta_dist(beta_pair(png_ants[png_ants$season == "wet", ]))
 #' hclust(d)
 beta_dist <- function(x, component = c("total", "turnover", "nestedness")) {
   component <- rlang::arg_match(component)

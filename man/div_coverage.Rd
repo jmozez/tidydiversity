@@ -35,7 +35,7 @@ individuals in the community that belong to species already recorded
 (Chao and Jost 2012).
 }
 \examples{
-div_coverage(ant_gradient, .by = transect)
+div_coverage(png_ants, .by = season)
 }
 \references{
 Chao, A. and Jost, L. (2012). Coverage-based rarefaction and

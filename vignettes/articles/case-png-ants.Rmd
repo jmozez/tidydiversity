@@ -1,0 +1,96 @@
+---
+title: "Case study: ants along Mt Wilhelm and in rainforest canopies"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
+```
+
+Two Papua New Guinea ant datasets show tidydiversity on incidence-type and
+nest-count data.
+
+**Sources and licences.** `png_ants`: Moses et al. (2023), data deposited
+on Zenodo (doi:10.5281/zenodo.8191946) and included with the lead
+author's permission. `png_tree_ants`: Plowman et al. (2020), data on Dryad
+(doi:10.5061/dryad.2fqz612k6) under CC0 1.0. See `?png_ants`,
+`?png_tree_ants` and `data-raw/` for how each was built.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(2026)
+```
+
+## Ground ants at baits along Mt Wilhelm
+
+Baits were set at eight elevations from 200 to 3700 m in the dry and the
+wet season. Worker counts at a bait reflect recruitment, so each species
+at a bait counts as one occurrence (the default when the data have no
+`abundance` column).
+
+```{r baits}
+png_ants
+div_coverage(png_ants, .by = season)
+```
+
+Coverage differs between seasons and sites, so compare richness at equal
+coverage:
+
+```{r baits-std, fig.alt = "Coverage-standardised ant richness along Mt Wilhelm by season"}
+std <- div_standardise(png_ants, q = 0, .by = season, nboot = 100) |>
+  add_site_data(distinct(png_ants, site, elevation))
+ggplot(std, aes(elevation, diversity, colour = season)) +
+  geom_pointrange(aes(ymin = lower, ymax = upper),
+    position = position_dodge(width = 80)
+  ) +
+  geom_line() +
+  scale_colour_tidydiversity() +
+  labs(x = "Elevation (m)", y = "Richness at equal coverage", colour = NULL) +
+  theme_tidydiversity()
+```
+
+No ants were recorded above 2700 m. Richness peaks at low to mid
+elevation and falls sharply above 1700 m.
+
+## Tree-nesting ants in three forest plots
+
+`png_tree_ants` lists every ant nest in 1254 trees in plots at Wanang
+(200 m), Numba (900 m) and Yawan (1800 m). Using the number of nests as
+the abundance and pooling trees within each plot:
+
+```{r trees}
+est <- div_estimate(png_tree_ants, abundance = nests, nboot = 100)
+est
+```
+
+```{r trees-plot, fig.alt = "Asymptotic Hill numbers of tree-nesting ants in three plots"}
+autoplot(est)
+```
+
+Diversity of every order peaks at mid elevation (Numba), as Plowman et al.
+(2020) reported. Estimated richness at Yawan has a wide interval because
+many species there were found only once.
+
+Treating each tree as a site, almost all dissimilarity between trees is
+turnover rather than nestedness:
+
+```{r trees-beta}
+beta_multi(png_tree_ants, site = tree, .by = site)
+```
+
+## References
+
+Moses, J., Peters, M. K., Tiede, Y., Mottl, O., Donoso, D. A., Farwig, N.,
+Fayle, T. M., Novotny, V., Sanders, N. J. and Klimes, P. (2023). Nutrient
+use by tropical ant communities varies among three extensive elevational
+gradients: a cross-continental comparison. *Global Ecology and
+Biogeography*, 32, 1958-1973. doi:10.1111/geb.13757
+
+Plowman, N. S., Mottl, O., Novotny, V., Idigel, C., Philip, F. J., Rimandai,
+M. and Klimes, P. (2020). Nest microhabitats and tree size mediate shifts
+in ant community structure across elevation in tropical rainforest
+canopies. *Ecography*, 43, 431-442. doi:10.1111/ecog.04730

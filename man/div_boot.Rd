@@ -62,9 +62,9 @@ each replicate and pooling the coefficients (see
 }
 \examples{
 set.seed(1)
-draws <- div_boot(ant_gradient, q = 0, .by = transect, nboot = 20)
+draws <- div_boot(png_ants, q = 0, .by = season, nboot = 20)
 draws
 
 # The bootstrap standard error of each site
-dplyr::summarise(draws, se = sd(diversity), .by = c(transect, site, q))
+dplyr::summarise(draws, se = sd(diversity), .by = c(season, site, q))
 }

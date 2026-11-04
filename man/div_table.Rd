@@ -46,7 +46,7 @@ knitr, gt or flextable for HTML, PDF or Word output.
 }
 \examples{
 set.seed(1)
-est <- div_estimate(ant_gradient, .by = transect, nboot = 20)
+est <- div_estimate(png_ants, .by = season, nboot = 20)
 div_table(est)
 div_table(est, wide = TRUE, digits = 1)
 div_table(est, output = "kable", caption = "Asymptotic diversity")

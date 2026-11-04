@@ -21,10 +21,10 @@
 #'   [ggplot2::autoplot()] to draw the curves.
 #' @export
 #' @examples
-#' curves <- div_rarefy(ant_gradient, q = 0, .by = transect, knots = 20)
+#' curves <- div_rarefy(png_ants, q = 0, .by = season, knots = 20)
 #' curves
 #'
-#' div_rarefy(ant_gradient, size = c(50, 100, 200), .by = transect)
+#' div_rarefy(png_ants, size = c(10, 20, 40), .by = season)
 div_rarefy <- function(data,
                        site = site,
                        species = species,
@@ -127,9 +127,9 @@ size_method <- function(m, n) {
 #' @export
 #' @examples
 #' set.seed(1)
-#' div_standardise(ant_gradient, coverage = 0.95, .by = transect, nboot = 10)
+#' div_standardise(png_ants, coverage = 0.95, .by = season, nboot = 10)
 #'
-#' div_standardise(ant_gradient, size = 100, .by = transect, nboot = 0)
+#' div_standardise(png_ants, size = 20, .by = season, nboot = 0)
 div_standardise <- function(data,
                             site = site,
                             species = species,

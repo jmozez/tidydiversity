@@ -20,16 +20,19 @@ library(ggplot2)
 set.seed(42)
 ```
 
-The examples use `ant_gradient`, a simulated dataset.
+The examples use `png_ants`: ants recorded at nutrient baits along the
+Mt Wilhelm elevational gradient in Papua New Guinea, in the dry and wet
+seasons (Moses et al. 2023). Each bait at which a species was found counts
+as one occurrence.
 
 ## Hill numbers
 
 Hill numbers express diversity as an effective number of species. Order
-`q = 0` is richness, `q = 1` weights species by their abundance and
+`q = 0` is richness, `q = 1` weights species by their frequency and
 `q = 2` emphasises the dominant species.
 
 ```{r}
-div_hill(ant_gradient, q = c(0, 1, 2), .by = transect)
+div_hill(png_ants, q = c(0, 1, 2), .by = season)
 ```
 
 ## Sample coverage
@@ -38,7 +41,7 @@ Raw counts depend on sampling effort. Sample coverage estimates how
 complete each sample is.
 
 ```{r}
-div_coverage(ant_gradient, .by = transect)
+div_coverage(png_ants, .by = season)
 ```
 
 ## Asymptotic estimates
@@ -47,7 +50,7 @@ div_coverage(ant_gradient, .by = transect)
 estimator and the unbiased Simpson estimator, with bootstrap intervals.
 
 ```{r}
-div_estimate(ant_gradient, .by = transect, nboot = 50) |>
+div_estimate(png_ants, .by = season, nboot = 50) |>
   filter(q == 0)
 ```
 
@@ -57,8 +60,8 @@ div_estimate(ant_gradient, .by = transect, nboot = 50) |>
 extrapolates up to twice its size. The values match the iNEXT package.
 
 ```{r}
-curves <- ant_gradient |>
-  filter(transect == "north") |>
+curves <- png_ants |>
+  filter(season == "wet") |>
   div_rarefy(q = c(0, 1, 2), nboot = 30)
 curves
 ```
@@ -80,15 +83,15 @@ given, each group is standardised to the lowest coverage that its sites
 reach at twice their sample size.
 
 ```{r}
-std <- div_standardise(ant_gradient, .by = transect, nboot = 50)
+std <- div_standardise(png_ants, .by = season, nboot = 50)
 std
 ```
 
 ```{r, fig.alt = "Coverage-standardised richness by elevation"}
 std |>
-  left_join(distinct(ant_gradient, site, elevation), by = "site") |>
+  left_join(distinct(png_ants, site, elevation), by = "site") |>
   filter(q == 0) |>
-  ggplot(aes(elevation, diversity, colour = transect)) +
+  ggplot(aes(elevation, diversity, colour = season)) +
   geom_pointrange(aes(ymin = lower, ymax = upper)) +
   geom_line() +
   labs(x = "Elevation (m)", y = "Richness at equal coverage")

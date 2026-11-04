@@ -58,7 +58,7 @@ Computes the five classes of Hill-number evenness of Chao and Ricotta
 standardised to a common sample coverage, as in iNEXT.4steps.
 }
 \examples{
-div_evenness(ant_gradient, q = c(0, 1, 2), .by = transect, nboot = 0)
+div_evenness(png_ants, q = c(0, 1, 2), .by = season, nboot = 0)
 }
 \references{
 Chao, A. and Ricotta, C. (2019). Quantifying evenness and

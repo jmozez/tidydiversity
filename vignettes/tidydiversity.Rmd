@@ -23,13 +23,29 @@ library(dplyr)
 
 ## The example data
 
-`ant_gradient` is a **simulated** dataset: counts of 40 ant morphospecies
-at eight elevations on two transects. It is synthetic, made for examples,
-and is not field data.
+tidydiversity ships with real field data from Papua New Guinea. The main
+example, `png_ants`, records ground-foraging ants at nutrient baits along
+the Mt Wilhelm elevational gradient, from 200 to 3700 m, in the dry and the
+wet season (Moses et al. 2023, *Global Ecology and Biogeography*). Each row
+is one ant species at one bait.
 
 ```{r}
-ant_gradient
+png_ants
 ```
+
+Ants recruit to baits, so worker counts measure activity rather than
+independent individuals. `png_ants` therefore has no `abundance` column:
+tidydiversity counts each row once, and diversity is estimated from the
+number of baits at which each species was found.
+
+Three more Papua New Guinea datasets cover other designs and taxa:
+
+* `png_tree_ants`: every ant nest in 1254 trees in plots at 200, 900 and
+  1800 m (Plowman et al. 2020).
+* `png_frogs`: 3390 frogs of 55 species at eight elevations on Mt Wilhelm
+  (Dahl et al. 2023).
+* `wanang_butterflies`: butterflies counted on 36 days over three years in
+  the Wanang forest dynamics plot (Luk et al. 2019).
 
 ## Tidy the community
 
@@ -38,7 +54,7 @@ column names. Use your own column names through the `site`, `species` and
 `abundance` arguments.
 
 ```{r}
-ants <- as_community(ant_gradient, .by = transect)
+ants <- as_community(png_ants, .by = season)
 ants
 ```
 
@@ -46,7 +62,7 @@ If your data arrive as a site by species matrix, `community_long()` turns
 it into long format, and `community_wide()` goes the other way.
 
 ```{r}
-wide <- community_wide(ants, .by = transect)
+wide <- community_wide(ants, .by = season)
 wide[, 1:6]
 ```
 
@@ -55,8 +71,8 @@ wide[, 1:6]
 All verbs accept `.by`, and they respect `group_by()`:
 
 ```{r}
-ant_gradient |>
-  group_by(transect) |>
+png_ants |>
+  group_by(season) |>
   div_hill(q = 0) |>
   arrange(desc(diversity))
 ```

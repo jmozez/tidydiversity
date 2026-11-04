@@ -9,8 +9,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-Every plot that `autoplot()` draws, using the simulated `ant_gradient`
-data. Each entry has three tabs: the plot, the tidy table behind it, and
+Every plot that `autoplot()` draws, using `png_ants`: real ant bait data
+from the Mt Wilhelm elevational gradient, Papua New Guinea. Each entry has three tabs: the plot, the tidy table behind it, and
 the code. All plots use the colour-blind-safe Okabe-Ito palette and
 `theme_tidydiversity()` by default; see the
 [publication figures](publication.html) article for customisation.
@@ -20,13 +20,13 @@ library(tidydiversity)
 library(dplyr)
 library(ggplot2)
 set.seed(1)
-north <- filter(ant_gradient, transect == "north")
+wet <- filter(png_ants, season == "wet")
 ```
 
 ## Rarefaction and extrapolation by sample size {.tabset}
 
 ```{r rarefy-data, include = FALSE}
-curves <- div_rarefy(north, nboot = 50)
+curves <- div_rarefy(wet, nboot = 50)
 ```
 
 ### Plot
@@ -44,14 +44,14 @@ curves
 ### Code
 
 ```r
-curves <- div_rarefy(north, nboot = 50)
+curves <- div_rarefy(wet, nboot = 50)
 autoplot(curves)
 ```
 
 ## Rarefaction and extrapolation by sample coverage {.tabset}
 
 ```{r rarefy-cov-data, include = FALSE}
-curves <- div_rarefy(north, nboot = 50)
+curves <- div_rarefy(wet, nboot = 50)
 ```
 
 ### Plot
@@ -69,14 +69,14 @@ curves
 ### Code
 
 ```r
-curves <- div_rarefy(north, nboot = 50)
+curves <- div_rarefy(wet, nboot = 50)
 autoplot(curves, x = "coverage")
 ```
 
 ## Curves for several groups {.tabset}
 
 ```{r grouped-data, include = FALSE}
-grouped <- div_rarefy(ant_gradient, q = c(0, 1), .by = transect)
+grouped <- div_rarefy(png_ants, q = c(0, 1), .by = season)
 ```
 
 ### Plot
@@ -94,14 +94,14 @@ grouped
 ### Code
 
 ```r
-grouped <- div_rarefy(ant_gradient, q = c(0, 1), .by = transect)
+grouped <- div_rarefy(png_ants, q = c(0, 1), .by = season)
 autoplot(grouped)
 ```
 
 ## Diversity at equal coverage {.tabset}
 
 ```{r standardise-data, include = FALSE}
-std <- div_standardise(ant_gradient, .by = transect, nboot = 50)
+std <- div_standardise(png_ants, .by = season, nboot = 50)
 ```
 
 ### Plot
@@ -119,14 +119,14 @@ std
 ### Code
 
 ```r
-std <- div_standardise(ant_gradient, .by = transect, nboot = 50)
+std <- div_standardise(png_ants, .by = season, nboot = 50)
 autoplot(std)
 ```
 
 ## Observed and asymptotic diversity {.tabset}
 
 ```{r estimate-data, include = FALSE}
-est <- div_estimate(north, nboot = 50)
+est <- div_estimate(wet, nboot = 50)
 ```
 
 ### Plot
@@ -144,14 +144,14 @@ est
 ### Code
 
 ```r
-est <- div_estimate(north, nboot = 50)
+est <- div_estimate(wet, nboot = 50)
 autoplot(est)
 ```
 
 ## Hill diversity profile {.tabset}
 
 ```{r profile-data, include = FALSE}
-profile <- div_hill(north, q = seq(0, 3, by = 0.25))
+profile <- div_hill(wet, q = seq(0, 3, by = 0.25))
 ```
 
 ### Plot
@@ -169,14 +169,14 @@ profile
 ### Code
 
 ```r
-profile <- div_hill(north, q = seq(0, 3, by = 0.25))
+profile <- div_hill(wet, q = seq(0, 3, by = 0.25))
 autoplot(profile)
 ```
 
 ## Diversity along a gradient {.tabset}
 
 ```{r elevation-data, include = FALSE}
-hill <- div_hill(ant_gradient, .by = c(transect, elevation))
+hill <- div_hill(png_ants, .by = c(season, elevation))
 ```
 
 ### Plot
@@ -194,14 +194,14 @@ hill
 ### Code
 
 ```r
-hill <- div_hill(ant_gradient, .by = c(transect, elevation))
+hill <- div_hill(png_ants, .by = c(season, elevation))
 autoplot(hill, gradient = elevation, xlab = "Elevation (m)")
 ```
 
 ## Sample coverage {.tabset}
 
 ```{r coverage-data, include = FALSE}
-cov <- div_coverage(ant_gradient, .by = transect)
+cov <- div_coverage(png_ants, .by = season)
 ```
 
 ### Plot
@@ -219,14 +219,14 @@ cov
 ### Code
 
 ```r
-cov <- div_coverage(ant_gradient, .by = transect)
+cov <- div_coverage(png_ants, .by = season)
 autoplot(cov)
 ```
 
 ## Pairwise beta diversity heatmap {.tabset}
 
 ```{r pair-data, include = FALSE}
-pair <- beta_pair(north)
+pair <- beta_pair(wet)
 ```
 
 ### Plot
@@ -244,14 +244,14 @@ pair
 ### Code
 
 ```r
-pair <- beta_pair(north)
+pair <- beta_pair(wet)
 autoplot(pair)
 ```
 
 ## Multiple-site beta partition {.tabset}
 
 ```{r multi-data, include = FALSE}
-multi <- beta_multi(ant_gradient, .by = transect)
+multi <- beta_multi(png_ants, .by = season)
 ```
 
 ### Plot
@@ -269,14 +269,14 @@ multi
 ### Code
 
 ```r
-multi <- beta_multi(ant_gradient, .by = transect)
+multi <- beta_multi(png_ants, .by = season)
 autoplot(multi)
 ```
 
 ## Distance decay {.tabset}
 
 ```{r decay-data, include = FALSE}
-decay <- beta_decay(ant_gradient, elevation, .by = transect)
+decay <- beta_decay(png_ants, elevation, .by = season)
 ```
 
 ### Plot
@@ -294,7 +294,7 @@ decay
 ### Code
 
 ```r
-decay <- beta_decay(ant_gradient, elevation, .by = transect)
+decay <- beta_decay(png_ants, elevation, .by = season)
 autoplot(decay, xlab = "Difference in elevation (m)")
 ```
 

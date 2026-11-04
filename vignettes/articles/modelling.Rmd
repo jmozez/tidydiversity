@@ -20,7 +20,7 @@ library(tidydiversity)
 library(dplyr)
 library(ggplot2)
 set.seed(2026)
-sites <- distinct(ant_gradient, site, transect, elevation)
+sites <- distinct(png_ants, site, elevation)
 ```
 
 ## Model-ready estimates
@@ -30,8 +30,8 @@ inverse-variance `weight`; `add_site_data()` joins covariates that are
 constant within each site.
 
 ```{r tidy}
-est <- div_standardise(ant_gradient,
-  q = c(0, 1, 2), .by = transect,
+est <- div_standardise(png_ants,
+  q = c(0, 1, 2), .by = season,
   nboot = 200
 ) |>
   tidy() |>
@@ -46,8 +46,9 @@ est
 Inverse-variance weights give less influence to imprecise estimates.
 
 ```{r lm}
-shannon <- filter(est, q == 1)
-fit_lm <- lm(estimate ~ elevation + I(elevation^2) + transect,
+# A site with one species has a zero standard error and no weight
+shannon <- filter(est, q == 1, !is.na(weight))
+fit_lm <- lm(estimate ~ elevation + I(elevation^2) + season,
   data = shannon, weights = weight
 )
 broom::tidy(fit_lm, conf.int = TRUE)
@@ -55,11 +56,12 @@ broom::tidy(fit_lm, conf.int = TRUE)
 
 ### Mixed model
 
-With repeated sites or blocks, add a random effect with **lme4** (or
-**glmmTMB**, which takes the same formula).
+Each elevation band was sampled in both seasons, so sites are repeated.
+Add a random effect for site with **lme4** (or **glmmTMB**, which takes the
+same formula).
 
 ```{r lmer, message = FALSE}
-fit_mm <- lme4::lmer(estimate ~ elevation + (1 | transect),
+fit_mm <- lme4::lmer(estimate ~ elevation + season + (1 | site),
   data = shannon, weights = weight / mean(weight)
 )
 summary(fit_mm)$coefficients
@@ -70,18 +72,18 @@ summary(fit_mm)$coefficients
 **mgcv** fits a smooth response along the gradient.
 
 ```{r gam, fig.alt = "GAM smooth of Shannon diversity along elevation"}
-fit_gam <- mgcv::gam(estimate ~ s(elevation, k = 5) + transect,
+fit_gam <- mgcv::gam(estimate ~ s(elevation, k = 4) + season,
   data = shannon, weights = weight / mean(weight), method = "REML"
 )
 summary(fit_gam)$s.table
 grid <- tidyr::expand_grid(
-  elevation = seq(200, 1600, by = 20),
-  transect = c("north", "south")
+  elevation = seq(200, 2700, by = 20),
+  season = c("wet", "dry")
 )
 pred <- predict(fit_gam, grid, se.fit = TRUE)
 grid$fit <- pred$fit
 grid$se <- pred$se.fit
-ggplot(grid, aes(elevation, fit, colour = transect, fill = transect)) +
+ggplot(grid, aes(elevation, fit, colour = season, fill = season)) +
   geom_ribbon(aes(ymin = fit - 1.96 * se, ymax = fit + 1.96 * se),
     alpha = 0.2, colour = NA
   ) +
@@ -106,13 +108,13 @@ standardised richness with a Gamma GLM (positive, continuous), or observed
 richness with a Poisson GLM and log sample size as an offset.
 
 ```{r glm}
-rich <- filter(est, q == 0)
-broom::tidy(glm(estimate ~ elevation + transect,
+rich <- filter(est, q == 0, !is.na(weight))
+broom::tidy(glm(estimate ~ elevation + season,
   data = rich,
   family = Gamma(link = "log"), weights = weight / mean(weight)
 ))
-obs <- div_hill(ant_gradient, q = 0) |> add_site_data(sites)
-broom::tidy(glm(diversity ~ elevation + transect + offset(log(n)),
+obs <- div_hill(png_ants, q = 0, .by = season) |> add_site_data(sites)
+broom::tidy(glm(diversity ~ elevation + season + offset(log(n)),
   data = obs, family = poisson
 ))
 ```
@@ -125,8 +127,8 @@ replicate and the spread of the coefficients includes the estimation
 uncertainty in the response.
 
 ```{r boot}
-draws <- div_boot(ant_gradient,
-  q = 1, type = "standardised",
+draws <- div_boot(png_ants,
+  q = 1, type = "standardised", .by = season,
   coverage = 0.9, nboot = 200
 ) |>
   add_site_data(sites)
@@ -135,7 +137,7 @@ draws
 slopes <- draws |>
   group_by(.draw) |>
   group_modify(\(d, key) {
-    broom::tidy(lm(diversity ~ elevation + transect, data = d))
+    broom::tidy(lm(diversity ~ elevation + season, data = d))
   }) |>
   ungroup() |>
   filter(term == "elevation")
@@ -158,34 +160,38 @@ ggplot(slopes, aes(estimate * 100)) +
 one or more gradients. Several columns give Euclidean distance.
 
 ```{r decay}
-decay <- beta_decay(ant_gradient, elevation, .by = transect)
-broom::tidy(lm(turnover ~ distance + transect, data = decay))
+decay <- beta_decay(png_ants, elevation, .by = season)
+broom::tidy(lm(turnover ~ distance + season, data = decay))
 ```
 
 Pairs are not independent, so test the relationship with a Mantel test
 rather than the lm p-values.
 
 ```{r mantel}
-north <- filter(ant_gradient, transect == "north")
-d_beta <- beta_dist(beta_pair(north), "turnover")
-d_elev <- dist(distinct(north, site, elevation)$elevation)
+wet <- filter(png_ants, season == "wet")
+d_beta <- beta_dist(beta_pair(wet), "turnover")
+d_elev <- dist(distinct(wet, site, elevation)$elevation)
 vegan::mantel(d_beta, d_elev, permutations = 999)
 ```
 
 ### PERMANOVA and ordination
 
 ```{r permanova, message = FALSE}
-bray <- beta_dist(beta_pair(ant_gradient, index = "bray"))
-vegan::adonis2(bray ~ elevation + transect,
-  data = sites,
+# One sampling unit per elevation band and season
+units <- mutate(png_ants, unit = paste(site, season))
+bray <- beta_dist(beta_pair(units, site = unit, index = "bray"))
+unit_data <- distinct(units, unit, site, season, elevation)
+unit_data <- unit_data[match(labels(bray), unit_data$unit), ]
+vegan::adonis2(bray ~ elevation + season,
+  data = unit_data,
   permutations = 999
 )
 ```
 
 ```{r nmds, fig.height = 4, fig.alt = "NMDS ordination of sites coloured by elevation"}
 nmds <- vegan::metaMDS(bray, trace = FALSE)
-bind_cols(sites, as.data.frame(vegan::scores(nmds))) |>
-  ggplot(aes(NMDS1, NMDS2, colour = elevation, shape = transect)) +
+bind_cols(unit_data, as.data.frame(vegan::scores(nmds))) |>
+  ggplot(aes(NMDS1, NMDS2, colour = elevation, shape = season)) +
   geom_point(size = 3) +
   scale_colour_viridis_c() +
   coord_equal() +

@@ -1,0 +1,70 @@
+---
+title: "Case study: frogs along the Mt Wilhelm elevational gradient"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
+```
+
+Dahl et al. (2023) recorded 3390 frogs of 55 species at eight sites from
+200 to 3700 m on Mt Wilhelm, Papua New Guinea.
+
+**Source and licence.** Data on Dryad (doi:10.5061/dryad.3n5tb2rqf) under
+CC0 1.0. See `?png_frogs` and `data-raw/png_frogs.R`.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(2026)
+png_frogs
+```
+
+## Sampling completeness
+
+```{r coverage}
+div_coverage(png_frogs)
+```
+
+Every site has a sample coverage of at least 99.5%: the frog inventories
+are close to complete, so observed and estimated richness differ little.
+
+## Diversity along the gradient
+
+```{r estimate, fig.alt = "Asymptotic frog diversity at each elevation"}
+est <- div_estimate(png_frogs, nboot = 100) |>
+  add_site_data(distinct(png_frogs, site, elevation))
+ggplot(est, aes(elevation, estimate, colour = factor(q))) +
+  geom_pointrange(aes(ymin = lower, ymax = upper)) +
+  geom_line() +
+  scale_colour_tidydiversity() +
+  labs(
+    x = "Elevation (m)", y = "Effective number of species",
+    colour = "Order q"
+  ) +
+  theme_tidydiversity()
+```
+
+Richness is highest between 1200 and 2200 m and drops to four species at
+3200 m and two at 3700 m.
+
+## Species turnover
+
+```{r decay, fig.alt = "Frog community dissimilarity against elevational distance"}
+decay <- beta_decay(png_frogs, gradient = elevation)
+autoplot(decay)
+```
+
+Dissimilarity rises with elevational distance and is almost entirely
+turnover: species replace one another up the mountain rather than
+dropping out of nested subsets.
+
+## Reference
+
+Dahl, C., Richards, S. J., Basien, I., Mungkaje, A. J. and Novotny, V.
+(2023). Local and regional diversity of frog communities along an
+extensive rainforest elevation gradient in Papua New Guinea. *Biotropica*.
+doi:10.1111/btp.13283

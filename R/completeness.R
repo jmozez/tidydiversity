@@ -6,6 +6,7 @@
 #' increasing weight to abundant species. Values lie between 0 and 1.
 #'
 #' @inheritParams div_estimate
+#' @param nboot Number of bootstrap replicates. Use 0 to skip them.
 #' @param q Orders of completeness, non-negative numbers. Defaults to a
 #'   profile from 0 to 2.
 #' @return A `td_completeness` tibble with the grouping columns, the site
@@ -17,7 +18,7 @@
 #'   \doi{10.1111/1440-1703.12102}
 #' @export
 #' @examples
-#' div_completeness(ant_gradient, q = c(0, 1, 2), .by = transect, nboot = 0)
+#' div_completeness(png_ants, q = c(0, 1, 2), .by = season, nboot = 0)
 div_completeness <- function(data,
                              site = site,
                              species = species,
@@ -96,7 +97,7 @@ completeness_q <- function(x, q) {
 #'   \doi{10.1111/1440-1703.12102}
 #' @export
 #' @examples
-#' div_evenness(ant_gradient, q = c(0, 1, 2), .by = transect, nboot = 0)
+#' div_evenness(png_ants, q = c(0, 1, 2), .by = season, nboot = 0)
 div_evenness <- function(data,
                          site = site,
                          species = species,
