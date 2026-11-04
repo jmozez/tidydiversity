@@ -51,13 +51,7 @@ div_boot <- function(data,
     if (!is.null(coverage)) td_check_number(coverage, "coverage", 0, 1)
     if (!is.null(size)) td_check_number(size, "size", 1)
     if (is.null(coverage) && is.null(size)) {
-      sites <- vctrs::vec_split(prep$data, prep$data[c(prep$by, ".site")])
-      c2n <- vapply(sites$val, function(s) {
-        coverage_at_size(s$.n, 2 * sum(s$.n))
-      }, numeric(1))
-      grp <- vctrs::vec_group_id(sites$key[prep$by])
-      if (length(prep$by) == 0) grp <- rep(1L, length(c2n))
-      level <- stats::ave(c2n, grp, FUN = min)
+      level <- default_coverage_level(prep)
     }
   }
   out <- td_per_site(prep, function(x, i) {

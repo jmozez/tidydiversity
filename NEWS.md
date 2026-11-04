@@ -1,6 +1,15 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* Incidence data for TD, PD and FD: `div_hill()`, `div_estimate()`,
+  `div_coverage()`, `div_rarefy()` and `div_standardise()` gain `unit`
+  (the sampling-unit column) and `n_units` (units sampled, including empty
+  ones). Estimates, rarefaction, extrapolation, coverage and bootstrap
+  intervals are incidence-based (Chao et al. 2014); for PD a branch is
+  present in a unit when any species below it was detected. Results match
+  iNEXT.3D on its fish survey and iNEXT on the `png_ants` baits.
+* `png_ants` gains `baits`, the number of baits set at each elevation and
+  season, for incidence-based estimates with `unit = bait`.
 * Example data are now real, published field data from Papua New Guinea,
   replacing the simulated `ant_gradient`: `png_ants` (ants at nutrient
   baits along Mt Wilhelm; Moses et al. 2023), `png_tree_ants` (tree-nesting

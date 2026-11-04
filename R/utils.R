@@ -50,6 +50,8 @@ td_prepare <- function(data,
                        abundance,
                        by,
                        counts = FALSE,
+                       unit = rlang::quo(NULL),
+                       n_units = rlang::quo(NULL),
                        call = caller_env()) {
   td_check_data(data, call = call)
   site_col <- td_pick(site, data, "site", call = call)
@@ -112,6 +114,12 @@ td_prepare <- function(data,
   df$.site <- data[[site_col]]
   df$.species <- as.character(data[[species_col]])
   df$.n <- n
+  if (!quo_is_null(unit)) {
+    return(td_prepare_incidence(
+      df, data, by_cols, site_col, unit, n_units,
+      call = call
+    ))
+  }
   df <- dplyr::summarise(
     df,
     .n = sum(.data$.n),
@@ -130,6 +138,13 @@ td_per_site <- function(prep, fn) {
   keys <- prep$data[c(prep$by, ".site")]
   counts <- stats::setNames(prep$data$.n, prep$data$.species)
   split <- vctrs::vec_split(counts, keys)
+  inc <- prep$incidence
+  if (!is.null(inc)) {
+    k <- inc$key_of(split$key)
+    split$val <- lapply(seq_along(k), function(i) {
+      as_incidence(split$val[[i]], inc$n_units[[k[i]]], inc$mats[[k[i]]])
+    })
+  }
   out <- lapply(seq_along(split$val), function(i) {
     res <- fn(split$val[[i]], i)
     key <- vctrs::vec_slice(split$key, rep(i, nrow(res)))
@@ -192,6 +207,9 @@ td_check_number <- function(x, arg, min = 0, max = Inf, whole = FALSE,
 }
 
 td_check_min_n <- function(prep, min = 2, call = caller_env()) {
+  if (!is.null(prep$incidence)) {
+    return(invisible(prep))
+  }
   tot <- vctrs::vec_split(prep$data$.n, prep$data[c(prep$by, ".site")])
   n <- vapply(tot$val, sum, numeric(1))
   if (any(n < min)) {

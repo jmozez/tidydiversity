@@ -154,8 +154,13 @@ coverage_a <- function(n, f1, f2) {
   if (f1 > 0) n * f0 / (n * f0 + f1) else 1
 }
 
+# Expected sample coverage at sample size m. For incidence data the sample
+# size is the number of units and coverage is weighted by the incidence
+# total U (Chao et al. 2014); for abundance data U equals n.
 coverage_at_size <- function(x, m) {
-  n <- sum(x)
+  n <- smp_n(x)
+  x <- as.vector(x)
+  u <- sum(x)
   f1 <- sum(x == 1)
   f2 <- sum(x == 2)
   a <- coverage_a(n, f1, f2)
@@ -164,11 +169,11 @@ coverage_at_size <- function(x, m) {
       xx <- x[(n - x) >= mm]
       lg <- lgamma(n - xx + 1) - lgamma(n - xx - mm + 1) -
         lgamma(n) + lgamma(n - mm)
-      1 - sum(xx / n * exp(lg))
+      1 - sum(xx / u * exp(lg))
     } else if (mm == n) {
-      1 - f1 / n * a
+      1 - f1 / u * a
     } else {
-      1 - f1 / n * a^(mm - n + 1)
+      1 - f1 / u * a^(mm - n + 1)
     }
   }
   vapply(m, function(mm) {
@@ -184,7 +189,7 @@ coverage_at_size <- function(x, m) {
 
 # Sample size that reaches coverage `level`.
 size_for_coverage <- function(x, level) {
-  n <- sum(x)
+  n <- smp_n(x)
   ref <- coverage_at_size(x, n)
   if (ref > level) {
     opt <- stats::optimize(
@@ -205,7 +210,8 @@ size_for_coverage <- function(x, level) {
     } else {
       a <- 0
     }
-    mm <- if (a == 0) n else (log(n / f1) + log(1 - level)) / log(a) - 1 + n
+    # log(U / f1): U, the total count, equals n for abundance data
+    mm <- if (a == 0) n else (log(sum(x) / f1) + log(1 - level)) / log(a) - 1 + n
   }
   max(mm, 1)
 }
@@ -231,6 +237,9 @@ boot_community <- function(x) {
 boot_draws <- function(x, nboot, fn, dim = list(type = "TD")) {
   if (nboot == 0) {
     return(NULL)
+  }
+  if (is_incidence(x)) {
+    return(boot_draws_inc(x, nboot, fn, dim))
   }
   n <- sum(x)
   if (dim$type == "TD") {
@@ -261,4 +270,14 @@ boot_se <- function(draws, dims) {
     se <- apply(draws, c(1, 2), stats::sd, na.rm = TRUE)
   }
   array(se, dims)
+}
+
+# Default coverage level of each site: the lowest coverage that the sites in
+# its group reach at twice their sample size (as iNEXT::estimateD()).
+default_coverage_level <- function(prep) {
+  c2n <- td_per_site(prep, function(x, i) {
+    tibble::tibble(.c2n = coverage_at_size(x, 2 * smp_n(x)))
+  })
+  grp <- if (length(prep$by)) vctrs::vec_group_id(c2n[prep$by]) else rep(1L, nrow(c2n))
+  stats::ave(c2n$.c2n, grp, FUN = min)
 }

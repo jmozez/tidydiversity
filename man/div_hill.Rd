@@ -16,6 +16,8 @@ div_hill(
   pd_unit = c("mean", "total"),
   distance = NULL,
   tau = NULL,
+  unit = NULL,
+  n_units = NULL,
   .by = NULL
 )
 }
@@ -33,6 +35,9 @@ used when present, otherwise every row counts as one individual.}
 
 \item{type}{Diversity dimension: \code{"TD"} (taxonomic, the default), \code{"PD"}
 (phylogenetic, needs \code{tree}) or \code{"FD"} (functional, needs \code{distance}).
+Give several, such as \code{c("TD", "PD")}, or \code{"all"} for all three, to
+analyse the dimensions together: the results are stacked in one tibble
+with a \code{type} column, and \code{autoplot()} shows them side by side.
 All three are Hill numbers of the same order \code{q}, in units of
 effective numbers of species (Chao, Chiu and Jost 2014), and reproduce
 \href{https://CRAN.R-project.org/package=iNEXT.3D}{iNEXT.3D}.}
@@ -58,12 +63,25 @@ are treated as functionally identical. Defaults to the mean distance
 between two individuals in the pooled data. Use \code{"auc"} to integrate
 over all thresholds from 0 to 1 (Chao et al. 2019).}
 
+\item{unit}{For incidence data, the column naming the sampling unit
+(a trap, bait, plot or survey day) in which each species was detected.
+Each site is then described by the number of units in which each
+species was found and the number of units sampled, and every estimate
+is incidence-based (Chao et al. 2014), for TD, PD and FD alike. Leave
+\code{NULL} for abundance data.}
+
+\item{n_units}{For incidence data, a column giving the number of units
+sampled at each site, constant within a site. Use it when some units
+detected no species and so do not appear in the data. By default the
+number of distinct units in the data is used.}
+
 \item{.by}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optional grouping
 columns, kept in the output. Grouped data frames are also respected.}
 }
 \value{
 A tibble with the grouping columns, the site column, \code{q},
-\code{n} (number of individuals) and \code{diversity}. Phylogenetic and
+\code{n} (number of individuals, or of sampling units for incidence data)
+and \code{diversity}. Phylogenetic and
 functional results also have \code{type} and \code{reftime} or \code{tau}.
 }
 \description{
@@ -78,6 +96,17 @@ div_hill(png_ants, .by = season)
 png_ants |>
   dplyr::group_by(season) |>
   div_hill(q = c(0, 0.5, 1, 2))
+
+# Incidence data: each bait is a sampling unit, 60 baits per site
+div_hill(png_ants, unit = bait, n_units = baits, .by = season)
+
+# TD, PD and FD together, here for a functional distance matrix only
+d <- as.matrix(stats::dist(c(s1 = 0, s2 = 0.1, s3 = 0.5, s4 = 1)))
+toy <- data.frame(
+  site = rep(c("a", "b"), each = 4), species = paste0("s", 1:4),
+  n = c(10, 5, 2, 1, 3, 3, 1, 1)
+)
+div_hill(toy, abundance = n, type = c("TD", "FD"), distance = d)
 }
 \references{
 Hill, M. O. (1973). Diversity and evenness: a unifying

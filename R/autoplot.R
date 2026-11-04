@@ -83,16 +83,32 @@
 #'   autoplot(xlab = "Difference in elevation (m)")
 NULL
 
+# Columns that describe the diversity dimension rather than a site or group.
+td_meta_cols <- c("type", "tau", "reftime")
+
 td_site_col <- function(object, drop) {
-  cols <- setdiff(names(object), drop)
+  cols <- setdiff(names(object), c(drop, td_meta_cols))
   cols[length(cols)]
+}
+
+# Grouping columns for plots: dimension metadata never groups, except `type`
+# when a result combines several dimensions (TD, PD and FD side by side).
+td_plot_by <- function(object, by_cols) {
+  by_cols <- setdiff(by_cols, td_meta_cols)
+  if ("type" %in% names(object) && length(unique(object[["type"]])) > 1) {
+    by_cols <- c(by_cols, "type")
+  }
+  by_cols
 }
 
 td_label_col <- function(df, cols) {
   if (length(cols) == 0) {
     return(rep("all", nrow(df)))
   }
-  do.call(paste, c(lapply(df[cols], as.character), sep = " "))
+  # Keep groups in the order they appear (for example TD, PD, FD), not
+  # alphabetical order.
+  lab <- do.call(paste, c(lapply(df[cols], as.character), sep = " "))
+  factor(lab, levels = unique(lab))
 }
 
 q_label <- function(q) {
@@ -123,6 +139,7 @@ autoplot.td_rarefy <- function(object,
   )
   site_col <- td_site_col(object, known)
   by_cols <- setdiff(names(object), c(site_col, known))
+  by_cols <- td_plot_by(object, by_cols)
   df <- tibble::as_tibble(unclass(object))
   df$.x <- df[[xvar]]
   df$.site <- as.character(df[[site_col]])
@@ -225,6 +242,7 @@ autoplot.td_standardise <- function(object,
       "se", "lower", "upper"
     )
   )
+  by_cols <- td_plot_by(df, by_cols)
   df$.group <- td_label_col(df, by_cols)
   lab <- td_label_col(df, c(by_cols, site_col))
   df$.site <- factor(lab, levels = rev(unique(lab)))
@@ -332,6 +350,7 @@ autoplot.td_hill <- function(object,
     by_cols <- setdiff(
       names(df), c(gcol, site_col, "q", "n", "diversity")
     )
+    by_cols <- td_plot_by(df, by_cols)
     df$.x <- df[[gcol]]
     df$.group <- td_label_col(df, by_cols)
     df$.q <- q_label(df$q)
@@ -355,6 +374,7 @@ autoplot.td_hill <- function(object,
     return(td_style(p, palette, theme, fill = FALSE))
   }
   by_cols <- setdiff(names(df), c(site_col, "q", "n", "diversity"))
+  by_cols <- td_plot_by(df, by_cols)
   df$.site <- as.character(df[[site_col]])
   df$.by <- td_label_col(df, by_cols)
   p <- ggplot2::ggplot(
@@ -390,6 +410,7 @@ autoplot.td_estimate <- function(object,
   known <- c("q", "observed", "estimate", "se", "lower", "upper")
   site_col <- td_site_col(df, known)
   by_cols <- setdiff(names(df), c(site_col, known))
+  by_cols <- td_plot_by(df, by_cols)
   lab <- td_label_col(df, c(by_cols, site_col))
   df$.site <- factor(lab, levels = rev(unique(lab)))
   df$.q <- q_label(df$q)
@@ -442,6 +463,7 @@ autoplot.td_coverage <- function(object,
   by_cols <- setdiff(
     names(df), c(site_col, "n", "s_obs", "f1", "f2", "coverage")
   )
+  by_cols <- td_plot_by(df, by_cols)
   df$.group <- td_label_col(df, by_cols)
   df$.site <- as.character(df[[site_col]])
   p <- ggplot2::ggplot(
@@ -486,6 +508,7 @@ autoplot.td_beta_pair <- function(object,
       "gradient_1", "gradient_2", "distance"
     )
   )
+  by_cols <- td_plot_by(df, by_cols)
   lev <- unique(c(as.character(df$site_1), as.character(df$site_2)))
   swap <- df
   swap$site_1 <- df$site_2
@@ -532,6 +555,7 @@ autoplot.td_beta_multi <- function(object,
   by_cols <- setdiff(
     names(df), c("n_sites", "turnover", "nestedness", "total")
   )
+  by_cols <- td_plot_by(df, by_cols)
   # With several grouping columns, the first goes on the x axis and the
   # rest become facets.
   df$.group <- td_label_col(df, by_cols[1])

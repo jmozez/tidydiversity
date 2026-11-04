@@ -5,13 +5,16 @@
 \alias{png_ants}
 \title{Ants at nutrient baits along Mt Wilhelm, Papua New Guinea}
 \format{
-A tibble with one row per bait and ant species, and 11 columns:
+A tibble with one row per bait and ant species, and 12 columns:
 \describe{
 \item{site}{Elevation band, such as \code{"MW0200"} for 200 m.}
 \item{elevation}{Elevation band in metres.}
 \item{season}{Sampling season, \code{"dry"} or \code{"wet"}.}
 \item{transect}{Transect number within the elevation band.}
-\item{bait}{Bait identifier.}
+\item{bait}{Bait identifier: the sampling unit for incidence-based
+estimates (\code{unit = bait}).}
+\item{baits}{Number of baits set at that elevation and season,
+including baits no ant visited (\code{n_units = baits}).}
 \item{bait_type}{Nutrient offered: \code{h2o}, \code{nacl}, \code{cho} (sucrose),
 \code{amino_acid}, \code{cho_amino_acid} or \code{lipid}.}
 \item{species}{Ant morphospecies code.}
@@ -50,6 +53,9 @@ number of baits at which each species was recorded.
 \examples{
 png_ants
 div_hill(png_ants, q = 0, .by = season)
+
+# Incidence-based: baits as sampling units, including empty baits
+div_estimate(png_ants, unit = bait, n_units = baits, .by = season, nboot = 0)
 }
 \references{
 Moses, J., Peters, M. K., Tiede, Y., Mottl, O., Donoso, D. A.,
