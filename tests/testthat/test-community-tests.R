@@ -65,10 +65,24 @@ test_that("beta_indicator returns tidy indicator values", {
   set.seed(1)
   ind <- beta_indicator(ants, site = unit, group = zone, permutations = 99,
                         alpha = 1)
-  expect_named(ind, c("species", "group", "stat", "A", "B", "p.value"))
+  expect_named(ind, c("species", "group", "stat", "A", "B", "p.value", "p.adj"))
+  expect_equal(ind$p.adj, stats::p.adjust(ind$p.value, "holm"))
   expect_true(all(ind$A >= 0 & ind$A <= 1))
   expect_equal(ind$stat, sqrt(ind$A * ind$B), tolerance = 1e-8)
   r <- beta_indicator(ants, site = unit, group = zone, func = "r.g",
                       permutations = 99, alpha = 1)
   expect_false("A" %in% names(r))
+})
+
+test_that("beta_indicator selects on adjusted p-values", {
+  skip_if_not_installed("indicspecies")
+  set.seed(1)
+  raw <- beta_indicator(ants, site = unit, group = zone, permutations = 199,
+                        adjust = "none")
+  set.seed(1)
+  holm <- beta_indicator(ants, site = unit, group = zone, permutations = 199)
+  expect_equal(raw$p.adj, raw$p.value)
+  expect_true(all(holm$p.adj <= 0.05))
+  expect_true(nrow(holm) <= nrow(raw))
+  expect_error(beta_indicator(ants, site = unit, group = zone, adjust = "x"))
 })

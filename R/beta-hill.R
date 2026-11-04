@@ -39,7 +39,9 @@
 #' 2023): each site's community, including estimated undetected species,
 #' is redrawn with its sample size (or units) and all quantities are
 #' recomputed at the same coverage. Each estimate gets `_lower` and
-#' `_upper` columns, the estimate -/+ z x bootstrap standard error.
+#' `_upper` columns, the estimate -/+ z x bootstrap standard error,
+#' kept within each quantity's range (beta in 1 to N, dissimilarities in
+#' 0 to 1).
 #'
 #' @inheritParams beta_pair
 #' @inheritParams div_hill
@@ -123,14 +125,22 @@ beta_hill <- function(data,
         dis_turnover_sorensen = "V", dis_turnover_jaccard = "S"
       )
       for (nm in names(cols)) {
-        res[[paste0(nm, "_lower")]] <- res[[nm]] - z * se[, cols[[nm]]]
-        res[[paste0(nm, "_upper")]] <- res[[nm]] + z * se[, cols[[nm]]]
+        lim <- switch(nm,
+          gamma = ,
+          alpha = c(0, Inf),
+          beta = c(1, r$n_sites),
+          c(0, 1)
+        )
+        lo <- res[[nm]] - z * se[, cols[[nm]]]
+        hi <- res[[nm]] + z * se[, cols[[nm]]]
+        res[[paste0(nm, "_lower")]] <- pmin(pmax(lo, lim[1]), lim[2])
+        res[[paste0(nm, "_upper")]] <- pmin(pmax(hi, lim[1]), lim[2])
       }
     }
     if (length(prep$by) > 0) res <- vctrs::vec_cbind(r$key, res)
     res
   })
-  tibble::as_tibble(vctrs::vec_rbind(!!!out))
+  td_new(tibble::as_tibble(vctrs::vec_rbind(!!!out)), "td_beta_hill")
 }
 
 # ---- Regions -------------------------------------------------------------

@@ -299,6 +299,37 @@ decay <- beta_decay(png_ants, elevation, .by = season)
 autoplot(decay, xlab = "Difference in elevation (m)")
 ```
 
+## Coverage-standardised beta diversity {.tabset}
+
+```{r hill-beta-data, include = FALSE}
+set.seed(1)
+hb <- beta_hill(png_ants, coverage = 0.9, nboot = 50, .by = season)
+```
+
+### Plot
+
+```{r hill-beta, echo = FALSE, fig.height = 3.4, fig.alt = "Gamma, alpha and beta diversity at 90% coverage for each season, with bootstrap intervals"}
+autoplot(hb)
+```
+
+```{r hill-beta-dis, echo = FALSE, fig.height = 5, fig.alt = "Four normalised dissimilarities at 90% coverage for each season"}
+autoplot(hb, what = "dissimilarity")
+```
+
+### Table
+
+```{r hill-beta-table}
+hb[c("season", "q", "gamma", "alpha", "beta", "beta_lower", "beta_upper")]
+```
+
+### Code
+
+```r
+hb <- beta_hill(png_ants, coverage = 0.9, nboot = 50, .by = season)
+autoplot(hb)
+autoplot(hb, what = "dissimilarity")
+```
+
 ## Greyscale for print {.tabset}
 
 ### Plot

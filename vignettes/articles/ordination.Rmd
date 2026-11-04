@@ -39,6 +39,18 @@ long gradients, where the unimodal methods (CA, CCA) fit better than the
 linear ones (PCA, RDA). PCA and RDA use the Hellinger transformation by
 default (Legendre and Gallagher 2001); change it with `transform`.
 
+## Reading the diagrams
+
+| Element | Meaning |
+|---|---|
+| Points | Sites (coloured by a site variable) |
+| Red arrows from the origin | Species, in linear methods (PCA, RDA, PCoA, db-RDA): the direction in which each species increases |
+| Red crosses | Species optima, in unimodal methods (CA, CCA, DCA) and NMDS |
+| Dark arrows from the origin | Quantitative environmental variables; in NMDS and PCA they are fitted afterwards (passive) |
+| Dark triangles | Centroids of factor levels, such as years |
+| Ellipses, hulls, spiders | Spread of each group of sites |
+| Faint dotted grey lines | Label leaders only: they join a label that was moved to avoid overlap to its point |
+
 ## Constrained ordination: butterflies at Wanang
 
 `wanang_butterflies` holds butterfly counts on 36 days over three years.
@@ -79,7 +91,7 @@ nmds <- ord_fit(butterflies, method = "nmds", formula = ~ month + year)
 tidy(nmds, "envfit")
 ```
 
-```{r nmds-plot, fig.alt = "NMDS of butterfly days coloured by month, with convex hulls around years."}
+```{r nmds-plot, fig.height = 4.6, fig.alt = "NMDS of butterfly days coloured by month, with convex hulls around years."}
 autoplot(nmds, colour = month, group = year, hull = TRUE, species = 8)
 ```
 

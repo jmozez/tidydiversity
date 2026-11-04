@@ -1,6 +1,26 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* Plots on the website: the site's dark mode no longer inverts figures
+  (it turned white plots black and changed their colours); every figure
+  is shown white with its true colours.
+* Ordination plots: all labels (species, sites, variables, centroids) are
+  placed in one layer that avoids every point and every other label;
+  leader lines for moved labels are faint and dotted, and no longer look
+  like species vectors. The help page and article explain every line
+  type. The text layer no longer adds "a" keys to the legend.
+* Coverage plots repel site labels instead of overprinting them and show
+  no axis tick above 100%; facet panels have more space between them.
+* `beta_indicator()` now corrects p-values for multiple testing
+  (`adjust = "holm"` by default; new column `p.adj`) and selects species
+  on the adjusted values. Use `adjust = "none"` for the previous
+  behaviour.
+* `autoplot()` for `beta_hill()` results: gamma, alpha and beta, or the
+  four dissimilarities, against q with bootstrap intervals.
+* Website: every figure, including reference-page examples, now has an
+  opaque white background, so no plot turns dark in the site's dark mode.
+  New gallery entry, README tables and text for `beta_hill()` and
+  `beta_welch()`.
 * `beta_welch()`: Welch-type PERMANOVA (W*d; Hamidi et al. 2019), robust
   to unequal dispersion; equals Welch's F in one Euclidean dimension.
 * `beta_hill()`: coverage-standardised gamma, alpha and beta Hill

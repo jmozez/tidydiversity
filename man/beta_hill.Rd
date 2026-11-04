@@ -142,7 +142,9 @@ With \code{nboot > 0}, every region is resampled as a whole (Chao et al.
 2023): each site's community, including estimated undetected species,
 is redrawn with its sample size (or units) and all quantities are
 recomputed at the same coverage. Each estimate gets \verb{_lower} and
-\verb{_upper} columns, the estimate -/+ z x bootstrap standard error.
+\verb{_upper} columns, the estimate -/+ z x bootstrap standard error,
+kept within each quantity's range (beta in 1 to N, dissimilarities in
+0 to 1).
 }
 
 \examples{

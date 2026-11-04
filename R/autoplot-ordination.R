@@ -15,6 +15,15 @@
 #' `level` of the points, and `"se"` a `level` confidence region for the
 #' group centroid.
 #'
+#' How to read the lines:
+#' * red arrows from the origin: species (linear methods only);
+#' * dark arrows from the origin: quantitative environmental variables;
+#' * dark triangles: centroids of factor levels (for example years);
+#' * coloured outlines: ellipses or convex hulls around groups of sites,
+#'   and, with `spider = TRUE`, lines from each group centroid to its sites;
+#' * faint dotted grey lines: label leaders, joining a label that had to
+#'   be moved to avoid overlap to its point. They carry no information.
+#'
 #' Every option is an argument, and the result is an ordinary ggplot that
 #' can be changed further with `+`.
 #'
@@ -141,6 +150,8 @@ autoplot.td_ordination <- function(object,
     }
   }
 
+  labs <- list()
+
   # Species
   linear <- object$method %in% c("pca", "rda", "pcoa", "dbrda")
   spp <- object$species
@@ -165,7 +176,7 @@ autoplot.td_ordination <- function(object,
         data = spp, colour = "#B2182B", shape = 3, size = 1.8
       )
     }
-    p <- p + ord_text(spp, colour = "#B2182B", fontface = "italic", size = 3)
+    labs <- ord_add_labels(labs, spp, "#B2182B", "italic", 3)
   }
 
   # Sites
@@ -175,7 +186,7 @@ autoplot.td_ordination <- function(object,
     if (!is.null(shp_var)) aes_pt$shape <- rlang::quo(.data[[shp_var]])
     p <- p + ggplot2::geom_point(aes_pt, data = site_df, size = 2.4, alpha = 0.9)
     if (site_labels) {
-      p <- p + ord_text(site_df, colour = "grey20", size = 2.8)
+      labs <- ord_add_labels(labs, site_df, "grey20", "plain", 2.8)
     }
   }
 
@@ -193,7 +204,8 @@ autoplot.td_ordination <- function(object,
         ggplot2::aes(0, 0, xend = .data$.x, yend = .data$.y),
         data = vec, colour = "#0E2A47", linewidth = 0.6,
         arrow = ggplot2::arrow(length = ggplot2::unit(0.2, "cm"), type = "closed")
-      ) + ord_text(vec, colour = "#0E2A47", fontface = "bold", size = 3.3)
+      )
+      labs <- ord_add_labels(labs, vec, "#0E2A47", "bold", 3.3)
     }
     cen <- object$centroids
     if (nrow(cen) && all(ax %in% names(cen))) {
@@ -203,10 +215,18 @@ autoplot.td_ordination <- function(object,
       p <- p + ggplot2::geom_point(
         ggplot2::aes(.data$.x, .data$.y),
         data = cen, shape = 17, size = 3, colour = "#0E2A47"
-      ) + ord_text(cen, colour = "#0E2A47", fontface = "bold", size = 3)
+      )
+      labs <- ord_add_labels(labs, cen, "#0E2A47", "bold", 3)
     }
   }
 
+  # All labels in one layer, so species, site and variable labels avoid
+  # each other and every plotted point instead of overlapping.
+  if (length(labs)) {
+    lab_df <- vctrs::vec_rbind(!!!labs)
+    pts <- vctrs::vec_rbind(site_df[c(".x", ".y")], lab_df[c(".x", ".y")])
+    p <- p + ord_text(lab_df, pts)
+  }
   lab <- ord_axis_labels(object, axes)
   p <- p + ggplot2::coord_equal() +
     ggplot2::labs(
@@ -251,19 +271,43 @@ ord_arrow_mul <- function(site_df, vec) {
   if (!is.finite(r_vec) || r_vec == 0) 1 else 0.85 * r_sites / r_vec
 }
 
-ord_text <- function(df, ...) {
-  if (requireNamespace("ggrepel", quietly = TRUE)) {
-    ggrepel::geom_text_repel(
-      ggplot2::aes(.data$.x, .data$.y, label = .data$.label),
-      data = df, seed = 1, max.overlaps = 30, min.segment.length = 0.3,
-      ...
-    )
-  } else {
-    ggplot2::geom_text(
-      ggplot2::aes(.data$.x, .data$.y, label = .data$.label),
-      data = df, vjust = -0.7, check_overlap = TRUE, ...
-    )
+ord_add_labels <- function(labs, df, colour, face, size) {
+  c(labs, list(tibble::tibble(
+    .x = df$.x, .y = df$.y, .label = as.character(df$.label),
+    .col = colour, .face = face, .size = size
+  )))
+}
+
+# One repelled text layer for every label. Every plotted point is added as
+# an empty label so that text is pushed off it. A label pushed away from its
+# point gets a faint dotted leader line, drawn so that it cannot be mistaken
+# for a species or variable arrow.
+ord_text <- function(lab, pts) {
+  if (!requireNamespace("ggrepel", quietly = TRUE)) {
+    return(ggplot2::geom_text(
+      ggplot2::aes(.data$.x, .data$.y,
+        label = .data$.label, colour = I(.data$.col),
+        fontface = .data$.face, size = I(.data$.size)
+      ),
+      data = lab, vjust = -0.7, check_overlap = TRUE, show.legend = FALSE
+    ))
   }
+  obst <- tibble::tibble(
+    .x = pts$.x, .y = pts$.y, .label = "", .col = "black",
+    .face = "plain", .size = 3
+  )
+  df <- vctrs::vec_rbind(lab, obst)
+  ggrepel::geom_text_repel(
+    ggplot2::aes(.data$.x, .data$.y,
+      label = .data$.label, colour = I(.data$.col),
+      fontface = .data$.face, size = I(.data$.size)
+    ),
+    data = df, seed = 1, max.overlaps = Inf, box.padding = 0.35,
+    point.padding = 0.45, min.segment.length = 0.4, show.legend = FALSE,
+    segment.colour = "grey70", segment.size = 0.25, segment.linetype = "dotted",
+    force = 2, force_pull = 2,
+    max.time = 2, max.iter = 20000
+  )
 }
 
 ord_hulls <- function(df) {

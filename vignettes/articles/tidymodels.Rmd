@@ -3,7 +3,10 @@ title: "Modelling diversity with tidymodels"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  dev.args = list(bg = "white")
+)
 ```
 
 tidydiversity provides four tools for modelling diversity with

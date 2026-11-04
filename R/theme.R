@@ -68,6 +68,8 @@ theme_tidydiversity <- function(base_size = 11,
       legend.key = blank,
       legend.background = blank,
       plot.title.position = "plot",
+      # Room between facets so neighbouring axis labels never touch
+      panel.spacing = ggplot2::unit(0.9, "lines"),
       # Always a white figure, also on dark web pages and slides
       plot.background = ggplot2::element_rect(fill = "white", colour = NA),
       panel.background = ggplot2::element_rect(fill = "white", colour = NA)
