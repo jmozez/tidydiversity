@@ -54,7 +54,9 @@ ggplot(std, aes(elevation, diversity, colour = season)) +
   theme_tidydiversity()
 ```
 
-No ants were recorded above 2700 m. Richness peaks at low to mid
+Both seasons cover the same five elevations, 200 to 2200 m (a single
+dry-season record at 2700 m is left out of `png_ants` to keep the seasons
+comparable). Richness peaks at low to mid
 elevation and falls sharply above 1700 m.
 
 ## Tree-nesting ants in three forest plots

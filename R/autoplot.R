@@ -190,10 +190,20 @@ autoplot.td_rarefy <- function(object,
       },
       y = ylab,
       colour = site_col,
-      fill = site_col,
-      shape = "Order",
       linetype = NULL
     )
+  # Title only the legends that are drawn, so ggplot2 does not warn about
+  # unknown labels.
+  if (ci && !all(is.na(df$lower))) p <- p + ggplot2::labs(fill = site_col)
+  if (!facet) p <- p + ggplot2::labs(shape = "Order")
+  # Wrap long site legends instead of letting them run off the page.
+  n_site <- length(unique(df$.site))
+  if (n_site > 4) {
+    p <- p + ggplot2::guides(
+      colour = ggplot2::guide_legend(nrow = ceiling(n_site / 4)),
+      fill = ggplot2::guide_legend(nrow = ceiling(n_site / 4))
+    )
+  }
   if (x == "coverage") {
     p <- p + ggplot2::scale_x_continuous(limits = c(NA, 1))
   }
