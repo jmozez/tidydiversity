@@ -236,12 +236,17 @@ trait_cwm_test <- function(data,
     for (e in ev) {
       ee <- env[[e]][keep]
       r_obs <- stats::cor(cwm, ee)
-      r_row <- vapply(seq_len(permutations), function(i) {
-        stats::cor(cwm, sample(ee))
-      }, numeric(1))
-      r_col <- vapply(seq_len(permutations), function(i) {
-        stats::cor(as.vector(p %*% sample(xx)), ee)
-      }, numeric(1))
+      # All permutations at once: one matrix of permuted environments
+      # (row-based test) and one of CWMs from permuted traits
+      # (column-based test), each correlated in a single vectorised call.
+      perm_e <- vapply(seq_len(permutations), function(i) sample(ee),
+        numeric(length(ee))
+      )
+      perm_x <- vapply(seq_len(permutations), function(i) sample(xx),
+        numeric(length(xx))
+      )
+      r_row <- as.vector(stats::cor(cwm, perm_e))
+      r_col <- as.vector(stats::cor(p %*% perm_x, ee))
       p_row <- (sum(abs(r_row) >= abs(r_obs)) + 1) / (permutations + 1)
       p_col <- (sum(abs(r_col) >= abs(r_obs)) + 1) / (permutations + 1)
       out[[length(out) + 1]] <- tibble::tibble(
