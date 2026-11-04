@@ -60,3 +60,40 @@ decay
 ```{r, fig.alt = "Dissimilarity against elevational distance"}
 autoplot(decay)
 ```
+
+## Beta diversity at equal sample coverage
+
+Beta diversity estimated from samples depends on sample size and
+completeness, so regions sampled with different effort cannot be compared
+directly. `beta_hill()` follows the iNEXT.beta3D framework of Chao et al.
+(2023): gamma and alpha Hill numbers are each standardised to the same
+sample coverage, and beta = gamma / alpha is the effective number of
+completely distinct sites (1 to the number of sites).
+
+```{r}
+beta_hill(png_ants, .by = season)
+```
+
+The four `dis_` columns rescale beta to 0-1. `dis_sorensen` and
+`dis_jaccard` measure non-overlap (for q = 0 they are the classic
+Sorensen and Jaccard dissimilarities); the `turnover` versions measure
+species turnover. Give `coverage` to compare regions at chosen levels:
+
+```{r}
+beta_hill(png_ants, q = 0, coverage = c(0.8, 0.9), .by = season)
+```
+
+Add `nboot` for bootstrap confidence intervals. The same function gives
+phylogenetic (`type = "PD"`, with `tree`) and functional (`type = "FD"`,
+with `distance`) beta diversity, and works on incidence data with `unit`
+when the same sampling units (plots, visits) were surveyed at every site.
+
+```{r}
+set.seed(1)
+b <- beta_hill(png_ants, q = 0, coverage = 0.9, nboot = 20, .by = season)
+b[c("season", "beta", "beta_lower", "beta_upper")]
+```
+
+Chao, A. et al. (2023). Rarefaction and extrapolation with beta diversity
+under a framework of Hill numbers: the iNEXT.beta3D standardization.
+*Ecological Monographs*, 93, e1588.

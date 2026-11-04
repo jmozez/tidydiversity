@@ -126,9 +126,11 @@ reference:
   - title: Beta diversity
     contents:
       - beta_pair
+      - beta_hill
       - beta_decay
       - beta_dist
       - beta_permanova
+      - beta_welch
       - beta_indicator
   - title: Ordination
     contents:
