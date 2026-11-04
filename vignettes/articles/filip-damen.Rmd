@@ -28,6 +28,13 @@ a long illness at Madang Hospital on 1 November 2026, aged around 60.
 Much of what this package measures exists, in Papua New Guinea, because
 of him.
 
+The account below is adapted, with gratitude, from the obituary written by
+**Professor Vojtěch Novotný**, the tropical ecologist who has worked
+alongside Filip for decades. Professor Novotný (University of South
+Bohemia and the Biology Centre of the Czech Academy of Sciences)
+co-founded the New Guinea Binatang Research Center, which runs the Swire
+Research Station in the Wanang Conservation Area.
+
 ## The forest he kept
 
 Filip was born in Wanang Village, a roadless place deep in the rainforests
@@ -100,7 +107,7 @@ autoplot(wanang) +
 
 ## Sources
 
-- Obituary of Filip Damen, shared on Facebook:
+- Novotný, V. (2026). Filip Damen obituary. Posted on Facebook:
   <https://www.facebook.com/share/p/1C7xdkU3AV/>
 - *Papua New Guinea: Two Worlds*, a video feature on Filip Damen (in
   English) by Czech Television:
