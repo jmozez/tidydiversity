@@ -1,6 +1,10 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* Multi-panel figures: `td_panel()` combines plots with patchwork, adding
+  panel tags (a, b, ...), shared legends and white backgrounds;
+  `td_save()` saves at journal column widths (85, 120 or 175 mm) and
+  300 dpi.
 * Ordination: `ord_fit()` fits PCA, CA, DCA, PCoA, NMDS, RDA, CCA and
   db-RDA (with partial versions through `Condition()`) to long community
   data with vegan, returning tidy scores; results match vegan exactly.
