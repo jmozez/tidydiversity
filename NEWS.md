@@ -1,6 +1,9 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* `beta_hill()`: coverage-standardised gamma, alpha and beta Hill
+  numbers with four normalised dissimilarities (Chao et al. 2023);
+  results match iNEXT.beta3D exactly.
 * Trait-based ecology, following the *Handbook of Trait-Based Ecology*
   (de Bello et al. 2021): `trait_dist()` (Gower, gawdis),
   `trait_cwm()`, `trait_cwm_test()` (max test), `trait_fd_indices()` (FRic, FEve,

@@ -53,6 +53,7 @@ Suggests:
     ggrepel,
     iNEXT,
     iNEXT.3D,
+    iNEXT.beta3D,
     iNEXT.4steps,
     knitr,
     lme4,

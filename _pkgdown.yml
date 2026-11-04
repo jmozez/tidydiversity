@@ -126,6 +126,7 @@ reference:
   - title: Beta diversity
     contents:
       - beta_pair
+      - beta_hill
       - beta_decay
       - beta_dist
       - beta_permanova
