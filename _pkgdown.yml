@@ -6,8 +6,6 @@ template:
     image:
       src: man/figures/logo.png
       alt: "tidydiversity hex logo"
-    twitter:
-      card: summary
   light-switch: true
   bslib:
     primary: "#14a7b4"
@@ -85,6 +83,10 @@ reference:
       - div_hill
       - div_estimate
       - div_coverage
+  - title: Completeness and evenness
+    contents:
+      - div_completeness
+      - div_evenness
   - title: Rarefaction and standardisation
     contents:
       - div_rarefy

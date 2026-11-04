@@ -171,7 +171,7 @@ attr_at_size <- function(at, n, m, q) {
   a <- at$a
   w <- at$w
   tbar <- sum(a * w) / n
-  ext <- NULL
+  cache <- new.env(parent = emptyenv())
   one <- function(mm) {
     if (mm == n) {
       return(obs)
@@ -186,14 +186,15 @@ attr_at_size <- function(at, n, m, q) {
       d_hi <- if (hi == n) obs else attr_rare_int(at, n, hi, q)
       return((hi - mm) * d_lo + (mm - lo) * d_hi)
     }
-    if (is.null(ext)) {
+    if (is.null(cache$ext)) {
       asy <- pmax(attr_asy(at, q, n), obs)
       rm1 <- attr_rare_int(at, n, n - 1, q)
       if (at$kind == "FD") rm1 <- pmin(rm1, obs)
       beta <- ifelse(asy != obs, (obs - rm1) / (asy - rm1), 0)
       beta[beta == -Inf] <- 1
-      ext <<- list(asy = asy, beta = beta)
+      cache$ext <- list(asy = asy, beta = beta)
     }
+    ext <- cache$ext
     vapply(seq_along(q), function(j) {
       if (q[j] == 2) {
         if (ext$beta[j] == 0) {

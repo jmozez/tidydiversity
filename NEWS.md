@@ -8,6 +8,8 @@
   iNEXT.3D to within 1e-6. Bootstrap intervals for PD and FD are not yet
   available.
 * New article "TD, PD and FD on one scale", and a rewritten home page.
+* `div_completeness()` and `div_evenness()` give sample completeness and
+  evenness profiles (classes E1 to E5) that match iNEXT.4steps.
 * `autoplot()` methods for every result type: `div_hill()` profiles and
   gradients, `div_estimate()`, `div_coverage()`, `beta_pair()` heatmaps and
   `beta_multi()` stacked bars.
