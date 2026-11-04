@@ -16,7 +16,8 @@ test_that(".by and group_by() agree", {
 
 test_that("div_estimate() matches iNEXT asymptotic estimates", {
   skip_if_not_installed("iNEXT")
-  for (s in unique(png_ants$site)[c(1, 6, 16)]) {
+  # Three sites with several species each; the 2700 m site has only one
+  for (s in c("MW0200", "MW0700", "MW1700")) {
     x <- as.vector(table(png_ants$species[png_ants$site == s]))
     ref <- iNEXT::iNEXT(x, q = c(0, 1, 2), nboot = 0)$AsyEst
     mine <- div_estimate(png_ants[png_ants$site == s, ], nboot = 0)

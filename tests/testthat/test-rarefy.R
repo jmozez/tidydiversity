@@ -30,8 +30,8 @@ test_that("rarefaction reaches the observed values at m = n", {
 test_that("div_standardise() matches iNEXT::estimateD()", {
   skip_if_not_installed("iNEXT")
   sub <- png_ants[png_ants$season == "wet", ]
-  lst <- split(sub$abundance, sub$site)
-  for (lev in c(0.85, 0.97)) {
+  lst <- lapply(split(sub$species, sub$site), function(s) as.vector(table(s)))
+  for (lev in c(0.7, 0.85)) {
     ref <- suppressWarnings(
       iNEXT::estimateD(lst, base = "coverage", level = lev, nboot = 0)
     )
