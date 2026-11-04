@@ -1,6 +1,17 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* Example data are now real, published field data from Papua New Guinea,
+  replacing the simulated `ant_gradient`: `png_ants` (ants at nutrient
+  baits along Mt Wilhelm; Moses et al. 2023), `png_tree_ants` (tree-nesting
+  ants in three plots; Plowman et al. 2020), `png_frogs` (frogs along
+  Mt Wilhelm; Dahl et al. 2023) and `wanang_butterflies` (butterfly
+  monitoring at Wanang; Luk et al. 2019). Each is rebuilt from its Zenodo
+  deposit by a script in `data-raw/`.
+* New case-study articles for the Papua New Guinea ants, frogs and
+  butterflies.
+* Rarefaction and extrapolation are about 60 times faster on large samples,
+  with identical results.
 * Phylogenetic (PD) and functional (FD) diversity: `div_hill()`,
   `div_estimate()`, `div_rarefy()` and `div_standardise()` gain
   `type = c("TD", "PD", "FD")` with `tree`, `reftime`, `pd_unit`,

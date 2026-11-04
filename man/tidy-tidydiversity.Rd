@@ -59,11 +59,11 @@ so diversity can be modelled against them.
 }
 \examples{
 set.seed(1)
-est <- div_estimate(ant_gradient, q = 0, nboot = 20)
+est <- div_estimate(png_ants, q = 0, nboot = 20)
 generics::tidy(est)
 
 # Join elevation and fit a weighted model
-est <- add_site_data(est, ant_gradient)
+est <- add_site_data(est, png_ants)
 fit <- lm(estimate ~ elevation,
   data = generics::tidy(est),
   weights = weight

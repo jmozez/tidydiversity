@@ -104,7 +104,7 @@ other is the mean distance among the singletons. The reference time
 }
 \examples{
 set.seed(1)
-div_estimate(ant_gradient, .by = transect, nboot = 20)
+div_estimate(png_ants, .by = season, nboot = 20)
 }
 \references{
 Chao, A., Gotelli, N. J., Hsieh, T. C., Sander, E. L.,

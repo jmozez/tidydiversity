@@ -61,9 +61,9 @@ of Bray-Curtis dissimilarity (Baselga 2013), matching
 \code{\link[betapart:beta.pair.abund]{betapart::beta.pair.abund()}} and \code{\link[betapart:beta.multi.abund]{betapart::beta.multi.abund()}}.
 }
 \examples{
-beta_pair(ant_gradient, .by = transect)
+beta_pair(png_ants, .by = season)
 
-beta_multi(ant_gradient, .by = transect, index = "jaccard")
+beta_multi(png_ants, .by = season, index = "jaccard")
 }
 \references{
 Baselga, A. (2010). Partitioning the turnover and nestedness

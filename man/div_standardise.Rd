@@ -92,7 +92,7 @@ that every site in a group reaches at twice its sample size, as in
 }
 \examples{
 set.seed(1)
-div_standardise(ant_gradient, coverage = 0.95, .by = transect, nboot = 10)
+div_standardise(png_ants, coverage = 0.95, .by = season, nboot = 10)
 
-div_standardise(ant_gradient, size = 100, .by = transect, nboot = 0)
+div_standardise(png_ants, size = 20, .by = season, nboot = 0)
 }

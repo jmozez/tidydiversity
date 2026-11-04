@@ -49,7 +49,7 @@
 #' @name autoplot-tidydiversity
 #' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' library(ggplot2)
-#' curves <- div_rarefy(ant_gradient, q = c(0, 1), .by = transect, knots = 20)
+#' curves <- div_rarefy(png_ants, q = c(0, 1), .by = season, knots = 20)
 #' autoplot(curves)
 #' autoplot(curves, x = "coverage")
 #'
@@ -58,20 +58,20 @@
 #'   labs(x = "Number of workers") +
 #'   theme_tidydiversity(base_size = 9)
 #'
-#' div_hill(ant_gradient, q = seq(0, 3, by = 0.25), .by = transect) |>
+#' div_hill(png_ants, q = seq(0, 3, by = 0.25), .by = season) |>
 #'   autoplot()
-#' div_hill(ant_gradient, .by = c(transect, elevation)) |>
+#' div_hill(png_ants, .by = c(season, elevation)) |>
 #'   autoplot(gradient = elevation, xlab = "Elevation (m)")
 #'
 #' set.seed(1)
-#' autoplot(div_estimate(ant_gradient, .by = transect, nboot = 20))
-#' autoplot(div_coverage(ant_gradient, .by = transect))
-#' autoplot(div_standardise(ant_gradient, .by = transect, nboot = 20))
+#' autoplot(div_estimate(png_ants, .by = season, nboot = 20))
+#' autoplot(div_coverage(png_ants, .by = season))
+#' autoplot(div_standardise(png_ants, .by = season, nboot = 20))
 #'
-#' autoplot(beta_pair(ant_gradient, .by = transect))
-#' autoplot(beta_multi(ant_gradient, .by = transect))
+#' autoplot(beta_pair(png_ants, .by = season))
+#' autoplot(beta_multi(png_ants, .by = season))
 #'
-#' beta_decay(ant_gradient, gradient = elevation, .by = transect) |>
+#' beta_decay(png_ants, gradient = elevation, .by = season) |>
 #'   autoplot(xlab = "Difference in elevation (m)")
 NULL
 

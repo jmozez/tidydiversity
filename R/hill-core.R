@@ -87,13 +87,15 @@ coverage_big_a <- function(n, f1, f2) {
 # Expected Hill numbers in a subsample of integer size m < n.
 hill_rare_int <- function(x, m, q) {
   n <- sum(x)
-  k <- seq_len(m)
-  lc <- outer(x, k, function(xi, kk) {
-    ok <- xi >= kk & xi <= n - m + kk
-    out <- lchoose(xi, kk) + lchoose(n - xi, m - kk) - lchoose(n, m)
-    ifelse(ok, exp(out), 0)
-  })
-  fk <- colSums(lc)
+  # Species i contributes only for k <= x_i, so evaluate just those n pairs
+  # (one per individual) rather than a full species-by-k grid.
+  xi <- rep(x, x)
+  kk <- sequence(x)
+  ok <- kk <= m & xi - kk <= n - m
+  log_term <- lchoose(xi[ok], kk[ok]) + lchoose(n - xi[ok], m - kk[ok])
+  term <- exp(log_term - lchoose(n, m))
+  k <- seq_len(min(m, max(x)))
+  fk <- vapply(split(term, factor(kk[ok], levels = k)), sum, numeric(1))
   vapply(q, function(qq) {
     if (qq == 0) {
       sum(fk)
@@ -109,7 +111,7 @@ hill_rare_int <- function(x, m, q) {
 hill_at_size <- function(x, m, q) {
   n <- sum(x)
   obs <- hill_obs(x, q)
-  asy <- NULL
+  cache <- new.env(parent = emptyenv())
   one <- function(mm) {
     if (mm == n) {
       return(obs)
@@ -124,8 +126,12 @@ hill_at_size <- function(x, m, q) {
       d_hi <- if (hi == n) obs else hill_rare_int(x, hi, q)
       return(d_lo + (mm - lo) * (d_hi - d_lo))
     }
-    if (is.null(asy)) asy <<- hill_asy(x, q)
-    rfd <- hill_rare_int(x, n - 1, q)
+    if (is.null(cache$asy)) {
+      cache$asy <- hill_asy(x, q)
+      cache$rfd <- hill_rare_int(x, n - 1, q)
+    }
+    asy <- cache$asy
+    rfd <- cache$rfd
     vapply(seq_along(q), function(j) {
       if (q[j] == 2) {
         s2 <- sum(x * (x - 1)) / (n * (n - 1))

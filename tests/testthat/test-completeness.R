@@ -46,14 +46,14 @@ test_that("completeness and evenness match iNEXT.4steps", {
 
 test_that("bootstrap intervals and plots work", {
   set.seed(1)
-  cmp <- div_completeness(ant_gradient, q = c(0, 1, 2), .by = transect, nboot = 10)
+  cmp <- div_completeness(png_ants, q = c(0, 1, 2), .by = season, nboot = 10)
   expect_true(all(cmp$lower <= cmp$completeness & cmp$upper <= 1))
   skip_if_not_installed("ggplot2")
   expect_s3_class(ggplot2::autoplot(cmp), "ggplot")
-  ev <- div_evenness(ant_gradient, q = c(0, 1, 2), .by = transect, nboot = 0)
+  ev <- div_evenness(png_ants, q = c(0, 1, 2), .by = season, nboot = 0)
   expect_s3_class(ggplot2::autoplot(ev), "ggplot")
   expect_named(ev, c(
-    "transect", "site", "class", "q", "evenness", "se", "lower", "upper",
+    "season", "site", "class", "q", "evenness", "se", "lower", "upper",
     "coverage"
   ))
 })

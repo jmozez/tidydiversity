@@ -22,13 +22,13 @@
 #'   grouping columns followed by `site`, `species` and `abundance`.
 #' @export
 #' @examples
-#' ants <- as_community(ant_gradient, .by = transect)
+#' ants <- as_community(png_ants, .by = season)
 #' ants
 #'
-#' wide <- community_wide(ants, .by = transect)
+#' wide <- community_wide(ants, .by = season)
 #' wide
 #'
-#' community_long(wide, -c(transect, site))
+#' community_long(wide, -c(season, site))
 as_community <- function(data,
                          site = site,
                          species = species,

@@ -72,11 +72,11 @@ relative abundances. Order 0 is species richness, order 1 is the
 exponential of Shannon entropy and order 2 is the inverse Simpson index.
 }
 \examples{
-div_hill(ant_gradient, .by = transect)
+div_hill(png_ants, .by = season)
 
 # Grouped data frames work too
-ant_gradient |>
-  dplyr::group_by(transect) |>
+png_ants |>
+  dplyr::group_by(season) |>
   div_hill(q = c(0, 0.5, 1, 2))
 }
 \references{

@@ -1,0 +1,70 @@
+---
+title: "Case study: butterfly monitoring in the Wanang forest plot"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 4
+)
+```
+
+Luk et al. (2019) counted butterflies on 36 days, three a month over 12
+months spread across three years, in the Wanang forest dynamics plot,
+Papua New Guinea. Repeated sampling of one place suits questions about
+temporal diversity: how much does a year of monitoring capture, and how
+different are years?
+
+**Source and licence.** Data on Dryad (doi:10.5061/dryad.j35fq7r) under
+CC0 1.0. Only the Wanang part of the published multi-site data is
+included. See `?wanang_butterflies` and `data-raw/wanang_butterflies.R`.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(2026)
+wanang_butterflies
+```
+
+## Each year of monitoring
+
+Pooling the days within each year gives one sample per year:
+
+```{r years}
+years <- mutate(wanang_butterflies, site = paste("Year", year))
+div_coverage(years)
+div_estimate(years, nboot = 100)
+```
+
+Each year recorded more than 4000 butterflies with coverage above 99%, yet
+estimated richness exceeds observed richness by 15 to 50 species: rare
+species remain undetected after a full year.
+
+```{r curves, fig.alt = "Butterfly rarefaction and extrapolation curves for each year"}
+autoplot(div_rarefy(years, q = c(0, 1, 2), knots = 40, nboot = 100))
+```
+
+## How different are the years?
+
+```{r beta}
+beta_multi(years)
+```
+
+Most of the difference between years is turnover. Within each year, the
+four sampled months also differ substantially:
+
+```{r months}
+wanang_butterflies |>
+  mutate(site = paste("Month", month)) |>
+  beta_multi(.by = year)
+```
+
+These results support the paper's conclusion that monitoring across
+several years captures far more of the species pool than any single year.
+
+## Reference
+
+Luk, C.-L., Basset, Y., Kongnoo, P., Hau, B. C. H. and Bonebrake, T. C.
+(2019). Inter-annual monitoring improves diversity estimation of tropical
+butterfly assemblages. *Biotropica*, 51, 519-528. doi:10.1111/btp.12671

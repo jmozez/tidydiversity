@@ -47,11 +47,11 @@
 #'   \doi{10.1002/ecm.1343}
 #' @export
 #' @examples
-#' div_hill(ant_gradient, .by = transect)
+#' div_hill(png_ants, .by = season)
 #'
 #' # Grouped data frames work too
-#' ant_gradient |>
-#'   dplyr::group_by(transect) |>
+#' png_ants |>
+#'   dplyr::group_by(season) |>
 #'   div_hill(q = c(0, 0.5, 1, 2))
 div_hill <- function(data,
                      site = site,
@@ -126,7 +126,7 @@ div_hill <- function(data,
 #' @export
 #' @examples
 #' set.seed(1)
-#' div_estimate(ant_gradient, .by = transect, nboot = 20)
+#' div_estimate(png_ants, .by = season, nboot = 20)
 div_estimate <- function(data,
                          site = site,
                          species = species,
@@ -188,7 +188,7 @@ div_estimate <- function(data,
 #'   Ecology, 93, 2533-2547. \doi{10.1890/11-1952.1}
 #' @export
 #' @examples
-#' div_coverage(ant_gradient, .by = transect)
+#' div_coverage(png_ants, .by = season)
 div_coverage <- function(data,
                          site = site,
                          species = species,

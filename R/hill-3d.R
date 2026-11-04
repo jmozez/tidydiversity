@@ -159,7 +159,8 @@ attr_rare_int <- function(at, n, m, q) {
   a <- at$a
   w <- at$w
   tbar <- sum(a * w) / n
-  k <- seq_len(m)
+  # Terms with k above the largest abundance are zero, so skip them.
+  k <- seq_len(min(m, max(a)))
   pk <- outer(a, k, function(ai, kk) {
     ok <- ai >= kk & ai <= n - m + kk
     out <- lchoose(ai, kk) + lchoose(n - ai, m - kk) - lchoose(n, m)

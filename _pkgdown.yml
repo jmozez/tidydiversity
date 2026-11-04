@@ -76,7 +76,10 @@ reference:
       - add_site_data
   - title: Datasets
     contents:
-      - ant_gradient
+      - png_ants
+      - png_tree_ants
+      - png_frogs
+      - wanang_butterflies
       - portal_rodents
   - title: Alpha diversity
     contents:

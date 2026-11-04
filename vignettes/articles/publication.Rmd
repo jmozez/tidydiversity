@@ -17,8 +17,8 @@ library(tidydiversity)
 library(dplyr)
 library(ggplot2)
 set.seed(1)
-north <- filter(ant_gradient, transect == "north")
-curves <- div_rarefy(north, nboot = 100)
+wet <- filter(png_ants, season == "wet")
+curves <- div_rarefy(wet, nboot = 100)
 ```
 
 ## Plot options {.tabset}
@@ -67,7 +67,7 @@ autoplot(curves,
 ### One panel
 
 ```{r onepanel, fig.alt = "All orders of q on one panel"}
-autoplot(div_rarefy(filter(north, site == "n_0200"), nboot = 100),
+autoplot(div_rarefy(filter(wet, site == "MW0200"), nboot = 100),
   facet = FALSE
 )
 ```
@@ -80,9 +80,9 @@ bold strip labels and the legend at the bottom. It takes `base_size`,
 The palettes are also available as ggplot2 scales.
 
 ```{r theme, fig.alt = "Custom ggplot using the package theme and palette"}
-div_hill(ant_gradient, .by = c(transect, elevation)) |>
+div_hill(png_ants, .by = c(season, elevation)) |>
   filter(q == 1) |>
-  ggplot(aes(elevation, diversity, colour = transect)) +
+  ggplot(aes(elevation, diversity, colour = season)) +
   geom_line() +
   geom_point() +
   scale_colour_tidydiversity() +
@@ -99,10 +99,10 @@ interval, for example `12.3 [9.8, 15.1]`, and renders it as a tibble,
 ### Long
 
 ```{r table-long}
-est <- div_estimate(north, nboot = 100)
+est <- div_estimate(wet, nboot = 100)
 div_table(est,
   digits = 1, output = "kable",
-  caption = "Asymptotic diversity, north transect"
+  caption = "Asymptotic diversity, wet season"
 )
 ```
 

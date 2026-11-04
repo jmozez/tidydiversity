@@ -23,6 +23,6 @@ for ordination and testing with vegan, for example
 clustering with \code{\link[stats:hclust]{stats::hclust()}}.
 }
 \examples{
-d <- beta_dist(beta_pair(ant_gradient[ant_gradient$transect == "north", ]))
+d <- beta_dist(beta_pair(png_ants[png_ants$season == "wet", ]))
 hclust(d)
 }

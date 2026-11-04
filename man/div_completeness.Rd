@@ -46,7 +46,7 @@ detected, at q = 1 it is the sample coverage, and higher orders give
 increasing weight to abundant species. Values lie between 0 and 1.
 }
 \examples{
-div_completeness(ant_gradient, q = c(0, 1, 2), .by = transect, nboot = 0)
+div_completeness(png_ants, q = c(0, 1, 2), .by = season, nboot = 0)
 }
 \references{
 Chao, A., Kubota, Y., Zeleny, D., Chiu, C.-H., Li, C.-F.,

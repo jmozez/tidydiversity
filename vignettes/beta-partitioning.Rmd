@@ -22,12 +22,12 @@ library(ggplot2)
 Beta diversity measures how communities differ. Baselga (2010) showed that
 dissimilarity has two parts: **turnover**, where species replace each
 other, and **nestedness**, where poorer sites hold a subset of the species
-at richer sites. The examples use `ant_gradient`, a simulated dataset.
+at richer sites. The examples use `png_ants`, ants at nutrient baits along Mt Wilhelm, Papua New Guinea (Moses et al. 2023).
 
 ## Pairwise dissimilarity
 
 ```{r}
-pairs <- beta_pair(ant_gradient, .by = transect)
+pairs <- beta_pair(png_ants, .by = season)
 pairs
 ```
 
@@ -36,14 +36,14 @@ the Jaccard family. The results match the betapart package.
 
 ```{r}
 pairs |>
-  group_by(transect) |>
+  group_by(season) |>
   summarise(across(c(turnover, nestedness, total), mean))
 ```
 
 ## Many sites at once
 
 ```{r}
-beta_multi(ant_gradient, .by = transect)
+beta_multi(png_ants, .by = season)
 ```
 
 ## Distance decay
@@ -52,7 +52,7 @@ beta_multi(ant_gradient, .by = transect)
 turnover rises with elevational distance while nestedness stays low.
 
 ```{r}
-decay <- beta_decay(ant_gradient, gradient = elevation, .by = transect)
+decay <- beta_decay(png_ants, gradient = elevation, .by = season)
 decay
 ```
 

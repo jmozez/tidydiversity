@@ -17,13 +17,13 @@ test_that("rows count as individuals without an abundance column", {
 })
 
 test_that("community_wide() and community_long() round trip", {
-  com <- as_community(ant_gradient, .by = transect)
-  wide <- community_wide(com, .by = transect)
-  expect_equal(nrow(wide), 16)
-  back <- community_long(wide, -c(transect, site))
+  com <- as_community(png_ants, .by = season)
+  wide <- community_wide(com, .by = season)
+  expect_equal(nrow(wide), nrow(unique(png_ants[c("season", "site")])))
+  back <- community_long(wide, -c(season, site))
   expect_equal(
-    dplyr::arrange(tibble::as_tibble(back), transect, site, species),
-    dplyr::arrange(tibble::as_tibble(com), transect, site, species),
+    dplyr::arrange(tibble::as_tibble(back), season, site, species),
+    dplyr::arrange(tibble::as_tibble(com), season, site, species),
     ignore_attr = TRUE
   )
 })
