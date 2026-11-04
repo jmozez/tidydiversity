@@ -7,7 +7,11 @@
   FDiv, FDis, Rao), `td_rao()` (alpha/beta/gamma with equivalent numbers),
   `td_ses()` (null models), `td_itv()` (intra- vs interspecific
   variability) and `td_fourth_corner()`. `aravo_long()` loads the ade4
-  alpine plant data. New article "Trait-based ecology".
+  alpine plant data. Trait probability densities (`td_tpd()`,
+  `td_tpd_dissim()`, computed natively after `TPD::TPDs()`), and
+  phylogenetic signal (`td_phylo_signal()`, with a fast native Blomberg's
+  K), `td_phylo_dist()` and `td_combine_dist()`. New article
+  "Trait-based ecology".
 * Testing community composition: `beta_permanova()` (PERMANOVA, with
   restricted permutations), `beta_dispersion()` (homogeneity of
   dispersion, with `autoplot()`), `ord_select()` (forward selection with
