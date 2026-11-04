@@ -13,6 +13,7 @@ beta_indicator(
   env = NULL,
   func = c("IndVal.g", "IndVal", "r.g", "r"),
   combinations = FALSE,
+  adjust = "holm",
   alpha = 0.05,
   permutations = 999
 )
@@ -38,7 +39,12 @@ column that is constant within each site.}
 
 \item{combinations}{Allow species to indicate combinations of groups?}
 
-\item{alpha}{Return only species with \code{p.value <= alpha}; \code{1} for all.}
+\item{adjust}{Correction for testing many species at once, passed to
+\code{\link[stats:p.adjust]{stats::p.adjust()}}: \code{"holm"} (the default, controls the family-wise
+error rate), \code{"fdr"} (false discovery rate) or \code{"none"}.}
+
+\item{alpha}{Return only species with adjusted \code{p.adj <= alpha}; \code{1} for
+all.}
 
 \item{permutations}{Number of permutations for the tests of passive
 variables.}
@@ -46,12 +52,19 @@ variables.}
 \value{
 A tibble with \code{species}, \code{group} (the group or combination the
 species indicates), \code{stat}, \code{A} (specificity) and \code{B} (fidelity; for
-IndVal only) and \code{p.value}, sorted by group and decreasing \code{stat}.
+IndVal only), the permutation \code{p.value} and the adjusted \code{p.adj},
+sorted by group and decreasing \code{stat}.
 }
 \description{
 Finds species associated with groups of sites (Dufrene and Legendre
 1997; De Caceres et al. 2010) using \code{\link[indicspecies:multipatt]{indicspecies::multipatt()}}, and
 returns a tidy table.
+}
+\details{
+Every species is tested, so with many species some reach
+\code{p.value < 0.05} by chance. Following De Caceres et al. (2010) and
+Legendre and Legendre (2012), p-values are corrected for multiple
+testing before species are selected.
 }
 \examples{
 \dontshow{if (rlang::is_installed("indicspecies")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

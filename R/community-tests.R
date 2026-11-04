@@ -386,10 +386,19 @@ ord_select <- function(data,
 #' @param func `"IndVal.g"` (group-equalised indicator value, the default),
 #'   `"IndVal"`, `"r.g"` or `"r"` (point-biserial correlation).
 #' @param combinations Allow species to indicate combinations of groups?
-#' @param alpha Return only species with `p.value <= alpha`; `1` for all.
+#' @param adjust Correction for testing many species at once, passed to
+#'   [stats::p.adjust()]: `"holm"` (the default, controls the family-wise
+#'   error rate), `"fdr"` (false discovery rate) or `"none"`.
+#' @param alpha Return only species with adjusted `p.adj <= alpha`; `1` for
+#'   all.
 #' @return A tibble with `species`, `group` (the group or combination the
 #'   species indicates), `stat`, `A` (specificity) and `B` (fidelity; for
-#'   IndVal only) and `p.value`, sorted by group and decreasing `stat`.
+#'   IndVal only), the permutation `p.value` and the adjusted `p.adj`,
+#'   sorted by group and decreasing `stat`.
+#' @details Every species is tested, so with many species some reach
+#'   `p.value < 0.05` by chance. Following De Caceres et al. (2010) and
+#'   Legendre and Legendre (2012), p-values are corrected for multiple
+#'   testing before species are selected.
 #' @references Dufrene, M. and Legendre, P. (1997). Species assemblages and
 #'   indicator species: the need for a flexible asymmetrical approach.
 #'   *Ecological Monographs*, 67, 345-366.
@@ -412,10 +421,12 @@ beta_indicator <- function(data,
                            env = NULL,
                            func = c("IndVal.g", "IndVal", "r.g", "r"),
                            combinations = FALSE,
+                           adjust = "holm",
                            alpha = 0.05,
                            permutations = 999) {
   rlang::check_installed("indicspecies", "for indicator species analysis.")
   func <- rlang::arg_match(func)
+  adjust <- rlang::arg_match0(adjust, stats::p.adjust.methods, "adjust")
   g <- rlang::as_name(enquo(group))
   p <- comm_prep(
     data, enquo(site), enquo(species), enquo(abundance), env,
@@ -442,7 +453,9 @@ beta_indicator <- function(data,
     out$B <- mp$B[cbind(seq_len(nrow(sg)), idx)]
     out <- out[c("species", "group", "stat", "A", "B", "p.value")]
   }
-  out <- out[!is.na(out$p.value) & out$p.value <= alpha, , drop = FALSE]
+  out <- out[!is.na(out$p.value), , drop = FALSE]
+  out$p.adj <- stats::p.adjust(out$p.value, method = adjust)
+  out <- out[out$p.adj <= alpha, , drop = FALSE]
   out[order(out$group, -out$stat), , drop = FALSE]
 }
 

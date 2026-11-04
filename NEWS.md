@@ -1,6 +1,10 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* `beta_indicator()` now corrects p-values for multiple testing
+  (`adjust = "holm"` by default; new column `p.adj`) and selects species
+  on the adjusted values. Use `adjust = "none"` for the previous
+  behaviour.
 * `autoplot()` for `beta_hill()` results: gamma, alpha and beta, or the
   four dissimilarities, against q with bootstrap intervals.
 * Website: every figure, including reference-page examples, now has an
