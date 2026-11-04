@@ -39,7 +39,7 @@ div_estimate(years, nboot = 100)
 ```
 
 Each year recorded more than 4000 butterflies with coverage above 99%, yet
-estimated richness exceeds observed richness by 15 to 50 species: rare
+estimated richness exceeds observed richness by about 20 to 50 species: rare
 species remain undetected after a full year.
 
 ```{r curves, fig.alt = "Butterfly rarefaction and extrapolation curves for each year"}

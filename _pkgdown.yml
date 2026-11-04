@@ -69,7 +69,11 @@ navbar:
       href: articles/gallery.html
     modelling:
       text: Modelling
-      href: articles/modelling.html
+      menu:
+        - text: Models of diversity estimates
+          href: articles/modelling.html
+        - text: "Ordination: biplots and triplots"
+          href: articles/ordination.html
     news:
       text: News
       href: news/index.html
@@ -118,6 +122,12 @@ reference:
       - beta_pair
       - beta_decay
       - beta_dist
+  - title: Ordination
+    contents:
+      - ord_fit
+      - ord_test
+      - autoplot.td_ordination
+      - tidy.td_ordination
   - title: Plots and tables for publication
     contents:
       - autoplot-tidydiversity
@@ -138,6 +148,7 @@ articles:
       - alpha-rarefaction
       - beta-partitioning
       - articles/modelling
+      - articles/ordination
       - articles/publication
   - title: Papua New Guinea case studies
     contents:

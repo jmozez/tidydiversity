@@ -1,0 +1,138 @@
+---
+title: "Ordination: biplots and triplots"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  dev.args = list(bg = "white"),
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 6
+)
+```
+
+`ord_fit()` fits every common ordination to long community data and
+returns tidy scores; `autoplot()` draws publication-quality biplots and
+triplots in the style of CANOCO. The ordinations are computed by the
+[vegan](https://CRAN.R-project.org/package=vegan) package, so the results
+are identical to vegan's (this is checked in the test suite).
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(2026)
+```
+
+## Choosing a method
+
+| Question | Method | `method =` |
+|---|---|---|
+| Main gradients in composition, short gradients | Principal components analysis | `"pca"` |
+| Main gradients, long gradients (species turn over) | Correspondence analysis, detrended CA | `"ca"`, `"dca"` |
+| Main gradients from any dissimilarity | Principal coordinates analysis, NMDS | `"pcoa"`, `"nmds"` |
+| How much composition do my variables explain? | Redundancy analysis | `"rda"` |
+| The same, for long gradients | Canonical correspondence analysis | `"cca"` |
+| The same, for any dissimilarity | Distance-based RDA | `"dbrda"` |
+
+A first DCA axis longer than about 4 standard deviation units suggests
+long gradients, where the unimodal methods (CA, CCA) fit better than the
+linear ones (PCA, RDA). PCA and RDA use the Hellinger transformation by
+default (Legendre and Gallagher 2001); change it with `transform`.
+
+## Constrained ordination: butterflies at Wanang
+
+`wanang_butterflies` holds butterfly counts on 36 days over three years.
+Does the community differ between years and change through the months?
+Site variables (here `year` and `month`) are taken from the data
+automatically, because they are constant within each day.
+
+```{r rda}
+butterflies <- mutate(wanang_butterflies, year = factor(paste("Year", year)))
+rda <- ord_fit(butterflies, method = "rda", formula = ~ year + month)
+rda
+```
+
+Permutation tests of the whole model and of each term:
+
+```{r rda-test}
+ord_test(rda)
+ord_test(rda, by = "terms")
+```
+
+A triplot shows the days (points), the species with the strongest
+responses (red arrows), the month gradient (blue arrow) and the year
+centroids (triangles). Ellipses cover one standard deviation of the days
+in each year.
+
+```{r rda-plot, fig.alt = "RDA triplot of butterfly days coloured by year, with ellipses, species arrows, the month arrow and year centroids."}
+autoplot(rda, colour = year, ellipse = "sd", species = 10)
+```
+
+## Unconstrained ordination with passive variables
+
+NMDS summarises composition without reference to the variables; adding a
+formula fits them passively afterwards ([vegan::envfit()]), as
+supplementary variables in CANOCO.
+
+```{r nmds}
+nmds <- ord_fit(butterflies, method = "nmds", formula = ~ month + year)
+tidy(nmds, "envfit")
+```
+
+```{r nmds-plot, fig.alt = "NMDS of butterfly days coloured by month, with convex hulls around years."}
+autoplot(nmds, colour = month, group = year, hull = TRUE, species = 8)
+```
+
+## Frogs along Mt Wilhelm
+
+Frog communities turn over almost completely along the elevational
+gradient, so a unimodal method suits them. CCA constrained by elevation:
+
+```{r frogs}
+cca <- ord_fit(png_frogs, method = "cca", formula = ~elevation)
+ord_test(cca)
+```
+
+```{r frogs-plot, fig.alt = "CCA triplot of frog communities at eight elevations on Mt Wilhelm, sites coloured by elevation, with the elevation arrow."}
+autoplot(cca, colour = elevation, site_labels = TRUE, species = 12)
+```
+
+## Customising the plot
+
+Every option is an argument, and the result is an ordinary ggplot:
+
+* `axes = c(1, 3)` plots other axes.
+* `species` sets how many species to show (the best represented); `0`
+  hides them.
+* `ellipse = "sd"`, `"ci"` (a `level` region for the points) or `"se"`
+  (a `level` confidence region for the centroid); `hull = TRUE`;
+  `spider = TRUE`.
+* `site_labels = TRUE`, `arrows = FALSE`.
+* `colour`, `shape` and `group` take site variables.
+
+```{r custom, fig.alt = "RDA of butterfly days with spiders joining each day to its year centroid, a title and the legend at the right."}
+autoplot(rda, colour = year, shape = year, spider = TRUE, species = 0) +
+  labs(title = "Butterfly communities at Wanang, by year") +
+  theme(legend.position = "right")
+```
+
+## Tidy scores for your own plots
+
+```{r tidy}
+tidy(rda, "sites")
+tidy(rda, "axes")
+glance(rda)
+```
+
+## References
+
+Legendre, P. and Gallagher, E. D. (2001). Ecologically meaningful
+transformations for ordination of species data. *Oecologia*, 129, 271-280.
+<https://doi.org/10.1007/s004420100716>
+
+ter Braak, C. J. F. and Smilauer, P. (2012). *Canoco reference manual and
+user's guide: software for ordination (version 5.0)*. Microcomputer Power,
+Ithaca, USA.
+
+Oksanen, J. et al. vegan: Community Ecology Package.
+<https://CRAN.R-project.org/package=vegan>

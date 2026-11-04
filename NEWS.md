@@ -1,6 +1,16 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* Ordination: `ord_fit()` fits PCA, CA, DCA, PCoA, NMDS, RDA, CCA and
+  db-RDA (with partial versions through `Condition()`) to long community
+  data with vegan, returning tidy scores; results match vegan exactly.
+  Variables are fitted passively to unconstrained ordinations, as in
+  CANOCO. `ord_test()` gives tidy permutation tests, and `autoplot()`
+  draws CANOCO-style biplots and triplots with ellipses, hulls, spiders
+  and non-overlapping labels. New article "Ordination: biplots and
+  triplots".
+* `wanang_butterflies` combines three species that the source spreadsheet
+  listed in two columns each (189 species, counts unchanged).
 * `png_ants` leaves out its single dry-season record at 2700 m, so both
   seasons cover the same five elevations (200 to 2200 m) and can be
   compared directly.
