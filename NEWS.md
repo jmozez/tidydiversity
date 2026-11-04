@@ -1,6 +1,9 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* tidydiversity is dedicated to the memory of Filip Damen (about
+  1966-2026) of Wanang Village, Papua New Guinea: a new article tells his
+  story, linked from the navigation bar and the README.
 * `beta_permanova()` now defaults to `by = "margin"`: each term is tested
   after all the others, so results no longer depend on the order of terms
   in the formula. The previous default, sequential tests

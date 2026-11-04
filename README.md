@@ -27,6 +27,13 @@ results come back as tibbles.
 
 </div>
 
+> **In memory of Filip Damen (about 1966-2026).** tidydiversity is
+> dedicated to the Wanang leader who refused the loggers, kept his
+> forest for science, and built a research station, a school and a
+> health post with his community. The `wanang_butterflies` data come
+> from the forest he protected. [Read his
+> story](https://jmozez.github.io/tidydiversity/articles/filip-damen.html).
+
 <div class="td-cards">
 
 <div class="td-card">

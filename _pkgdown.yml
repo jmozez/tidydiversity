@@ -34,9 +34,12 @@ figures:
 navbar:
   bg: dark
   structure:
-    left: [intro, tutorials, gallery, modelling, publication, reference, news]
+    left: [intro, tutorials, gallery, modelling, publication, reference, news, memorial]
     right: [search, github, lightswitch]
   components:
+    memorial:
+      text: In memory
+      href: articles/filip-damen.html
     intro:
       text: Get started
       href: articles/tidydiversity.html
@@ -209,6 +212,9 @@ articles:
   - title: Gallery
     contents:
       - articles/gallery
+  - title: Dedication
+    contents:
+      - articles/filip-damen
 
 footer:
   structure:
