@@ -241,9 +241,9 @@ autoplot.td_ordination <- function(object,
     p <- p + ggplot2::scale_colour_viridis_c(option = "D", end = 0.9)
     if (!is.null(grp_var)) p <- p + scale_fill_tidydiversity(palette)
     if (!is.null(theme)) p <- p + theme
-    p
+    td_white(p)
   } else {
-    td_style(p, palette, theme)
+    td_white(td_style(p, palette, theme))
   }
 }
 
