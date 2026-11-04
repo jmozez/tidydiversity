@@ -2,29 +2,29 @@
 
 * Package scaffold.
 * Trait-based ecology, following the *Handbook of Trait-Based Ecology*
-  (de Bello et al. 2021): `td_trait_dist()` (Gower, gawdis),
-  `td_cwm()`, `td_cwm_test()` (max test), `td_fd_indices()` (FRic, FEve,
-  FDiv, FDis, Rao), `td_rao()` (alpha/beta/gamma with equivalent numbers),
-  `td_ses()` (null models), `td_itv()` (intra- vs interspecific
-  variability) and `td_fourth_corner()`. `aravo_long()` loads the ade4
-  alpine plant data. Trait probability densities (`td_tpd()`,
-  `td_tpd_dissim()`, computed natively after `TPD::TPDs()`), and
-  phylogenetic signal (`td_phylo_signal()`, with a fast native Blomberg's
-  K), `td_phylo_dist()` and `td_combine_dist()`. New article
+  (de Bello et al. 2021): `trait_dist()` (Gower, gawdis),
+  `trait_cwm()`, `trait_cwm_test()` (max test), `trait_fd_indices()` (FRic, FEve,
+  FDiv, FDis, Rao), `trait_rao()` (alpha/beta/gamma with equivalent numbers),
+  `trait_ses()` (null models), `trait_itv()` (intra- vs interspecific
+  variability) and `trait_fourth_corner()`. `data_aravo()` loads the ade4
+  alpine plant data. Trait probability densities (`trait_tpd()`,
+  `trait_tpd_dissim()`, computed natively after `TPD::TPDs()`), and
+  phylogenetic signal (`phylo_signal()`, with a fast native Blomberg's
+  K), `phylo_dist()` and `phylo_combine_dist()`. New article
   "Trait-based ecology".
 * Testing community composition: `beta_permanova()` (PERMANOVA, with
   restricted permutations), `beta_dispersion()` (homogeneity of
   dispersion, with `autoplot()`), `ord_select()` (forward selection with
   double stopping), `ord_varpart()` (variation partitioning with tests)
-  and `td_indicator()` (indicator species). Results match vegan and
+  and `beta_indicator()` (indicator species). Results match vegan and
   indicspecies exactly. New article "Testing community composition".
-* tidymodels integration: `td_group_folds()` (site-blocked
-  cross-validation), `td_case_weights()` (inverse-variance weights from
+* tidymodels integration: `model_group_folds()` (site-blocked
+  cross-validation), `model_case_weights()` (inverse-variance weights from
   diversity SEs) and the recipe step `step_hill()`. New article
   "Modelling diversity with tidymodels".
-* Multi-panel figures: `td_panel()` combines plots with patchwork, adding
+* Multi-panel figures: `plot_panel()` combines plots with patchwork, adding
   panel tags (a, b, ...), shared legends and white backgrounds;
-  `td_save()` saves at journal column widths (85, 120 or 175 mm) and
+  `plot_save()` saves at journal column widths (85, 120 or 175 mm) and
   300 dpi.
 * Ordination: `ord_fit()` fits PCA, CA, DCA, PCoA, NMDS, RDA, CCA and
   db-RDA (with partial versions through `Condition()`) to long community

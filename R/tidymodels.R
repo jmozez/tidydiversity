@@ -2,7 +2,7 @@
 #'
 #' Samples from the same site (or transect, plot, ...) are not independent,
 #' so random cross-validation folds leak information and overstate model
-#' skill (Roberts et al. 2017). `td_group_folds()` creates folds that keep
+#' skill (Roberts et al. 2017). `model_group_folds()` creates folds that keep
 #' every row of a group together, using [rsample::group_vfold_cv()].
 #'
 #' @param data A data frame, typically one row per sampling unit.
@@ -17,9 +17,9 @@
 #'   *Ecography*, 40, 913-929. \doi{10.1111/ecog.02881}
 #' @examplesIf rlang::is_installed("rsample")
 #' units <- div_hill(png_ants, q = 0, .by = c(season, transect))
-#' td_group_folds(units, group = site)
+#' model_group_folds(units, group = site)
 #' @export
-td_group_folds <- function(data, group, v = NULL, ...) {
+model_group_folds <- function(data, group, v = NULL, ...) {
   rlang::check_installed("rsample", reason = "to create resamples.")
   col <- names(tidyselect::eval_select(rlang::enquo(group), data))
   if (length(col) != 1) {
@@ -38,7 +38,7 @@ td_group_folds <- function(data, group, v = NULL, ...) {
 #' Precision weights from estimated diversity
 #'
 #' Asymptotic diversity estimates differ in precision between sites: a
-#' poorly sampled site has a large standard error. `td_case_weights()`
+#' poorly sampled site has a large standard error. `model_case_weights()`
 #' turns standard errors from [div_estimate()] or [div_boot()] into
 #' inverse-variance weights, normalised to mean 1, as
 #' [hardhat::importance_weights()] for use with `workflows::add_case_weights()`.
@@ -49,10 +49,10 @@ td_group_folds <- function(data, group, v = NULL, ...) {
 #' @return A `hardhat_importance_weights` vector.
 #' @examplesIf rlang::is_installed("hardhat")
 #' est <- div_estimate(png_ants, q = 1, .by = season)
-#' est$w <- td_case_weights(est$se)
+#' est$w <- model_case_weights(est$se)
 #' est
 #' @export
-td_case_weights <- function(se, cap = 100) {
+model_case_weights <- function(se, cap = 100) {
   rlang::check_installed("hardhat", reason = "to create case weights.")
   if (!is.numeric(se) || any(se < 0, na.rm = TRUE)) {
     cli::cli_abort("{.arg se} must be non-negative numbers.")

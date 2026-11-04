@@ -6,3 +6,6 @@ docs
 inst/doc
 *.Rcheck
 tidydiversity_*.tar.gz
+src/*.o
+src/*.so
+src/*.dll

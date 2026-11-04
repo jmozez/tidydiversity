@@ -12,9 +12,9 @@ test_that("native TPD indices match the TPD package", {
     n = c(5, 1, 0, 1, 1, 1, 0, 2, 6)
   )
   comm <- comm[comm$n > 0, ]
-  r <- td_tpd(comm, tr, abundance = n, cols = c(t1, t2), n_divisions = 60)
-  d <- td_tpd_dissim(comm, tr, abundance = n, cols = c(t1, t2),
-                     n_divisions = 60)
+  r <- trait_tpd(comm, tr, abundance = n, cols = c(t1, t2), n_divisions = 60)
+  d <- trait_tpd_dissim(comm, tr, abundance = n, cols = c(t1, t2),
+                        n_divisions = 60)
   cap <- function(e) {
     o <- NULL
     utils::capture.output(o <- suppressMessages(e))
@@ -33,9 +33,9 @@ test_that("native TPD indices match the TPD package", {
   expect_equal(d$dissimilarity, dr$dissimilarity[cbind(d$site_1, d$site_2)])
   expect_equal(d$p_shared, dr$P_shared[cbind(d$site_1, d$site_2)])
   tr5 <- cbind(tr, t3 = tr$t1, t4 = tr$t2, t5 = tr$t1)
-  expect_error(td_tpd(comm, tr5, abundance = n, cols = t1:t5), "one to four")
+  expect_error(trait_tpd(comm, tr5, abundance = n, cols = t1:t5), "one to four")
   bad <- tr[c(1:2, 16:45), ]
-  expect_error(td_tpd(comm, bad, abundance = n, cols = t1), "at least 3")
+  expect_error(trait_tpd(comm, bad, abundance = n, cols = t1), "at least 3")
 })
 
 test_that("native Blomberg's K matches phytools", {
@@ -45,24 +45,24 @@ test_that("native Blomberg's K matches phytools", {
   tree <- ape::rcoal(40)
   x <- phytools::fastBM(tree)
   tr <- data.frame(species = names(x), x = x, noise = rnorm(40))
-  k <- td_phylo_signal(tr, tree, nsim = 99)
+  k <- phylo_signal(tr, tree, nsim = 99)
   expect_equal(k$statistic[1], as.numeric(phytools::phylosig(tree, x)))
   expect_true(k$p.value[1] < 0.05)
-  l <- td_phylo_signal(tr[1:5, ], ape::rcoal(5, tip.label = tr$species[1:5]),
-                       cols = x, method = "lambda")
+  l <- phylo_signal(tr[1:5, ], ape::rcoal(5, tip.label = tr$species[1:5]),
+                    cols = x, method = "lambda")
   expect_equal(l$method, "lambda")
-  expect_error(td_phylo_signal(tr, "tree"), "phylo")
+  expect_error(phylo_signal(tr, "tree"), "phylo")
 })
 
 test_that("phylogenetic and combined distances", {
   skip_if_not_installed("ape")
   tree <- ape::rcoal(6)
-  d <- td_phylo_dist(tree)
+  d <- phylo_dist(tree)
   expect_equal(max(d), 1)
   f <- stats::dist(seq_len(6))
   attr(f, "Labels") <- tree$tip.label
-  c1 <- td_combine_dist(f, d, weight = 1)
+  c1 <- phylo_combine_dist(f, d, weight = 1)
   expect_equal(as.matrix(c1), as.matrix(f) / max(f),
                ignore_attr = TRUE, tolerance = 1e-12)
-  expect_error(td_combine_dist(f, d, weight = 2), "between 0 and 1")
+  expect_error(phylo_combine_dist(f, d, weight = 2), "between 0 and 1")
 })

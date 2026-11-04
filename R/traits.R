@@ -100,15 +100,15 @@ cwm_matrix <- function(y, traits) {
 #' @examplesIf rlang::is_installed(c("ade4", "FD"))
 #' data(aravo, package = "ade4")
 #' tr <- data.frame(species = rownames(aravo$traits), aravo$traits)
-#' d <- td_trait_dist(tr)
+#' d <- trait_dist(tr)
 #' as.matrix(d)[1:3, 1:3]
 #' @export
-td_trait_dist <- function(traits,
-                          species = species,
-                          cols = tidyselect::everything(),
-                          method = c("gower", "gawdis"),
-                          groups = NULL,
-                          ...) {
+trait_dist <- function(traits,
+                       species = species,
+                       cols = tidyselect::everything(),
+                       method = c("gower", "gawdis"),
+                       groups = NULL,
+                       ...) {
   method <- rlang::arg_match(method)
   tr <- trait_frame(traits, enquo(species), enquo(cols))
   if (method == "gower") {
@@ -143,15 +143,15 @@ td_trait_dist <- function(traits,
 #'   ecosystem properties during secondary succession. *Ecology*, 85,
 #'   2630-2637. \doi{10.1890/03-0799}
 #' @examplesIf rlang::is_installed("ade4")
-#' aravo <- aravo_long()
-#' td_cwm(aravo$community, aravo$traits, abundance = cover)
+#' aravo <- data_aravo()
+#' trait_cwm(aravo$community, aravo$traits, abundance = cover)
 #' @export
-td_cwm <- function(data,
-                   traits,
-                   site = site,
-                   species = species,
-                   abundance = NULL,
-                   cols = tidyselect::everything()) {
+trait_cwm <- function(data,
+                      traits,
+                      site = site,
+                      species = species,
+                      abundance = NULL,
+                      cols = tidyselect::everything()) {
   sp_name <- rlang::as_name(enquo(species))
   tr <- trait_frame(traits, rlang::sym(sp_name), enquo(cols))
   cm <- trait_comm(data, enquo(site), enquo(species), enquo(abundance), tr,
@@ -180,7 +180,7 @@ td_cwm <- function(data,
 #' and reports the larger p-value. It controls Type I error whether the
 #' null hypothesis concerns the environment or the traits.
 #'
-#' @inheritParams td_cwm
+#' @inheritParams trait_cwm
 #' @param env_vars <[`tidy-select`][dplyr::dplyr_tidy_select]> Numeric site
 #'   variables in `data` (constant within sites) to test.
 #' @param permutations Number of permutations.
@@ -195,24 +195,24 @@ td_cwm <- function(data,
 #'   of species traits-environment relationships in the fourth-corner
 #'   problem. *Ecology*, 93, 1525-1526. \doi{10.1890/12-0126.1}
 #' @examplesIf rlang::is_installed("ade4")
-#' aravo <- aravo_long()
+#' aravo <- data_aravo()
 #' set.seed(1)
-#' td_cwm_test(aravo$community, aravo$traits, abundance = cover,
+#' trait_cwm_test(aravo$community, aravo$traits, abundance = cover,
 #'             cols = c(Height, SLA), env_vars = Snow, permutations = 199)
 #' @export
-td_cwm_test <- function(data,
-                        traits,
-                        env_vars,
-                        site = site,
-                        species = species,
-                        abundance = NULL,
-                        cols = tidyselect::everything(),
-                        permutations = 999) {
+trait_cwm_test <- function(data,
+                           traits,
+                           env_vars,
+                           site = site,
+                           species = species,
+                           abundance = NULL,
+                           cols = tidyselect::everything(),
+                           permutations = 999) {
   sp_name <- rlang::as_name(enquo(species))
   tr <- trait_frame(traits, rlang::sym(sp_name), enquo(cols))
   tr <- tr[vapply(tr, is.numeric, logical(1))]
   if (ncol(tr) == 0) {
-    cli::cli_abort("{.fn td_cwm_test} needs numeric traits.")
+    cli::cli_abort("{.fn trait_cwm_test} needs numeric traits.")
   }
   cm <- trait_comm(data, enquo(site), enquo(species), enquo(abundance), tr,
     call = environment()
@@ -263,8 +263,8 @@ td_cwm_test <- function(data,
 #' [FD::dbFD()] and returned as a tidy table. These complement the
 #' Hill-number functional diversity of [div_hill()].
 #'
-#' @inheritParams td_cwm
-#' @param dist Optional species dissimilarity (e.g. from [td_trait_dist()]);
+#' @inheritParams trait_cwm
+#' @param dist Optional species dissimilarity (e.g. from [trait_dist()]);
 #'   computed with Gower distance from `traits` if `NULL`.
 #' @param indices Indices to return.
 #' @param m Number of PCoA axes for FRic and FDiv: `"max"` or `"min"` (see
@@ -280,19 +280,19 @@ td_cwm_test <- function(data,
 #'   measuring functional diversity from multiple traits. *Ecology*, 91,
 #'   299-305. \doi{10.1890/08-2244.1}
 #' @examplesIf rlang::is_installed(c("ade4", "FD"))
-#' aravo <- aravo_long()
-#' td_fd_indices(aravo$community, aravo$traits, abundance = cover,
+#' aravo <- data_aravo()
+#' trait_fd_indices(aravo$community, aravo$traits, abundance = cover,
 #'               indices = c("FDis", "RaoQ"))
 #' @export
-td_fd_indices <- function(data,
-                          traits,
-                          site = site,
-                          species = species,
-                          abundance = NULL,
-                          cols = tidyselect::everything(),
-                          dist = NULL,
-                          indices = c("FRic", "FEve", "FDiv", "FDis", "RaoQ"),
-                          m = "max") {
+trait_fd_indices <- function(data,
+                             traits,
+                             site = site,
+                             species = species,
+                             abundance = NULL,
+                             cols = tidyselect::everything(),
+                             dist = NULL,
+                             indices = c("FRic", "FEve", "FDiv", "FDis", "RaoQ"),
+                             m = "max") {
   rlang::check_installed("FD", "for functional diversity indices.")
   indices <- rlang::arg_match(indices, multiple = TRUE)
   sp_name <- rlang::as_name(enquo(species))
@@ -329,7 +329,7 @@ td_fd_indices <- function(data,
 #' (2010) so that beta = gamma / alpha and is not underestimated. Sites
 #' are weighted equally. Dissimilarities are scaled to a maximum of 1.
 #'
-#' @inheritParams td_fd_indices
+#' @inheritParams trait_fd_indices
 #' @param dist Species dissimilarity; computed with Gower distance from
 #'   `traits` if `NULL`. Use a dissimilarity of 1 between all species for
 #'   taxonomic (Simpson) diversity.
@@ -341,16 +341,16 @@ td_fd_indices <- function(data,
 #'   showing Theseus a way out of the labyrinth. *Journal of Vegetation
 #'   Science*, 21, 992-1000. \doi{10.1111/j.1654-1103.2010.01195.x}
 #' @examplesIf rlang::is_installed(c("ade4", "FD"))
-#' aravo <- aravo_long()
-#' td_rao(aravo$community, aravo$traits, abundance = cover)
+#' aravo <- data_aravo()
+#' trait_rao(aravo$community, aravo$traits, abundance = cover)
 #' @export
-td_rao <- function(data,
-                   traits = NULL,
-                   site = site,
-                   species = species,
-                   abundance = NULL,
-                   cols = tidyselect::everything(),
-                   dist = NULL) {
+trait_rao <- function(data,
+                      traits = NULL,
+                      site = site,
+                      species = species,
+                      abundance = NULL,
+                      cols = tidyselect::everything(),
+                      dist = NULL) {
   prep <- td_prepare(data, enquo(site), enquo(species), enquo(abundance),
     rlang::quo(NULL)
   )
@@ -405,7 +405,7 @@ td_rao <- function(data,
 #' * `"swap"`: independent swap of the site x species matrix, keeping
 #'   site and species totals ([vegan::nullmodel()], `"quasiswap_count"`).
 #'
-#' @inheritParams td_fd_indices
+#' @inheritParams trait_fd_indices
 #' @param index Index to test: `"RaoQ"`, `"FDis"` or `"MPD"` (abundance-
 #'   weighted mean pairwise dissimilarity).
 #' @param null Null model, see Details.
@@ -413,20 +413,20 @@ td_rao <- function(data,
 #' @return A tibble with one row per site: `observed`, `null_mean`,
 #'   `null_sd`, `ses` and `p.value` (two-sided rank-based).
 #' @examplesIf rlang::is_installed(c("ade4", "FD"))
-#' aravo <- aravo_long()
+#' aravo <- data_aravo()
 #' set.seed(1)
-#' td_ses(aravo$community, aravo$traits, abundance = cover, times = 49)
+#' trait_ses(aravo$community, aravo$traits, abundance = cover, times = 49)
 #' @export
-td_ses <- function(data,
-                   traits,
-                   site = site,
-                   species = species,
-                   abundance = NULL,
-                   cols = tidyselect::everything(),
-                   dist = NULL,
-                   index = c("RaoQ", "FDis", "MPD"),
-                   null = c("traits", "richness", "swap"),
-                   times = 999) {
+trait_ses <- function(data,
+                      traits,
+                      site = site,
+                      species = species,
+                      abundance = NULL,
+                      cols = tidyselect::everything(),
+                      dist = NULL,
+                      index = c("RaoQ", "FDis", "MPD"),
+                      null = c("traits", "richness", "swap"),
+                      times = 999) {
   index <- rlang::arg_match(index)
   null <- rlang::arg_match(null)
   sp_name <- rlang::as_name(enquo(species))
@@ -503,7 +503,7 @@ fdis <- function(y, dm) {
 #' compares the *specific* average (CWM from site-specific species means)
 #' with the *fixed* average (CWM from species means over all sites).
 #'
-#' @inheritParams td_cwm
+#' @inheritParams trait_cwm
 #' @param traits A data frame of trait values measured per site: columns for
 #'   site, species and the trait(s). Several rows per site and species
 #'   (individuals) are averaged.
@@ -518,13 +518,13 @@ fdis <- function(y, dm) {
 #'   variability effects. *Ecography*, 34, 856-863.
 #'   \doi{10.1111/j.1600-0587.2010.06904.x}
 #' @export
-td_itv <- function(data,
-                   traits,
-                   site = site,
-                   species = species,
-                   abundance = NULL,
-                   cols,
-                   formula = NULL) {
+trait_itv <- function(data,
+                      traits,
+                      site = site,
+                      species = species,
+                      abundance = NULL,
+                      cols,
+                      formula = NULL) {
   site_q <- enquo(site)
   sp_q <- enquo(species)
   prep <- td_prepare(data, site_q, sp_q, enquo(abundance), rlang::quo(NULL))
@@ -596,7 +596,7 @@ td_itv <- function(data,
 #' (model 6, ter Braak et al. 2012), using [ade4::fourthcorner()], and
 #' returns a tidy table.
 #'
-#' @inheritParams td_cwm_test
+#' @inheritParams trait_cwm_test
 #' @param adjust Method for adjusting p-values across all tests, passed
 #'   to [stats::p.adjust()]; `"none"` for no adjustment.
 #' @return A tibble with `trait`, `variable`, the test `statistic` (Pearson
@@ -606,21 +606,21 @@ td_itv <- function(data,
 #'   traits-environment relationships: the fourth-corner problem revisited.
 #'   *Ecology*, 89, 3400-3412. \doi{10.1890/08-0349.1}
 #' @examplesIf rlang::is_installed("ade4")
-#' aravo <- aravo_long()
+#' aravo <- data_aravo()
 #' set.seed(1)
-#' td_fourth_corner(aravo$community, aravo$traits, abundance = cover,
+#' trait_fourth_corner(aravo$community, aravo$traits, abundance = cover,
 #'                  cols = c(Height, SLA), env_vars = c(Snow, PhysD),
 #'                  permutations = 199)
 #' @export
-td_fourth_corner <- function(data,
-                             traits,
-                             env_vars,
-                             site = site,
-                             species = species,
-                             abundance = NULL,
-                             cols = tidyselect::everything(),
-                             permutations = 999,
-                             adjust = "fdr") {
+trait_fourth_corner <- function(data,
+                                traits,
+                                env_vars,
+                                site = site,
+                                species = species,
+                                abundance = NULL,
+                                cols = tidyselect::everything(),
+                                permutations = 999,
+                                adjust = "fdr") {
   rlang::check_installed("ade4", "for fourth-corner analysis.")
   sp_name <- rlang::as_name(enquo(species))
   tr <- trait_frame(traits, rlang::sym(sp_name), enquo(cols))
@@ -670,11 +670,11 @@ td_fourth_corner <- function(data,
 #'   Research*, 37, 444-453.
 #'   \doi{10.1657/1523-0430(2005)037[0444:CSIAPT]2.0.CO;2}
 #' @examplesIf rlang::is_installed("ade4")
-#' aravo <- aravo_long()
+#' aravo <- data_aravo()
 #' aravo$community
 #' aravo$traits
 #' @export
-aravo_long <- function() {
+data_aravo <- function() {
   rlang::check_installed("ade4", "for the aravo data.")
   e <- new.env()
   utils::data("aravo", package = "ade4", envir = e)

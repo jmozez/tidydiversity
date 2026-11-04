@@ -1,7 +1,7 @@
-test_that("td_group_folds keeps groups together", {
+test_that("model_group_folds keeps groups together", {
   skip_if_not_installed("rsample")
   units <- div_hill(png_ants, q = 0, .by = c(season, transect))
-  folds <- td_group_folds(units, group = site)
+  folds <- model_group_folds(units, group = site)
   expect_s3_class(folds, "rset")
   expect_equal(nrow(folds), length(unique(units$site)))
   for (s in folds$splits) {
@@ -9,19 +9,19 @@ test_that("td_group_folds keeps groups together", {
       rsample::analysis(s)$site, rsample::assessment(s)$site
     ), 0)
   }
-  expect_error(td_group_folds(units, group = c(site, q)), "exactly one")
+  expect_error(model_group_folds(units, group = c(site, q)), "exactly one")
 })
 
-test_that("td_case_weights gives capped inverse-variance weights", {
+test_that("model_case_weights gives capped inverse-variance weights", {
   skip_if_not_installed("hardhat")
-  w <- td_case_weights(c(1, 2, 4))
+  w <- model_case_weights(c(1, 2, 4))
   expect_s3_class(w, "hardhat_importance_weights")
   v <- as.double(w)
   expect_equal(mean(v), 1)
   expect_equal(v[1] / v[2], 4)
-  expect_equal(max(as.double(td_case_weights(c(0, 10), cap = 100))) /
-                 min(as.double(td_case_weights(c(0, 10), cap = 100))), 100)
-  expect_error(td_case_weights(-1), "non-negative")
+  expect_equal(max(as.double(model_case_weights(c(0, 10), cap = 100))) /
+                 min(as.double(model_case_weights(c(0, 10), cap = 100))), 100)
+  expect_error(model_case_weights(-1), "non-negative")
 })
 
 test_that("step_hill matches hill_obs and works on new data", {

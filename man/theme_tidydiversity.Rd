@@ -2,7 +2,7 @@
 % Please edit documentation in R/theme.R
 \name{theme_tidydiversity}
 \alias{theme_tidydiversity}
-\alias{td_palette}
+\alias{plot_palette}
 \alias{scale_colour_tidydiversity}
 \alias{scale_fill_tidydiversity}
 \title{Publication theme and colour palettes}
@@ -14,7 +14,7 @@ theme_tidydiversity(
   grid = c("y", "x", "xy", "none")
 )
 
-td_palette(n, palette = c("okabe_ito", "grey"))
+plot_palette(n, palette = c("okabe_ito", "grey"))
 
 scale_colour_tidydiversity(palette = c("okabe_ito", "grey"), ...)
 
@@ -46,7 +46,7 @@ white background, light horizontal grid, black text, a legend at the
 bottom and plain facet strips. Every \link[=autoplot-tidydiversity]{autoplot()}
 method uses it by default, and you can add it to any ggplot.
 
-\code{td_palette()} returns colour-blind-safe colours: the Okabe-Ito palette
+\code{plot_palette()} returns colour-blind-safe colours: the Okabe-Ito palette
 (Okabe and Ito 2008) by default, switching to the viridis palette when
 more than eight colours are needed, or a greyscale ramp for journals that
 print in black and white. \code{scale_colour_tidydiversity()} and
@@ -55,7 +55,7 @@ print in black and white. \code{scale_colour_tidydiversity()} and
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(ggplot2)
-td_palette(3)
+plot_palette(3)
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
   geom_point() +
   scale_colour_tidydiversity() +

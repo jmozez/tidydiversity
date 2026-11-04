@@ -9,9 +9,9 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 tidydiversity provides four tools for modelling diversity with
 [tidymodels](https://www.tidymodels.org):
 
-* `td_group_folds()`: cross-validation folds that keep whole sites
+* `model_group_folds()`: cross-validation folds that keep whole sites
   together.
-* `td_case_weights()`: precision weights from the standard errors of
+* `model_case_weights()`: precision weights from the standard errors of
   diversity estimates.
 * `step_hill()`: a recipe step that turns species columns into Hill
   numbers.
@@ -45,7 +45,7 @@ Transects on the same site share a species pool, so random folds would
 leak information. Use one fold per site instead (leave-one-site-out):
 
 ```{r folds}
-folds <- td_group_folds(units, group = site)
+folds <- model_group_folds(units, group = site)
 folds
 ```
 
@@ -83,7 +83,7 @@ variance weights give those sites less influence:
 
 ```{r weights}
 est <- div_estimate(png_ants, q = 1, .by = c(elevation, season)) |>
-  mutate(w = td_case_weights(se))
+  mutate(w = model_case_weights(se))
 
 workflow(estimate ~ elevation + season, linear_reg()) |>
   add_case_weights(w) |>
