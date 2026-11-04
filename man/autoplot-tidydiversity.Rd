@@ -11,6 +11,7 @@
 \alias{autoplot.td_coverage}
 \alias{autoplot.td_beta_pair}
 \alias{autoplot.td_beta_multi}
+\alias{autoplot.td_beta_hill}
 \alias{autoplot.td_dispersion}
 \alias{autoplot.td_completeness}
 \alias{autoplot.td_evenness}
@@ -107,6 +108,17 @@
   ...
 )
 
+\method{autoplot}{td_beta_hill}(
+  object,
+  what = c("diversity", "dissimilarity"),
+  palette = "okabe_ito",
+  theme = theme_tidydiversity(),
+  ci = TRUE,
+  xlab = "Order q",
+  ylab = NULL,
+  ...
+)
+
 \method{autoplot}{td_dispersion}(object, palette = "okabe_ito", theme = theme_tidydiversity(), ...)
 
 \method{autoplot}{td_completeness}(
@@ -168,6 +180,9 @@ colour: \code{"total"}, \code{"turnover"} or \code{"nestedness"}.}
 
 \item{digits}{For \code{\link[=beta_multi]{beta_multi()}} results, decimal places of the value
 labels.}
+
+\item{what}{For \code{\link[=beta_hill]{beta_hill()}} results, \code{"diversity"} (gamma, alpha and
+beta) or \code{"dissimilarity"} (the four normalised dissimilarities).}
 }
 \value{
 A ggplot object.
@@ -190,6 +205,9 @@ by sample coverage.
 labelled with each component and the total.
 \item \code{\link[=beta_decay]{beta_decay()}}: distance decay of dissimilarity components, with
 quasibinomial (logit-link) trends that stay within 0 to 1.
+\item \code{\link[=beta_hill]{beta_hill()}}: gamma, alpha and beta diversity (or, with
+\code{what = "dissimilarity"}, the four normalised dissimilarities) against
+the order q for each region, with bootstrap intervals when computed.
 }
 
 Every method returns an ordinary ggplot object, so labels, scales,

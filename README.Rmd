@@ -94,6 +94,11 @@ consistent, tested interface.
 * **TD, PD and FD on one scale.** Taxonomic, phylogenetic and functional
   Hill numbers of the same order q, in effective numbers of species,
   standardised by sample size or coverage (Chao et al. 2014, 2019).
+* **Beta diversity at equal coverage.** Gamma, alpha and beta Hill
+  numbers and four normalised dissimilarities for TD, PD and FD,
+  standardised to a common sample coverage with bootstrap intervals
+  (`beta_hill()`, Chao et al. 2023), so regions sampled with unequal
+  effort can be compared.
 * **Current, accepted methods.** The max test for community-weighted
   means (Zeleny 2018), forward selection with double stopping (Blanchet
   et al. 2008), adjusted R² variation partitioning, trait probability
@@ -101,7 +106,8 @@ consistent, tested interface.
   al. 2021), Rao partitioning in equivalent numbers, and the full trait
   workflow of the *Handbook of Trait-Based Ecology*.
 * **Statistics that respect the design.** Restricted permutations within
-  blocks, site-blocked cross-validation, and precision weights from
+  blocks, a Welch-type PERMANOVA that stays valid when groups differ in
+  spread (`beta_welch()`, Hamidi et al. 2019), site-blocked cross-validation, and precision weights from
   estimation error.
 * **Publication output.** CANOCO-style biplots and triplots with
   ellipses, hulls and spiders; consistent colour-blind-safe themes on white
@@ -139,7 +145,7 @@ when a function needs them, so `library(tidydiversity)` stays light.
 * **Predictable names.** Functions are grouped by prefix: `div_` (alpha
   diversity), `beta_`, `ord_`, `trait_`, `phylo_`, `model_` and `plot_`.
 * **Checked.** Results match iNEXT, iNEXT.3D, betapart, vegan, FD, ade4,
-  indicspecies, TPD and phytools in more than 350 tests.
+  iNEXT.beta3D, indicspecies, TPD and phytools in more than 400 tests.
 
 ### What one package covers
 
@@ -147,8 +153,9 @@ when a function needs them, so `library(tidydiversity)` stays light.
 |---|---|---|
 | Hill numbers, coverage, rarefaction/extrapolation (TD, PD, FD) | `div_*()` | iNEXT, iNEXT.3D, hillR |
 | Beta diversity partitioning and distance decay | `beta_pair()`, `beta_multi()`, `beta_decay()` | betapart |
+| Coverage-standardised beta diversity (TD, PD, FD) | `beta_hill()` | iNEXT.beta3D |
 | Ordination (PCA to db-RDA) with biplots | `ord_fit()`, `autoplot()` | vegan, ggvegan, ggord |
-| PERMANOVA, dispersion, variation partitioning, forward selection | `beta_permanova()`, `beta_dispersion()`, `ord_varpart()`, `ord_select()` | vegan, adespatial |
+| PERMANOVA (classic and Welch-type), dispersion, variation partitioning, forward selection | `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `ord_varpart()`, `ord_select()` | vegan, adespatial |
 | Indicator species | `beta_indicator()` | indicspecies |
 | Traits: CWM, FD indices, null models, ITV, fourth corner | `trait_*()` | FD, gawdis, picante, cati, ade4, weimea |
 | Trait probability densities | `trait_tpd()` | TPD |
@@ -269,7 +276,7 @@ the effect of unequal sampling effort before you compare sites.
 |---|---|
 | Community data | `as_community()`, `community_wide()`, `community_long()`, `add_site_data()` |
 | Alpha diversity (`div_`) | `div_hill()`, `div_estimate()`, `div_coverage()`, `div_rarefy()`, `div_standardise()`, `div_completeness()`, `div_evenness()`, `div_boot()` |
-| Beta diversity (`beta_`) | `beta_pair()`, `beta_multi()`, `beta_decay()`, `beta_dist()`, `beta_permanova()`, `beta_dispersion()`, `beta_indicator()` |
+| Beta diversity (`beta_`) | `beta_pair()`, `beta_multi()`, `beta_hill()`, `beta_decay()`, `beta_dist()`, `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `beta_indicator()` |
 | Ordination (`ord_`) | `ord_fit()`, `ord_test()`, `ord_select()`, `ord_varpart()` |
 | Traits (`trait_`) | `trait_dist()`, `trait_cwm()`, `trait_cwm_test()`, `trait_fd_indices()`, `trait_rao()`, `trait_ses()`, `trait_itv()`, `trait_fourth_corner()`, `trait_tpd()`, `trait_tpd_dissim()` |
 | Phylogeny (`phylo_`) | `phylo_signal()`, `phylo_dist()`, `phylo_combine_dist()` |
@@ -362,6 +369,16 @@ Multi-site Sorensen dissimilarity of each season split into turnover and nestedn
 
 ```{r beta-multi, echo = FALSE, fig.height = 3.4, fig.alt = "Multi-site beta partition"}
 beta_multi(png_ants, .by = season) |>
+  autoplot()
+```
+
+### Coverage-standardised beta diversity
+
+Gamma, alpha and beta diversity of each season at 90% sample coverage, with 95% bootstrap intervals.
+
+```{r beta-hill, echo = FALSE, fig.height = 3.4, fig.alt = "Coverage-standardised gamma, alpha and beta diversity"}
+set.seed(1)
+beta_hill(png_ants, coverage = 0.9, nboot = 50, .by = season) |>
   autoplot()
 ```
 
@@ -460,6 +477,26 @@ beta_decay(png_ants, gradient = elevation, .by = season) |>
 ```
 
 
+### `beta_hill()`
+
+Coverage-standardised beta diversity: `gamma`, `alpha` and `beta` of order `q` at a common `coverage`, the sample sizes used (`m_gamma`, `m_alpha`) and four normalised dissimilarities.
+
+```{r table-9, echo = FALSE}
+beta_hill(png_ants, coverage = 0.9, .by = season) |>
+  show()
+```
+
+### `beta_welch()`
+
+Welch-type PERMANOVA (W*d), robust to unequal dispersion: the `statistic`, the numbers of groups and sites, and the permutation `p.value`.
+
+```{r table-10, echo = FALSE}
+set.seed(1)
+dplyr::mutate(png_ants, unit = paste(site, season, transect)) |>
+  beta_welch(site = unit, group = season) |>
+  show()
+```
+
 ## References
 
 * Chao, A. et al. (2014). Rarefaction and extrapolation with Hill numbers.
@@ -476,8 +513,13 @@ beta_decay(png_ants, gradient = elevation, .by = season) |>
 * Chao, A. et al. (2019). An attribute-diversity approach to functional
   diversity, functional beta diversity, and related (dis)similarity
   measures. *Ecological Monographs*, 89, e01343.
+* Chao, A. et al. (2023). Rarefaction and extrapolation with beta
+  diversity under a framework of Hill numbers: the iNEXT.beta3D
+  standardization. *Ecological Monographs*, 93, e1588.
 * de Bello, F. et al. (2021). *Handbook of Trait-Based Ecology: From Theory
   to R Tools*. Cambridge University Press.
+* Hamidi, B. et al. (2019). W*d-test: robust distance-based multivariate
+  analysis of variance. *Microbiome*, 7, 51.
 * Moses, J. et al. (2023). Nutrient use by tropical ant communities varies
   among three extensive elevational gradients: a cross-continental
   comparison. *Global Ecology and Biogeography*, 32, 1958-1973.

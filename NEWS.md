@@ -1,6 +1,12 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* `autoplot()` for `beta_hill()` results: gamma, alpha and beta, or the
+  four dissimilarities, against q with bootstrap intervals.
+* Website: every figure, including reference-page examples, now has an
+  opaque white background, so no plot turns dark in the site's dark mode.
+  New gallery entry, README tables and text for `beta_hill()` and
+  `beta_welch()`.
 * `beta_welch()`: Welch-type PERMANOVA (W*d; Hamidi et al. 2019), robust
   to unequal dispersion; equals Welch's F in one Euclidean dimension.
 * `beta_hill()`: coverage-standardised gamma, alpha and beta Hill

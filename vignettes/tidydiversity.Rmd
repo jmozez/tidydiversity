@@ -81,5 +81,5 @@ png_ants |>
 
 * `vignette("alpha-rarefaction")` covers Hill numbers, asymptotic estimates
   and rarefaction.
-* `vignette("beta-partitioning")` covers turnover, nestedness and distance
-  decay.
+* `vignette("beta-partitioning")` covers turnover, nestedness, distance
+  decay and beta diversity at equal sample coverage (`beta_hill()`).

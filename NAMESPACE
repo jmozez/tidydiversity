@@ -2,6 +2,7 @@
 
 S3method(generics::tidy,step_hill)
 S3method(ggplot2::autoplot,td_beta_decay)
+S3method(ggplot2::autoplot,td_beta_hill)
 S3method(ggplot2::autoplot,td_beta_multi)
 S3method(ggplot2::autoplot,td_beta_pair)
 S3method(ggplot2::autoplot,td_completeness)

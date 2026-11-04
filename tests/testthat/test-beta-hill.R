@@ -189,3 +189,27 @@ test_that("beta_hill incidence needs units shared across sites", {
     "same sampling units"
   )
 })
+
+test_that("autoplot draws beta_hill results", {
+  skip_if_not_installed("ggplot2")
+  set.seed(1)
+  b <- beta_hill(png_ants, coverage = 0.9, nboot = 5, .by = season)
+  p <- ggplot2::autoplot(b)
+  expect_s3_class(p, "ggplot")
+  expect_true(any(vapply(p$layers, function(l) {
+    inherits(l$geom, "GeomErrorbar")
+  }, logical(1))))
+  d <- ggplot2::autoplot(beta_hill(png_ants, coverage = c(0.8, 0.9), .by = season),
+    what = "dissimilarity"
+  )
+  expect_s3_class(d, "ggplot")
+  expect_silent(ggplot2::ggplot_build(d))
+})
+
+test_that("beta_hill intervals stay within each quantity's range", {
+  set.seed(2)
+  b <- beta_hill(png_ants, coverage = 0.9, nboot = 10, .by = season)
+  dis <- unlist(b[grep("^dis_.*_(lower|upper)$", names(b))])
+  expect_true(all(dis >= 0 & dis <= 1))
+  expect_true(all(b$beta_lower >= 1 & b$beta_upper <= b$n_sites))
+})

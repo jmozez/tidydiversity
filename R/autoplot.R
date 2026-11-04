@@ -15,6 +15,9 @@
 #'   labelled with each component and the total.
 #' * [beta_decay()]: distance decay of dissimilarity components, with
 #'   quasibinomial (logit-link) trends that stay within 0 to 1.
+#' * [beta_hill()]: gamma, alpha and beta diversity (or, with
+#'   `what = "dissimilarity"`, the four normalised dissimilarities) against
+#'   the order q for each region, with bootstrap intervals when computed.
 #'
 #' Every method returns an ordinary ggplot object, so labels, scales,
 #' themes and facets can be changed afterwards with `+`, for example
@@ -609,4 +612,82 @@ autoplot.td_beta_multi <- function(object,
     p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.panel), nrow = 1)
   }
   td_style(p, palette, theme)
+}
+
+#' @param what For [beta_hill()] results, `"diversity"` (gamma, alpha and
+#'   beta) or `"dissimilarity"` (the four normalised dissimilarities).
+#' @rdname autoplot-tidydiversity
+#' @exportS3Method ggplot2::autoplot
+autoplot.td_beta_hill <- function(object,
+                                  what = c("diversity", "dissimilarity"),
+                                  palette = "okabe_ito",
+                                  theme = theme_tidydiversity(),
+                                  ci = TRUE,
+                                  xlab = "Order q",
+                                  ylab = NULL,
+                                  ...) {
+  rlang::check_installed("ggplot2")
+  what <- rlang::arg_match(what)
+  df <- tibble::as_tibble(unclass(object))
+  measures <- if (what == "diversity") {
+    c(gamma = "Gamma", alpha = "Alpha", beta = "Beta")
+  } else {
+    c(
+      dis_sorensen = "Sorensen-type non-overlap (1 - C)",
+      dis_jaccard = "Jaccard-type non-overlap (1 - U)",
+      dis_turnover_sorensen = "Sorensen-type turnover (1 - V)",
+      dis_turnover_jaccard = "Jaccard-type turnover (1 - S)"
+    )
+  }
+  stats <- c(
+    "q", "coverage", "m_gamma", "m_alpha", "gamma", "alpha", "beta",
+    "n_sites", grep("^dis_|_lower$|_upper$", names(df), value = TRUE)
+  )
+  by_cols <- setdiff(names(df), stats)
+  df$.group <- td_label_col(df, by_cols)
+  has_ci <- ci && paste0(names(measures)[1], "_lower") %in% names(df)
+  long <- vctrs::vec_rbind(!!!lapply(names(measures), function(m) {
+    tibble::tibble(
+      q = df$q, coverage = df$coverage, .group = df$.group,
+      .measure = measures[[m]], .value = df[[m]],
+      .lower = if (has_ci) df[[paste0(m, "_lower")]] else NA_real_,
+      .upper = if (has_ci) df[[paste0(m, "_upper")]] else NA_real_
+    )
+  }))
+  long$.measure <- factor(long$.measure, unname(measures))
+  long$.coverage <- factor(paste0("coverage = ", format(long$coverage)))
+  dodge <- ggplot2::position_dodge(width = 0.25)
+  p <- ggplot2::ggplot(long, ggplot2::aes(
+    .data$q, .data$.value,
+    colour = .data$.group, group = .data$.group
+  ))
+  if (has_ci) {
+    p <- p + ggplot2::geom_errorbar(
+      ggplot2::aes(ymin = .data$.lower, ymax = .data$.upper),
+      width = 0.15, position = dodge
+    )
+  }
+  p <- p +
+    ggplot2::geom_line(position = dodge) +
+    ggplot2::geom_point(size = 2.2, position = dodge) +
+    ggplot2::scale_x_continuous(breaks = sort(unique(df$q))) +
+    ggplot2::labs(
+      x = xlab, y = ylab %||% if (what == "diversity") {
+        "Diversity at standardised coverage"
+      } else {
+        "Dissimilarity"
+      },
+      colour = if (length(by_cols)) paste(by_cols, collapse = " ")
+    )
+  if (length(unique(long$coverage)) > 1) {
+    p <- p + ggplot2::facet_grid(
+      ggplot2::vars(.data$.coverage), ggplot2::vars(.data$.measure),
+      scales = "free_y"
+    )
+  } else {
+    p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.measure),
+      scales = "free_y", nrow = if (what == "diversity") 1 else 2
+    )
+  }
+  td_style(p, palette, theme, fill = FALSE)
 }

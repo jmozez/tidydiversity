@@ -88,6 +88,11 @@ one consistent, tested interface.
 - **TD, PD and FD on one scale.** Taxonomic, phylogenetic and functional
   Hill numbers of the same order q, in effective numbers of species,
   standardised by sample size or coverage (Chao et al. 2014, 2019).
+- **Beta diversity at equal coverage.** Gamma, alpha and beta Hill
+  numbers and four normalised dissimilarities for TD, PD and FD,
+  standardised to a common sample coverage with bootstrap intervals
+  (`beta_hill()`, Chao et al. 2023), so regions sampled with unequal
+  effort can be compared.
 - **Current, accepted methods.** The max test for community-weighted
   means (Zeleny 2018), forward selection with double stopping (Blanchet
   et al. 2008), adjusted R² variation partitioning, trait probability
@@ -95,8 +100,9 @@ one consistent, tested interface.
   al. 2021), Rao partitioning in equivalent numbers, and the full trait
   workflow of the *Handbook of Trait-Based Ecology*.
 - **Statistics that respect the design.** Restricted permutations within
-  blocks, site-blocked cross-validation, and precision weights from
-  estimation error.
+  blocks, a Welch-type PERMANOVA that stays valid when groups differ in
+  spread (`beta_welch()`, Hamidi et al. 2019), site-blocked
+  cross-validation, and precision weights from estimation error.
 - **Publication output.** CANOCO-style biplots and triplots with
   ellipses, hulls and spiders; consistent colour-blind-safe themes on
   white backgrounds; multi-panel figures with panel tags.
@@ -133,22 +139,23 @@ when a function needs them, so `library(tidydiversity)` stays light.
 - **Predictable names.** Functions are grouped by prefix: `div_` (alpha
   diversity), `beta_`, `ord_`, `trait_`, `phylo_`, `model_` and `plot_`.
 - **Checked.** Results match iNEXT, iNEXT.3D, betapart, vegan, FD, ade4,
-  indicspecies, TPD and phytools in more than 350 tests.
+  iNEXT.beta3D, indicspecies, TPD and phytools in more than 400 tests.
 
 ### What one package covers
 
-| Topic                                                            | tidydiversity                                                            | Usually needs                           |
-|------------------------------------------------------------------|--------------------------------------------------------------------------|-----------------------------------------|
-| Hill numbers, coverage, rarefaction/extrapolation (TD, PD, FD)   | `div_*()`                                                                | iNEXT, iNEXT.3D, hillR                  |
-| Beta diversity partitioning and distance decay                   | `beta_pair()`, `beta_multi()`, `beta_decay()`                            | betapart                                |
-| Ordination (PCA to db-RDA) with biplots                          | `ord_fit()`, `autoplot()`                                                | vegan, ggvegan, ggord                   |
-| PERMANOVA, dispersion, variation partitioning, forward selection | `beta_permanova()`, `beta_dispersion()`, `ord_varpart()`, `ord_select()` | vegan, adespatial                       |
-| Indicator species                                                | `beta_indicator()`                                                       | indicspecies                            |
-| Traits: CWM, FD indices, null models, ITV, fourth corner         | `trait_*()`                                                              | FD, gawdis, picante, cati, ade4, weimea |
-| Trait probability densities                                      | `trait_tpd()`                                                            | TPD                                     |
-| Phylogenetic signal and distances                                | `phylo_*()`                                                              | phytools, picante, ape                  |
-| Modelling with tidymodels                                        | `model_*()`, `step_hill()`                                               | hand-written glue                       |
-| Publication figures and tables                                   | `autoplot()`, `plot_*()`, `div_table()`                                  | ggplot2, patchwork, gt                  |
+| Topic                                                                                     | tidydiversity                                                                            | Usually needs                           |
+|-------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|-----------------------------------------|
+| Hill numbers, coverage, rarefaction/extrapolation (TD, PD, FD)                            | `div_*()`                                                                                | iNEXT, iNEXT.3D, hillR                  |
+| Beta diversity partitioning and distance decay                                            | `beta_pair()`, `beta_multi()`, `beta_decay()`                                            | betapart                                |
+| Coverage-standardised beta diversity (TD, PD, FD)                                         | `beta_hill()`                                                                            | iNEXT.beta3D                            |
+| Ordination (PCA to db-RDA) with biplots                                                   | `ord_fit()`, `autoplot()`                                                                | vegan, ggvegan, ggord                   |
+| PERMANOVA (classic and Welch-type), dispersion, variation partitioning, forward selection | `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `ord_varpart()`, `ord_select()` | vegan, adespatial                       |
+| Indicator species                                                                         | `beta_indicator()`                                                                       | indicspecies                            |
+| Traits: CWM, FD indices, null models, ITV, fourth corner                                  | `trait_*()`                                                                              | FD, gawdis, picante, cati, ade4, weimea |
+| Trait probability densities                                                               | `trait_tpd()`                                                                            | TPD                                     |
+| Phylogenetic signal and distances                                                         | `phylo_*()`                                                                              | phytools, picante, ape                  |
+| Modelling with tidymodels                                                                 | `model_*()`, `step_hill()`                                                               | hand-written glue                       |
+| Publication figures and tables                                                            | `autoplot()`, `plot_*()`, `div_table()`                                                  | ggplot2, patchwork, gt                  |
 
 ## Installation
 
@@ -294,7 +301,7 @@ of unequal sampling effort before you compare sites.
 |----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Community data             | `as_community()`, `community_wide()`, `community_long()`, `add_site_data()`                                                                                                        |
 | Alpha diversity (`div_`)   | `div_hill()`, `div_estimate()`, `div_coverage()`, `div_rarefy()`, `div_standardise()`, `div_completeness()`, `div_evenness()`, `div_boot()`                                        |
-| Beta diversity (`beta_`)   | `beta_pair()`, `beta_multi()`, `beta_decay()`, `beta_dist()`, `beta_permanova()`, `beta_dispersion()`, `beta_indicator()`                                                          |
+| Beta diversity (`beta_`)   | `beta_pair()`, `beta_multi()`, `beta_hill()`, `beta_decay()`, `beta_dist()`, `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `beta_indicator()`                           |
 | Ordination (`ord_`)        | `ord_fit()`, `ord_test()`, `ord_select()`, `ord_varpart()`                                                                                                                         |
 | Traits (`trait_`)          | `trait_dist()`, `trait_cwm()`, `trait_cwm_test()`, `trait_fd_indices()`, `trait_rao()`, `trait_ses()`, `trait_itv()`, `trait_fourth_corner()`, `trait_tpd()`, `trait_tpd_dissim()` |
 | Phylogeny (`phylo_`)       | `phylo_signal()`, `phylo_dist()`, `phylo_combine_dist()`                                                                                                                           |
@@ -361,6 +368,13 @@ Multi-site Sorensen dissimilarity of each season split into turnover and
 nestedness.
 
 <img src="man/figures/README-beta-multi-1.png" alt="Multi-site beta partition" width="100%" />
+
+### Coverage-standardised beta diversity
+
+Gamma, alpha and beta diversity of each season at 90% sample coverage,
+with 95% bootstrap intervals.
+
+<img src="man/figures/README-beta-hill-1.png" alt="Coverage-standardised gamma, alpha and beta diversity" width="100%" />
 
 ### Distance decay
 
@@ -499,6 +513,31 @@ and `gradient_2` values and their `distance`.
 | dry    | MW0700 | MW2200 |    0.833 |      0.071 | 0.905 |        700 |       2200 |     1500 |
 | dry    | MW1200 | MW1700 |    1.000 |      0.000 | 1.000 |       1200 |       1700 |      500 |
 
+### `beta_hill()`
+
+Coverage-standardised beta diversity: `gamma`, `alpha` and `beta` of
+order `q` at a common `coverage`, the sample sizes used (`m_gamma`,
+`m_alpha`) and four normalised dissimilarities.
+
+| season |   q | coverage | m_gamma | m_alpha |  gamma |  alpha |  beta | n_sites | dis_sorensen | dis_jaccard | dis_turnover_sorensen | dis_turnover_jaccard |
+|:-------|----:|---------:|--------:|--------:|-------:|-------:|------:|--------:|-------------:|------------:|----------------------:|---------------------:|
+| dry    |   0 |      0.9 | 150.161 | 244.117 | 44.361 | 14.476 | 3.064 |       5 |        0.516 |       0.842 |                 0.516 |                0.842 |
+| dry    |   1 |      0.9 | 150.161 | 244.117 | 30.995 |  9.929 | 3.122 |       5 |        0.707 |       0.707 |                 0.530 |                0.850 |
+| dry    |   2 |      0.9 | 150.161 | 244.117 | 23.324 |  6.968 | 3.347 |       5 |        0.877 |       0.587 |                 0.587 |                0.877 |
+| wet    |   0 |      0.9 | 259.764 | 480.767 | 64.058 | 23.502 | 2.726 |       5 |        0.431 |       0.791 |                 0.431 |                0.791 |
+| wet    |   1 |      0.9 | 259.764 | 480.767 | 35.366 | 12.345 | 2.865 |       5 |        0.654 |       0.654 |                 0.466 |                0.814 |
+| wet    |   2 |      0.9 | 259.764 | 480.767 | 21.377 |  7.081 | 3.019 |       5 |        0.836 |       0.505 |                 0.505 |                0.836 |
+
+### `beta_welch()`
+
+Welch-type PERMANOVA (W\*d), robust to unequal dispersion: the
+`statistic`, the numbers of groups and sites, and the permutation
+`p.value`.
+
+| statistic | n_groups | n_sites | p.value |
+|----------:|---------:|--------:|--------:|
+|      1.29 |        2 |      20 |   0.179 |
+
 ## References
 
 - Chao, A. et al. (2014). Rarefaction and extrapolation with Hill
@@ -516,8 +555,13 @@ and `gradient_2` values and their `distance`.
 - Chao, A. et al. (2019). An attribute-diversity approach to functional
   diversity, functional beta diversity, and related (dis)similarity
   measures. *Ecological Monographs*, 89, e01343.
+- Chao, A. et al. (2023). Rarefaction and extrapolation with beta
+  diversity under a framework of Hill numbers: the iNEXT.beta3D
+  standardization. *Ecological Monographs*, 93, e1588.
 - de Bello, F. et al. (2021). *Handbook of Trait-Based Ecology: From
   Theory to R Tools*. Cambridge University Press.
+- Hamidi, B. et al. (2019). W*d-test: robust distance-based multivariate
+  analysis of variance. *Microbiome\*, 7, 51.
 - Moses, J. et al. (2023). Nutrient use by tropical ant communities
   varies among three extensive elevational gradients: a
   cross-continental comparison. *Global Ecology and Biogeography*, 32,
