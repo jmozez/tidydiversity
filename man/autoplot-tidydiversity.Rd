@@ -10,6 +10,7 @@
 \alias{autoplot.td_estimate}
 \alias{autoplot.td_coverage}
 \alias{autoplot.td_beta_pair}
+\alias{autoplot.td_beta_hill_pair}
 \alias{autoplot.td_beta_multi}
 \alias{autoplot.td_beta_hill}
 \alias{autoplot.td_dispersion}
@@ -93,6 +94,14 @@
 \method{autoplot}{td_beta_pair}(
   object,
   component = c("total", "turnover", "nestedness"),
+  theme = theme_tidydiversity(grid = "none"),
+  ...
+)
+
+\method{autoplot}{td_beta_hill_pair}(
+  object,
+  component = c("dis_sorensen", "dis_jaccard", "dis_turnover_sorensen",
+    "dis_turnover_jaccard"),
   theme = theme_tidydiversity(grid = "none"),
   ...
 )

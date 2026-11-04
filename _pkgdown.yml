@@ -34,9 +34,12 @@ figures:
 navbar:
   bg: dark
   structure:
-    left: [intro, tutorials, gallery, modelling, publication, reference, news]
+    left: [intro, tutorials, gallery, modelling, publication, reference, news, memorial]
     right: [search, github, lightswitch]
   components:
+    memorial:
+      text: In memory
+      href: articles/filip-damen.html
     intro:
       text: Get started
       href: articles/tidydiversity.html
@@ -134,7 +137,9 @@ reference:
     contents:
       - beta_pair
       - beta_hill
+      - beta_hill_pair
       - beta_decay
+      - beta_decay_model
       - beta_dist
       - beta_permanova
       - beta_welch
@@ -207,6 +212,9 @@ articles:
   - title: Gallery
     contents:
       - articles/gallery
+  - title: Dedication
+    contents:
+      - articles/filip-damen
 
 footer:
   structure:

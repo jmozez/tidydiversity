@@ -14,7 +14,7 @@ beta_permanova(
   env = NULL,
   distance = "bray",
   transform = "none",
-  by = c("terms", "margin", "model"),
+  by = c("margin", "terms", "model"),
   strata = NULL,
   permutations = 999
 )
@@ -59,8 +59,12 @@ otherwise overweight abundant species; Legendre and Gallagher 2001),
 \code{"chord"}, \code{"log"} (log(x) + 1 for x > 0), \code{"sqrt"}, \code{"pa"}
 (presence-absence) or \code{"none"} (the default for the other methods).}
 
-\item{by}{\code{"terms"} (sequential), \code{"margin"} (each term after all
-others) or \code{"model"} (all terms together).}
+\item{by}{\code{"margin"} (the default: each term tested after all the
+others, so the result does not depend on the order of terms),
+\code{"terms"} (sequential: each term after those listed before it, so
+order matters when terms are correlated) or \code{"model"} (all terms
+together). Note that \code{\link[vegan:adonis]{vegan::adonis2()}} defaults to \code{"terms"}; set
+\code{by = "terms"} to reproduce its default output.}
 
 \item{strata}{Optional site variable (unquoted) within which to restrict
 permutations, for example a block or transect.}

@@ -4,25 +4,33 @@
 \alias{beta_dist}
 \title{Pairwise dissimilarity as a distance matrix}
 \usage{
-beta_dist(x, component = c("total", "turnover", "nestedness"))
+beta_dist(x, component = NULL, q = NULL)
 }
 \arguments{
-\item{x}{A \code{td_beta_pair} tibble from \code{\link[=beta_pair]{beta_pair()}}, without groups.}
+\item{x}{A \code{td_beta_pair} tibble from \code{\link[=beta_pair]{beta_pair()}} or a
+\code{td_beta_hill_pair} tibble from \code{\link[=beta_hill_pair]{beta_hill_pair()}}, without groups.}
 
-\item{component}{Component to use: \code{"total"}, \code{"turnover"} or
-\code{"nestedness"}.}
+\item{component}{For \code{\link[=beta_pair]{beta_pair()}} output: \code{"total"}, \code{"turnover"} or
+\code{"nestedness"} (default \code{"total"}). For \code{\link[=beta_hill_pair]{beta_hill_pair()}} output:
+one of its \code{dis_} columns (default \code{"dis_sorensen"}).}
+
+\item{q}{For \code{\link[=beta_hill_pair]{beta_hill_pair()}} output with several orders, the order to
+use.}
 }
 \value{
 A \code{dist} object labelled with the site names, in their order of
 first appearance.
 }
 \description{
-Returns one component of \code{\link[=beta_pair]{beta_pair()}} as a \link[stats:dist]{stats::dist} object, ready
-for ordination and testing with vegan, for example
-\code{\link[vegan:metaMDS]{vegan::metaMDS()}}, \code{\link[vegan:adonis]{vegan::adonis2()}} or \code{\link[vegan:betadisper]{vegan::betadisper()}}, or for
-clustering with \code{\link[stats:hclust]{stats::hclust()}}.
+Returns one component of \code{\link[=beta_pair]{beta_pair()}}, or one dissimilarity of
+\code{\link[=beta_hill_pair]{beta_hill_pair()}}, as a \link[stats:dist]{stats::dist} object, ready for ordination and
+testing with vegan, for example \code{\link[vegan:metaMDS]{vegan::metaMDS()}}, \code{\link[vegan:adonis]{vegan::adonis2()}}
+or \code{\link[vegan:betadisper]{vegan::betadisper()}}, or for clustering with \code{\link[stats:hclust]{stats::hclust()}}.
 }
 \examples{
 d <- beta_dist(beta_pair(png_ants[png_ants$season == "wet", ]))
 hclust(d)
+
+wet <- png_ants[png_ants$season == "wet", ]
+beta_dist(beta_hill_pair(wet, abundance = workers), q = 2)
 }

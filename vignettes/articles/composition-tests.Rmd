@@ -47,6 +47,11 @@ ants <- png_ants |>
 beta_permanova(ants, site = unit, formula = ~ elevation + season)
 ```
 
+Each term is tested after the other (`by = "margin"`, the default), so
+the result does not depend on the order of terms in the formula. Here
+the design is balanced, so sequential tests (`by = "terms"`, vegan's
+default) give the same numbers; with correlated terms they would not.
+
 Elevation explains 17% of the variation in composition (Bray-Curtis). To
 test season while respecting the paired design, permute only within
 sites:

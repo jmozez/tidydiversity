@@ -223,37 +223,71 @@ beta_components <- function(a, mn, mx, bc, index, multi = FALSE) {
 
 #' Pairwise dissimilarity as a distance matrix
 #'
-#' Returns one component of [beta_pair()] as a [stats::dist] object, ready
-#' for ordination and testing with vegan, for example
-#' [vegan::metaMDS()], [vegan::adonis2()] or [vegan::betadisper()], or for
-#' clustering with [stats::hclust()].
+#' Returns one component of [beta_pair()], or one dissimilarity of
+#' [beta_hill_pair()], as a [stats::dist] object, ready for ordination and
+#' testing with vegan, for example [vegan::metaMDS()], [vegan::adonis2()]
+#' or [vegan::betadisper()], or for clustering with [stats::hclust()].
 #'
-#' @param x A `td_beta_pair` tibble from [beta_pair()], without groups.
-#' @param component Component to use: `"total"`, `"turnover"` or
-#'   `"nestedness"`.
+#' @param x A `td_beta_pair` tibble from [beta_pair()] or a
+#'   `td_beta_hill_pair` tibble from [beta_hill_pair()], without groups.
+#' @param component For [beta_pair()] output: `"total"`, `"turnover"` or
+#'   `"nestedness"` (default `"total"`). For [beta_hill_pair()] output:
+#'   one of its `dis_` columns (default `"dis_sorensen"`).
+#' @param q For [beta_hill_pair()] output with several orders, the order to
+#'   use.
 #' @return A `dist` object labelled with the site names, in their order of
 #'   first appearance.
 #' @export
 #' @examples
 #' d <- beta_dist(beta_pair(png_ants[png_ants$season == "wet", ]))
 #' hclust(d)
-beta_dist <- function(x, component = c("total", "turnover", "nestedness")) {
-  component <- rlang::arg_match(component)
-  if (!inherits(x, "td_beta_pair") && !inherits(x, "td_beta_decay")) {
-    cli::cli_abort("{.arg x} must be the output of {.fn beta_pair}.")
-  }
-  extra <- setdiff(
-    names(x),
-    c(
-      "site_1", "site_2", "turnover", "nestedness", "total",
-      "gradient_1", "gradient_2", "distance"
+#'
+#' wet <- png_ants[png_ants$season == "wet", ]
+#' beta_dist(beta_hill_pair(wet, abundance = workers), q = 2)
+beta_dist <- function(x, component = NULL, q = NULL) {
+  hill <- inherits(x, "td_beta_hill_pair")
+  pair <- inherits(x, "td_beta_pair") || inherits(x, "td_beta_decay")
+  if (!hill && !pair) {
+    cli::cli_abort(
+      "{.arg x} must be the output of {.fn beta_pair} or {.fn beta_hill_pair}."
     )
-  )
+  }
+  choices <- if (hill) {
+    hill_pair_dis
+  } else {
+    c("total", "turnover", "nestedness")
+  }
+  component <- if (is.null(component)) {
+    choices[1]
+  } else {
+    rlang::arg_match0(component, choices, "component")
+  }
+  known <- if (hill) {
+    c("site_1", "site_2", "q", "gamma", "alpha", "beta", choices)
+  } else {
+    c(
+      "site_1", "site_2", choices, "gradient_1", "gradient_2", "distance"
+    )
+  }
+  extra <- setdiff(names(x), known)
   if (length(extra) > 0) {
     cli::cli_abort(c(
       "{.arg x} must hold a single group.",
       "i" = "Filter the grouping column{?s} {.field {extra}} first."
     ))
+  }
+  if (hill) {
+    qs <- unique(x$q)
+    if (is.null(q)) {
+      if (length(qs) > 1) {
+        cli::cli_abort("{.arg x} has several orders; choose one with {.arg q}.")
+      }
+      q <- qs
+    }
+    if (length(q) != 1 || !q %in% qs) {
+      cli::cli_abort("{.arg q} must be one of the orders in {.arg x}.")
+    }
+    x <- x[x$q == q, ]
   }
   labs <- unique(c(as.character(x$site_1), as.character(x$site_2)))
   m <- matrix(0, length(labs), length(labs), dimnames = list(labs, labs))

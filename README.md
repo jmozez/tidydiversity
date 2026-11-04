@@ -27,6 +27,13 @@ results come back as tibbles.
 
 </div>
 
+> **In memory of Filip Damen (about 1966-2026).** tidydiversity is
+> dedicated to the Wanang leader who refused the loggers, kept his
+> forest for science, and built a research station, a school and a
+> health post with his community. The `wanang_butterflies` data come
+> from the forest he protected. [Read his
+> story](https://jmozez.github.io/tidydiversity/articles/filip-damen.html).
+
 <div class="td-cards">
 
 <div class="td-card">
@@ -146,7 +153,8 @@ when a function needs them, so `library(tidydiversity)` stays light.
 | Topic                                                                                     | tidydiversity                                                                            | Usually needs                           |
 |-------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|-----------------------------------------|
 | Hill numbers, coverage, rarefaction/extrapolation (TD, PD, FD)                            | `div_*()`                                                                                | iNEXT, iNEXT.3D, hillR                  |
-| Beta diversity partitioning and distance decay                                            | `beta_pair()`, `beta_multi()`, `beta_decay()`                                            | betapart                                |
+| Beta diversity partitioning, distance decay and decay models                              | `beta_pair()`, `beta_multi()`, `beta_decay()`, `beta_decay_model()`                      | betapart                                |
+| Pairwise Hill-number dissimilarity (Sorensen, Jaccard, Horn, Morisita-Horn)               | `beta_hill_pair()`                                                                       | vegan                                   |
 | Coverage-standardised beta diversity (TD, PD, FD)                                         | `beta_hill()`                                                                            | iNEXT.beta3D                            |
 | Ordination (PCA to db-RDA) with biplots                                                   | `ord_fit()`, `autoplot()`                                                                | vegan, ggvegan, ggord                   |
 | PERMANOVA (classic and Welch-type), dispersion, variation partitioning, forward selection | `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `ord_varpart()`, `ord_select()` | vegan, adespatial                       |
@@ -297,17 +305,17 @@ of unequal sampling effort before you compare sites.
 
 ## Functions
 
-| Family                     | Functions                                                                                                                                                                          |
-|----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Community data             | `as_community()`, `community_wide()`, `community_long()`, `add_site_data()`                                                                                                        |
-| Alpha diversity (`div_`)   | `div_hill()`, `div_estimate()`, `div_coverage()`, `div_rarefy()`, `div_standardise()`, `div_completeness()`, `div_evenness()`, `div_boot()`                                        |
-| Beta diversity (`beta_`)   | `beta_pair()`, `beta_multi()`, `beta_hill()`, `beta_decay()`, `beta_dist()`, `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `beta_indicator()`                           |
-| Ordination (`ord_`)        | `ord_fit()`, `ord_test()`, `ord_select()`, `ord_varpart()`                                                                                                                         |
-| Traits (`trait_`)          | `trait_dist()`, `trait_cwm()`, `trait_cwm_test()`, `trait_fd_indices()`, `trait_rao()`, `trait_ses()`, `trait_itv()`, `trait_fourth_corner()`, `trait_tpd()`, `trait_tpd_dissim()` |
-| Phylogeny (`phylo_`)       | `phylo_signal()`, `phylo_dist()`, `phylo_combine_dist()`                                                                                                                           |
-| Modelling (`model_`)       | `model_group_folds()`, `model_case_weights()`, `step_hill()`, `tidy()`, `glance()`                                                                                                 |
-| Plots and tables (`plot_`) | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `theme_tidydiversity()`, `div_table()`                                                                              |
-| Example data               | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `data_aravo()`                                                                                                     |
+| Family                     | Functions                                                                                                                                                                                          |
+|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Community data             | `as_community()`, `community_wide()`, `community_long()`, `add_site_data()`                                                                                                                        |
+| Alpha diversity (`div_`)   | `div_hill()`, `div_estimate()`, `div_coverage()`, `div_rarefy()`, `div_standardise()`, `div_completeness()`, `div_evenness()`, `div_boot()`                                                        |
+| Beta diversity (`beta_`)   | `beta_pair()`, `beta_multi()`, `beta_hill()`, `beta_hill_pair()`, `beta_decay()`, `beta_decay_model()`, `beta_dist()`, `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `beta_indicator()` |
+| Ordination (`ord_`)        | `ord_fit()`, `ord_test()`, `ord_select()`, `ord_varpart()`                                                                                                                                         |
+| Traits (`trait_`)          | `trait_dist()`, `trait_cwm()`, `trait_cwm_test()`, `trait_fd_indices()`, `trait_rao()`, `trait_ses()`, `trait_itv()`, `trait_fourth_corner()`, `trait_tpd()`, `trait_tpd_dissim()`                 |
+| Phylogeny (`phylo_`)       | `phylo_signal()`, `phylo_dist()`, `phylo_combine_dist()`                                                                                                                                           |
+| Modelling (`model_`)       | `model_group_folds()`, `model_case_weights()`, `step_hill()`, `tidy()`, `glance()`                                                                                                                 |
+| Plots and tables (`plot_`) | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `theme_tidydiversity()`, `div_table()`                                                                                              |
+| Example data               | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `data_aravo()`                                                                                                                     |
 
 ## Gallery
 
@@ -513,6 +521,31 @@ and `gradient_2` values and their `distance`.
 | dry    | MW0700 | MW2200 |    0.833 |      0.071 | 0.905 |        700 |       2200 |     1500 |
 | dry    | MW1200 | MW1700 |    1.000 |      0.000 | 1.000 |       1200 |       1700 |      500 |
 
+### `beta_decay_model()`
+
+Distance-decay model of similarity: the fitted `a` and rate `b`, the
+`half_distance` over which similarity halves, the `pseudo_r2`, `aic` and
+a site-permutation `p.value`.
+
+| season | model       | component | n_pairs |     a |     b | half_distance | pseudo_r2 |     aic | p.value |
+|:-------|:------------|:----------|--------:|------:|------:|--------------:|----------:|--------:|--------:|
+| dry    | exponential | total     |      10 | 0.257 | 0.001 |       924.159 |     0.143 |  -9.214 |   0.349 |
+| wet    | exponential | total     |      10 | 0.897 | 0.002 |       293.331 |     0.694 | -17.577 |   0.017 |
+
+### `beta_hill_pair()`
+
+Pairwise Hill-number beta diversity of order `q` with the four
+normalised dissimilarities (first rows shown).
+
+| season | site_1 | site_2 |   q | gamma | alpha |  beta | dis_sorensen | dis_jaccard | dis_turnover_sorensen | dis_turnover_jaccard |
+|:-------|:-------|:-------|----:|------:|------:|------:|-------------:|------------:|----------------------:|---------------------:|
+| dry    | MW0200 | MW0700 |   0 |    26 |  15.5 | 1.677 |        0.677 |       0.808 |                 0.677 |                0.808 |
+| dry    | MW0200 | MW1200 |   0 |    26 |  14.5 | 1.793 |        0.793 |       0.885 |                 0.793 |                0.885 |
+| dry    | MW0200 | MW1700 |   0 |    20 |  10.5 | 1.905 |        0.905 |       0.950 |                 0.905 |                0.950 |
+| dry    | MW0200 | MW2200 |   0 |    22 |  11.0 | 2.000 |        1.000 |       1.000 |                 1.000 |                1.000 |
+| dry    | MW0700 | MW1200 |   0 |    23 |  14.0 | 1.643 |        0.643 |       0.783 |                 0.643 |                0.783 |
+| dry    | MW0700 | MW1700 |   0 |    19 |  10.0 | 1.900 |        0.900 |       0.947 |                 0.900 |                0.947 |
+
 ### `beta_hill()`
 
 Coverage-standardised beta diversity: `gamma`, `alpha` and `beta` of
@@ -552,6 +585,10 @@ Welch-type PERMANOVA (W\*d), robust to unequal dispersion: the
 - Carmona, C. P. et al. (2019). Trait probability density (TPD):
   measuring functional diversity across scales based on TPD with R.
   *Ecology*, 100, e02876.
+- Chao, A., Chiu, C.-H. and Jost, L. (2014). Unifying species diversity,
+  phylogenetic diversity, functional diversity, and related similarity
+  and differentiation measures through Hill numbers. *Annual Review of
+  Ecology, Evolution, and Systematics*, 45, 297-324.
 - Chao, A. et al. (2019). An attribute-diversity approach to functional
   diversity, functional beta diversity, and related (dis)similarity
   measures. *Ecological Monographs*, 89, e01343.
@@ -562,10 +599,16 @@ Welch-type PERMANOVA (W\*d), robust to unequal dispersion: the
   Theory to R Tools*. Cambridge University Press.
 - Hamidi, B. et al. (2019). W*d-test: robust distance-based multivariate
   analysis of variance. *Microbiome\*, 7, 51.
+- Gómez-Rodríguez, C. and Baselga, A. (2018). Variation among European
+  beetle taxa in patterns of distance decay of similarity suggests a
+  major role of dispersal processes. *Ecography*, 41, 1825-1834.
 - Moses, J. et al. (2023). Nutrient use by tropical ant communities
   varies among three extensive elevational gradients: a
   cross-continental comparison. *Global Ecology and Biogeography*, 32,
   1958-1973.
+- Nekola, J. C. and White, P. S. (1999). The distance decay of
+  similarity in biogeography and ecology. *Journal of Biogeography*, 26,
+  867-878.
 - Zeleny, D. (2018). Which results of the standard test for
   community-weighted mean approach are too optimistic? *Journal of
   Vegetation Science*, 29, 953-966.

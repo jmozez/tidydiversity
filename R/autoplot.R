@@ -536,7 +536,48 @@ autoplot.td_beta_pair <- function(object,
       "gradient_1", "gradient_2", "distance"
     )
   )
+  beta_heatmap(
+    df, component, td_plot_by(df, by_cols),
+    paste0(tools::toTitleCase(component), "\ndissimilarity"), theme
+  )
+}
+
+#' @rdname autoplot-tidydiversity
+#' @exportS3Method ggplot2::autoplot
+autoplot.td_beta_hill_pair <- function(object,
+                                       component = c(
+                                         "dis_sorensen", "dis_jaccard",
+                                         "dis_turnover_sorensen",
+                                         "dis_turnover_jaccard"
+                                       ),
+                                       theme = theme_tidydiversity(
+                                         grid = "none"
+                                       ),
+                                       ...) {
+  rlang::check_installed("ggplot2")
+  component <- rlang::arg_match(component)
+  df <- tibble::as_tibble(unclass(object))
+  by_cols <- setdiff(
+    names(df), c(
+      "site_1", "site_2", "q", "gamma", "alpha", "beta", hill_pair_dis
+    )
+  )
   by_cols <- td_plot_by(df, by_cols)
+  df$.q <- paste("q =", df$q)
+  if (length(unique(df$q)) > 1 || length(by_cols)) {
+    by_cols <- c(by_cols, ".q")
+  }
+  lab <- c(
+    dis_sorensen = "Sorensen-type\ndissimilarity",
+    dis_jaccard = "Jaccard-type\ndissimilarity",
+    dis_turnover_sorensen = "Sorensen-type\nturnover",
+    dis_turnover_jaccard = "Jaccard-type\nturnover"
+  )[[component]]
+  beta_heatmap(df, component, by_cols, lab, theme)
+}
+
+# Symmetric heatmap of a pairwise dissimilarity, one panel per group.
+beta_heatmap <- function(df, value, by_cols, fill_lab, theme) {
   lev <- unique(c(as.character(df$site_1), as.character(df$site_2)))
   swap <- df
   swap$site_1 <- df$site_2
@@ -544,18 +585,16 @@ autoplot.td_beta_pair <- function(object,
   both <- vctrs::vec_rbind(df, swap)
   both$site_1 <- factor(both$site_1, lev)
   both$site_2 <- factor(both$site_2, lev)
-  both$.value <- both[[component]]
+  both$.value <- both[[value]]
   p <- ggplot2::ggplot(
     both, ggplot2::aes(.data$site_1, .data$site_2, fill = .data$.value)
   ) +
     ggplot2::geom_tile(colour = "white") +
     ggplot2::scale_fill_viridis_c(limits = c(0, 1), option = "D") +
-    ggplot2::labs(
-      x = NULL, y = NULL,
-      fill = paste0(tools::toTitleCase(component), "\ndissimilarity")
-    )
+    ggplot2::labs(x = NULL, y = NULL, fill = fill_lab)
   if (length(by_cols)) {
     both$.group <- td_label_col(both, by_cols)
+    both$.group <- factor(both$.group, unique(both$.group))
     p$data <- both
     p <- p +
       ggplot2::facet_wrap(ggplot2::vars(.data$.group), scales = "free")

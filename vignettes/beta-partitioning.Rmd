@@ -61,6 +61,48 @@ decay
 autoplot(decay)
 ```
 
+`beta_decay_model()` fits a distance-decay curve to the similarities
+(one minus dissimilarity) and tests it. The exponential model
+S = a exp(-b d) gives the similarity `a` between sites at the same
+elevation and the rate `b`; `half_distance` is the elevational distance
+over which similarity halves. Pairs of sites share sites, so they are not
+independent: the p-value comes from permuting site labels, as in a
+Mantel test, and refitting the model each time.
+
+```{r}
+set.seed(1)
+beta_decay_model(decay, permutations = 999)
+```
+
+With only five sites per season there are 120 distinct permutations, so
+the smallest attainable p-value is near 0.01 however strong the pattern.
+
+## Hill-number dissimilarity between pairs of sites
+
+Presence-absence indices treat a species with one worker like one with a
+thousand. `beta_hill_pair()` computes the Hill-number framework of Chao,
+Chiu and Jost (2014) for every pair of sites, so the order q sets how
+much weight common species get. At q = 0 `dis_sorensen` and `dis_jaccard`
+are the classic Sorensen and Jaccard indices; at q = 2 `dis_sorensen` is
+the Morisita-Horn index, driven by the dominant species.
+
+```{r}
+wet <- dplyr::filter(png_ants, season == "wet")
+hp <- beta_hill_pair(wet, abundance = workers)
+hp
+```
+
+```{r, fig.alt = "Heatmaps of Sorensen-type dissimilarity between sites for q = 0, 1 and 2", fig.height = 3.6, fig.width = 9}
+autoplot(hp)
+```
+
+`beta_dist()` turns one order into a distance matrix for ordination,
+clustering or PERMANOVA:
+
+```{r}
+beta_dist(hp, q = 2)
+```
+
 ## Beta diversity at equal sample coverage
 
 Beta diversity estimated from samples depends on sample size and
