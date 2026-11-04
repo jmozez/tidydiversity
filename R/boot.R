@@ -62,11 +62,11 @@ div_boot <- function(data,
   }
   out <- td_per_site(prep, function(x, i) {
     if (type == "asymptotic") {
-      fn <- function(xb) hill_asy(xb, q)
+      fn <- function(xb, d) hill_asy(xb, q)
       m <- NULL
     } else {
       m <- size %||% size_for_coverage(x, coverage %||% level[i])
-      fn <- function(xb) as.vector(hill_at_size(xb, m, q))
+      fn <- function(xb, d) as.vector(hill_at_size(xb, m, q))
     }
     draws <- boot_draws(x, nboot, fn)
     draws <- matrix(draws, nrow = length(q))

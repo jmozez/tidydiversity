@@ -11,9 +11,19 @@
 # ---- Building attribute data --------------------------------------------
 
 # Branch abundances and lengths of the tree pruned to the species in `x`,
-# cut at (or extended to) `reftime`.
-phylo_attr <- function(x, tree, reftime) {
+# cut at (or extended to) `reftime`. `undetected` (used by the bootstrap)
+# names extra species that are not tips of the tree; each becomes its own
+# branch of the given length, joined to the others at the root.
+phylo_attr <- function(x, tree, reftime, undetected = NULL) {
   x <- x[x > 0]
+  u <- x[names(x) %in% undetected$names]
+  x <- x[!names(x) %in% undetected$names]
+  if (length(x) <= 1) {
+    a <- c(x, u)
+    len <- c(rep(reftime, length(x)), rep(min(undetected$length, reftime), length(u)))
+    keep <- len > 0 & a > 0
+    return(list(a = unname(a[keep]), w = len[keep], kind = "PD"))
+  }
   drop <- setdiff(tree$tip.label, names(x))
   sub <- if (length(drop) > 0) ape::drop.tip(tree, drop) else tree
   sub$root.edge <- NULL
@@ -33,8 +43,12 @@ phylo_attr <- function(x, tree, reftime) {
   len <- ifelse(top >= reftime, pmax(0, len - top + reftime), len)
   a <- abun[child]
   root_len <- max(0, reftime - height)
-  a <- c(a, sum(x))
+  a <- c(a, sum(x) + sum(u))
   len <- c(len, root_len)
+  if (length(u) > 0) {
+    a <- c(a, u)
+    len <- c(len, rep(min(undetected$length, reftime), length(u)))
+  }
   keep <- len > 0 & a > 0
   list(a = a[keep], w = len[keep], kind = "PD")
 }
@@ -301,7 +315,7 @@ dist_min <- function(x, dist) {
 dim_obs <- function(x, q, dim) {
   switch(dim$type,
     TD = hill_obs(x, q),
-    PD = attr_obs(phylo_attr(x, dim$tree, dim$reftime), q) / dim$divisor,
+    PD = attr_obs(phylo_attr(x, dim$tree, dim$reftime, dim$undetected), q) / dim$divisor,
     FD = {
       one <- function(tau) {
         if (tau <= dist_min(x, dim$distance)) {
@@ -324,7 +338,7 @@ dim_asy <- function(x, q, dim) {
   n <- sum(x)
   switch(dim$type,
     TD = hill_asy(x, q),
-    PD = attr_asy(phylo_attr(x, dim$tree, dim$reftime), q, n) / dim$divisor,
+    PD = attr_asy(phylo_attr(x, dim$tree, dim$reftime, dim$undetected), q, n) / dim$divisor,
     FD = {
       one <- function(tau) {
         if (tau <= dist_min(x, dim$distance)) {
@@ -347,7 +361,7 @@ dim_at_size <- function(x, m, q, dim) {
   n <- sum(x)
   switch(dim$type,
     TD = hill_at_size(x, m, q),
-    PD = attr_at_size(phylo_attr(x, dim$tree, dim$reftime), n, m, q) /
+    PD = attr_at_size(phylo_attr(x, dim$tree, dim$reftime, dim$undetected), n, m, q) /
       dim$divisor,
     FD = {
       one <- function(tau) {
@@ -378,5 +392,67 @@ add_dim_cols <- function(out, dim) {
   out$type <- dim$type
   if (dim$type == "PD") out$reftime <- dim$reftime
   if (dim$type == "FD") out$tau <- if (is.numeric(dim$tau)) dim$tau else NA_real_
+  out
+}
+
+# ---- Bootstrap community for PD and FD -----------------------------------
+
+# The estimated community used for bootstrap resampling of PD and FD: the
+# species probabilities of `boot_community()`, named, with undetected
+# species added, and the dimension settings extended to cover them.
+#
+# PD: each undetected species gets its own branch of length g0 / f0, where
+# g0 is the estimated undetected branch length (the q = 0 correction of
+# `attr_asy()`) and f0 the estimated number of undetected species, as in
+# Chao et al. (2015) and Hsieh and Chao (2017).
+#
+# FD: undetected species are taken to resemble the rarest observed
+# species. Their distance to each observed species is the mean distance
+# from the singletons (or, without singletons, the rarest species) to that
+# species, and the distance between two undetected species is the mean
+# distance among those rare species.
+boot_dim_community <- function(x, dim) {
+  p <- boot_community(x)
+  k <- length(p) - length(x)
+  und <- if (k > 0) paste0(".undetected", seq_len(k)) else character()
+  names(p) <- c(names(x), und)
+  if (k == 0) {
+    return(list(p = p, dim = dim))
+  }
+  if (dim$type == "PD") {
+    at <- phylo_attr(x, dim$tree, dim$reftime)
+    n <- sum(x)
+    f1 <- sum(at$a == 1)
+    f2 <- sum(at$a == 2)
+    g0 <- undetected_0(
+      n, f1, f2, sum(at$w[at$a == 1]), sum(at$w[at$a == 2]), "PD"
+    )
+    dim$undetected <- list(names = und, length = g0 / k)
+  }
+  if (dim$type == "FD") {
+    dim$distance <- extend_distance(x, dim$distance, und)
+  }
+  list(p = p, dim = dim)
+}
+
+extend_distance <- function(x, dist, und) {
+  obs <- names(x)
+  d <- dist[obs, obs, drop = FALSE]
+  rare <- obs[x == 1]
+  if (length(rare) == 0) rare <- obs[x == min(x)]
+  to_obs <- colMeans(d[rare, , drop = FALSE])
+  among <- if (length(rare) > 1) {
+    mean(d[rare, rare][lower.tri(d[rare, rare])])
+  } else if (length(obs) > 1) {
+    mean(d[lower.tri(d)])
+  } else {
+    1
+  }
+  all <- c(obs, und)
+  out <- matrix(among, length(all), length(all), dimnames = list(all, all))
+  out[obs, obs] <- d
+  out[und, obs] <- matrix(to_obs, length(und), length(obs), byrow = TRUE)
+  out[obs, und] <- t(out[und, obs])
+  diag(out) <- 0
   out
 }

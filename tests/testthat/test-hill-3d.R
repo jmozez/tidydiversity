@@ -21,7 +21,7 @@ test_that("a star tree gives PD equal to TD (mean) and TD x depth (total)", {
   est <- div_estimate(comm, abundance = abundance, type = "PD", tree = tr)
   td_est <- div_estimate(comm, abundance = abundance, nboot = 0)
   expect_equal(est$estimate, td_est$estimate)
-  expect_true(all(is.na(est$se)))
+  expect_true(all(est$se >= 0))
 })
 
 test_that("FD with tau = 0 equals TD", {
@@ -145,5 +145,80 @@ test_that("observed PD matches hillR::hill_phylo", {
     expect_equal(ours$diversity[ours$q == q], unname(ref[c("Edge", "Interior")]),
       tolerance = 1e-8
     )
+  }
+})
+
+test_that("PD and FD have bootstrap standard errors and intervals", {
+  skip_if_not_installed("ape")
+  tr <- ape::read.tree(text = "((s1:1,s2:1):2,(s3:2,s4:2):1);")
+  d <- as.matrix(stats::dist(c(s1 = 0, s2 = 0.1, s3 = 0.5, s4 = 1)))
+  set.seed(1)
+  pd <- div_estimate(comm, abundance = abundance, type = "PD", tree = tr, nboot = 50)
+  fd <- div_estimate(comm, abundance = abundance, type = "FD", distance = d, nboot = 50)
+  for (res in list(pd, fd)) {
+    expect_true(all(is.finite(res$se) & res$se > 0))
+    expect_true(all(res$upper >= res$estimate))
+  }
+  st <- div_standardise(comm,
+    abundance = abundance, type = "PD", tree = tr,
+    size = 10, nboot = 20
+  )
+  expect_true(all(is.finite(st$se)))
+  rf <- div_rarefy(comm,
+    abundance = abundance, type = "FD", distance = d,
+    size = c(3, 10), nboot = 20
+  )
+  expect_true(all(rf$upper >= rf$diversity))
+  set.seed(2)
+  a <- div_estimate(comm, abundance = abundance, type = "PD", tree = tr, nboot = 20)
+  set.seed(2)
+  b <- div_estimate(comm, abundance = abundance, type = "PD", tree = tr, nboot = 20)
+  expect_equal(a$se, b$se)
+})
+
+test_that("bootstrap extends distances to undetected species", {
+  x <- c(s1 = 5, s2 = 1, s3 = 1)
+  d <- as.matrix(stats::dist(c(s1 = 0, s2 = 0.4, s3 = 1)))
+  ext <- extend_distance(x, d, c(".undetected1", ".undetected2"))
+  expect_equal(ext[".undetected1", "s1"], mean(d[c("s2", "s3"), "s1"]))
+  expect_equal(ext[".undetected1", ".undetected2"], d["s2", "s3"])
+  expect_equal(unname(diag(ext)), rep(0, 5))
+  expect_true(isSymmetric(ext))
+})
+
+test_that("PD and FD bootstrap SEs are close to iNEXT.3D", {
+  skip_on_cran()
+  skip_if_not_installed("iNEXT.3D")
+  skip_if_not_installed("ape")
+  e <- new.env()
+  utils::data(list = c(
+    "Brazil_rainforest_abun_data", "Brazil_rainforest_phylo_tree",
+    "Brazil_rainforest_distance_matrix"
+  ), package = "iNEXT.3D", envir = e)
+  d <- e$Brazil_rainforest_abun_data
+  long <- tibble::tibble(
+    site = rep(colnames(d), each = nrow(d)),
+    species = rep(rownames(d), ncol(d)),
+    n = unlist(d, use.names = FALSE)
+  )
+  long <- long[long$n > 0, ]
+  dm <- as.matrix(e$Brazil_rainforest_distance_matrix)
+  for (dv in c("PD", "FD")) {
+    set.seed(10)
+    ref <- suppressMessages(iNEXT.3D::ObsAsy3D(d,
+      diversity = dv, q = c(0, 1, 2), datatype = "abundance", nboot = 200,
+      PDtree = e$Brazil_rainforest_phylo_tree, FDdistM = dm,
+      FDtype = "tau_values"
+    ))
+    ref <- ref[ref$Method == "Asymptotic", ]
+    ref <- ref[order(ref$Assemblage, ref$Order.q), ]
+    set.seed(10)
+    ours <- div_estimate(long,
+      abundance = n, type = dv, tree = e$Brazil_rainforest_phylo_tree,
+      distance = dm, nboot = 200
+    )
+    ours <- ours[order(ours$site, ours$q), ]
+    ratio <- ours$se / ref$s.e.
+    expect_true(all(ratio > 0.5 & ratio < 2), info = paste(dv, format(ratio)))
   }
 })

@@ -36,9 +36,9 @@ used when present, otherwise every row counts as one individual.}
 
 \item{conf}{Confidence level of the intervals.}
 
-\item{nboot}{Number of bootstrap replicates. Use 0 to skip them.
-Bootstrap intervals are currently available for \code{type = "TD"} only;
-for PD and FD \code{se}, \code{lower} and \code{upper} are \code{NA}.}
+\item{nboot}{Number of bootstrap replicates. Use 0 to skip them. For PD
+and FD the bootstrap community adds undetected species with estimated
+branch lengths (PD) or distances (FD); see Details in \code{\link[=div_estimate]{div_estimate()}}.}
 
 \item{ci}{How to build the confidence intervals from the bootstrap
 standard error. With \code{"lognormal"} (the default) the richness (q = 0)
@@ -89,6 +89,18 @@ using the Chao1 richness estimator, the Chao et al. (2013) Shannon
 estimator and the unbiased Simpson estimator. Standard errors and
 confidence intervals come from bootstrap resampling of the estimated
 community, as in iNEXT.
+}
+\details{
+For \code{type = "PD"} and \code{type = "FD"} the bootstrap resamples an
+estimated community that includes undetected species, as for taxonomic
+diversity. Under PD each undetected species is given its own branch, of
+length equal to the estimated undetected branch length divided by the
+estimated number of undetected species (Chao et al. 2015; Hsieh and Chao
+2017). Under FD undetected species are assumed to resemble the rarest
+observed species: their distance to each observed species is the mean
+distance from the singletons to that species, and their distance to each
+other is the mean distance among the singletons. The reference time
+(PD) and threshold \code{tau} (FD) are held fixed across replicates.
 }
 \examples{
 set.seed(1)
