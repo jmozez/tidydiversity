@@ -116,7 +116,7 @@ broom::tidy(fit, conf.int = TRUE)
 
 ggplot(shannon, aes(evening_temp, estimate)) +
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
-    colour = td_palette(1)
+    colour = plot_palette(1)
   ) +
   geom_smooth(
     method = "lm", formula = y ~ x,

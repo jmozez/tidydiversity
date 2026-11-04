@@ -26,6 +26,7 @@ Imports:
     generics,
     grDevices,
     pillar,
+    Rcpp,
     rlang (>= 1.1.0),
     stats,
     utils,
@@ -33,6 +34,8 @@ Imports:
     tidyselect (>= 1.2.0),
     tools,
     vctrs (>= 0.6.0)
+LinkingTo: 
+    Rcpp
 Suggests: 
     ade4,
     FD,

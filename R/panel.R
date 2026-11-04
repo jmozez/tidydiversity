@@ -1,6 +1,6 @@
 #' Combine plots into a publication figure
 #'
-#' `td_panel()` arranges ggplots (for example several `autoplot()`
+#' `plot_panel()` arranges ggplots (for example several `autoplot()`
 #' results) into one multi-panel figure with
 #' [patchwork](https://patchwork.data-imaginist.com). It adds panel tags
 #' (a, b, c, ...), collects shared legends and applies the tidydiversity
@@ -19,25 +19,25 @@
 #' @param title,subtitle,caption Figure annotations.
 #' @param widths,heights Relative panel sizes.
 #' @return A patchwork object.
-#' @seealso [td_save()]
+#' @seealso [plot_save()]
 #' @examplesIf rlang::is_installed(c("ggplot2", "patchwork"))
 #' r0 <- div_rarefy(png_ants, q = 0, .by = season, knots = 20)
 #' r2 <- div_rarefy(png_ants, q = 2, .by = season, knots = 20)
-#' td_panel(ggplot2::autoplot(r0), ggplot2::autoplot(r2), ncol = 2)
+#' plot_panel(ggplot2::autoplot(r0), ggplot2::autoplot(r2), ncol = 2)
 #' @export
-td_panel <- function(...,
-                     ncol = NULL,
-                     nrow = NULL,
-                     tag_levels = "a",
-                     tag_prefix = "",
-                     tag_suffix = "",
-                     guides = c("collect", "keep"),
-                     legend_position = "bottom",
-                     title = NULL,
-                     subtitle = NULL,
-                     caption = NULL,
-                     widths = NULL,
-                     heights = NULL) {
+plot_panel <- function(...,
+                       ncol = NULL,
+                       nrow = NULL,
+                       tag_levels = "a",
+                       tag_prefix = "",
+                       tag_suffix = "",
+                       guides = c("collect", "keep"),
+                       legend_position = "bottom",
+                       title = NULL,
+                       subtitle = NULL,
+                       caption = NULL,
+                       widths = NULL,
+                       heights = NULL) {
   rlang::check_installed("patchwork",
     version = "1.3.0", reason = "to combine plots."
   )
@@ -52,7 +52,7 @@ td_panel <- function(...,
   }
   ok <- vapply(plots, function(p) inherits(p, c("gg", "patchwork")), logical(1))
   if (!all(ok)) {
-    cli::cli_abort("All inputs to {.fn td_panel} must be ggplot objects.")
+    cli::cli_abort("All inputs to {.fn plot_panel} must be ggplot objects.")
   }
   th <- ggplot2::theme(
     plot.tag = ggplot2::element_text(face = "bold"),
@@ -91,16 +91,16 @@ td_panel <- function(...,
 #' @examplesIf rlang::is_installed("ggplot2")
 #' r <- div_rarefy(png_ants, q = 0, .by = season, knots = 20)
 #' f <- tempfile(fileext = ".png")
-#' td_save(ggplot2::autoplot(r), f, size = "single")
+#' plot_save(ggplot2::autoplot(r), f, size = "single")
 #' @export
-td_save <- function(plot,
-                    filename,
-                    size = c("single", "onehalf", "double"),
-                    width = NULL,
-                    height = NULL,
-                    units = c("mm", "cm", "in"),
-                    dpi = 300,
-                    ...) {
+plot_save <- function(plot,
+                      filename,
+                      size = c("single", "onehalf", "double"),
+                      width = NULL,
+                      height = NULL,
+                      units = c("mm", "cm", "in"),
+                      dpi = 300,
+                      ...) {
   rlang::check_installed("ggplot2", reason = "to save plots.")
   size <- match.arg(size)
   units <- match.arg(units)

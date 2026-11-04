@@ -9,13 +9,13 @@
 #' 2019) describes each species by the probability density of its trait
 #' values, estimated from individual measurements, so intraspecific
 #' variability is part of every index. Community TPDs are the
-#' abundance-weighted sums of species TPDs. From them, `td_tpd()` returns
+#' abundance-weighted sums of species TPDs. From them, `trait_tpd()` returns
 #' functional richness, evenness and divergence ([TPD::REND()]) and
 #' functional redundancy ([TPD::redundancy()]) per site, and
-#' `td_tpd_dissim()` returns pairwise functional dissimilarity between
+#' `trait_tpd_dissim()` returns pairwise functional dissimilarity between
 #' sites, split into shared and non-shared parts ([TPD::dissim()]).
 #'
-#' @inheritParams td_cwm
+#' @inheritParams trait_cwm
 #' @param traits A data frame with one row per measured individual: a
 #'   species column (named as in `data`) and one to four numeric trait
 #'   columns. Traits are often log-transformed first.
@@ -25,8 +25,8 @@
 #'   species (removes outliers).
 #' @param n_divisions Number of grid divisions per trait axis; defaults to
 #'   those of [TPD::TPDs()].
-#' @return `td_tpd()`: a tibble with the site column, `FRic`, `FEve`,
-#'   `FDiv` and `redundancy`. `td_tpd_dissim()`: a tibble of site pairs
+#' @return `trait_tpd()`: a tibble with the site column, `FRic`, `FEve`,
+#'   `FDiv` and `redundancy`. `trait_tpd_dissim()`: a tibble of site pairs
 #'   with `dissimilarity`, its parts due to shared (`p_shared`) and
 #'   non-shared (`p_nonshared`) trait space.
 #' @references Carmona, C. P. et al. (2016). Traits without borders:
@@ -37,14 +37,14 @@
 #'   measuring functional diversity across scales based on TPD with R.
 #'   *Ecology*, 100, e02876. \doi{10.1002/ecy.2876}
 #' @export
-td_tpd <- function(data,
-                   traits,
-                   site = site,
-                   species = species,
-                   abundance = NULL,
-                   cols,
-                   alpha = 0.95,
-                   n_divisions = NULL) {
+trait_tpd <- function(data,
+                      traits,
+                      site = site,
+                      species = species,
+                      abundance = NULL,
+                      cols,
+                      alpha = 0.95,
+                      n_divisions = NULL) {
   tc <- tpd_community(
     data, traits, enquo(site), enquo(species), enquo(abundance),
     enquo(cols), alpha, n_divisions
@@ -75,16 +75,16 @@ td_tpd <- function(data,
   )
 }
 
-#' @rdname td_tpd
+#' @rdname trait_tpd
 #' @export
-td_tpd_dissim <- function(data,
-                          traits,
-                          site = site,
-                          species = species,
-                          abundance = NULL,
-                          cols,
-                          alpha = 0.95,
-                          n_divisions = NULL) {
+trait_tpd_dissim <- function(data,
+                             traits,
+                             site = site,
+                             species = species,
+                             abundance = NULL,
+                             cols,
+                             alpha = 0.95,
+                             n_divisions = NULL) {
   tc <- tpd_community(
     data, traits, enquo(site), enquo(species), enquo(abundance),
     enquo(cols), alpha, n_divisions
@@ -204,12 +204,12 @@ quiet_tpd <- function(expr) {
 #'   Pagel, M. (1999). Inferring the historical patterns of biological
 #'   evolution. *Nature*, 401, 877-884. \doi{10.1038/44766}
 #' @export
-td_phylo_signal <- function(traits,
-                            tree,
-                            species = species,
-                            cols = tidyselect::everything(),
-                            method = c("K", "lambda"),
-                            nsim = 999) {
+phylo_signal <- function(traits,
+                         tree,
+                         species = species,
+                         cols = tidyselect::everything(),
+                         method = c("K", "lambda"),
+                         nsim = 999) {
   method <- rlang::arg_match(method)
   rlang::check_installed(
     if (method == "K") "ape" else c("ape", "phytools"),
@@ -248,16 +248,16 @@ td_phylo_signal <- function(traits,
 #' Phylogenetic distances between species
 #'
 #' Cophenetic (patristic) distances from a phylogeny, scaled to a maximum
-#' of 1 by default. Use them as `dist` in [td_rao()], [td_ses()] or
-#' [td_fd_indices()] to measure phylogenetic instead of functional
+#' of 1 by default. Use them as `dist` in [trait_rao()], [trait_ses()] or
+#' [trait_fd_indices()] to measure phylogenetic instead of functional
 #' diversity, or combine them with trait distances in
-#' [td_combine_dist()].
+#' [phylo_combine_dist()].
 #'
-#' @inheritParams td_phylo_signal
+#' @inheritParams phylo_signal
 #' @param scale Scale distances to a maximum of 1?
 #' @return A `dist` object labelled by tip labels.
 #' @export
-td_phylo_dist <- function(tree, scale = TRUE) {
+phylo_dist <- function(tree, scale = TRUE) {
   rlang::check_installed("ape", "for phylogenetic distances.")
   if (!inherits(tree, "phylo")) {
     cli::cli_abort("{.arg tree} must be a {.cls phylo} object.")
@@ -283,7 +283,7 @@ td_phylo_dist <- function(tree, scale = TRUE) {
 #'   assessing community assembly with trait and evolutionary distances.
 #'   *Ecology Letters*, 16, 1234-1244. \doi{10.1111/ele.12161}
 #' @export
-td_combine_dist <- function(functional, phylogenetic, weight = 0.5) {
+phylo_combine_dist <- function(functional, phylogenetic, weight = 0.5) {
   if (!is.numeric(weight) || length(weight) != 1 || weight < 0 ||
         weight > 1) {
     cli::cli_abort("{.arg weight} must be a single number between 0 and 1.")

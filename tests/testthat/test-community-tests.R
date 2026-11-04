@@ -60,15 +60,15 @@ test_that("ord_select selects elevation with double stopping", {
   expect_s3_class(s2, "tbl_df")
 })
 
-test_that("td_indicator returns tidy indicator values", {
+test_that("beta_indicator returns tidy indicator values", {
   skip_if_not_installed("indicspecies")
   set.seed(1)
-  ind <- td_indicator(ants, site = unit, group = zone, permutations = 99,
-                      alpha = 1)
+  ind <- beta_indicator(ants, site = unit, group = zone, permutations = 99,
+                        alpha = 1)
   expect_named(ind, c("species", "group", "stat", "A", "B", "p.value"))
   expect_true(all(ind$A >= 0 & ind$A <= 1))
   expect_equal(ind$stat, sqrt(ind$A * ind$B), tolerance = 1e-8)
-  r <- td_indicator(ants, site = unit, group = zone, func = "r.g",
-                    permutations = 99, alpha = 1)
+  r <- beta_indicator(ants, site = unit, group = zone, func = "r.g",
+                      permutations = 99, alpha = 1)
   expect_false("A" %in% names(r))
 })

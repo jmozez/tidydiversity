@@ -163,13 +163,8 @@ attr_rare_int <- function(at, n, m, q) {
   w <- at$w
   tbar <- sum(a * w) / n
   # Terms with k above the largest abundance are zero, so skip them.
-  k <- seq_len(min(m, max(a)))
-  pk <- outer(a, k, function(ai, kk) {
-    ok <- ai >= kk & ai <= n - m + kk
-    out <- lchoose(ai, kk) + lchoose(n - ai, m - kk) - lchoose(n, m)
-    ifelse(ok, exp(out), 0)
-  })
-  g <- colSums(w * pk)
+  k <- seq_len(min(m, floor(max(a))))
+  g <- rare_gk(as.double(a), as.double(w), n, m, length(k))
   r <- k / (m * tbar)
   vapply(q, function(qq) {
     if (qq == 0) {

@@ -18,17 +18,17 @@ This article follows the R material of the *Handbook of Trait-Based
 Ecology* (de Bello et al. 2021) and shows the tidydiversity version of
 each method. It covers:
 
-* trait dissimilarity: `td_trait_dist()`;
-* community-weighted means: `td_cwm()`, and testing them with
-  `td_cwm_test()`;
-* functional diversity indices: `td_fd_indices()`;
-* alpha, beta and gamma functional diversity: `td_rao()`;
-* null models: `td_ses()`;
-* intraspecific trait variability: `td_itv()`;
-* trait-environment links: `td_fourth_corner()`;
-* trait probability densities: `td_tpd()`, `td_tpd_dissim()`;
-* phylogenetic signal and distances: `td_phylo_signal()`,
-  `td_phylo_dist()`, `td_combine_dist()`.
+* trait dissimilarity: `trait_dist()`;
+* community-weighted means: `trait_cwm()`, and testing them with
+  `trait_cwm_test()`;
+* functional diversity indices: `trait_fd_indices()`;
+* alpha, beta and gamma functional diversity: `trait_rao()`;
+* null models: `trait_ses()`;
+* intraspecific trait variability: `trait_itv()`;
+* trait-environment links: `trait_fourth_corner()`;
+* trait probability densities: `trait_tpd()`, `trait_tpd_dissim()`;
+* phylogenetic signal and distances: `phylo_signal()`,
+  `phylo_dist()`, `phylo_combine_dist()`.
 
 ```{r setup, message = FALSE}
 library(tidydiversity)
@@ -49,7 +49,7 @@ ade4 package): 82 species, 75 sites, 8 traits. `Snow` is the mean
 snowmelt date (Julian day), a strong gradient in alpine vegetation.
 
 ```{r aravo}
-aravo <- aravo_long()
+aravo <- data_aravo()
 aravo$community
 aravo$traits
 ```
@@ -61,14 +61,14 @@ Gower distance handles any mix of trait types and missing values.
 al. 2021b):
 
 ```{r dist}
-d_gower <- td_trait_dist(aravo$traits)
-d_gawdis <- td_trait_dist(aravo$traits, method = "gawdis")
+d_gower <- trait_dist(aravo$traits)
+d_gawdis <- trait_dist(aravo$traits, method = "gawdis")
 ```
 
 ## Community-weighted means
 
 ```{r cwm, fig.alt = "Community-weighted mean SLA of 75 alpine sites rising with later snowmelt."}
-cwm <- td_cwm(aravo$community, aravo$traits, abundance = cover)
+cwm <- trait_cwm(aravo$community, aravo$traits, abundance = cover)
 cwm
 
 cwm |>
@@ -86,7 +86,7 @@ too optimistic, because all sites share the same species traits (Zeleny
 shuffles traits among species, and reports the larger p-value:
 
 ```{r cwm-test}
-td_cwm_test(aravo$community, aravo$traits,
+trait_cwm_test(aravo$community, aravo$traits,
   abundance = cover,
   cols = c(Height, SLA, N_mass, Seed), env_vars = Snow
 )
@@ -100,7 +100,7 @@ These are the indices of `FD::dbFD()`, returned as a tidy table. They
 complement the Hill-number functional diversity of `div_hill()`.
 
 ```{r fd}
-fd <- td_fd_indices(aravo$community, aravo$traits,
+fd <- trait_fd_indices(aravo$community, aravo$traits,
   abundance = cover, dist = d_gawdis
 )
 fd |>
@@ -114,18 +114,18 @@ Rao's quadratic entropy partitioned with the equivalent-numbers correction
 (de Bello et al. 2010):
 
 ```{r rao}
-td_rao(aravo$community, abundance = cover, dist = d_gawdis)
+trait_rao(aravo$community, abundance = cover, dist = d_gawdis)
 ```
 
 ## Null models
 
 Is functional diversity lower than expected (convergence, as under
 environmental filtering) or higher (divergence, as under limiting
-similarity)? `td_ses()` compares each site with communities whose traits
+similarity)? `trait_ses()` compares each site with communities whose traits
 are shuffled among species:
 
 ```{r ses, fig.alt = "Standardised effect size of Rao's Q against snowmelt date; most sites are below zero."}
-ses <- td_ses(aravo$community, aravo$traits,
+ses <- trait_ses(aravo$community, aravo$traits,
   abundance = cover, dist = d_gawdis, times = 199
 )
 ses |>
@@ -153,7 +153,7 @@ The fourth-corner method tests every trait x environment association
 directly, also with the max test (ter Braak et al. 2012):
 
 ```{r fourth}
-td_fourth_corner(aravo$community, aravo$traits,
+trait_fourth_corner(aravo$community, aravo$traits,
   abundance = cover,
   cols = c(Height, SLA, N_mass), env_vars = c(Snow, PhysD)
 )
@@ -186,7 +186,7 @@ from species turnover, and how much from plants of the same species
 differing between quadrats (Leps et al. 2011)?
 
 ```{r itv, eval = online, fig.alt = "Stacked bars: for SLA, most variation explained by slope position is intraspecific; for height, intraspecific and covariation parts dominate."}
-itv <- td_itv(grass, indiv,
+itv <- trait_itv(grass, indiv,
   site = quadrat, abundance = cover,
   cols = c(height, sla), formula = ~position
 )
@@ -214,7 +214,7 @@ same grassland data:
 
 ```{r tpd, eval = online}
 indiv <- indiv |> mutate(log_height = log(height), log_sla = log(sla))
-tpd <- td_tpd(grass, indiv,
+tpd <- trait_tpd(grass, indiv,
   site = quadrat, abundance = cover, cols = c(log_height, log_sla)
 )
 tpd |>
@@ -223,12 +223,12 @@ tpd |>
   arrange(position)
 ```
 
-`td_tpd_dissim()` gives the functional dissimilarity between quadrats and
+`trait_tpd_dissim()` gives the functional dissimilarity between quadrats and
 splits it into the part due to different use of shared trait space and the
 part due to non-shared trait space:
 
 ```{r tpd-dissim, eval = online}
-td_tpd_dissim(grass, indiv,
+trait_tpd_dissim(grass, indiv,
   site = quadrat, abundance = cover, cols = c(log_height, log_sla)
 ) |>
   arrange(desc(dissimilarity)) |>
@@ -256,7 +256,7 @@ lhs$species <- gsub(" ", "_", rownames(lhs))
 ```
 
 ```{r phylo-signal, eval = online}
-td_phylo_signal(lhs, tree, cols = c(log_sla, log_height, log_sm))
+phylo_signal(lhs, tree, cols = c(log_sla, log_height, log_sm))
 ```
 
 Blomberg's K is far below 1 for all three traits: they carry much less
@@ -267,8 +267,8 @@ phylogenetic independent contrasts, so the randomisation test is fast even
 for this tree of 5122 species. The values are identical to those of
 `phytools::phylosig()`.
 
-Phylogenetic distances (`td_phylo_dist()`) can replace trait distances in
-`td_rao()`, `td_ses()` or `td_fd_indices()`, and `td_combine_dist()`
+Phylogenetic distances (`phylo_dist()`) can replace trait distances in
+`trait_rao()`, `trait_ses()` or `trait_fd_indices()`, and `phylo_combine_dist()`
 merges trait and phylogenetic distances into one.
 
 ## References

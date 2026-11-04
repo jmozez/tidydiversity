@@ -17,9 +17,9 @@ test_that("autoplot options give customisable ggplots", {
   expect_s3_class(std, "td_standardise")
   expect_s3_class(ggplot2::autoplot(std), "ggplot")
   expect_s3_class(theme_tidydiversity(grid = "none"), "theme")
-  expect_length(td_palette(3), 3)
-  expect_length(td_palette(12), 12)
-  expect_length(td_palette(4, "grey"), 4)
+  expect_length(plot_palette(3), 3)
+  expect_length(plot_palette(12), 12)
+  expect_length(plot_palette(4, "grey"), 4)
 })
 
 test_that("div_table() formats estimates in APA style", {

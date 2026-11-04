@@ -402,18 +402,18 @@ ord_select <- function(data,
 #' ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect),
 #'                       zone = ifelse(elevation <= 700, "lowland", "montane"))
 #' set.seed(1)
-#' td_indicator(ants, site = unit, group = zone, permutations = 199)
+#' beta_indicator(ants, site = unit, group = zone, permutations = 199)
 #' @export
-td_indicator <- function(data,
-                         site = site,
-                         species = species,
-                         abundance = NULL,
-                         group,
-                         env = NULL,
-                         func = c("IndVal.g", "IndVal", "r.g", "r"),
-                         combinations = FALSE,
-                         alpha = 0.05,
-                         permutations = 999) {
+beta_indicator <- function(data,
+                           site = site,
+                           species = species,
+                           abundance = NULL,
+                           group,
+                           env = NULL,
+                           func = c("IndVal.g", "IndVal", "r.g", "r"),
+                           combinations = FALSE,
+                           alpha = 0.05,
+                           permutations = 999) {
   rlang::check_installed("indicspecies", "for indicator species analysis.")
   func <- rlang::arg_match(func)
   g <- rlang::as_name(enquo(group))

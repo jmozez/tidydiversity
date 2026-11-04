@@ -129,7 +129,7 @@ reference:
       - beta_decay
       - beta_dist
       - beta_permanova
-      - td_indicator
+      - beta_indicator
   - title: Ordination
     contents:
       - ord_fit
@@ -140,31 +140,31 @@ reference:
       - tidy.td_ordination
   - title: Functional traits
     contents:
-      - td_trait_dist
-      - td_cwm
-      - td_cwm_test
-      - td_fd_indices
-      - td_rao
-      - td_ses
-      - td_itv
-      - td_fourth_corner
-      - td_tpd
-      - td_phylo_signal
-      - td_phylo_dist
-      - td_combine_dist
-      - aravo_long
+      - trait_dist
+      - trait_cwm
+      - trait_cwm_test
+      - trait_fd_indices
+      - trait_rao
+      - trait_ses
+      - trait_itv
+      - trait_fourth_corner
+      - trait_tpd
+      - phylo_signal
+      - phylo_dist
+      - phylo_combine_dist
+      - data_aravo
   - title: Plots and tables for publication
     contents:
       - autoplot-tidydiversity
       - theme_tidydiversity
-      - td_panel
-      - td_save
+      - plot_panel
+      - plot_save
       - div_table
   - title: Modelling
     contents:
       - tidy-tidydiversity
-      - td_group_folds
-      - td_case_weights
+      - model_group_folds
+      - model_case_weights
       - step_hill
 
 articles:

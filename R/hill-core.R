@@ -87,15 +87,10 @@ coverage_big_a <- function(n, f1, f2) {
 # Expected Hill numbers in a subsample of integer size m < n.
 hill_rare_int <- function(x, m, q) {
   n <- sum(x)
-  # Species i contributes only for k <= x_i, so evaluate just those n pairs
-  # (one per individual) rather than a full species-by-k grid.
-  xi <- rep(x, x)
-  kk <- sequence(x)
-  ok <- kk <= m & xi - kk <= n - m
-  log_term <- lchoose(xi[ok], kk[ok]) + lchoose(n - xi[ok], m - kk[ok])
-  term <- exp(log_term - lchoose(n, m))
   k <- seq_len(min(m, max(x)))
-  fk <- vapply(split(term, factor(kk[ok], levels = k)), sum, numeric(1))
+  # Expected number of species with k individuals in the subsample
+  # (C++ kernel, hypergeometric terms by recurrence).
+  fk <- rare_gk(as.double(x), rep(1, length(x)), n, m, length(k))
   vapply(q, function(qq) {
     if (qq == 0) {
       sum(fk)

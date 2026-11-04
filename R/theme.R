@@ -6,7 +6,7 @@
 #' bottom and plain facet strips. Every [autoplot()][autoplot-tidydiversity]
 #' method uses it by default, and you can add it to any ggplot.
 #'
-#' `td_palette()` returns colour-blind-safe colours: the Okabe-Ito palette
+#' `plot_palette()` returns colour-blind-safe colours: the Okabe-Ito palette
 #' (Okabe and Ito 2008) by default, switching to the viridis palette when
 #' more than eight colours are needed, or a greyscale ramp for journals that
 #' print in black and white. `scale_colour_tidydiversity()` and
@@ -28,7 +28,7 @@
 #' @name theme_tidydiversity
 #' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' library(ggplot2)
-#' td_palette(3)
+#' plot_palette(3)
 #' ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 #'   geom_point() +
 #'   scale_colour_tidydiversity() +
@@ -81,7 +81,7 @@ okabe_ito <- c(
 
 #' @rdname theme_tidydiversity
 #' @export
-td_palette <- function(n, palette = c("okabe_ito", "grey")) {
+plot_palette <- function(n, palette = c("okabe_ito", "grey")) {
   palette <- rlang::arg_match(palette)
   td_check_number(n, "n", 0, whole = TRUE)
   if (palette == "grey") {
@@ -101,7 +101,7 @@ scale_colour_tidydiversity <- function(palette = c("okabe_ito", "grey"),
   palette <- rlang::arg_match(palette)
   ggplot2::discrete_scale(
     "colour",
-    palette = function(n) td_palette(n, palette), ...
+    palette = function(n) plot_palette(n, palette), ...
   )
 }
 
@@ -112,7 +112,7 @@ scale_fill_tidydiversity <- function(palette = c("okabe_ito", "grey"), ...) {
   palette <- rlang::arg_match(palette)
   ggplot2::discrete_scale(
     "fill",
-    palette = function(n) td_palette(n, palette), ...
+    palette = function(n) plot_palette(n, palette), ...
   )
 }
 

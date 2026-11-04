@@ -147,7 +147,7 @@ quantile(slopes$estimate, c(0.025, 0.5, 0.975))
 
 ```{r boot-plot, fig.height = 3, fig.alt = "Bootstrap distribution of the elevation slope"}
 ggplot(slopes, aes(estimate * 100)) +
-  geom_histogram(bins = 30, fill = td_palette(1)) +
+  geom_histogram(bins = 30, fill = plot_palette(1)) +
   geom_vline(xintercept = 0, linetype = "dashed") +
   labs(x = "Change in Shannon diversity per 100 m", y = "Bootstrap draws") +
   theme_tidydiversity()

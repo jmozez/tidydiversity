@@ -106,7 +106,7 @@ holding the species belongs to the group; `B` is fidelity, the proportion
 of the group's sites holding the species.
 
 ```{r indicator}
-td_indicator(ants, site = unit, group = zone)
+beta_indicator(ants, site = unit, group = zone)
 ```
 
 ## References
