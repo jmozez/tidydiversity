@@ -95,5 +95,7 @@ std |>
   ggplot(aes(elevation, diversity, colour = season)) +
   geom_pointrange(aes(ymin = lower, ymax = upper)) +
   geom_line() +
-  labs(x = "Elevation (m)", y = "Richness at equal coverage")
+  labs(x = "Elevation (m)", y = "Richness at equal coverage") +
+  scale_colour_tidydiversity() +
+  theme_tidydiversity()
 ```

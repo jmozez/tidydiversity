@@ -80,6 +80,17 @@ standard deviation of the points, \code{"ci"} the region expected to hold
 \code{level} of the points, and \code{"se"} a \code{level} confidence region for the
 group centroid.
 
+How to read the lines:
+\itemize{
+\item red arrows from the origin: species (linear methods only);
+\item dark arrows from the origin: quantitative environmental variables;
+\item dark triangles: centroids of factor levels (for example years);
+\item coloured outlines: ellipses or convex hulls around groups of sites,
+and, with \code{spider = TRUE}, lines from each group centroid to its sites;
+\item faint dotted grey lines: label leaders, joining a label that had to
+be moved to avoid overlap to its point. They carry no information.
+}
+
 Every option is an argument, and the result is an ordinary ggplot that
 can be changed further with \code{+}.
 }

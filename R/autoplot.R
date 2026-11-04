@@ -483,15 +483,30 @@ autoplot.td_coverage <- function(object,
     df, ggplot2::aes(.data$n, .data$coverage, colour = .data$.group)
   ) +
     ggplot2::geom_point(size = 2.5)
-  if (labels) {
+  # Labels are repelled so they never overlap; with many sites, only those
+  # ggrepel can place clearly are labelled.
+  if (labels && requireNamespace("ggrepel", quietly = TRUE)) {
+    p <- p + ggrepel::geom_text_repel(
+      ggplot2::aes(label = .data$.site),
+      size = 3, show.legend = FALSE, seed = 1, max.overlaps = 8,
+      box.padding = 0.25, min.segment.length = 0.4,
+      segment.colour = "grey70", segment.size = 0.25,
+      segment.linetype = "dotted"
+    )
+  } else if (labels) {
     p <- p + ggplot2::geom_text(
       ggplot2::aes(label = .data$.site),
-      vjust = -0.9, size = 3, show.legend = FALSE
+      vjust = -0.9, size = 3, show.legend = FALSE, check_overlap = TRUE
     )
   }
   p <- p +
     ggplot2::scale_y_continuous(
       labels = function(x) paste0(x * 100, "%"),
+      # Coverage cannot exceed 100%, so no tick above it
+      breaks = function(lim) {
+        b <- pretty(lim)
+        b[b <= 1]
+      },
       expand = ggplot2::expansion(mult = c(0.05, 0.12))
     ) +
     ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0.05, 0.1))) +
