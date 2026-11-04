@@ -1,0 +1,382 @@
+# Phylogenetic (PD) and functional (FD) Hill numbers.
+#
+# Both are computed from "attribute" data: a vector of abundances `a` and a
+# matching vector of weights `w`. For PD these are the branch abundances and
+# branch lengths of the tree (Chao et al. 2010); for FD they are the
+# functional abundances and attribute contributions under a distance
+# threshold tau (Chao et al. 2019). Taxonomic diversity is the special case
+# a = species counts, w = 1. The estimators follow iNEXT.3D and reproduce its
+# point estimates.
+
+# ---- Building attribute data --------------------------------------------
+
+# Branch abundances and lengths of the tree pruned to the species in `x`,
+# cut at (or extended to) `reftime`.
+phylo_attr <- function(x, tree, reftime) {
+  x <- x[x > 0]
+  drop <- setdiff(tree$tip.label, names(x))
+  sub <- if (length(drop) > 0) ape::drop.tip(tree, drop) else tree
+  sub$root.edge <- NULL
+  ntip <- length(sub$tip.label)
+  depth <- ape::node.depth.edgelength(sub)
+  height <- max(depth)
+  abun <- numeric(ntip + sub$Nnode)
+  abun[seq_len(ntip)] <- x[sub$tip.label]
+  post <- ape::reorder.phylo(sub, "postorder")$edge
+  for (i in seq_len(nrow(post))) {
+    abun[post[i, 1]] <- abun[post[i, 1]] + abun[post[i, 2]]
+  }
+  child <- sub$edge[, 2]
+  len <- sub$edge.length
+  age_child <- height - depth[child]
+  top <- len + age_child
+  len <- ifelse(top >= reftime, pmax(0, len - top + reftime), len)
+  a <- abun[child]
+  root_len <- max(0, reftime - height)
+  a <- c(a, sum(x))
+  len <- c(len, root_len)
+  keep <- len > 0 & a > 0
+  list(a = a[keep], w = len[keep], kind = "PD")
+}
+
+# Functional abundances and attribute contributions under threshold tau.
+func_attr <- function(x, dist, tau, integer = FALSE) {
+  x <- x[x > 0]
+  d <- dist[names(x), names(x), drop = FALSE]
+  if (tau == 0) {
+    d[d > 0] <- 1
+    tau_ <- 1
+  } else {
+    d[d > tau] <- tau
+    tau_ <- tau
+  }
+  a <- as.vector((1 - d / tau_) %*% x)
+  keep <- a != 0
+  x <- x[keep]
+  a <- a[keep]
+  a[a < 1] <- 1
+  if (integer) a <- round(a)
+  list(a = a, w = x / a, kind = "FD")
+}
+
+# Mean distance between two individuals drawn from the pooled data.
+dist_mean <- function(x, dist) {
+  p <- x / sum(x)
+  d <- dist[names(x), names(x), drop = FALSE]
+  sum(outer(p, p) * d)
+}
+
+# ---- Estimators on attribute data ----------------------------------------
+
+attr_obs <- function(at, q) {
+  a <- at$a
+  w <- at$w
+  p <- a / sum(a * w)
+  vapply(q, function(qq) {
+    if (qq == 1) {
+      exp(-sum(w * p * log(p)))
+    } else {
+      sum(w * p^qq)^(1 / (1 - qq))
+    }
+  }, numeric(1))
+}
+
+attr_asy <- function(at, q, n) {
+  a <- at$a
+  w <- at$w
+  tbar <- sum(a * w) / n
+  i1 <- a == 1 & w > 0
+  i2 <- a == 2 & w > 0
+  f1 <- sum(i1)
+  f2 <- sum(i2)
+  g1 <- sum(w[i1])
+  g2 <- sum(w[i2])
+  big_a <- if (f2 > 0) {
+    2 * f2 / ((n - 1) * f1 + 2 * f2)
+  } else if (f1 > 0) {
+    2 / ((n - 1) * (f1 - 1) + 2)
+  } else {
+    1
+  }
+  vapply(q, function(qq) {
+    if (qq == 0) {
+      sum(w) + undetected_0(n, f1, f2, g1, g2, at$kind)
+    } else if (qq == 1) {
+      ok <- a <= n - 1
+      h1 <- sum(w[ok] * a[ok] * (digamma(n) - digamma(a[ok]))) / n
+      h2 <- undetected_1(n, g1, big_a)
+      tbar * exp((h1 + h2) / tbar)
+    } else {
+      den <- sum(w * a * (a - 1)) / (n * (n - 1))
+      out <- tbar^2 / den
+      if (!is.finite(out)) out <- tbar^2 / sum(w * (a / n)^2)
+      out
+    }
+  }, numeric(1))
+}
+
+undetected_0 <- function(n, f1, f2, g1, g2, kind) {
+  if (kind == "FD") {
+    if (g1 + g2 == 0) {
+      return(0)
+    }
+    return(if (g2 > 0) (n - 1) / n * g1^2 / (2 * g2) else (n - 1) / n * g1^2 / 2)
+  }
+  if (f1 == 0) {
+    0
+  } else if (g1 * f2 / (2 * f1) < g2) {
+    (n - 1) / n * g1^2 / (2 * g2)
+  } else {
+    (n - 1) / n * g1 * (f1 - 1) / (2 * (f2 + 1))
+  }
+}
+
+undetected_1 <- function(n, g1, big_a) {
+  if (big_a == 1 || g1 == 0 || is.infinite((1 - big_a)^(1 - n))) {
+    return(0)
+  }
+  r <- seq_len(n - 1)
+  s <- sum((1 - big_a)^r / r)
+  (g1 / n) * (1 - big_a)^(1 - n) * round((-log(big_a) - s) * 1e12) / 1e12
+}
+
+# Expected diversity in a random subsample of integer size m < n.
+attr_rare_int <- function(at, n, m, q) {
+  a <- at$a
+  w <- at$w
+  tbar <- sum(a * w) / n
+  k <- seq_len(m)
+  pk <- outer(a, k, function(ai, kk) {
+    ok <- ai >= kk & ai <= n - m + kk
+    out <- lchoose(ai, kk) + lchoose(n - ai, m - kk) - lchoose(n, m)
+    ifelse(ok, exp(out), 0)
+  })
+  g <- colSums(w * pk)
+  r <- k / (m * tbar)
+  vapply(q, function(qq) {
+    if (qq == 0) {
+      sum(g)
+    } else if (qq == 1) {
+      exp(-sum(r * log(r) * g))
+    } else {
+      sum(r^qq * g)^(1 / (1 - qq))
+    }
+  }, numeric(1))
+}
+
+# Diversity at sample sizes m (rows) for orders q (columns), with
+# rarefaction below n and extrapolation above, as in iNEXT.3D.
+attr_at_size <- function(at, n, m, q) {
+  obs <- attr_obs(at, q)
+  a <- at$a
+  w <- at$w
+  tbar <- sum(a * w) / n
+  cache <- new.env(parent = emptyenv())
+  one <- function(mm) {
+    if (mm == n) {
+      return(obs)
+    }
+    if (mm < n) {
+      lo <- floor(mm)
+      hi <- ceiling(mm)
+      d_lo <- if (lo == 0) rep(0, length(q)) else attr_rare_int(at, n, lo, q)
+      if (lo == hi) {
+        return(d_lo)
+      }
+      d_hi <- if (hi == n) obs else attr_rare_int(at, n, hi, q)
+      return((hi - mm) * d_lo + (mm - lo) * d_hi)
+    }
+    if (is.null(cache$ext)) {
+      asy <- pmax(attr_asy(at, q, n), obs)
+      rm1 <- attr_rare_int(at, n, n - 1, q)
+      if (at$kind == "FD") rm1 <- pmin(rm1, obs)
+      beta <- ifelse(asy != obs, (obs - rm1) / (asy - rm1), 0)
+      beta[beta == -Inf] <- 1
+      cache$ext <- list(asy = asy, beta = beta)
+    }
+    ext <- cache$ext
+    vapply(seq_along(q), function(j) {
+      if (q[j] == 2) {
+        if (ext$beta[j] == 0) {
+          return(ext$asy[j])
+        }
+        mix <- a / (mm * n) + (mm - 1) / mm * a * (a - 1) / (n * (n - 1))
+        return(tbar^2 / sum(w * mix))
+      }
+      obs[j] + (ext$asy[j] - obs[j]) * (1 - (1 - ext$beta[j])^(mm - n))
+    }, numeric(1))
+  }
+  out <- vapply(m, one, numeric(length(q)))
+  matrix(out, nrow = length(m), ncol = length(q), byrow = length(q) > 1)
+}
+
+# ---- Dispatch for the three dimensions -----------------------------------
+
+# Settings shared by every site, resolved once from the pooled data.
+td_dimension <- function(type, prep, tree, reftime, pd_unit, distance, tau,
+                         call = caller_env()) {
+  type <- toupper(type)
+  if (!type %in% c("TD", "PD", "FD")) {
+    cli::cli_abort("{.arg type} must be one of {.val TD}, {.val PD} or {.val FD}.",
+      call = call
+    )
+  }
+  pooled <- tapply(prep$data$.n, prep$data$.species, sum)
+  pooled <- pooled[pooled > 0]
+  spp <- names(pooled)
+  if (type == "PD") {
+    rlang::check_installed("ape", "to compute phylogenetic diversity.")
+    if (!inherits(tree, "phylo")) {
+      cli::cli_abort("{.arg tree} must be a {.cls phylo} tree for {.code type = \"PD\"}.",
+        call = call
+      )
+    }
+    if (is.null(tree$edge.length)) {
+      cli::cli_abort("{.arg tree} must have branch lengths.", call = call)
+    }
+    miss <- setdiff(spp, tree$tip.label)
+    if (length(miss) > 0) {
+      cli::cli_abort(c(
+        "Every species must be a tip of {.arg tree}.",
+        "x" = "Missing: {.val {utils::head(miss, 5)}}."
+      ), call = call)
+    }
+    if (is.null(reftime)) {
+      pruned <- ape::drop.tip(tree, setdiff(tree$tip.label, spp))
+      reftime <- max(ape::node.depth.edgelength(pruned))
+    }
+    td_check_number(reftime, "reftime", 0)
+    return(list(
+      type = type, tree = tree, reftime = reftime,
+      divisor = if (pd_unit == "mean") reftime else 1
+    ))
+  }
+  if (type == "FD") {
+    if (inherits(distance, "dist")) distance <- as.matrix(distance)
+    bad_dist <- !is.matrix(distance) || !is.numeric(distance) ||
+      is.null(rownames(distance))
+    if (bad_dist) {
+      cli::cli_abort(
+        "{.arg distance} must be a named numeric distance matrix or {.cls dist}.",
+        call = call
+      )
+    }
+    miss <- setdiff(spp, rownames(distance))
+    if (length(miss) > 0) {
+      cli::cli_abort(c(
+        "Every species must be in {.arg distance}.",
+        "x" = "Missing: {.val {utils::head(miss, 5)}}."
+      ), call = call)
+    }
+    if (any(distance < 0) || any(distance > 1)) {
+      cli::cli_abort("{.arg distance} must be scaled to lie between 0 and 1.",
+        call = call
+      )
+    }
+    auc <- identical(tau, "auc") || identical(tau, "AUC")
+    if (is.null(tau)) tau <- dist_mean(pooled, distance)
+    if (!auc) td_check_number(tau, "tau", 0, 1)
+    return(list(type = type, distance = distance, tau = if (auc) "auc" else tau))
+  }
+  list(type = "TD")
+}
+
+# The FD threshold grid used for the area under the tau profile.
+auc_grid <- function() seq(1e-8, 1, length.out = 50)
+
+auc_integrate <- function(vals) {
+  tau <- auc_grid()
+  dt <- diff(tau)
+  k <- length(tau)
+  (colSums(vals[-k, , drop = FALSE] * dt) + colSums(vals[-1, , drop = FALSE] * dt)) / 2
+}
+
+# Smallest non-zero distance between species observed at the site.
+dist_min <- function(x, dist) {
+  d <- dist[names(x), names(x), drop = FALSE]
+  min(d[lower.tri(d)])
+}
+
+# Observed diversity of one site.
+dim_obs <- function(x, q, dim) {
+  switch(dim$type,
+    TD = hill_obs(x, q),
+    PD = attr_obs(phylo_attr(x, dim$tree, dim$reftime), q) / dim$divisor,
+    FD = {
+      one <- function(tau) {
+        if (tau <= dist_min(x, dim$distance)) {
+          hill_obs(x, q)
+        } else {
+          attr_obs(func_attr(x, dim$distance, tau), q)
+        }
+      }
+      if (identical(dim$tau, "auc")) {
+        auc_integrate(t(vapply(auc_grid(), one, numeric(length(q)))))
+      } else {
+        one(dim$tau)
+      }
+    }
+  )
+}
+
+# Asymptotic estimate of one site.
+dim_asy <- function(x, q, dim) {
+  n <- sum(x)
+  switch(dim$type,
+    TD = hill_asy(x, q),
+    PD = attr_asy(phylo_attr(x, dim$tree, dim$reftime), q, n) / dim$divisor,
+    FD = {
+      one <- function(tau) {
+        if (tau <= dist_min(x, dim$distance)) {
+          hill_asy(x, q)
+        } else {
+          attr_asy(func_attr(x, dim$distance, tau, integer = TRUE), q, n)
+        }
+      }
+      if (identical(dim$tau, "auc")) {
+        auc_integrate(t(vapply(auc_grid(), one, numeric(length(q)))))
+      } else {
+        one(dim$tau)
+      }
+    }
+  )
+}
+
+# Rarefied or extrapolated diversity of one site at sizes m.
+dim_at_size <- function(x, m, q, dim) {
+  n <- sum(x)
+  switch(dim$type,
+    TD = hill_at_size(x, m, q),
+    PD = attr_at_size(phylo_attr(x, dim$tree, dim$reftime), n, m, q) /
+      dim$divisor,
+    FD = {
+      one <- function(tau) {
+        attr_at_size(func_attr(x, dim$distance, tau, integer = TRUE), n, m, q)
+      }
+      if (identical(dim$tau, "auc")) {
+        vals <- lapply(auc_grid(), one)
+        tau <- auc_grid()
+        dt <- diff(tau)
+        k <- length(vals)
+        acc <- 0
+        for (i in seq_len(k - 1)) acc <- acc + (vals[[i]] + vals[[i + 1]]) / 2 * dt[i]
+        acc
+      } else {
+        one(dim$tau)
+      }
+    }
+  )
+}
+
+# Columns describing the dimension. Taxonomic results are left unchanged so
+# existing code keeps working; PD and FD results gain `type` and the
+# reference time or threshold used.
+add_dim_cols <- function(out, dim) {
+  if (dim$type == "TD") {
+    return(out)
+  }
+  out$type <- dim$type
+  if (dim$type == "PD") out$reftime <- dim$reftime
+  if (dim$type == "FD") out$tau <- if (is.numeric(dim$tau)) dim$tau else NA_real_
+  out
+}

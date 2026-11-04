@@ -13,6 +13,12 @@ div_estimate(
   conf = 0.95,
   nboot = 50,
   ci = c("lognormal", "normal"),
+  type = c("TD", "PD", "FD"),
+  tree = NULL,
+  reftime = NULL,
+  pd_unit = c("mean", "total"),
+  distance = NULL,
+  tau = NULL,
   .by = NULL
 )
 }
@@ -30,7 +36,9 @@ used when present, otherwise every row counts as one individual.}
 
 \item{conf}{Confidence level of the intervals.}
 
-\item{nboot}{Number of bootstrap replicates. Use 0 to skip them.}
+\item{nboot}{Number of bootstrap replicates. Use 0 to skip them.
+Bootstrap intervals are currently available for \code{type = "TD"} only;
+for PD and FD \code{se}, \code{lower} and \code{upper} are \code{NA}.}
 
 \item{ci}{How to build the confidence intervals from the bootstrap
 standard error. With \code{"lognormal"} (the default) the richness (q = 0)
@@ -40,6 +48,33 @@ richness; orders 1 and 2 use \verb{estimate +/- z * se}. With \code{"normal"}
 every order uses \verb{estimate +/- z * se}, as in \code{\link[iNEXT:iNEXT]{iNEXT::iNEXT()}}. In both
 cases the lower limit is truncated at the observed diversity, which the
 asymptotic diversity cannot fall below.}
+
+\item{type}{Diversity dimension: \code{"TD"} (taxonomic, the default), \code{"PD"}
+(phylogenetic, needs \code{tree}) or \code{"FD"} (functional, needs \code{distance}).
+All three are Hill numbers of the same order \code{q}, in units of
+effective numbers of species (Chao, Chiu and Jost 2014), and reproduce
+\href{https://CRAN.R-project.org/package=iNEXT.3D}{iNEXT.3D}.}
+
+\item{tree}{For \code{type = "PD"}, a rooted \link[ape:read.tree]{ape::phylo} tree with branch
+lengths whose tip labels include every species.}
+
+\item{reftime}{For \code{type = "PD"}, the reference time (tree depth) at
+which diversity is measured. Defaults to the age of the root of the tree
+pruned to the species in \code{data}.}
+
+\item{pd_unit}{For \code{type = "PD"}, \code{"mean"} (the default) divides
+phylogenetic diversity by \code{reftime}, giving the effective number of
+lineages on the same scale as species; \code{"total"} gives effective total
+branch length.}
+
+\item{distance}{For \code{type = "FD"}, a species-by-species distance matrix
+(or \link[stats:dist]{stats::dist} object) with names matching the species, scaled to
+lie between 0 and 1, for example from Gower distances of traits.}
+
+\item{tau}{For \code{type = "FD"}, the distance threshold below which species
+are treated as functionally identical. Defaults to the mean distance
+between two individuals in the pooled data. Use \code{"auc"} to integrate
+over all thresholds from 0 to 1 (Chao et al. 2019).}
 
 \item{.by}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optional grouping
 columns, kept in the output. Grouped data frames are also respected.}

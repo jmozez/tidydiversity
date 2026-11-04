@@ -2,6 +2,10 @@ url: https://jmozez.github.io/tidydiversity/
 
 template:
   bootstrap: 5
+  opengraph:
+    image:
+      src: man/figures/logo.png
+      alt: "tidydiversity hex logo"
   light-switch: true
   bslib:
     primary: "#14a7b4"
@@ -37,6 +41,8 @@ navbar:
           href: articles/case-plants.html
         - text: -------
         - text: Guides
+        - text: "TD, PD and FD on one scale"
+          href: articles/dimensions.html
         - text: Alpha diversity and rarefaction
           href: articles/alpha-rarefaction.html
         - text: Beta diversity partitioning
@@ -55,7 +61,13 @@ navbar:
       href: articles/publication.html
 
 home:
-  title: Tidy biodiversity estimation with Hill numbers
+  title: "tidydiversity: taxonomic, phylogenetic and functional diversity in R"
+  description: >
+    Taxonomic, phylogenetic and functional diversity as Hill numbers of the
+    same order q, standardised by sample size or coverage, in one tidy R
+    workflow. Estimates match iNEXT and iNEXT.3D.
+  sidebar:
+    structure: [links, license, community, citation, authors, dev]
 
 reference:
   - title: Community data
@@ -101,6 +113,7 @@ articles:
       - tidydiversity
   - title: Guides
     contents:
+      - articles/dimensions
       - alpha-rarefaction
       - beta-partitioning
       - articles/modelling

@@ -35,6 +35,12 @@ div_rarefy <- function(data,
                        knots = 40,
                        conf = 0.95,
                        nboot = 0,
+                       type = c("TD", "PD", "FD"),
+                       tree = NULL,
+                       reftime = NULL,
+                       pd_unit = c("mean", "total"),
+                       distance = NULL,
+                       tau = NULL,
                        .by = NULL) {
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by),
@@ -51,13 +57,18 @@ div_rarefy <- function(data,
   td_check_number(nboot, "nboot", 0, whole = TRUE)
   z <- stats::qnorm(1 - (1 - conf) / 2)
   far <- character()
+  dim <- td_dimension(
+    rlang::arg_match(type), prep, tree, reftime, rlang::arg_match(pd_unit),
+    distance, tau
+  )
+  if (dim$type != "TD") nboot <- 0
 
   out <- td_per_site(prep, function(x, i) {
     n <- sum(x)
     m <- if (is.null(size)) size_grid(n, endpoint %||% (2 * n), knots) else size
     m <- sort(unique(m))
     if (any(m > 2 * n) && 0 %in% q) far <<- c(far, "x")
-    d <- hill_at_size(x, m, q)
+    d <- dim_at_size(x, m, q, dim)
     cov <- coverage_at_size(x, m)
     draws <- boot_draws(x, nboot, function(xb) hill_at_size(xb, m, q))
     se <- boot_se(draws, dim(d))
@@ -77,7 +88,7 @@ div_rarefy <- function(data,
     )
   })
   warn_far(length(far))
-  td_new(out, c("td_rarefy", "td_curve"))
+  td_new(add_dim_cols(out, dim), c("td_rarefy", "td_curve"))
 }
 
 size_grid <- function(n, endpoint, knots) {
@@ -129,6 +140,12 @@ div_standardise <- function(data,
                             size = NULL,
                             conf = 0.95,
                             nboot = 50,
+                            type = c("TD", "PD", "FD"),
+                            tree = NULL,
+                            reftime = NULL,
+                            pd_unit = c("mean", "total"),
+                            distance = NULL,
+                            tau = NULL,
                             .by = NULL) {
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by),
@@ -156,6 +173,11 @@ div_standardise <- function(data,
   }
 
   far <- 0
+  dim <- td_dimension(
+    rlang::arg_match(type), prep, tree, reftime, rlang::arg_match(pd_unit),
+    distance, tau
+  )
+  if (dim$type != "TD") nboot <- 0
   out <- td_per_site(prep, function(x, i) {
     n <- sum(x)
     if (!is.null(size)) {
@@ -165,7 +187,7 @@ div_standardise <- function(data,
       m <- size_for_coverage(x, target)
     }
     if (m > 2 * n && 0 %in% q) far <<- far + 1
-    d <- as.vector(hill_at_size(x, m, q))
+    d <- as.vector(dim_at_size(x, m, q, dim))
     draws <- boot_draws(x, nboot, function(xb) {
       as.vector(hill_at_size(xb, m, q))
     })
@@ -182,7 +204,7 @@ div_standardise <- function(data,
     )
   })
   warn_far(far)
-  td_new(out, "td_standardise")
+  td_new(add_dim_cols(out, dim), "td_standardise")
 }
 
 warn_far <- function(k) {

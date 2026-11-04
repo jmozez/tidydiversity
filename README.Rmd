@@ -23,17 +23,54 @@ knitr::opts_chunk$set(
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jmozez/tidydiversity/blob/main/LICENSE.md)
 <!-- badges: end -->
 
-tidydiversity brings biodiversity estimation into the tidyverse. It
-computes Hill numbers, asymptotic estimates, sample coverage, rarefaction
-and extrapolation, and turnover and nestedness partitions of beta
-diversity, all from a long data frame and all returning tibbles.
+<div class="td-hero">
+
+**Taxonomic, phylogenetic and functional diversity on one scale, in one tidy workflow.**
+
+Reviewers increasingly expect taxonomic (TD), phylogenetic (PD) and
+functional (FD) diversity to be reported together and to be comparable.
+tidydiversity expresses all three as Hill numbers of the same order q, in
+units of effective numbers of species, and standardises them by sample size
+or sample coverage. Data go in as a long data frame and results come back as
+tibbles.
+
+</div>
+
+<div class="td-cards">
+<div class="td-card">
+
+### Taxonomic (TD)
+
+Species counts only. Observed and asymptotic Hill numbers, sample coverage,
+rarefaction and extrapolation, matching iNEXT.
+
+</div>
+<div class="td-card">
+
+### Phylogenetic (PD)
+
+Add a phylogeny with `type = "PD", tree = tree`. Effective number of
+lineages at a reference time, matching iNEXT.3D.
+
+</div>
+<div class="td-card">
+
+### Functional (FD)
+
+Add a trait distance matrix with `type = "FD", distance = d`. Effective
+number of functionally distinct species at a threshold tau, or the area
+under the tau profile, matching iNEXT.3D.
+
+</div>
+</div>
 
 * **Tidy in, tidy out.** One row per site and species goes in, a tibble
   comes out.
 * **Data-masking.** Name your columns with `site`, `species` and
   `abundance`, as you would in dplyr.
 * **Grouping.** Every verb takes `.by` and respects `group_by()`.
-* **Checked.** Estimates match iNEXT and betapart in the test suite.
+* **Checked.** Estimates match iNEXT, iNEXT.3D and betapart in the test
+  suite.
 
 ## Installation
 
@@ -64,12 +101,73 @@ div_standardise(ant_gradient, coverage = 0.9, .by = transect, nboot = 50) |>
   filter(q == 0)
 ```
 
+## TD, PD and FD on one scale
+
+The same verbs give all three dimensions. Here are rarefaction and
+extrapolation curves for two Brazilian rainforest tree assemblages, using
+the abundance data, phylogeny and functional distances shipped with
+iNEXT.3D.
+
+```{r three-d, message = FALSE, fig.width = 9, fig.height = 6, fig.alt = "Rarefaction and extrapolation curves of taxonomic, phylogenetic and functional diversity for two Brazilian rainforest assemblages, in a grid with one row per order q and one column per dimension, each panel with its own y axis."}
+library(ggplot2)
+data(list = c(
+  "Brazil_rainforest_abun_data", "Brazil_rainforest_phylo_tree",
+  "Brazil_rainforest_distance_matrix"
+), package = "iNEXT.3D")
+wide <- Brazil_rainforest_abun_data
+brazil <- tibble(
+  site = rep(colnames(wide), each = nrow(wide)),
+  species = rep(rownames(wide), ncol(wide)),
+  n = unlist(wide, use.names = FALSE)
+) |>
+  filter(n > 0)
+
+curves <- bind_rows(
+  div_rarefy(brazil, abundance = n, type = "TD") |> mutate(type = "TD"),
+  div_rarefy(brazil,
+    abundance = n, type = "PD",
+    tree = Brazil_rainforest_phylo_tree
+  ),
+  div_rarefy(brazil,
+    abundance = n, type = "FD",
+    distance = as.matrix(Brazil_rainforest_distance_matrix)
+  )
+)
+
+curves$type <- factor(curves$type, levels = c("TD", "PD", "FD"))
+
+ggplot(curves, aes(m, diversity, colour = site)) +
+  geom_line(aes(linetype = method == "extrapolation")) +
+  geom_point(data = filter(curves, method == "observed"), size = 2) +
+  facet_wrap(vars(q, type),
+    ncol = 3, scales = "free_y",
+    labeller = labeller(q = function(x) paste("q =", x), .multi_line = FALSE)
+  ) +
+  scale_linetype_manual(values = c("solid", "dashed"), guide = "none") +
+  labs(
+    x = "Number of individuals",
+    y = "Effective number of species", colour = NULL
+  ) +
+  theme_tidydiversity()
+```
+
+### Why one scale?
+
+Hill numbers of order q share one unit, the effective number of equally
+abundant (and, for PD and FD, equally distinct) species, so TD, PD and FD of
+the same order can be compared directly, and their ratios read as measures
+of phylogenetic or functional redundancy (Chao, Chiu and Jost 2014,
+[doi:10.1146/annurev-ecolsys-120213-091540](https://doi.org/10.1146/annurev-ecolsys-120213-091540);
+Chao et al. 2019, [doi:10.1002/ecm.1343](https://doi.org/10.1002/ecm.1343)).
+Standardising every dimension by the same sample size or coverage removes
+the effect of unequal sampling effort before you compare sites.
+
 ## Functions
 
 | Task | Function |
 |---|---|
 | Tidy community data | `as_community()`, `community_wide()`, `community_long()` |
-| Observed Hill numbers | `div_hill()` |
+| Observed Hill numbers (TD, PD, FD) | `div_hill()` |
 | Asymptotic estimates | `div_estimate()` |
 | Sample coverage | `div_coverage()` |
 | Rarefaction and extrapolation | `div_rarefy()` |

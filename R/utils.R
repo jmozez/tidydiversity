@@ -128,7 +128,8 @@ td_prepare <- function(data,
 # Apply `fn` to the counts of each site and bind the results with the keys.
 td_per_site <- function(prep, fn) {
   keys <- prep$data[c(prep$by, ".site")]
-  split <- vctrs::vec_split(prep$data$.n, keys)
+  counts <- stats::setNames(prep$data$.n, prep$data$.species)
+  split <- vctrs::vec_split(counts, keys)
   out <- lapply(seq_along(split$val), function(i) {
     res <- fn(split$val[[i]], i)
     key <- vctrs::vec_slice(split$key, rep(i, nrow(res)))
