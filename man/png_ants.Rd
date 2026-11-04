@@ -38,7 +38,10 @@ Real field data: ground-foraging ants recorded at experimental nutrient
 baits along the Mt Wilhelm elevational gradient in Papua New Guinea,
 from 200 to 3700 m, in the dry and the wet season (Moses et al. 2023).
 Baits offering six nutrient types were placed along transects at eight
-elevations 500 m apart; no ants were found above 2700 m. Each row is one
+elevations 500 m apart. Ants were found up to 2200 m in both seasons and
+at 2700 m only once, in the dry season (one species at three baits); that
+record is left out so both seasons cover the same five elevations
+(200 to 2200 m) and can be compared directly. Each row is one
 species recorded at one bait. Only the Papua New Guinea part of the
 published cross-continental dataset is included, with the lead author's
 permission.

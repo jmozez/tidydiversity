@@ -71,7 +71,7 @@ div_rarefy <- function(data,
     n <- smp_n(x)
     m <- if (is.null(size)) size_grid(n, endpoint %||% (2 * n), knots) else size
     m <- sort(unique(m))
-    if (any(m > 2 * n) && 0 %in% q) far <<- c(far, "x")
+    if (any(m > 2 * n * (1 + 1e-6)) && 0 %in% q) far <<- c(far, "x")
     d <- dim_at_size(x, m, q, dim)
     cov <- coverage_at_size(x, m)
     draws <- boot_draws(x, nboot, function(xb, d) dim_at_size(xb, m, q, d), dim)
@@ -188,7 +188,7 @@ div_standardise <- function(data,
       target <- coverage %||% level[i]
       m <- size_for_coverage(x, target)
     }
-    if (m > 2 * n && 0 %in% q) far <<- far + 1
+    if (m > 2 * n * (1 + 1e-6) && 0 %in% q) far <<- far + 1
     d <- as.vector(dim_at_size(x, m, q, dim))
     draws <- boot_draws(x, nboot, function(xb, d) {
       as.vector(dim_at_size(xb, m, q, d))

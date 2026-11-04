@@ -78,7 +78,7 @@ fit_gam <- mgcv::gam(estimate ~ s(elevation, k = 4) + season,
 )
 summary(fit_gam)$s.table
 grid <- tidyr::expand_grid(
-  elevation = seq(200, 2700, by = 20),
+  elevation = seq(200, 2200, by = 20),
   season = c("wet", "dry")
 )
 pred <- predict(fit_gam, grid, se.fit = TRUE)

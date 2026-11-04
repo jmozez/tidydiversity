@@ -1,6 +1,11 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* `png_ants` leaves out its single dry-season record at 2700 m, so both
+  seasons cover the same five elevations (200 to 2200 m) and can be
+  compared directly.
+* Plots no longer print "Ignoring unknown labels" messages, and long
+  site legends wrap instead of running off the figure.
 * Incidence data for TD, PD and FD: `div_hill()`, `div_estimate()`,
   `div_coverage()`, `div_rarefy()` and `div_standardise()` gain `unit`
   (the sampling-unit column) and `n_units` (units sampled, including empty

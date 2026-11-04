@@ -27,6 +27,10 @@ set <- stats::aggregate(
 names(set)[3] <- "baits"
 raw <- raw[!is.na(raw$sp_code) & raw$abundance > 0, ]
 raw <- merge(raw, set, by = c("elevational_bands", "seasons"))
+# Ants were found up to 2200 m in both seasons, and at 2700 m only in the
+# dry season (one species at three baits). That record is left out so both
+# seasons cover the same five elevations and can be compared directly.
+raw <- raw[raw$elevational_bands <= 2200, ]
 
 png_ants <- tibble::tibble(
   site = sprintf("MW%04d", as.integer(raw$elevational_bands)),

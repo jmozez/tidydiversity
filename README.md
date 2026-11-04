@@ -89,7 +89,7 @@ library(tidydiversity)
 library(dplyr)
 
 div_hill(png_ants, q = c(0, 1, 2), .by = season)
-#> # A tibble: 33 x 5
+#> # A tibble: 30 x 5
 #>    season site       q     n diversity
 #>    <chr>  <chr>  <dbl> <dbl>     <dbl>
 #>  1 dry    MW0200     0    47     16   
@@ -102,31 +102,30 @@ div_hill(png_ants, q = c(0, 1, 2), .by = season)
 #>  8 dry    MW0700     1    23     11.8 
 #>  9 dry    MW0700     2    23      8.67
 #> 10 wet    MW0700     0    58     28   
-#> # i 23 more rows
+#> # i 20 more rows
 ```
 
-Compare sites at equal sample completeness:
+Compare sites at equal sample completeness. By default each season is
+standardised to the lowest coverage that all its sites reach at twice
+their sample size, so no site is extrapolated too far:
 
 ``` r
 set.seed(1)
-div_standardise(png_ants, coverage = 0.8, .by = season, nboot = 50) |>
+div_standardise(png_ants, .by = season, nboot = 50) |>
   filter(q == 0)
-#> Warning: Extrapolation beyond twice the observed sample size at 2 sites.
-#> i Richness (q = 0) estimates there may be strongly biased (Chao et al. 2014).
-#> # A tibble: 11 x 10
-#>    season site       q      m method       coverage diversity     se lower upper
-#>    <chr>  <chr>  <dbl>  <dbl> <chr>           <dbl>     <dbl>  <dbl> <dbl> <dbl>
-#>  1 dry    MW0200     0  29.8  rarefaction     0.800     13.4   1.01  11.5  15.4 
-#>  2 wet    MW0200     0  46.7  rarefaction     0.800     16.0   1.46  13.1  18.8 
-#>  3 dry    MW0700     0 149.   extrapolati~    0.800     57.3  18.5   21.1  93.5 
-#>  4 wet    MW0700     0 119.   extrapolati~    0.800     42.8   6.52  30.0  55.6 
-#>  5 dry    MW1200     0  34.2  extrapolati~    0.800     14.2   1.80  10.6  17.7 
-#>  6 wet    MW1200     0  41.5  rarefaction     0.800     17.3   1.85  13.6  20.9 
-#>  7 dry    MW1700     0   8.01 rarefaction     0.800      3.89  0.544  2.83  4.96
-#>  8 wet    MW1700     0  26.4  rarefaction     0.800      8.57  1.62   5.39 11.7 
-#>  9 dry    MW2200     0  14.6  extrapolati~    0.800      6.35  1.26   3.88  8.83
-#> 10 wet    MW2200     0   9.16 rarefaction     0.800      4.05  0.593  2.88  5.21
-#> 11 dry    MW2700     0   3.00 rarefaction     1          1     0      1     1
+#> # A tibble: 10 x 10
+#>    season site       q      m method        coverage diversity    se lower upper
+#>    <chr>  <chr>  <dbl>  <dbl> <chr>            <dbl>     <dbl> <dbl> <dbl> <dbl>
+#>  1 dry    MW0200     0  11.6  rarefaction      0.565      7.96 0.458  7.07  8.86
+#>  2 wet    MW0200     0  45.1  rarefaction      0.796     15.7  1.42  12.9  18.4 
+#>  3 dry    MW0700     0  46.0  extrapolation    0.565     26.0  5.31  15.6  36.4 
+#>  4 wet    MW0700     0 116    extrapolation    0.796     42.2  6.36  29.8  54.7 
+#>  5 dry    MW1200     0  11.0  rarefaction      0.565      7.17 0.669  5.86  8.48
+#>  6 wet    MW1200     0  40.6  rarefaction      0.796     17.1  1.82  13.5  20.6 
+#>  7 dry    MW1700     0   3.07 rarefaction      0.565      2.32 0.226  1.88  2.77
+#>  8 wet    MW1700     0  25.4  rarefaction      0.796      8.36 1.58   5.26 11.5 
+#>  9 dry    MW2200     0   4.76 rarefaction      0.565      3.48 0.363  2.77  4.20
+#> 10 wet    MW2200     0   8.97 rarefaction      0.796      4.01 0.585  2.86  5.15
 ```
 
 ## Example data from Papua New Guinea
@@ -231,20 +230,12 @@ Every plot that `autoplot()` draws, using `png_ants`.
 Solid lines are rarefied, dashed lines extrapolated to twice the sample
 size; points are the observed samples (wet season).
 
-    #> Ignoring unknown labels:
-    #> * fill : "site"
-    #> * shape : "Order"
-
 <img src="man/figures/README-size-1.png" alt="Rarefaction and extrapolation by sample size" width="100%" />
 
 ### Rarefaction and extrapolation by sample coverage
 
 The same curves plotted against estimated sample coverage, the basis for
 coverage-standardised comparison.
-
-    #> Ignoring unknown labels:
-    #> * fill : "site"
-    #> * shape : "Order"
 
 <img src="man/figures/README-coverage-curve-1.png" alt="Rarefaction and extrapolation by sample coverage" width="100%" />
 
@@ -374,19 +365,16 @@ Coverage standardisation: `diversity` of order `q` at a common
 `coverage` for every site, with the matching sample size `m`, the
 `method` used, and bootstrap `se`, `lower` and `upper` limits.
 
-    #> Warning: Extrapolation beyond twice the observed sample size at 2 sites.
-    #> i Richness (q = 0) estimates there may be strongly biased (Chao et al. 2014).
-
-| season | site   |   q |       m | method        | coverage | diversity |     se |  lower |  upper |
-|:-------|:-------|----:|--------:|:--------------|---------:|----------:|-------:|-------:|-------:|
-| dry    | MW0200 |   0 |  29.841 | rarefaction   |      0.8 |    13.431 |  1.009 | 11.453 | 15.409 |
-| dry    | MW0200 |   1 |  29.841 | rarefaction   |      0.8 |    10.805 |  1.032 |  8.782 | 12.829 |
-| dry    | MW0200 |   2 |  29.841 | rarefaction   |      0.8 |     8.913 |  1.046 |  6.862 | 10.964 |
-| wet    | MW0200 |   0 |  46.735 | rarefaction   |      0.8 |    15.984 |  1.455 | 13.132 | 18.836 |
-| wet    | MW0200 |   1 |  46.735 | rarefaction   |      0.8 |     9.664 |  1.089 |  7.530 | 11.797 |
-| wet    | MW0200 |   2 |  46.735 | rarefaction   |      0.8 |     6.659 |  0.824 |  5.045 |  8.274 |
-| dry    | MW0700 |   0 | 149.047 | extrapolation |      0.8 |    57.270 | 18.463 | 21.082 | 93.457 |
-| dry    | MW0700 |   1 | 149.047 | extrapolation |      0.8 |    32.013 | 16.525 |  0.000 | 64.401 |
+| season | site   |   q |      m | method        | coverage | diversity |    se |  lower |  upper |
+|:-------|:-------|----:|-------:|:--------------|---------:|----------:|------:|-------:|-------:|
+| dry    | MW0200 |   0 | 11.646 | rarefaction   |    0.565 |     7.963 | 0.458 |  7.067 |  8.860 |
+| dry    | MW0200 |   1 | 11.646 | rarefaction   |    0.565 |     7.099 | 0.513 |  6.093 |  8.105 |
+| dry    | MW0200 |   2 | 11.646 | rarefaction   |    0.565 |     6.236 | 0.534 |  5.189 |  7.283 |
+| wet    | MW0200 |   0 | 45.094 | rarefaction   |    0.796 |    15.651 | 1.415 | 12.877 | 18.425 |
+| wet    | MW0200 |   1 | 45.094 | rarefaction   |    0.796 |     9.570 | 1.071 |  7.471 | 11.668 |
+| wet    | MW0200 |   2 | 45.094 | rarefaction   |    0.796 |     6.630 | 0.816 |  5.031 |  8.228 |
+| dry    | MW0700 |   0 | 46.000 | extrapolation |    0.565 |    25.975 | 5.306 | 15.575 | 36.374 |
+| dry    | MW0700 |   1 | 46.000 | extrapolation |    0.565 |    17.858 | 6.141 |  5.821 | 29.895 |
 
 ### `beta_pair()`
 
@@ -399,10 +387,10 @@ components, which sum to `total` dissimilarity.
 | dry    | MW0200 | MW1200 |    0.769 |      0.024 | 0.793 |
 | dry    | MW0200 | MW1700 |    0.800 |      0.105 | 0.905 |
 | dry    | MW0200 | MW2200 |    1.000 |      0.000 | 1.000 |
-| dry    | MW0200 | MW2700 |    1.000 |      0.000 | 1.000 |
 | dry    | MW0700 | MW1200 |    0.615 |      0.027 | 0.643 |
 | dry    | MW0700 | MW1700 |    0.800 |      0.100 | 0.900 |
 | dry    | MW0700 | MW2200 |    0.833 |      0.071 | 0.905 |
+| dry    | MW1200 | MW1700 |    1.000 |      0.000 | 1.000 |
 
 ### `beta_multi()`
 
@@ -411,7 +399,7 @@ Multi-site beta diversity: `n_sites` in each group with the multi-site
 
 | season | n_sites | turnover | nestedness | total |
 |:-------|--------:|---------:|-----------:|------:|
-| dry    |       6 |    0.825 |      0.072 | 0.897 |
+| dry    |       5 |    0.827 |      0.051 | 0.877 |
 | wet    |       5 |    0.790 |      0.074 | 0.864 |
 
 ### `beta_decay()`
@@ -425,10 +413,10 @@ and `gradient_2` values and their `distance`.
 | dry    | MW0200 | MW1200 |    0.769 |      0.024 | 0.793 |        200 |       1200 |     1000 |
 | dry    | MW0200 | MW1700 |    0.800 |      0.105 | 0.905 |        200 |       1700 |     1500 |
 | dry    | MW0200 | MW2200 |    1.000 |      0.000 | 1.000 |        200 |       2200 |     2000 |
-| dry    | MW0200 | MW2700 |    1.000 |      0.000 | 1.000 |        200 |       2700 |     2500 |
 | dry    | MW0700 | MW1200 |    0.615 |      0.027 | 0.643 |        700 |       1200 |      500 |
 | dry    | MW0700 | MW1700 |    0.800 |      0.100 | 0.900 |        700 |       1700 |     1000 |
 | dry    | MW0700 | MW2200 |    0.833 |      0.071 | 0.905 |        700 |       2200 |     1500 |
+| dry    | MW1200 | MW1700 |    1.000 |      0.000 | 1.000 |       1200 |       1700 |      500 |
 
 ## References
 

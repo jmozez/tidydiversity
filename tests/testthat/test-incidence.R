@@ -118,8 +118,7 @@ test_that("incidence results carry the number of units and bootstrap SEs", {
   est <- div_estimate(png_ants,
     unit = bait, n_units = baits, .by = season, nboot = 30
   )
-  multi <- est[est$site != "MW2700", ]
-  expect_true(all(is.finite(multi$se) & multi$se >= 0))
+  expect_true(all(is.finite(est$se) & est$se >= 0))
   curves <- div_rarefy(png_ants[png_ants$season == "wet", ],
     unit = bait, n_units = baits, q = 0, size = c(10, 60, 120)
   )
