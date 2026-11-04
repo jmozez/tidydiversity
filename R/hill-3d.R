@@ -54,7 +54,7 @@ phylo_attr <- function(x, tree, reftime, undetected = NULL) {
 }
 
 # Functional abundances and attribute contributions under threshold tau.
-func_attr <- function(x, dist, tau, integer = FALSE) {
+func_attr <- function(x, dist, tau, integer = FALSE, cap = Inf) {
   x <- x[x > 0]
   d <- dist[names(x), names(x), drop = FALSE]
   if (tau == 0) {
@@ -69,6 +69,9 @@ func_attr <- function(x, dist, tau, integer = FALSE) {
   x <- x[keep]
   a <- a[keep]
   a[a < 1] <- 1
+  # For incidence data a functional incidence cannot exceed the number of
+  # sampling units (iNEXT.3D).
+  a[a > cap] <- cap
   if (integer) a <- round(a)
   list(a = a, w = x / a, kind = "FD")
 }
@@ -312,8 +315,56 @@ dist_min <- function(x, dist) {
   min(d[lower.tri(d)])
 }
 
+# Attribute data of an incidence sample: TD uses the incidence frequencies
+# with unit weights, PD the branch incidences, FD the functional incidences.
+inc_attr <- function(x, dim, tau = NULL, integer = TRUE) {
+  y <- stats::setNames(as.vector(x), names(x))
+  switch(dim$type,
+    TD = list(a = unname(y), w = rep(1, length(y)), kind = "PD"),
+    PD = phylo_attr_inc(attr(x, "inc"), dim$tree, dim$reftime, dim$undetected),
+    FD = func_attr(y, dim$distance, tau,
+      integer = integer, cap = attr(x, "n_units")
+    )
+  )
+}
+
+# Incidence version of the estimators: the attribute estimators with the
+# number of units as the sample size.
+dim_inc <- function(x, q, dim, what, m = NULL) {
+  nt <- attr(x, "n_units")
+  div <- if (dim$type == "PD") dim$divisor else 1
+  one <- function(tau) {
+    if (dim$type == "FD" && tau <= dist_min(x, dim$distance)) {
+      at <- inc_attr(x, list(type = "TD"))
+    } else {
+      # Observed values use the unrounded functional incidences, the
+      # estimators the rounded ones, as for abundance data.
+      at <- inc_attr(x, dim, tau, integer = what != "obs")
+    }
+    switch(what,
+      obs = attr_obs(at, q),
+      asy = attr_asy(at, q, nt),
+      size = attr_at_size(at, nt, m, q)
+    )
+  }
+  if (dim$type == "FD" && identical(dim$tau, "auc")) {
+    vals <- lapply(auc_grid(), one)
+    tau <- auc_grid()
+    dt <- diff(tau)
+    acc <- 0
+    for (i in seq_len(length(vals) - 1)) {
+      acc <- acc + (vals[[i]] + vals[[i + 1]]) / 2 * dt[i]
+    }
+    return(acc)
+  }
+  one(if (dim$type == "FD") dim$tau else NULL) / div
+}
+
 # Observed diversity of one site.
 dim_obs <- function(x, q, dim) {
+  if (is_incidence(x)) {
+    return(dim_inc(x, q, dim, "obs"))
+  }
   switch(dim$type,
     TD = hill_obs(x, q),
     PD = attr_obs(phylo_attr(x, dim$tree, dim$reftime, dim$undetected), q) / dim$divisor,
@@ -336,6 +387,9 @@ dim_obs <- function(x, q, dim) {
 
 # Asymptotic estimate of one site.
 dim_asy <- function(x, q, dim) {
+  if (is_incidence(x)) {
+    return(dim_inc(x, q, dim, "asy"))
+  }
   n <- sum(x)
   switch(dim$type,
     TD = hill_asy(x, q),
@@ -359,6 +413,9 @@ dim_asy <- function(x, q, dim) {
 
 # Rarefied or extrapolated diversity of one site at sizes m.
 dim_at_size <- function(x, m, q, dim) {
+  if (is_incidence(x)) {
+    return(dim_inc(x, q, dim, "size", m))
+  }
   n <- sum(x)
   switch(dim$type,
     TD = hill_at_size(x, m, q),
@@ -456,4 +513,35 @@ extend_distance <- function(x, dist, und) {
   out[obs, und] <- t(out[und, obs])
   diag(out) <- 0
   out
+}
+
+# ---- Several dimensions at once -------------------------------------------
+
+td_is_multi_type <- function(type) {
+  length(type) > 1 || identical(tolower(type), "all")
+}
+
+# Run a diversity function once per dimension and stack the results, with a
+# `type` column (TD results otherwise have none).
+td_multi_type <- function(call, env, type, error_call = caller_env()) {
+  types <- if (identical(tolower(type), "all")) c("TD", "PD", "FD") else toupper(type)
+  bad <- setdiff(types, c("TD", "PD", "FD"))
+  if (length(bad) || anyDuplicated(types)) {
+    cli::cli_abort(
+      "{.arg type} must be distinct values from {.val TD}, {.val PD} and \
+      {.val FD}, or {.val all}.",
+      call = error_call
+    )
+  }
+  res <- lapply(types, function(t) {
+    cl <- call
+    cl$type <- t
+    out <- eval(cl, env)
+    if (!"type" %in% names(out)) out$type <- t
+    out
+  })
+  cls <- setdiff(class(res[[1]]), c("tbl_df", "tbl", "data.frame"))
+  out <- dplyr::bind_rows(lapply(res, function(r) tibble::as_tibble(unclass(r))))
+  out$type <- factor(out$type, levels = types)
+  td_new(out, cls)
 }

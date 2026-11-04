@@ -9,6 +9,8 @@ div_coverage(
   site = site,
   species = species,
   abundance = NULL,
+  unit = NULL,
+  n_units = NULL,
   .by = NULL
 )
 }
@@ -21,6 +23,18 @@ column holding site identifiers and the column holding species names.}
 \item{abundance}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> The column
 holding counts. If \code{NULL} (the default), a column called \code{abundance} is
 used when present, otherwise every row counts as one individual.}
+
+\item{unit}{For incidence data, the column naming the sampling unit
+(a trap, bait, plot or survey day) in which each species was detected.
+Each site is then described by the number of units in which each
+species was found and the number of units sampled, and every estimate
+is incidence-based (Chao et al. 2014), for TD, PD and FD alike. Leave
+\code{NULL} for abundance data.}
+
+\item{n_units}{For incidence data, a column giving the number of units
+sampled at each site, constant within a site. Use it when some units
+detected no species and so do not appear in the data. By default the
+number of distinct units in the data is used.}
 
 \item{.by}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optional grouping
 columns, kept in the output. Grouped data frames are also respected.}

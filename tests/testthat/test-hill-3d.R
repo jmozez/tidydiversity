@@ -222,3 +222,37 @@ test_that("PD and FD bootstrap SEs are close to iNEXT.3D", {
     expect_true(all(ratio > 0.5 & ratio < 2), info = paste(dv, format(ratio)))
   }
 })
+
+test_that("type = 'all' combines TD, PD and FD and equals separate runs", {
+  skip_if_not_installed("ape")
+  tr <- ape::read.tree(text = "((s1:1,s2:1):2,(s3:2,s4:2):1);")
+  d <- as.matrix(stats::dist(c(s1 = 0, s2 = 0.1, s3 = 0.5, s4 = 1)))
+  all3 <- div_estimate(comm,
+    abundance = abundance, type = "all", tree = tr, distance = d, nboot = 0
+  )
+  expect_equal(levels(all3$type), c("TD", "PD", "FD"))
+  expect_equal(nrow(all3), 3 * 2 * 3)
+  sep <- c(
+    div_estimate(comm, abundance = abundance, nboot = 0)$estimate,
+    div_estimate(comm, abundance = abundance, type = "PD", tree = tr, nboot = 0)$estimate,
+    div_estimate(comm, abundance = abundance, type = "FD", distance = d, nboot = 0)$estimate
+  )
+  expect_equal(all3$estimate, sep)
+  two <- div_hill(comm, abundance = abundance, type = c("TD", "FD"), distance = d)
+  expect_equal(levels(two$type), c("TD", "FD"))
+  curves <- div_rarefy(comm,
+    abundance = abundance, type = "all", tree = tr, distance = d, knots = 5
+  )
+  expect_s3_class(curves, "td_rarefy")
+  expect_error(div_hill(comm, abundance = abundance, type = c("TD", "XD")), "TD")
+})
+
+test_that("orders q can be run singly or together", {
+  one <- div_hill(comm, abundance = abundance, q = 1)
+  all <- div_hill(comm, abundance = abundance, q = c(0, 1, 2))
+  expect_equal(unique(one$q), 1)
+  expect_equal(one$diversity, all$diversity[all$q == 1])
+  skip_if_not_installed("ggplot2")
+  curves <- div_rarefy(comm, abundance = abundance, q = 1, knots = 5)
+  expect_s3_class(ggplot2::autoplot(curves), "ggplot")
+})

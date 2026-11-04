@@ -41,10 +41,15 @@ div_rarefy <- function(data,
                        pd_unit = c("mean", "total"),
                        distance = NULL,
                        tau = NULL,
+                       unit = NULL,
+                       n_units = NULL,
                        .by = NULL) {
+  if (!missing(type) && td_is_multi_type(type)) {
+    return(td_multi_type(match.call(), parent.frame(), type))
+  }
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by),
-    counts = TRUE
+    counts = TRUE, unit = enquo(unit), n_units = enquo(n_units)
   )
   td_check_min_n(prep)
   q <- td_check_q(q, integer = TRUE)
@@ -63,7 +68,7 @@ div_rarefy <- function(data,
   )
 
   out <- td_per_site(prep, function(x, i) {
-    n <- sum(x)
+    n <- smp_n(x)
     m <- if (is.null(size)) size_grid(n, endpoint %||% (2 * n), knots) else size
     m <- sort(unique(m))
     if (any(m > 2 * n) && 0 %in% q) far <<- c(far, "x")
@@ -145,10 +150,15 @@ div_standardise <- function(data,
                             pd_unit = c("mean", "total"),
                             distance = NULL,
                             tau = NULL,
+                            unit = NULL,
+                            n_units = NULL,
                             .by = NULL) {
+  if (!missing(type) && td_is_multi_type(type)) {
+    return(td_multi_type(match.call(), parent.frame(), type))
+  }
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by),
-    counts = TRUE
+    counts = TRUE, unit = enquo(unit), n_units = enquo(n_units)
   )
   td_check_min_n(prep)
   q <- td_check_q(q, integer = TRUE)
@@ -162,13 +172,7 @@ div_standardise <- function(data,
   z <- stats::qnorm(1 - (1 - conf) / 2)
 
   if (is.null(coverage) && is.null(size)) {
-    sites <- vctrs::vec_split(prep$data, prep$data[c(prep$by, ".site")])
-    c2n <- vapply(sites$val, function(s) {
-      coverage_at_size(s$.n, 2 * sum(s$.n))
-    }, numeric(1))
-    grp <- vctrs::vec_group_id(sites$key[prep$by])
-    if (length(prep$by) == 0) grp <- rep(1L, length(c2n))
-    level <- stats::ave(c2n, grp, FUN = min)
+    level <- default_coverage_level(prep)
   }
 
   far <- 0
@@ -177,7 +181,7 @@ div_standardise <- function(data,
     distance, tau
   )
   out <- td_per_site(prep, function(x, i) {
-    n <- sum(x)
+    n <- smp_n(x)
     if (!is.null(size)) {
       m <- size
     } else {

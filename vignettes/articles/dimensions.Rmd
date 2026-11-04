@@ -16,7 +16,10 @@ number framework:
   using the attribute-diversity approach of Chao et al. (2019).
 
 Each is an effective number of species of order `q`, so the three can be
-plotted on the same axis. The estimators reproduce
+plotted on the same axis. Every dimension works with abundance data
+(individuals) and with incidence data (detections in sampling units such
+as traps, baits or survey days), with bootstrap standard errors and
+confidence intervals throughout. The estimators reproduce
 [iNEXT.3D](https://CRAN.R-project.org/package=iNEXT.3D) and this is checked
 in the package test suite.
 
@@ -51,7 +54,8 @@ traits <- as.matrix(Brazil_rainforest_distance_matrix)
 ### TD
 
 ```{r}
-div_estimate(brazil, abundance = n, nboot = 0)
+set.seed(1)
+div_estimate(brazil, abundance = n, nboot = 50)
 ```
 
 ### PD
@@ -61,7 +65,7 @@ species. With `pd_unit = "mean"` (the default) PD is divided by `reftime`,
 giving the effective number of lineages.
 
 ```{r}
-div_estimate(brazil, abundance = n, type = "PD", tree = tree)
+div_estimate(brazil, abundance = n, type = "PD", tree = tree, nboot = 50)
 ```
 
 ### FD
@@ -70,7 +74,7 @@ div_estimate(brazil, abundance = n, type = "PD", tree = tree)
 data. Species closer than `tau` count as functionally identical.
 
 ```{r}
-div_estimate(brazil, abundance = n, type = "FD", distance = traits)
+div_estimate(brazil, abundance = n, type = "FD", distance = traits, nboot = 50)
 ```
 
 ### FD (area under the tau profile)
@@ -79,25 +83,26 @@ div_estimate(brazil, abundance = n, type = "FD", distance = traits)
 threshold has to be chosen.
 
 ```{r}
-div_estimate(brazil, abundance = n, type = "FD", distance = traits, tau = "auc")
+div_estimate(brazil,
+  abundance = n, type = "FD", distance = traits, tau = "auc",
+  nboot = 20
+)
 ```
 
 ## Standardised comparison
+
+`type = "all"` (or several types, such as `c("TD", "PD")`) analyses the
+dimensions together and returns one tibble with a `type` column.
 
 Standardise every dimension to the same sample coverage. Coverage is
 computed from the species counts, as in iNEXT.3D, and the PD and FD values
 are then evaluated at the matching sample size.
 
 ```{r}
-dims <- list(
-  TD = list(),
-  PD = list(type = "PD", tree = tree),
-  FD = list(type = "FD", distance = traits)
+std <- div_standardise(brazil,
+  abundance = n, type = "all", tree = tree, distance = traits,
+  coverage = 0.97, nboot = 0
 )
-std <- bind_rows(lapply(names(dims), function(d) {
-  args <- c(list(brazil, abundance = quote(n), coverage = 0.97, nboot = 0), dims[[d]])
-  do.call(div_standardise, args) |> mutate(type = d)
-}))
 std |> select(type, site, q, m, coverage, diversity)
 ```
 
@@ -111,11 +116,68 @@ ggplot(std, aes(q, diversity, colour = site)) +
   theme_tidydiversity()
 ```
 
-## Current limits
+## Incidence data
 
-* Bootstrap standard errors and confidence intervals are available for TD
-  only. For PD and FD, `se`, `lower` and `upper` are `NA`.
-* Incidence data are not yet supported for PD and FD.
+Many surveys record which species were detected in each sampling unit
+rather than how many individuals were counted. Give the unit column with
+`unit`; each site is then described by the number of units in which each
+species was found and the number of units sampled, and every estimate is
+incidence-based (Chao et al. 2014). The same `type`, `tree` and `distance`
+arguments give incidence-based PD and FD. For PD a branch is present in a
+unit when any species below it was detected there.
+
+The example uses the fish survey shipped with iNEXT.3D: monthly samples in
+two periods (2013-2015 and 2016-2018, 36 samples each) with a phylogeny and
+a trait distance matrix. The results reproduce iNEXT.3D, and this is
+checked in the test suite.
+
+```{r fish}
+data(list = c(
+  "Fish_incidence_data", "Fish_phylo_tree", "Fish_distance_matrix"
+), package = "iNEXT.3D")
+fish <- bind_rows(lapply(names(Fish_incidence_data), function(period) {
+  m <- Fish_incidence_data[[period]]
+  hit <- which(m > 0, arr.ind = TRUE)
+  tibble(
+    site = period, species = rownames(m)[hit[, 1]],
+    sample = colnames(m)[hit[, 2]], n_samples = ncol(m)
+  )
+}))
+fish
+```
+
+```{r fish-3d, fig.width = 8, fig.height = 4, fig.alt = "Incidence-based rarefaction and extrapolation of TD, PD and FD for two periods of a fish survey."}
+set.seed(1)
+fish_curves <- div_rarefy(fish,
+  unit = sample, n_units = n_samples, q = 1, type = "all",
+  tree = Fish_phylo_tree, distance = as.matrix(Fish_distance_matrix),
+  knots = 20, nboot = 30
+)
+ggplot(fish_curves, aes(m, diversity, colour = site, fill = site)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.15, colour = NA) +
+  geom_line(aes(linetype = method == "extrapolation")) +
+  geom_point(data = filter(fish_curves, method == "observed"), size = 2) +
+  facet_wrap(~type, scales = "free_y") +
+  scale_colour_tidydiversity() +
+  scale_fill_tidydiversity() +
+  scale_linetype_manual(values = c("solid", "dashed"), guide = "none") +
+  labs(
+    x = "Number of samples", y = "Diversity of order q = 1",
+    colour = NULL, fill = NULL
+  ) +
+  theme_tidydiversity()
+```
+
+The ant baits in `png_ants` are incidence data too: each bait is a
+sampling unit, and `baits` gives the 60 baits set at every elevation and
+season, including those no ant visited. Incidence-based (Chao2) richness:
+
+```{r ants-incidence}
+set.seed(1)
+div_estimate(png_ants,
+  unit = bait, n_units = baits, q = 0, .by = season, nboot = 50
+)
+```
 
 ## References
 
@@ -129,3 +191,9 @@ Chao, A., Chiu, C.-H., Villeger, S. et al. (2019). An attribute-diversity
 approach to functional diversity, functional beta diversity, and related
 (dis)similarity measures. *Ecological Monographs*, 89, e01343.
 <https://doi.org/10.1002/ecm.1343>
+
+Chao, A., Gotelli, N. J., Hsieh, T. C., Sander, E. L., Ma, K. H., Colwell,
+R. K. and Ellison, A. M. (2014). Rarefaction and extrapolation with Hill
+numbers: a framework for sampling and estimation in species diversity
+studies. *Ecological Monographs*, 84, 45-67.
+<https://doi.org/10.1890/13-0133.1>

@@ -19,6 +19,8 @@ div_estimate(
   pd_unit = c("mean", "total"),
   distance = NULL,
   tau = NULL,
+  unit = NULL,
+  n_units = NULL,
   .by = NULL
 )
 }
@@ -51,6 +53,9 @@ asymptotic diversity cannot fall below.}
 
 \item{type}{Diversity dimension: \code{"TD"} (taxonomic, the default), \code{"PD"}
 (phylogenetic, needs \code{tree}) or \code{"FD"} (functional, needs \code{distance}).
+Give several, such as \code{c("TD", "PD")}, or \code{"all"} for all three, to
+analyse the dimensions together: the results are stacked in one tibble
+with a \code{type} column, and \code{autoplot()} shows them side by side.
 All three are Hill numbers of the same order \code{q}, in units of
 effective numbers of species (Chao, Chiu and Jost 2014), and reproduce
 \href{https://CRAN.R-project.org/package=iNEXT.3D}{iNEXT.3D}.}
@@ -75,6 +80,18 @@ lie between 0 and 1, for example from Gower distances of traits.}
 are treated as functionally identical. Defaults to the mean distance
 between two individuals in the pooled data. Use \code{"auc"} to integrate
 over all thresholds from 0 to 1 (Chao et al. 2019).}
+
+\item{unit}{For incidence data, the column naming the sampling unit
+(a trap, bait, plot or survey day) in which each species was detected.
+Each site is then described by the number of units in which each
+species was found and the number of units sampled, and every estimate
+is incidence-based (Chao et al. 2014), for TD, PD and FD alike. Leave
+\code{NULL} for abundance data.}
+
+\item{n_units}{For incidence data, a column giving the number of units
+sampled at each site, constant within a site. Use it when some units
+detected no species and so do not appear in the data. By default the
+number of distinct units in the data is used.}
 
 \item{.by}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optional grouping
 columns, kept in the output. Grouped data frames are also respected.}
@@ -105,6 +122,9 @@ other is the mean distance among the singletons. The reference time
 \examples{
 set.seed(1)
 div_estimate(png_ants, .by = season, nboot = 20)
+
+# Incidence-based (Chao2) estimates, baits as sampling units
+div_estimate(png_ants, unit = bait, n_units = baits, .by = season, nboot = 20)
 }
 \references{
 Chao, A., Gotelli, N. J., Hsieh, T. C., Sander, E. L.,

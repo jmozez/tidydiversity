@@ -15,13 +15,16 @@
 #' is given, which is the default here: diversity is estimated from the
 #' number of baits at which each species was recorded.
 #'
-#' @format A tibble with one row per bait and ant species, and 11 columns:
+#' @format A tibble with one row per bait and ant species, and 12 columns:
 #' \describe{
 #'   \item{site}{Elevation band, such as `"MW0200"` for 200 m.}
 #'   \item{elevation}{Elevation band in metres.}
 #'   \item{season}{Sampling season, `"dry"` or `"wet"`.}
 #'   \item{transect}{Transect number within the elevation band.}
-#'   \item{bait}{Bait identifier.}
+#'   \item{bait}{Bait identifier: the sampling unit for incidence-based
+#'     estimates (`unit = bait`).}
+#'   \item{baits}{Number of baits set at that elevation and season,
+#'     including baits no ant visited (`n_units = baits`).}
 #'   \item{bait_type}{Nutrient offered: `h2o`, `nacl`, `cho` (sucrose),
 #'     `amino_acid`, `cho_amino_acid` or `lipid`.}
 #'   \item{species}{Ant morphospecies code.}
@@ -43,6 +46,9 @@
 #' @examples
 #' png_ants
 #' div_hill(png_ants, q = 0, .by = season)
+#'
+#' # Incidence-based: baits as sampling units, including empty baits
+#' div_estimate(png_ants, unit = bait, n_units = baits, .by = season, nboot = 0)
 "png_ants"
 
 #' Tree-nesting ants in rainforest plots at three elevations, Papua New Guinea

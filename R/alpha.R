@@ -8,6 +8,9 @@
 #' @param q Orders of diversity, non-negative numbers.
 #' @param type Diversity dimension: `"TD"` (taxonomic, the default), `"PD"`
 #'   (phylogenetic, needs `tree`) or `"FD"` (functional, needs `distance`).
+#'   Give several, such as `c("TD", "PD")`, or `"all"` for all three, to
+#'   analyse the dimensions together: the results are stacked in one tibble
+#'   with a `type` column, and `autoplot()` shows them side by side.
 #'   All three are Hill numbers of the same order `q`, in units of
 #'   effective numbers of species (Chao, Chiu and Jost 2014), and reproduce
 #'   [iNEXT.3D](https://CRAN.R-project.org/package=iNEXT.3D).
@@ -27,8 +30,19 @@
 #'   are treated as functionally identical. Defaults to the mean distance
 #'   between two individuals in the pooled data. Use `"auc"` to integrate
 #'   over all thresholds from 0 to 1 (Chao et al. 2019).
+#' @param unit For incidence data, the column naming the sampling unit
+#'   (a trap, bait, plot or survey day) in which each species was detected.
+#'   Each site is then described by the number of units in which each
+#'   species was found and the number of units sampled, and every estimate
+#'   is incidence-based (Chao et al. 2014), for TD, PD and FD alike. Leave
+#'   `NULL` for abundance data.
+#' @param n_units For incidence data, a column giving the number of units
+#'   sampled at each site, constant within a site. Use it when some units
+#'   detected no species and so do not appear in the data. By default the
+#'   number of distinct units in the data is used.
 #' @return A tibble with the grouping columns, the site column, `q`,
-#'   `n` (number of individuals) and `diversity`. Phylogenetic and
+#'   `n` (number of individuals, or of sampling units for incidence data)
+#'   and `diversity`. Phylogenetic and
 #'   functional results also have `type` and `reftime` or `tau`.
 #' @references Hill, M. O. (1973). Diversity and evenness: a unifying
 #'   notation and its consequences. Ecology, 54, 427-432.
@@ -53,6 +67,17 @@
 #' png_ants |>
 #'   dplyr::group_by(season) |>
 #'   div_hill(q = c(0, 0.5, 1, 2))
+#'
+#' # Incidence data: each bait is a sampling unit, 60 baits per site
+#' div_hill(png_ants, unit = bait, n_units = baits, .by = season)
+#'
+#' # TD, PD and FD together, here for a functional distance matrix only
+#' d <- as.matrix(stats::dist(c(s1 = 0, s2 = 0.1, s3 = 0.5, s4 = 1)))
+#' toy <- data.frame(
+#'   site = rep(c("a", "b"), each = 4), species = paste0("s", 1:4),
+#'   n = c(10, 5, 2, 1, 3, 3, 1, 1)
+#' )
+#' div_hill(toy, abundance = n, type = c("TD", "FD"), distance = d)
 div_hill <- function(data,
                      site = site,
                      species = species,
@@ -64,9 +89,15 @@ div_hill <- function(data,
                      pd_unit = c("mean", "total"),
                      distance = NULL,
                      tau = NULL,
+                     unit = NULL,
+                     n_units = NULL,
                      .by = NULL) {
+  if (!missing(type) && td_is_multi_type(type)) {
+    return(td_multi_type(match.call(), parent.frame(), type))
+  }
   prep <- td_prepare(
-    data, enquo(site), enquo(species), enquo(abundance), enquo(.by)
+    data, enquo(site), enquo(species), enquo(abundance), enquo(.by),
+    unit = enquo(unit), n_units = enquo(n_units)
   )
   q <- td_check_q(q)
   dim <- td_dimension(
@@ -74,7 +105,7 @@ div_hill <- function(data,
     distance, tau
   )
   out <- td_per_site(prep, function(x, i) {
-    tibble::tibble(q = q, n = sum(x), diversity = dim_obs(x, q, dim))
+    tibble::tibble(q = q, n = smp_n(x), diversity = dim_obs(x, q, dim))
   })
   td_new(add_dim_cols(out, dim), "td_hill")
 }
@@ -127,6 +158,9 @@ div_hill <- function(data,
 #' @examples
 #' set.seed(1)
 #' div_estimate(png_ants, .by = season, nboot = 20)
+#'
+#' # Incidence-based (Chao2) estimates, baits as sampling units
+#' div_estimate(png_ants, unit = bait, n_units = baits, .by = season, nboot = 20)
 div_estimate <- function(data,
                          site = site,
                          species = species,
@@ -141,11 +175,16 @@ div_estimate <- function(data,
                          pd_unit = c("mean", "total"),
                          distance = NULL,
                          tau = NULL,
+                         unit = NULL,
+                         n_units = NULL,
                          .by = NULL) {
+  if (!missing(type) && td_is_multi_type(type)) {
+    return(td_multi_type(match.call(), parent.frame(), type))
+  }
   ci <- rlang::arg_match(ci)
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by),
-    counts = TRUE
+    counts = TRUE, unit = enquo(unit), n_units = enquo(n_units)
   )
   td_check_min_n(prep)
   q <- td_check_q(q, integer = TRUE)
@@ -193,19 +232,21 @@ div_coverage <- function(data,
                          site = site,
                          species = species,
                          abundance = NULL,
+                         unit = NULL,
+                         n_units = NULL,
                          .by = NULL) {
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by),
-    counts = TRUE
+    counts = TRUE, unit = enquo(unit), n_units = enquo(n_units)
   )
   td_check_min_n(prep)
   out <- td_per_site(prep, function(x, i) {
     tibble::tibble(
-      n = sum(x),
+      n = smp_n(x),
       s_obs = length(x),
       f1 = sum(x == 1),
       f2 = sum(x == 2),
-      coverage = coverage_at_size(x, sum(x))
+      coverage = coverage_at_size(x, smp_n(x))
     )
   })
   td_new(out, "td_coverage")

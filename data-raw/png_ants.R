@@ -17,7 +17,16 @@ csv <- grep("data_full_clean_2023-02-11.csv$", utils::unzip(zip, list = TRUE)$Na
   value = TRUE
 )
 raw <- utils::read.csv(unz(zip, csv))
-raw <- raw[raw$regions == "png" & !is.na(raw$sp_code) & raw$abundance > 0, ]
+raw <- raw[raw$regions == "png", ]
+# Number of baits set at each elevation and season, including empty ones:
+# the number of sampling units for incidence-based estimates.
+set <- stats::aggregate(
+  trap_number_code ~ elevational_bands + seasons, raw,
+  function(x) length(unique(x))
+)
+names(set)[3] <- "baits"
+raw <- raw[!is.na(raw$sp_code) & raw$abundance > 0, ]
+raw <- merge(raw, set, by = c("elevational_bands", "seasons"))
 
 png_ants <- tibble::tibble(
   site = sprintf("MW%04d", as.integer(raw$elevational_bands)),
@@ -25,6 +34,7 @@ png_ants <- tibble::tibble(
   season = raw$seasons,
   transect = as.integer(raw$transect_number),
   bait = raw$trap_number_code,
+  baits = as.integer(raw$baits),
   bait_type = raw$bait_type,
   species = raw$sp_code,
   genus = tools::toTitleCase(raw$genus),
