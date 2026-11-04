@@ -132,6 +132,8 @@ reference:
     contents:
       - autoplot-tidydiversity
       - theme_tidydiversity
+      - td_panel
+      - td_save
       - div_table
   - title: Modelling
     contents:

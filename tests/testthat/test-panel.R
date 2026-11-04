@@ -1,0 +1,20 @@
+test_that("td_panel combines plots with tags", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
+  r0 <- div_rarefy(png_ants, q = 0, .by = season, knots = 10)
+  r2 <- div_rarefy(png_ants, q = 2, .by = season, knots = 10)
+  p <- td_panel(ggplot2::autoplot(r0), ggplot2::autoplot(r2), ncol = 2)
+  expect_s3_class(p, "patchwork")
+  expect_equal(p$patches$annotation$tag_levels, list("a"))
+  expect_s3_class(td_panel(list(ggplot2::autoplot(r0))), "patchwork")
+  expect_error(td_panel(1), "ggplot")
+  expect_error(td_panel(), "at least one")
+})
+
+test_that("td_save writes a white figure at journal width", {
+  skip_if_not_installed("ggplot2")
+  r0 <- div_rarefy(png_ants, q = 0, .by = season, knots = 10)
+  f <- tempfile(fileext = ".png")
+  expect_equal(td_save(ggplot2::autoplot(r0), f, size = "double"), f)
+  expect_true(file.exists(f))
+})
