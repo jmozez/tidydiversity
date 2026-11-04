@@ -137,3 +137,19 @@ td_style <- function(p, palette, theme, fill = TRUE) {
   if (!is.null(theme)) p <- p + theme
   p
 }
+
+# Plots with a fixed aspect ratio (ordinations, heatmaps) do not fill the
+# whole graphics device, and ggplot leaves the unused margin unpainted, so
+# it is transparent on transparent devices (pkgdown, knitr). Marking such
+# plots makes print() paint the whole device white first.
+td_white <- function(p) {
+  class(p) <- unique(c("td_gg", class(p)))
+  p
+}
+
+#' @export
+print.td_gg <- function(x, newpage = is.null(vp), vp = NULL, ...) {
+  if (newpage) grid::grid.newpage()
+  grid::grid.rect(gp = grid::gpar(fill = "white", col = NA))
+  NextMethod(newpage = FALSE)
+}

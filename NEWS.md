@@ -1,6 +1,9 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* Ordination plots and the pairwise heatmap keep a fixed aspect ratio; they
+  now paint the whole image white, so no transparent margin is left on
+  web pages, slides or transparent devices.
 * Plots on the website: the site's dark mode no longer inverts figures
   (it turned white plots black and changed their colours); every figure
   is shown white with its true colours.
