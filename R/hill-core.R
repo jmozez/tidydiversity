@@ -220,15 +220,24 @@ boot_community <- function(x) {
   p
 }
 
-boot_draws <- function(x, nboot, fn) {
+# Bootstrap replicates of `fn(xb, dim)`, where `xb` is a resampled
+# community and `dim` the dimension settings that cover its species.
+boot_draws <- function(x, nboot, fn, dim = list(type = "TD")) {
   if (nboot == 0) {
     return(NULL)
   }
   n <- sum(x)
-  p <- boot_community(x)
+  if (dim$type == "TD") {
+    p <- boot_community(x)
+  } else {
+    comm <- boot_dim_community(x, dim)
+    p <- comm$p
+    dim <- comm$dim
+  }
   draws <- lapply(seq_len(nboot), function(b) {
     xb <- as.vector(stats::rmultinom(1, n, p))
-    fn(xb[xb > 0])
+    names(xb) <- names(p)
+    suppressWarnings(fn(xb[xb > 0], dim))
   })
   simplify2array(draws)
 }

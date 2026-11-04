@@ -5,8 +5,11 @@
   `div_estimate()`, `div_rarefy()` and `div_standardise()` gain
   `type = c("TD", "PD", "FD")` with `tree`, `reftime`, `pd_unit`,
   `distance` and `tau` (including `tau = "auc"`). Point estimates match
-  iNEXT.3D to within 1e-6. Bootstrap intervals for PD and FD are not yet
-  available.
+  iNEXT.3D to within 1e-6.
+* Bootstrap standard errors and confidence intervals for PD and FD in
+  `div_estimate()`, `div_standardise()` and `div_rarefy()`, previously `NA`.
+  The bootstrap community adds undetected species with estimated branch
+  lengths (PD) or distances (FD).
 * New article "TD, PD and FD on one scale", and a rewritten home page.
 * `div_completeness()` and `div_evenness()` give sample completeness and
   evenness profiles (classes E1 to E5) that match iNEXT.4steps.

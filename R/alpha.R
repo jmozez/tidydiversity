@@ -87,12 +87,24 @@ div_hill <- function(data,
 #' confidence intervals come from bootstrap resampling of the estimated
 #' community, as in iNEXT.
 #'
+#' @details
+#' For `type = "PD"` and `type = "FD"` the bootstrap resamples an
+#' estimated community that includes undetected species, as for taxonomic
+#' diversity. Under PD each undetected species is given its own branch, of
+#' length equal to the estimated undetected branch length divided by the
+#' estimated number of undetected species (Chao et al. 2015; Hsieh and Chao
+#' 2017). Under FD undetected species are assumed to resemble the rarest
+#' observed species: their distance to each observed species is the mean
+#' distance from the singletons to that species, and their distance to each
+#' other is the mean distance among the singletons. The reference time
+#' (PD) and threshold `tau` (FD) are held fixed across replicates.
+#'
 #' @inheritParams div_hill
 #' @param q Orders of diversity: any of 0, 1 and 2.
 #' @param conf Confidence level of the intervals.
-#' @param nboot Number of bootstrap replicates. Use 0 to skip them.
-#'   Bootstrap intervals are currently available for `type = "TD"` only;
-#'   for PD and FD `se`, `lower` and `upper` are `NA`.
+#' @param nboot Number of bootstrap replicates. Use 0 to skip them. For PD
+#'   and FD the bootstrap community adds undetected species with estimated
+#'   branch lengths (PD) or distances (FD); see Details in [div_estimate()].
 #' @param ci How to build the confidence intervals from the bootstrap
 #'   standard error. With `"lognormal"` (the default) the richness (q = 0)
 #'   interval uses the log-transformation of Chao (1987), as in SpadeR, so
@@ -144,10 +156,9 @@ div_estimate <- function(data,
     rlang::arg_match(type), prep, tree, reftime, rlang::arg_match(pd_unit),
     distance, tau
   )
-  if (dim$type != "TD") nboot <- 0
   out <- td_per_site(prep, function(x, i) {
     est <- dim_asy(x, q, dim)
-    draws <- boot_draws(x, nboot, function(xb) hill_asy(xb, q))
+    draws <- boot_draws(x, nboot, function(xb, d) dim_asy(xb, q, d), dim)
     se <- as.vector(boot_se(draws, length(q)))
     obs <- dim_obs(x, q, dim)
     lim <- asy_ci(obs, est, se, z, ci, q)

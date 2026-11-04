@@ -61,7 +61,6 @@ div_rarefy <- function(data,
     rlang::arg_match(type), prep, tree, reftime, rlang::arg_match(pd_unit),
     distance, tau
   )
-  if (dim$type != "TD") nboot <- 0
 
   out <- td_per_site(prep, function(x, i) {
     n <- sum(x)
@@ -70,7 +69,7 @@ div_rarefy <- function(data,
     if (any(m > 2 * n) && 0 %in% q) far <<- c(far, "x")
     d <- dim_at_size(x, m, q, dim)
     cov <- coverage_at_size(x, m)
-    draws <- boot_draws(x, nboot, function(xb) hill_at_size(xb, m, q))
+    draws <- boot_draws(x, nboot, function(xb, d) dim_at_size(xb, m, q, d), dim)
     se <- boot_se(draws, dim(d))
     nq <- length(q)
     meth <- rep(size_method(m, n), times = nq)
@@ -177,7 +176,6 @@ div_standardise <- function(data,
     rlang::arg_match(type), prep, tree, reftime, rlang::arg_match(pd_unit),
     distance, tau
   )
-  if (dim$type != "TD") nboot <- 0
   out <- td_per_site(prep, function(x, i) {
     n <- sum(x)
     if (!is.null(size)) {
@@ -188,9 +186,9 @@ div_standardise <- function(data,
     }
     if (m > 2 * n && 0 %in% q) far <<- far + 1
     d <- as.vector(dim_at_size(x, m, q, dim))
-    draws <- boot_draws(x, nboot, function(xb) {
-      as.vector(hill_at_size(xb, m, q))
-    })
+    draws <- boot_draws(x, nboot, function(xb, d) {
+      as.vector(dim_at_size(xb, m, q, d))
+    }, dim)
     se <- as.vector(boot_se(draws, length(q)))
     tibble::tibble(
       q = q,

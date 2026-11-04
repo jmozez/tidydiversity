@@ -37,7 +37,7 @@ div_completeness <- function(data,
   z <- stats::qnorm(1 - (1 - conf) / 2)
   out <- td_per_site(prep, function(x, i) {
     est <- completeness_q(x, q)
-    draws <- boot_draws(x, nboot, function(xb) completeness_q(xb, q))
+    draws <- boot_draws(x, nboot, function(xb, d) completeness_q(xb, q))
     se <- as.vector(boot_se(draws, length(q)))
     tibble::tibble(
       q = q,
@@ -128,7 +128,7 @@ div_evenness <- function(data,
   out <- td_per_site(prep, function(x, i) {
     target <- if (is.null(level)) NULL else level[min(i, length(level))]
     est <- evenness_q(x, q, class, target)
-    draws <- boot_draws(x, nboot, function(xb) evenness_q(xb, q, class, target))
+    draws <- boot_draws(x, nboot, function(xb, d) evenness_q(xb, q, class, target))
     se <- as.vector(boot_se(draws, length(est)))
     nq <- length(q)
     ncl <- length(class)

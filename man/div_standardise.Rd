@@ -43,9 +43,9 @@ group.}
 
 \item{conf}{Confidence level of the intervals.}
 
-\item{nboot}{Number of bootstrap replicates. Use 0 to skip them.
-Bootstrap intervals are currently available for \code{type = "TD"} only;
-for PD and FD \code{se}, \code{lower} and \code{upper} are \code{NA}.}
+\item{nboot}{Number of bootstrap replicates. Use 0 to skip them. For PD
+and FD the bootstrap community adds undetected species with estimated
+branch lengths (PD) or distances (FD); see Details in \code{\link[=div_estimate]{div_estimate()}}.}
 
 \item{type}{Diversity dimension: \code{"TD"} (taxonomic, the default), \code{"PD"}
 (phylogenetic, needs \code{tree}) or \code{"FD"} (functional, needs \code{distance}).
