@@ -1,0 +1,237 @@
+---
+title: "Trait-based ecology"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  dev.args = list(bg = "white"),
+  collapse = TRUE, comment = "#>", out.width = "80%",
+  dpi = 150, fig.width = 6, fig.height = 4
+)
+online <- tryCatch(
+  !is.null(curlGetHeaders("https://raw.githubusercontent.com")),
+  error = function(e) FALSE
+)
+```
+
+This article follows the R material of the *Handbook of Trait-Based
+Ecology* (de Bello et al. 2021) and shows the tidydiversity version of
+each method. It covers:
+
+* trait dissimilarity: `td_trait_dist()`;
+* community-weighted means: `td_cwm()`, and testing them with
+  `td_cwm_test()`;
+* functional diversity indices: `td_fd_indices()`;
+* alpha, beta and gamma functional diversity: `td_rao()`;
+* null models: `td_ses()`;
+* intraspecific trait variability: `td_itv()`;
+* trait-environment links: `td_fourth_corner()`.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(2026)
+```
+
+## Data
+
+No published trait data set exists yet for the Papua New Guinea
+communities in tidydiversity, so this article uses two published data
+sets. Both are loaded from their original sources and are not copied
+into tidydiversity.
+
+**Alpine plants of the Aravo valley, French Alps** (Choler 2005; in the
+ade4 package): 82 species, 75 sites, 8 traits. `Snow` is the mean
+snowmelt date (Julian day), a strong gradient in alpine vegetation.
+
+```{r aravo}
+aravo <- aravo_long()
+aravo$community
+aravo$traits
+```
+
+## Trait dissimilarity
+
+Gower distance handles any mix of trait types and missing values.
+`method = "gawdis"` balances the contribution of each trait (de Bello et
+al. 2021b):
+
+```{r dist}
+d_gower <- td_trait_dist(aravo$traits)
+d_gawdis <- td_trait_dist(aravo$traits, method = "gawdis")
+```
+
+## Community-weighted means
+
+```{r cwm, fig.alt = "Community-weighted mean SLA of 75 alpine sites rising with later snowmelt."}
+cwm <- td_cwm(aravo$community, aravo$traits, abundance = cover)
+cwm
+
+cwm |>
+  filter(trait == "SLA") |>
+  ggplot(aes(Snow, cwm)) +
+  geom_point(colour = "#0072B2") +
+  geom_smooth(method = "lm", formula = y ~ x, colour = "black") +
+  labs(x = "Snowmelt date (Julian day)", y = "CWM of SLA") +
+  theme_tidydiversity()
+```
+
+A standard regression of CWM on the environment gives p-values that are
+too optimistic, because all sites share the same species traits (Zeleny
+2018). The max test combines a test that shuffles sites with one that
+shuffles traits among species, and reports the larger p-value:
+
+```{r cwm-test}
+td_cwm_test(aravo$community, aravo$traits,
+  abundance = cover,
+  cols = c(Height, SLA, N_mass, Seed), env_vars = Snow
+)
+```
+
+Sites with late snowmelt have shorter plants with higher SLA and leaf N.
+
+## Functional diversity indices
+
+These are the indices of `FD::dbFD()`, returned as a tidy table. They
+complement the Hill-number functional diversity of `div_hill()`.
+
+```{r fd}
+fd <- td_fd_indices(aravo$community, aravo$traits,
+  abundance = cover, dist = d_gawdis
+)
+fd |>
+  group_by(index) |>
+  summarise(mean = mean(value), sd = sd(value))
+```
+
+## Alpha, beta and gamma functional diversity
+
+Rao's quadratic entropy partitioned with the equivalent-numbers correction
+(de Bello et al. 2010):
+
+```{r rao}
+td_rao(aravo$community, abundance = cover, dist = d_gawdis)
+```
+
+## Null models
+
+Is functional diversity lower than expected (convergence, as under
+environmental filtering) or higher (divergence, as under limiting
+similarity)? `td_ses()` compares each site with communities whose traits
+are shuffled among species:
+
+```{r ses, fig.alt = "Standardised effect size of Rao's Q against snowmelt date; most sites are below zero."}
+ses <- td_ses(aravo$community, aravo$traits,
+  abundance = cover, dist = d_gawdis, times = 199
+)
+ses |>
+  left_join(distinct(aravo$community, site, Snow), by = "site") |>
+  ggplot(aes(Snow, ses)) +
+  geom_hline(yintercept = c(-1.96, 0, 1.96), linetype = c(2, 1, 2),
+             colour = "grey50") +
+  geom_point(colour = "#D55E00") +
+  labs(x = "Snowmelt date (Julian day)", y = "SES of Rao's Q") +
+  theme_tidydiversity()
+```
+
+Most sites are less functionally diverse than expected, and the
+convergence gets stronger with later snowmelt: in the harshest snowbeds,
+many sites fall below -1.96. This is the pattern expected from
+environmental filtering (Choler 2005).
+
+Other null models are `null = "richness"` (shuffle abundances within
+sites) and `null = "swap"` (independent swap keeping site and species
+totals).
+
+## Fourth-corner analysis
+
+The fourth-corner method tests every trait x environment association
+directly, also with the max test (ter Braak et al. 2012):
+
+```{r fourth}
+td_fourth_corner(aravo$community, aravo$traits,
+  abundance = cover,
+  cols = c(Height, SLA, N_mass), env_vars = c(Snow, PhysD)
+)
+```
+
+## Intraspecific trait variability
+
+This method needs traits measured in each site. The data are from
+Mediterranean annual grasslands near Madrid (Carmona et al. 2015), as
+distributed with the Handbook: 10 quadrats along an 80 m slope, with
+height and SLA measured on individual plants in each quadrat. They are
+read from the Handbook's repository (GPL-3).
+
+```{r itv-data, eval = online}
+base <- "https://raw.githubusercontent.com/larsito/traitbook_data/main/chapter6/"
+indiv <- read.table(paste0(base, "Traits.txt"), header = TRUE) |>
+  rename(quadrat = Plot, species = Species, height = Height, sla = SLA)
+cover <- read.table(paste0(base, "CommMatrix.txt"), header = TRUE)
+grass <- tibble(
+  quadrat = rep(as.integer(rownames(cover)), ncol(cover)),
+  species = rep(colnames(cover), each = nrow(cover)),
+  cover = unlist(cover, use.names = FALSE)
+) |>
+  filter(cover > 0) |>
+  mutate(position = quadrat)
+```
+
+How much of the change in community trait means along the slope comes
+from species turnover, and how much from plants of the same species
+differing between quadrats (Leps et al. 2011)?
+
+```{r itv, eval = online, fig.alt = "Stacked bars: for SLA, most variation explained by slope position is intraspecific; for height, intraspecific and covariation parts dominate."}
+itv <- td_itv(grass, indiv,
+  site = quadrat, abundance = cover,
+  cols = c(height, sla), formula = ~position
+)
+itv
+
+itv |>
+  filter(component != "total") |>
+  ggplot(aes(trait, prop, fill = component)) +
+  geom_col() +
+  labs(x = NULL, y = "Share of variation explained by position") +
+  scale_fill_tidydiversity() +
+  theme_tidydiversity()
+```
+
+Most of the response of SLA to the slope is intraspecific: the same
+species change their leaves along the gradient. Studies that use a
+single mean trait value per species would miss most of it.
+
+## References
+
+Carmona, C. P. et al. (2015). Fine-scale trait structure along a
+productivity gradient: intraspecific variability makes the difference.
+*Journal of Vegetation Science*, 26, 1101-1111.
+
+Choler, P. (2005). Consistent shifts in Alpine plant traits along a
+mesotopographical gradient. *Arctic, Antarctic, and Alpine Research*, 37,
+444-453.
+
+de Bello, F. et al. (2010). The partitioning of diversity: showing
+Theseus a way out of the labyrinth. *Journal of Vegetation Science*, 21,
+992-1000.
+
+de Bello, F., Carmona, C. P., Dias, A. T. C., Götzenberger, L., Moretti,
+M. and Berg, M. P. (2021). *Handbook of Trait-Based Ecology: From Theory
+to R Tools*. Cambridge University Press.
+
+de Bello, F. et al. (2021b). Towards a more balanced combination of
+multiple traits when computing functional differences between species.
+*Methods in Ecology and Evolution*, 12, 443-448.
+
+Leps, J. et al. (2011). Community trait response to environment:
+disentangling species turnover vs intraspecific trait variability
+effects. *Ecography*, 34, 856-863.
+
+ter Braak, C. J. F., Cormont, A. and Dray, S. (2012). Improved testing of
+species traits-environment relationships in the fourth-corner problem.
+*Ecology*, 93, 1525-1526.
+
+Zeleny, D. (2018). Which results of the standard test for
+community-weighted mean approach are too optimistic? *Journal of
+Vegetation Science*, 29, 953-966.

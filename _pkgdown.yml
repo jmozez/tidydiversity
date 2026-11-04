@@ -74,6 +74,12 @@ navbar:
           href: articles/modelling.html
         - text: "Ordination: biplots and triplots"
           href: articles/ordination.html
+        - text: Testing community composition
+          href: articles/composition-tests.html
+        - text: Trait-based ecology
+          href: articles/traits.html
+        - text: Modelling with tidymodels
+          href: articles/tidymodels.html
     news:
       text: News
       href: news/index.html
@@ -122,12 +128,27 @@ reference:
       - beta_pair
       - beta_decay
       - beta_dist
+      - beta_permanova
+      - td_indicator
   - title: Ordination
     contents:
       - ord_fit
       - ord_test
+      - ord_select
+      - ord_varpart
       - autoplot.td_ordination
       - tidy.td_ordination
+  - title: Functional traits
+    contents:
+      - td_trait_dist
+      - td_cwm
+      - td_cwm_test
+      - td_fd_indices
+      - td_rao
+      - td_ses
+      - td_itv
+      - td_fourth_corner
+      - aravo_long
   - title: Plots and tables for publication
     contents:
       - autoplot-tidydiversity
@@ -138,6 +159,9 @@ reference:
   - title: Modelling
     contents:
       - tidy-tidydiversity
+      - td_group_folds
+      - td_case_weights
+      - step_hill
 
 articles:
   - title: Get started
@@ -151,6 +175,9 @@ articles:
       - beta-partitioning
       - articles/modelling
       - articles/ordination
+      - articles/composition-tests
+      - articles/traits
+      - articles/tidymodels
       - articles/publication
   - title: Papua New Guinea case studies
     contents:
