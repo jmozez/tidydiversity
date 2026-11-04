@@ -4,6 +4,7 @@ output: github_document
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  dev.args = list(bg = "white"),
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",

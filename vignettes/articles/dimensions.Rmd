@@ -3,7 +3,7 @@ title: "TD, PD and FD on one scale"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", dpi = 150)
+knitr::opts_chunk$set(dev.args = list(bg = "white"), collapse = TRUE, comment = "#>", dpi = 150)
 ```
 
 tidydiversity measures three dimensions of diversity with the same Hill

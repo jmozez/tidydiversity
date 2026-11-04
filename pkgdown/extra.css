@@ -40,8 +40,10 @@ main table { font-size: .92rem; }
 main table thead th { border-bottom: 2px solid var(--td-teal); font-weight: 600; }
 main table tbody tr:hover { background: var(--td-surface); }
 
-/* Figures */
+/* Figures: plots are always light, also in the site's dark mode. A white
+   backing covers any transparent margin left by fixed-aspect plots. */
 main img:not(.logo) { border-radius: .5rem; }
+main img.r-plt, main .figure img, main p > img:not(.logo) { background: #FFFFFF; padding: .25rem; }
 
 /* Callouts and cards used on the home page */
 .td-hero { padding: 1.5rem 0 1rem; border-bottom: 1px solid var(--bs-border-color); margin-bottom: 1.5rem; }

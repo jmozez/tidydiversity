@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(dev.args = list(bg = "white"), collapse = TRUE, comment = "#>")
 ```
 
 tidydiversity brings biodiversity estimation into the tidyverse. Every
