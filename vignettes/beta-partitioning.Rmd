@@ -83,6 +83,17 @@ species turnover. Give `coverage` to compare regions at chosen levels:
 beta_hill(png_ants, q = 0, coverage = c(0.8, 0.9), .by = season)
 ```
 
+Add `nboot` for bootstrap confidence intervals. The same function gives
+phylogenetic (`type = "PD"`, with `tree`) and functional (`type = "FD"`,
+with `distance`) beta diversity, and works on incidence data with `unit`
+when the same sampling units (plots, visits) were surveyed at every site.
+
+```{r}
+set.seed(1)
+b <- beta_hill(png_ants, q = 0, coverage = 0.9, nboot = 20, .by = season)
+b[c("season", "beta", "beta_lower", "beta_upper")]
+```
+
 Chao, A. et al. (2023). Rarefaction and extrapolation with beta diversity
 under a framework of Hill numbers: the iNEXT.beta3D standardization.
 *Ecological Monographs*, 93, e1588.

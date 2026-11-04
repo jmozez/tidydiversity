@@ -11,6 +11,16 @@ beta_hill(
   abundance = NULL,
   q = c(0, 1, 2),
   coverage = NULL,
+  type = c("TD", "PD", "FD"),
+  tree = NULL,
+  reftime = NULL,
+  pd_unit = c("mean", "total"),
+  distance = NULL,
+  tau = NULL,
+  unit = NULL,
+  n_units = NULL,
+  nboot = 0,
+  conf = 0.95,
   .by = NULL
 )
 }
@@ -30,24 +40,71 @@ used when present, otherwise every row counts as one individual.}
 lowest coverage that the pooled data of every region reaches at twice
 its sample size, so no region is extrapolated too far.}
 
+\item{type}{Diversity dimension: \code{"TD"} (taxonomic, the default), \code{"PD"}
+(phylogenetic, needs \code{tree}) or \code{"FD"} (functional, needs \code{distance}).
+Give several, such as \code{c("TD", "PD")}, or \code{"all"} for all three, to
+analyse the dimensions together: the results are stacked in one tibble
+with a \code{type} column, and \code{autoplot()} shows them side by side.
+All three are Hill numbers of the same order \code{q}, in units of
+effective numbers of species (Chao, Chiu and Jost 2014), and reproduce
+\href{https://CRAN.R-project.org/package=iNEXT.3D}{iNEXT.3D}.}
+
+\item{tree}{For \code{type = "PD"}, a rooted \link[ape:read.tree]{ape::phylo} tree with branch
+lengths whose tip labels include every species.}
+
+\item{reftime}{For \code{type = "PD"}, the reference time (tree depth) at
+which diversity is measured. Defaults to the age of the root of the tree
+pruned to the species in \code{data}.}
+
+\item{pd_unit}{For \code{type = "PD"}, \code{"mean"} (the default) divides
+phylogenetic diversity by \code{reftime}, giving the effective number of
+lineages on the same scale as species; \code{"total"} gives effective total
+branch length.}
+
+\item{distance}{For \code{type = "FD"}, a species-by-species distance matrix
+(or \link[stats:dist]{stats::dist} object) with names matching the species, scaled to
+lie between 0 and 1, for example from Gower distances of traits.}
+
+\item{tau}{For \code{type = "FD"}, the distance threshold below which species
+are treated as functionally identical. Defaults to the mean distance
+between two individuals in the pooled data. Use \code{"auc"} to integrate
+over all thresholds from 0 to 1 (Chao et al. 2019).}
+
+\item{unit}{For incidence data, the column naming the sampling unit
+(a trap, bait, plot or survey day) in which each species was detected.
+Each site is then described by the number of units in which each
+species was found and the number of units sampled, and every estimate
+is incidence-based (Chao et al. 2014), for TD, PD and FD alike. Leave
+\code{NULL} for abundance data.}
+
+\item{n_units}{For incidence data, a column giving the number of units
+sampled at each site, constant within a site. Use it when some units
+detected no species and so do not appear in the data. By default the
+number of distinct units in the data is used.}
+
+\item{nboot}{Number of bootstrap replicates for confidence intervals;
+0 for none.}
+
+\item{conf}{Confidence level.}
+
 \item{.by}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optional grouping
 columns, kept in the output. Grouped data frames are also respected.}
 }
 \value{
 A tibble with the \code{.by} columns, \code{q}, \code{coverage}, the sample
-sizes \code{m_gamma} and \code{m_alpha}, \code{gamma}, \code{alpha}, \code{beta}, \code{n_sites}
-and the four dissimilarities.
+sizes \code{m_gamma} and \code{m_alpha}, \code{gamma}, \code{alpha}, \code{beta}, \code{n_sites},
+the four dissimilarities and, with \code{nboot > 0}, their confidence
+limits.
 }
 \description{
 Gamma, alpha and beta diversity of order q, standardised to a common
 sample coverage, following Chao et al. (2023) (the iNEXT.beta3D
 framework). Each \code{.by} group is a region whose sites are its
 assemblages. Gamma diversity is the diversity of the pooled region;
-alpha diversity is computed from the species-by-site abundances and
-divided by the number of sites; each is rarefied or extrapolated to the
-sample size at which it reaches the target coverage. Beta =
-gamma / alpha is the effective number of completely distinct
-assemblages (1 to N).
+alpha diversity is computed from the species-by-site data and divided by
+the number of sites; each is rarefied or extrapolated to the sample size
+at which it reaches the target coverage. Beta = gamma / alpha is the
+effective number of completely distinct assemblages (1 to N).
 }
 \details{
 Standardising by coverage removes the dependence of beta diversity on
@@ -64,6 +121,30 @@ can be compared (Chao et al. 2023). Four normalised dissimilarities in
 For q = 0 they reduce to the classic Sorensen and Jaccard family; for
 q = 1 and 2 they generalise Horn and Morisita-Horn overlap.
 }
+\section{Dimensions and data types}{
+
+\code{type = "PD"} gives phylogenetic beta diversity from \code{tree}, and
+\code{type = "FD"} functional beta diversity from \code{distance}, exactly as in
+iNEXT.beta3D. Sample sizes are always those at which the taxonomic data
+reach the target coverage. For FD, \code{tau = "auc"} integrates gamma, alpha
+and beta over 30 thresholds between 0 and 1, as iNEXT.beta3D does.
+
+With \code{unit}, the data are incidences: each site was surveyed in the same
+\code{T} sampling units (plots, visits, traps), and a unit's label must
+identify the same unit at every site of a region, because gamma
+diversity counts a species as present in a unit if it was found there
+at any site.
+}
+
+\section{Confidence intervals}{
+
+With \code{nboot > 0}, every region is resampled as a whole (Chao et al.
+2023): each site's community, including estimated undetected species,
+is redrawn with its sample size (or units) and all quantities are
+recomputed at the same coverage. Each estimate gets \verb{_lower} and
+\verb{_upper} columns, the estimate -/+ z x bootstrap standard error.
+}
+
 \examples{
 beta_hill(png_ants, .by = season, coverage = 0.9)
 }

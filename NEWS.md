@@ -4,8 +4,11 @@
 * `beta_welch()`: Welch-type PERMANOVA (W*d; Hamidi et al. 2019), robust
   to unequal dispersion; equals Welch's F in one Euclidean dimension.
 * `beta_hill()`: coverage-standardised gamma, alpha and beta Hill
-  numbers with four normalised dissimilarities (Chao et al. 2023);
-  results match iNEXT.beta3D exactly.
+  numbers with four normalised dissimilarities (Chao et al. 2023), for
+  taxonomic, phylogenetic (`type = "PD"`) and functional (`type = "FD"`,
+  threshold or AUC) diversity, abundance or incidence (`unit`) data, and
+  bootstrap confidence intervals (`nboot`); point estimates match
+  iNEXT.beta3D exactly.
 * Trait-based ecology, following the *Handbook of Trait-Based Ecology*
   (de Bello et al. 2021): `trait_dist()` (Gower, gawdis),
   `trait_cwm()`, `trait_cwm_test()` (max test), `trait_fd_indices()` (FRic, FEve,
