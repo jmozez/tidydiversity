@@ -1,6 +1,7 @@
 /* tidydiversity site styles. Colours follow the logo:
    navy #0E2A47, teal #1A9E93 / #2BB3A6, gold #E3B455. */
 :root {
+  color-scheme: light dark;
   --td-navy: #0E2A47;
   --td-teal: #1A9E93;
   --td-teal-light: #2BB3A6;
