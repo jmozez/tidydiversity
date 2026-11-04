@@ -28,6 +28,8 @@ template:
 # background so no plot ever shows the dark theme through it.
 figures:
   bg: white
+  dev.args:
+    bg: white
 
 navbar:
   bg: dark
