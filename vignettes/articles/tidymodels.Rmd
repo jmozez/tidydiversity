@@ -1,0 +1,115 @@
+---
+title: "Modelling diversity with tidymodels"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+tidydiversity provides four tools for modelling diversity with
+[tidymodels](https://www.tidymodels.org):
+
+* `td_group_folds()`: cross-validation folds that keep whole sites
+  together.
+* `td_case_weights()`: precision weights from the standard errors of
+  diversity estimates.
+* `step_hill()`: a recipe step that turns species columns into Hill
+  numbers.
+* Every `div_*()` result is already a tidy data frame, so it goes straight
+  into `parsnip` and `workflows`.
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(parsnip)
+library(recipes)
+library(workflows)
+library(tune)
+library(broom)
+library(yardstick)
+```
+
+## Does ant diversity decline with elevation?
+
+The response is the Shannon diversity (q = 1) of ants in each transect on
+Mt Wilhelm, Papua New Guinea. We have 5 elevations x 2 seasons x 2
+transects.
+
+```{r units}
+units <- png_ants |>
+  div_hill(q = 1, .by = c(elevation, season, transect))
+units
+```
+
+Transects on the same site share a species pool, so random folds would
+leak information. Use one fold per site instead (leave-one-site-out):
+
+```{r folds}
+folds <- td_group_folds(units, group = site)
+folds
+```
+
+Then compare a linear model with and without season:
+
+```{r fit}
+wf_elev <- workflow(diversity ~ elevation, linear_reg())
+wf_both <- workflow(diversity ~ elevation + season, linear_reg())
+
+rmse_only <- metric_set(rmse)
+bind_rows(
+  elevation = collect_metrics(fit_resamples(wf_elev, folds, metrics = rmse_only)),
+  `elevation + season` = collect_metrics(
+    fit_resamples(wf_both, folds, metrics = rmse_only)
+  ),
+  .id = "model"
+)
+```
+
+Each held-out fold is one whole site, so the error measures how well the
+model predicts a site it has never seen. Adding season barely changes it,
+so elevation carries the signal. (R² is not reported, because a single
+held-out site has only one elevation.)
+
+The fitted coefficients come out tidy:
+
+```{r coef}
+fit(wf_both, units) |> tidy()
+```
+
+## Weighting by precision
+
+Asymptotic estimates are less certain at poorly sampled sites. Inverse-
+variance weights give those sites less influence:
+
+```{r weights}
+est <- div_estimate(png_ants, q = 1, .by = c(elevation, season)) |>
+  mutate(w = td_case_weights(se))
+
+workflow(estimate ~ elevation + season, linear_reg()) |>
+  add_case_weights(w) |>
+  fit(est) |>
+  tidy()
+```
+
+## Hill numbers as predictors
+
+When diversity is a predictor rather than the response, `step_hill()`
+computes it inside the recipe. It is then recomputed for every resample
+and for new data. Here the species are in wide format:
+
+```{r step}
+wide <- png_ants |>
+  count(elevation, season, transect, species, wt = workers) |>
+  tidyr::pivot_wider(names_from = species, values_from = n, values_fill = 0)
+
+recipe(elevation ~ ., data = select(wide, -season, -transect)) |>
+  step_hill(all_predictors(), q = c(0, 1, 2)) |>
+  prep() |>
+  bake(new_data = NULL)
+```
+
+## Reference
+
+Roberts, D. R. et al. (2017). Cross-validation strategies for data with
+temporal, spatial, hierarchical, or phylogenetic structure. *Ecography*,
+40, 913-929. <https://doi.org/10.1111/ecog.02881>

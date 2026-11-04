@@ -74,6 +74,8 @@ navbar:
           href: articles/modelling.html
         - text: "Ordination: biplots and triplots"
           href: articles/ordination.html
+        - text: Modelling with tidymodels
+          href: articles/tidymodels.html
     news:
       text: News
       href: news/index.html
@@ -138,6 +140,9 @@ reference:
   - title: Modelling
     contents:
       - tidy-tidydiversity
+      - td_group_folds
+      - td_case_weights
+      - step_hill
 
 articles:
   - title: Get started
@@ -151,6 +156,7 @@ articles:
       - beta-partitioning
       - articles/modelling
       - articles/ordination
+      - articles/tidymodels
       - articles/publication
   - title: Papua New Guinea case studies
     contents:

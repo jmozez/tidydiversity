@@ -1,6 +1,10 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* tidymodels integration: `td_group_folds()` (site-blocked
+  cross-validation), `td_case_weights()` (inverse-variance weights from
+  diversity SEs) and the recipe step `step_hill()`. New article
+  "Modelling diversity with tidymodels".
 * Multi-panel figures: `td_panel()` combines plots with patchwork, adding
   panel tags (a, b, ...), shared legends and white backgrounds;
   `td_save()` saves at journal column widths (85, 120 or 175 mm) and
