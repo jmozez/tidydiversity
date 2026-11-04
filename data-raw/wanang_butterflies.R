@@ -28,6 +28,13 @@ wanang_butterflies <- do.call(rbind, lapply(seq_along(spp), function(j) {
     abundance = as.integer(n[k])
   )
 }))
+# The sheet repeats three species names (Nacaduba pactolus, Nacaduba
+# subperusia, Prosotas dubiosa) in two columns each; read_excel() makes the
+# names unique with suffixes such as "...135". Strip them and add the counts.
+wanang_butterflies$species <- sub("\\.\\.\\.[0-9]+$", "", wanang_butterflies$species)
+wanang_butterflies <- stats::aggregate(
+  abundance ~ site + day + month + year + species, wanang_butterflies, sum
+)
 wanang_butterflies <- tibble::as_tibble(
   wanang_butterflies[order(wanang_butterflies$day, wanang_butterflies$species), ]
 )

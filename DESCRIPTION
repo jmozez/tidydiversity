@@ -42,6 +42,7 @@ Suggests:
     gt,
     hillR,
     ggplot2 (>= 3.5.0),
+    ggrepel,
     iNEXT,
     iNEXT.3D,
     iNEXT.4steps,
