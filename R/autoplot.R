@@ -556,7 +556,8 @@ autoplot.td_beta_pair <- function(object,
     )
   if (length(by_cols)) {
     both$.group <- td_label_col(both, by_cols)
-    p <- ggplot2::`%+%`(p, both) +
+    p$data <- both
+    p <- p +
       ggplot2::facet_wrap(ggplot2::vars(.data$.group), scales = "free")
   } else {
     p <- p + ggplot2::coord_equal()

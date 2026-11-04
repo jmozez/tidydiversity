@@ -37,6 +37,7 @@ Imports:
 LinkingTo: 
     Rcpp
 Suggests: 
+    png,
     ade4,
     FD,
     indicspecies,
