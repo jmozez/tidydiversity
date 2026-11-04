@@ -23,3 +23,24 @@ test_that("autoplot covers every result type", {
   expect_s3_class(hill, "td_hill")
   expect_s3_class(dplyr::filter(hill, q == 0), "td_hill")
 })
+
+test_that("plots keep every row: no data dropped by axis limits", {
+  skip_if_not_installed("ggplot2")
+  set.seed(1)
+  plots <- list(
+    ggplot2::autoplot(beta_decay(png_ants, elevation, .by = season)),
+    ggplot2::autoplot(beta_decay(png_frogs, gradient = elevation)),
+    ggplot2::autoplot(div_rarefy(png_ants, q = c(0, 1), .by = season, nboot = 10)),
+    ggplot2::autoplot(div_hill(png_ants, q = seq(0, 3, by = 0.5), .by = season))
+  )
+  for (p in plots) expect_no_warning(ggplot2::ggplotGrob(p))
+})
+
+test_that("plots are always on a white background", {
+  skip_if_not_installed("ggplot2")
+  th <- theme_tidydiversity()
+  expect_equal(th$plot.background$fill, "white")
+  expect_equal(th$panel.background$fill, "white")
+  p <- ggplot2::autoplot(beta_pair(png_ants, .by = season))
+  expect_equal(ggplot2::calc_element("plot.background", p$theme)$fill, "white")
+})

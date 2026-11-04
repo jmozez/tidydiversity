@@ -4,6 +4,7 @@ title: "Case study: ants along Mt Wilhelm and in rainforest canopies"
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  dev.args = list(bg = "white"),
   collapse = TRUE, comment = "#>", out.width = "100%",
   dpi = 150, fig.width = 7, fig.height = 4
 )

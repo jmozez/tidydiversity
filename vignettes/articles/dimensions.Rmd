@@ -3,7 +3,7 @@ title: "TD, PD and FD on one scale"
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", dpi = 150)
+knitr::opts_chunk$set(dev.args = list(bg = "white"), collapse = TRUE, comment = "#>", dpi = 150)
 ```
 
 tidydiversity measures three dimensions of diversity with the same Hill
@@ -106,6 +106,7 @@ ggplot(std, aes(q, diversity, colour = site)) +
   geom_line() +
   geom_point() +
   facet_wrap(~type, scales = "free_y") +
+  scale_colour_tidydiversity() +
   labs(y = "Effective number of species", colour = NULL) +
   theme_tidydiversity()
 ```

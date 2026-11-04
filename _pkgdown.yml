@@ -2,6 +2,10 @@ url: https://jmozez.github.io/tidydiversity/
 
 template:
   bootstrap: 5
+  includes:
+    # Tell browsers the site has its own light and dark themes, so their
+    # automatic dark mode does not invert (darken) the figures.
+    in_header: <meta name="color-scheme" content="light dark">
   opengraph:
     image:
       src: man/figures/logo.png

@@ -81,8 +81,9 @@
   object,
   palette = "okabe_ito",
   theme = theme_tidydiversity(),
-  xlab = "Number of individuals",
+  xlab = "Sample size",
   ylab = "Sample coverage",
+  labels = TRUE,
   ...
 )
 
@@ -99,6 +100,8 @@
   theme = theme_tidydiversity(),
   xlab = NULL,
   ylab = "Multiple-site dissimilarity",
+  labels = TRUE,
+  digits = 2,
   ...
 )
 
@@ -152,8 +155,15 @@ where relevant, its unit.}
 \item{gradient}{For \code{\link[=div_hill]{div_hill()}} results, an optional numeric column
 (such as \code{elevation}, kept by \code{.by}) to plot diversity along.}
 
+\item{labels}{For \code{\link[=div_coverage]{div_coverage()}} results, label each point with its site;
+for \code{\link[=beta_multi]{beta_multi()}} results, print the turnover, nestedness and total
+values on the bars. Set to \code{FALSE} to leave them out.}
+
 \item{component}{For \code{\link[=beta_pair]{beta_pair()}} results, the component to map to
 colour: \code{"total"}, \code{"turnover"} or \code{"nestedness"}.}
+
+\item{digits}{For \code{\link[=beta_multi]{beta_multi()}} results, decimal places of the value
+labels.}
 }
 \value{
 A ggplot object.
@@ -166,13 +176,16 @@ A ggplot object.
 \item \code{\link[=div_hill]{div_hill()}}: a Hill diversity profile across \code{q}, or diversity along a
 gradient column when \code{gradient} is given.
 \item \code{\link[=div_estimate]{div_estimate()}}: observed and asymptotic diversity with intervals.
-\item \code{\link[=div_coverage]{div_coverage()}}: sample coverage against sample size.
+\item \code{\link[=div_coverage]{div_coverage()}}: sample coverage against sample size, points labelled
+by site.
 \item \code{\link[=div_rarefy]{div_rarefy()}}: rarefaction and extrapolation curves by sample size or
 by sample coverage.
 \item \code{\link[=div_standardise]{div_standardise()}}: standardised diversity with intervals.
 \item \code{\link[=beta_pair]{beta_pair()}}: a pairwise dissimilarity heatmap.
-\item \code{\link[=beta_multi]{beta_multi()}}: multi-site turnover and nestedness as stacked bars.
-\item \code{\link[=beta_decay]{beta_decay()}}: distance decay of dissimilarity components.
+\item \code{\link[=beta_multi]{beta_multi()}}: multi-site turnover and nestedness as stacked bars,
+labelled with each component and the total.
+\item \code{\link[=beta_decay]{beta_decay()}}: distance decay of dissimilarity components, with
+quasibinomial (logit-link) trends that stay within 0 to 1.
 }
 
 Every method returns an ordinary ggplot object, so labels, scales,

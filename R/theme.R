@@ -67,7 +67,10 @@ theme_tidydiversity <- function(base_size = 11,
       legend.position = legend_position,
       legend.key = blank,
       legend.background = blank,
-      plot.title.position = "plot"
+      plot.title.position = "plot",
+      # Always a white figure, also on dark web pages and slides
+      plot.background = ggplot2::element_rect(fill = "white", colour = NA),
+      panel.background = ggplot2::element_rect(fill = "white", colour = NA)
     )
 }
 

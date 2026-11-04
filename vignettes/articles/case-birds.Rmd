@@ -4,6 +4,7 @@ title: "Case study: forest birds and North American bird communities"
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  dev.args = list(bg = "white"),
   collapse = TRUE, comment = "#>", out.width = "100%",
   dpi = 150, fig.width = 7, fig.height = 4
 )
