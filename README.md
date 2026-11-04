@@ -293,10 +293,7 @@ nestedness.
 ### Distance decay
 
 Pairwise total, turnover and nestedness dissimilarity against elevation
-difference, with linear trends.
-
-    #> Warning: Removed 66 rows containing missing values or values outside the scale range
-    #> (`geom_smooth()`).
+difference, with quasibinomial (logit) trends that stay within 0-1.
 
 <img src="man/figures/README-beta-decay-1.png" alt="Distance decay" width="100%" />
 

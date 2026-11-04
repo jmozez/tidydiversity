@@ -5,13 +5,16 @@
 #' * [div_hill()]: a Hill diversity profile across `q`, or diversity along a
 #'   gradient column when `gradient` is given.
 #' * [div_estimate()]: observed and asymptotic diversity with intervals.
-#' * [div_coverage()]: sample coverage against sample size.
+#' * [div_coverage()]: sample coverage against sample size, points labelled
+#'   by site.
 #' * [div_rarefy()]: rarefaction and extrapolation curves by sample size or
 #'   by sample coverage.
 #' * [div_standardise()]: standardised diversity with intervals.
 #' * [beta_pair()]: a pairwise dissimilarity heatmap.
-#' * [beta_multi()]: multi-site turnover and nestedness as stacked bars.
-#' * [beta_decay()]: distance decay of dissimilarity components.
+#' * [beta_multi()]: multi-site turnover and nestedness as stacked bars,
+#'   labelled with each component and the total.
+#' * [beta_decay()]: distance decay of dissimilarity components, with
+#'   quasibinomial (logit-link) trends that stay within 0 to 1.
 #'
 #' Every method returns an ordinary ggplot object, so labels, scales,
 #' themes and facets can be changed afterwards with `+`, for example
@@ -42,6 +45,11 @@
 #'   also faceted by group.
 #' @param scales Facet scales, passed to [ggplot2::facet_wrap()].
 #' @param ncol Number of facet columns.
+#' @param labels For [div_coverage()] results, label each point with its site;
+#'   for [beta_multi()] results, print the turnover, nestedness and total
+#'   values on the bars. Set to `FALSE` to leave them out.
+#' @param digits For [beta_multi()] results, decimal places of the value
+#'   labels.
 #' @param xlab,ylab Axis titles. The defaults describe the quantity and,
 #'   where relevant, its unit.
 #' @param ... Not used.
@@ -156,10 +164,10 @@ autoplot.td_rarefy <- function(object,
       values = c(rarefaction = "solid", extrapolation = "dashed"),
       drop = FALSE
     ) +
-    ggplot2::scale_y_continuous(limits = c(0, NA)) +
+    ggplot2::expand_limits(y = 0) +
     ggplot2::labs(
       x = xlab %||% if (x == "size") {
-        "Number of individuals"
+        "Sample size"
       } else {
         "Sample coverage"
       },
@@ -285,11 +293,16 @@ autoplot.td_beta_decay <- function(object,
     )
   ) +
     ggplot2::geom_point(alpha = 0.6, size = 1.6, shape = 16) +
+    # Dissimilarities lie in [0, 1], so fit a quasibinomial GLM (logit link):
+    # unlike a straight line, its trend and band stay inside that range.
     ggplot2::geom_smooth(
-      method = "lm", formula = y ~ x, se = ci,
+      method = "glm", formula = y ~ x, se = ci,
+      method.args = list(family = stats::quasibinomial()),
       alpha = 0.15, linewidth = 0.8
     ) +
-    ggplot2::scale_y_continuous(limits = c(0, 1)) +
+    # Zoom with the coordinate system rather than scale limits: scale limits
+    # delete the parts of the trend and its band that fall outside 0-1.
+    ggplot2::coord_cartesian(ylim = c(0, 1)) +
     ggplot2::labs(x = xlab, y = ylab, colour = NULL, fill = NULL)
   td_style(p, palette, theme)
 }
@@ -352,7 +365,7 @@ autoplot.td_hill <- function(object,
   ) +
     ggplot2::geom_line(linewidth = 0.7) +
     ggplot2::geom_point(size = 1.5) +
-    ggplot2::scale_y_continuous(limits = c(0, NA)) +
+    ggplot2::expand_limits(y = 0) +
     ggplot2::labs(x = xlab %||% "Order q", y = ylab, colour = site_col)
   if (length(by_cols)) {
     p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$.by), ncol = ncol)
@@ -419,8 +432,9 @@ autoplot.td_estimate <- function(object,
 autoplot.td_coverage <- function(object,
                                  palette = "okabe_ito",
                                  theme = theme_tidydiversity(),
-                                 xlab = "Number of individuals",
+                                 xlab = "Sample size",
                                  ylab = "Sample coverage",
+                                 labels = TRUE,
                                  ...) {
   rlang::check_installed("ggplot2")
   df <- tibble::as_tibble(unclass(object))
@@ -429,14 +443,23 @@ autoplot.td_coverage <- function(object,
     names(df), c(site_col, "n", "s_obs", "f1", "f2", "coverage")
   )
   df$.group <- td_label_col(df, by_cols)
+  df$.site <- as.character(df[[site_col]])
   p <- ggplot2::ggplot(
     df, ggplot2::aes(.data$n, .data$coverage, colour = .data$.group)
   ) +
-    ggplot2::geom_point(size = 2.5) +
+    ggplot2::geom_point(size = 2.5)
+  if (labels) {
+    p <- p + ggplot2::geom_text(
+      ggplot2::aes(label = .data$.site),
+      vjust = -0.9, size = 3, show.legend = FALSE
+    )
+  }
+  p <- p +
     ggplot2::scale_y_continuous(
-      limits = c(NA, 1),
-      labels = function(x) paste0(x * 100, "%")
+      labels = function(x) paste0(x * 100, "%"),
+      expand = ggplot2::expansion(mult = c(0.05, 0.12))
     ) +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0.05, 0.1))) +
     ggplot2::labs(
       x = xlab, y = ylab,
       colour = if (length(by_cols)) paste(by_cols, collapse = " ")
@@ -501,6 +524,8 @@ autoplot.td_beta_multi <- function(object,
                                    theme = theme_tidydiversity(),
                                    xlab = NULL,
                                    ylab = "Multiple-site dissimilarity",
+                                   labels = TRUE,
+                                   digits = 2,
                                    ...) {
   rlang::check_installed("ggplot2")
   df <- tibble::as_tibble(unclass(object))
@@ -519,8 +544,29 @@ autoplot.td_beta_multi <- function(object,
   p <- ggplot2::ggplot(
     long, ggplot2::aes(.data$.group, .data$.value, fill = .data$.component)
   ) +
-    ggplot2::geom_col(width = 0.6) +
-    ggplot2::scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
+    ggplot2::geom_col(width = 0.6)
+  if (labels) {
+    fmt <- function(x) formatC(x, format = "f", digits = digits)
+    # Each component inside its segment, if the segment is tall enough to
+    # hold the text, and the total above the bar.
+    seg <- long[long$.value >= 0.06, ]
+    p <- p +
+      ggplot2::geom_text(
+        ggplot2::aes(label = fmt(.data$.value)),
+        data = seg, position = ggplot2::position_stack(vjust = 0.5),
+        colour = "white", size = 3.4, fontface = "bold"
+      ) +
+      ggplot2::geom_text(
+        ggplot2::aes(
+          x = .data$.group, y = .data$total,
+          label = paste("total", fmt(.data$total))
+        ),
+        data = df, inherit.aes = FALSE, vjust = -0.6, size = 3.4
+      )
+  }
+  p <- p +
+    ggplot2::scale_y_continuous(breaks = seq(0, 1, by = 0.25), expand = c(0, 0)) +
+    ggplot2::coord_cartesian(ylim = c(0, 1.08)) +
     ggplot2::labs(
       x = xlab %||% if (length(by_cols)) by_cols[1],
       y = ylab, fill = NULL

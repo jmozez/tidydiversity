@@ -17,6 +17,13 @@
 .dropdown-header { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--td-teal); }
 .dropdown-item { border-radius: .35rem; }
 
+/* Layout: grid columns are flex items, which by default never shrink below
+   their widest content. Let the main column shrink so wide tables or code
+   scroll inside it instead of pushing the sidebar below the page. */
+main#main { min-width: 0; }
+main table { display: block; max-width: 100%; overflow-x: auto; }
+pre { overflow-x: auto; }
+
 /* Typography and layout */
 main h1, main h2, main h3 { letter-spacing: -.015em; }
 main h2 { margin-top: 2.2rem; padding-bottom: .35rem; border-bottom: 1px solid var(--bs-border-color); }
@@ -51,3 +58,25 @@ main img:not(.logo) { border-radius: .5rem; }
 
 /* Footer */
 footer { border-top: 1px solid var(--bs-border-color); margin-top: 3rem; padding-top: 1.2rem; font-size: .88rem; }
+
+/* Narrow screens (below Bootstrap's md breakpoint): pkgdown stacks the
+   sidebar after the content, so on a long page the links, citation and the
+   "On this page" contents end up thousands of pixels down. Show them first,
+   in a compact form, as documentation sites usually do. */
+@media (max-width: 767.98px) {
+  .row > aside { order: -1; position: static; margin: 4.5rem 0 0;
+    padding: .9rem 1rem; max-height: none;
+    border: 1px solid var(--bs-border-color); border-radius: .6rem;
+    background: var(--td-surface); }
+  .row > aside h2 { font-size: .75rem; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--td-teal); margin: .6rem 0 .3rem;
+    border: 0; padding: 0; }
+  .row > aside h2:first-child { margin-top: 0; }
+  .row > aside ul.list-unstyled { display: flex; flex-wrap: wrap;
+    gap: .25rem 1rem; margin-bottom: .2rem; }
+  .row > aside ul.list-unstyled li { margin: 0; }
+  .row > aside .dev-status ul { gap: .3rem; }
+  .row > aside nav#toc { max-height: 40vh; overflow-y: auto; }
+  .row > aside + main, .row > main { margin-top: 0; }
+  .row > main > .page-header, .row > main > .section > .page-header { margin-top: 1.25rem; padding-top: 0; }
+}

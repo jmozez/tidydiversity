@@ -283,7 +283,7 @@ beta_multi(png_ants, .by = season) |>
 
 ### Distance decay
 
-Pairwise total, turnover and nestedness dissimilarity against elevation difference, with linear trends.
+Pairwise total, turnover and nestedness dissimilarity against elevation difference, with quasibinomial (logit) trends that stay within 0-1.
 
 ```{r beta-decay, echo = FALSE, fig.height = 3.6, fig.alt = "Distance decay"}
 beta_decay(png_ants, gradient = elevation, .by = season) |>
