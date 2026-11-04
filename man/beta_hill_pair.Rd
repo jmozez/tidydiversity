@@ -65,7 +65,7 @@ These are empirical values. Use \code{\link[=beta_hill]{beta_hill()}} to compare
 sites at a standardised sample coverage.
 }
 \examples{
-beta_hill_pair(png_ants, abundance = abundance, .by = season)
+beta_hill_pair(png_ants, abundance = workers, .by = season)
 }
 \references{
 Chao, A., Chiu, C.-H. and Jost, L. (2014). Unifying species

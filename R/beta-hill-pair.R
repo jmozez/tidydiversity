@@ -40,7 +40,7 @@
 #'   components. *Ecology*, 88, 2427-2439. \doi{10.1890/06-1736.1}
 #' @export
 #' @examples
-#' beta_hill_pair(png_ants, abundance = abundance, .by = season)
+#' beta_hill_pair(png_ants, abundance = workers, .by = season)
 beta_hill_pair <- function(data,
                            site = site,
                            species = species,
