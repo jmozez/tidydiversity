@@ -1,6 +1,8 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* `beta_welch()`: Welch-type PERMANOVA (W*d; Hamidi et al. 2019), robust
+  to unequal dispersion; equals Welch's F in one Euclidean dimension.
 * `beta_hill()`: coverage-standardised gamma, alpha and beta Hill
   numbers with four normalised dissimilarities (Chao et al. 2023);
   results match iNEXT.beta3D exactly.

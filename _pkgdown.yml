@@ -130,6 +130,7 @@ reference:
       - beta_decay
       - beta_dist
       - beta_permanova
+      - beta_welch
       - beta_indicator
   - title: Ordination
     contents:

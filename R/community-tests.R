@@ -445,3 +445,92 @@ beta_indicator <- function(data,
   out <- out[!is.na(out$p.value) & out$p.value <= alpha, , drop = FALSE]
   out[order(out$group, -out$stat), , drop = FALSE]
 }
+
+#' Welch-type PERMANOVA robust to unequal dispersion
+#'
+#' Tests whether community composition differs among groups with the W*d
+#' statistic of Hamidi et al. (2019), a distance-based generalisation of
+#' Welch's ANOVA. Unlike classic PERMANOVA ([beta_permanova()]), it does
+#' not assume that groups have the same multivariate dispersion, so a
+#' significant result reflects a shift in location even when groups differ
+#' in spread or size. For two groups it equals the Tw2 test of Alekseyenko
+#' (2016). With one variable and Euclidean distance it equals Welch's
+#' F statistic ([stats::oneway.test()] with `var.equal = FALSE`).
+#'
+#' The p-value is obtained by permuting group labels.
+#'
+#' @inheritParams beta_dispersion
+#' @param permutations Number of permutations.
+#' @return A one-row tibble with `statistic` (W*d), `n_groups`, `n_sites`
+#'   and `p.value`.
+#' @references Hamidi, B. et al. (2019). W*d-test: robust distance-based
+#'   multivariate analysis of variance. *Microbiome*, 7, 51.
+#'   \doi{10.1186/s40168-019-0659-9}
+#'
+#'   Alekseyenko, A. V. (2016). Multivariate Welch t-test on distances.
+#'   *Bioinformatics*, 32, 3552-3558. \doi{10.1093/bioinformatics/btw524}
+#' @examplesIf rlang::is_installed("vegan")
+#' ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect))
+#' set.seed(1)
+#' beta_welch(ants, site = unit, group = season, permutations = 199)
+#' @export
+beta_welch <- function(data,
+                       site = site,
+                       species = species,
+                       abundance = NULL,
+                       group,
+                       env = NULL,
+                       distance = "bray",
+                       transform = "none",
+                       permutations = 999) {
+  rlang::check_installed("vegan", "for community distances.")
+  g <- rlang::as_name(enquo(group))
+  transform <- rlang::arg_match0(
+    transform, c("none", "hellinger", "chord", "log", "sqrt", "pa"), "transform"
+  )
+  p <- comm_prep(
+    data, enquo(site), enquo(species), enquo(abundance), env,
+    stats::as.formula(paste("~", g)), transform
+  )
+  d2 <- as.matrix(vegan::vegdist(p$y, method = distance))^2
+  grp <- factor(p$env[[g]])
+  if (nlevels(grp) < 2 || any(table(grp) < 2)) {
+    cli::cli_abort("{.arg group} needs at least two groups of at least two sites.")
+  }
+  obs <- welch_wd(d2, grp)
+  perm <- vapply(seq_len(permutations), function(i) {
+    welch_wd(d2, sample(grp))
+  }, numeric(1))
+  tibble::tibble(
+    statistic = obs, n_groups = nlevels(grp), n_sites = length(grp),
+    p.value = (sum(perm >= obs) + 1) / (permutations + 1)
+  )
+}
+
+# W*d (Hamidi et al. 2019) from a matrix of squared distances. For group i,
+# SS_i = sum of within-group squared distances / n_i and s2_i = SS_i /
+# (n_i - 1); the squared distance between centroids i and j is the mean
+# cross-group squared distance minus SS_i / n_i and SS_j / n_j.
+welch_wd <- function(d2, grp) {
+  lev <- levels(grp)
+  a <- length(lev)
+  idx <- lapply(lev, function(l) which(grp == l))
+  n <- lengths(idx)
+  ss <- vapply(seq_len(a), function(i) {
+    sum(d2[idx[[i]], idx[[i]]]) / (2 * n[i])
+  }, numeric(1))
+  s2 <- ss / (n - 1)
+  w <- n / s2
+  ww <- sum(w)
+  num <- 0
+  for (i in seq_len(a - 1)) {
+    for (j in (i + 1):a) {
+      cross <- mean(d2[idx[[i]], idx[[j]]])
+      dc <- cross - ss[i] / n[i] - ss[j] / n[j]
+      num <- num + w[i] * w[j] / ww * dc
+    }
+  }
+  num <- num / (a - 1)
+  den <- 1 + 2 * (a - 2) / (a^2 - 1) * sum((1 - w / ww)^2 / (n - 1))
+  num / den
+}
