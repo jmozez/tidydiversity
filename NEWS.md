@@ -1,6 +1,13 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* Trait-based ecology, following the *Handbook of Trait-Based Ecology*
+  (de Bello et al. 2021): `td_trait_dist()` (Gower, gawdis),
+  `td_cwm()`, `td_cwm_test()` (max test), `td_fd_indices()` (FRic, FEve,
+  FDiv, FDis, Rao), `td_rao()` (alpha/beta/gamma with equivalent numbers),
+  `td_ses()` (null models), `td_itv()` (intra- vs interspecific
+  variability) and `td_fourth_corner()`. `aravo_long()` loads the ade4
+  alpine plant data. New article "Trait-based ecology".
 * Testing community composition: `beta_permanova()` (PERMANOVA, with
   restricted permutations), `beta_dispersion()` (homogeneity of
   dispersion, with `autoplot()`), `ord_select()` (forward selection with

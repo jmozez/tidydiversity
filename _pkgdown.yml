@@ -76,6 +76,8 @@ navbar:
           href: articles/ordination.html
         - text: Testing community composition
           href: articles/composition-tests.html
+        - text: Trait-based ecology
+          href: articles/traits.html
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
     news:
@@ -136,6 +138,17 @@ reference:
       - ord_varpart
       - autoplot.td_ordination
       - tidy.td_ordination
+  - title: Functional traits
+    contents:
+      - td_trait_dist
+      - td_cwm
+      - td_cwm_test
+      - td_fd_indices
+      - td_rao
+      - td_ses
+      - td_itv
+      - td_fourth_corner
+      - aravo_long
   - title: Plots and tables for publication
     contents:
       - autoplot-tidydiversity
@@ -163,6 +176,7 @@ articles:
       - articles/modelling
       - articles/ordination
       - articles/composition-tests
+      - articles/traits
       - articles/tidymodels
       - articles/publication
   - title: Papua New Guinea case studies
