@@ -13,7 +13,7 @@ test_that("beta_permanova matches vegan::adonis2", {
   w <- wide()
   set.seed(4)
   ours <- beta_permanova(ants, site = unit, formula = ~ elevation + season,
-                         permutations = 99)
+                         by = "terms", permutations = 99)
   set.seed(4)
   ref <- vegan::adonis2(w$y ~ elevation + season, data = w$env,
                         by = "terms", permutations = 99)
@@ -21,6 +21,24 @@ test_that("beta_permanova matches vegan::adonis2", {
   expect_equal(ours$statistic, ref$F)
   expect_equal(ours$p.value, ref$`Pr(>F)`)
   expect_error(beta_permanova(ants, site = unit, formula = y ~ x), "one-sided")
+})
+
+test_that("beta_permanova defaults to marginal tests", {
+  skip_if_not_installed("vegan")
+  w <- wide()
+  set.seed(5)
+  ours <- beta_permanova(ants, site = unit, formula = ~ season + elevation,
+                         permutations = 99)
+  set.seed(5)
+  ref <- vegan::adonis2(w$y ~ season + elevation, data = w$env,
+                        by = "margin", permutations = 99)
+  expect_equal(ours$r2, ref$R2)
+  expect_equal(ours$statistic, ref$F)
+  expect_equal(ours$p.value, ref$`Pr(>F)`)
+  # Marginal results do not depend on the order of terms.
+  rev <- beta_permanova(ants, site = unit, formula = ~ elevation + season,
+                        permutations = 9)
+  expect_equal(rev$r2[1:2], ours$r2[2:1])
 })
 
 test_that("beta_dispersion matches vegan::betadisper and plots", {

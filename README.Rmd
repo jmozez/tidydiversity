@@ -152,7 +152,8 @@ when a function needs them, so `library(tidydiversity)` stays light.
 | Topic | tidydiversity | Usually needs |
 |---|---|---|
 | Hill numbers, coverage, rarefaction/extrapolation (TD, PD, FD) | `div_*()` | iNEXT, iNEXT.3D, hillR |
-| Beta diversity partitioning and distance decay | `beta_pair()`, `beta_multi()`, `beta_decay()` | betapart |
+| Beta diversity partitioning, distance decay and decay models | `beta_pair()`, `beta_multi()`, `beta_decay()`, `beta_decay_model()` | betapart |
+| Pairwise Hill-number dissimilarity (Sorensen, Jaccard, Horn, Morisita-Horn) | `beta_hill_pair()` | vegan |
 | Coverage-standardised beta diversity (TD, PD, FD) | `beta_hill()` | iNEXT.beta3D |
 | Ordination (PCA to db-RDA) with biplots | `ord_fit()`, `autoplot()` | vegan, ggvegan, ggord |
 | PERMANOVA (classic and Welch-type), dispersion, variation partitioning, forward selection | `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `ord_varpart()`, `ord_select()` | vegan, adespatial |
@@ -276,7 +277,7 @@ the effect of unequal sampling effort before you compare sites.
 |---|---|
 | Community data | `as_community()`, `community_wide()`, `community_long()`, `add_site_data()` |
 | Alpha diversity (`div_`) | `div_hill()`, `div_estimate()`, `div_coverage()`, `div_rarefy()`, `div_standardise()`, `div_completeness()`, `div_evenness()`, `div_boot()` |
-| Beta diversity (`beta_`) | `beta_pair()`, `beta_multi()`, `beta_hill()`, `beta_decay()`, `beta_dist()`, `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `beta_indicator()` |
+| Beta diversity (`beta_`) | `beta_pair()`, `beta_multi()`, `beta_hill()`, `beta_hill_pair()`, `beta_decay()`, `beta_decay_model()`, `beta_dist()`, `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `beta_indicator()` |
 | Ordination (`ord_`) | `ord_fit()`, `ord_test()`, `ord_select()`, `ord_varpart()` |
 | Traits (`trait_`) | `trait_dist()`, `trait_cwm()`, `trait_cwm_test()`, `trait_fd_indices()`, `trait_rao()`, `trait_ses()`, `trait_itv()`, `trait_fourth_corner()`, `trait_tpd()`, `trait_tpd_dissim()` |
 | Phylogeny (`phylo_`) | `phylo_signal()`, `phylo_dist()`, `phylo_combine_dist()` |
@@ -476,6 +477,26 @@ beta_decay(png_ants, gradient = elevation, .by = season) |>
   show()
 ```
 
+### `beta_decay_model()`
+
+Distance-decay model of similarity: the fitted `a` and rate `b`, the `half_distance` over which similarity halves, the `pseudo_r2`, `aic` and a site-permutation `p.value`.
+
+```{r table-8b, echo = FALSE}
+set.seed(1)
+beta_decay(png_ants, gradient = elevation, .by = season) |>
+  beta_decay_model() |>
+  show()
+```
+
+### `beta_hill_pair()`
+
+Pairwise Hill-number beta diversity of order `q` with the four normalised dissimilarities (first rows shown).
+
+```{r table-8c, echo = FALSE}
+beta_hill_pair(png_ants, abundance = workers, .by = season) |>
+  head(6) |>
+  show()
+```
 
 ### `beta_hill()`
 
@@ -510,6 +531,10 @@ dplyr::mutate(png_ants, unit = paste(site, season, transect)) |>
 * Carmona, C. P. et al. (2019). Trait probability density (TPD): measuring
   functional diversity across scales based on TPD with R. *Ecology*, 100,
   e02876.
+* Chao, A., Chiu, C.-H. and Jost, L. (2014). Unifying species diversity,
+  phylogenetic diversity, functional diversity, and related similarity
+  and differentiation measures through Hill numbers. *Annual Review of
+  Ecology, Evolution, and Systematics*, 45, 297-324.
 * Chao, A. et al. (2019). An attribute-diversity approach to functional
   diversity, functional beta diversity, and related (dis)similarity
   measures. *Ecological Monographs*, 89, e01343.
@@ -520,9 +545,14 @@ dplyr::mutate(png_ants, unit = paste(site, season, transect)) |>
   to R Tools*. Cambridge University Press.
 * Hamidi, B. et al. (2019). W*d-test: robust distance-based multivariate
   analysis of variance. *Microbiome*, 7, 51.
+* Gómez-Rodríguez, C. and Baselga, A. (2018). Variation among European
+  beetle taxa in patterns of distance decay of similarity suggests a major
+  role of dispersal processes. *Ecography*, 41, 1825-1834.
 * Moses, J. et al. (2023). Nutrient use by tropical ant communities varies
   among three extensive elevational gradients: a cross-continental
   comparison. *Global Ecology and Biogeography*, 32, 1958-1973.
+* Nekola, J. C. and White, P. S. (1999). The distance decay of similarity
+  in biogeography and ecology. *Journal of Biogeography*, 26, 867-878.
 * Zeleny, D. (2018). Which results of the standard test for
   community-weighted mean approach are too optimistic? *Journal of
   Vegetation Science*, 29, 953-966.

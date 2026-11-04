@@ -134,7 +134,9 @@ reference:
     contents:
       - beta_pair
       - beta_hill
+      - beta_hill_pair
       - beta_decay
+      - beta_decay_model
       - beta_dist
       - beta_permanova
       - beta_welch

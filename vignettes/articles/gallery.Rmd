@@ -292,11 +292,47 @@ autoplot(decay, xlab = "Difference in elevation (m)")
 decay
 ```
 
+### Model
+
+```{r decay-model}
+set.seed(1)
+beta_decay_model(decay)
+```
+
 ### Code
 
 ```r
 decay <- beta_decay(png_ants, elevation, .by = season)
 autoplot(decay, xlab = "Difference in elevation (m)")
+beta_decay_model(decay)
+```
+
+## Pairwise Hill dissimilarity {.tabset}
+
+```{r hill-pair-data, include = FALSE}
+hp <- beta_hill_pair(
+  dplyr::filter(png_ants, season == "wet"), abundance = workers
+)
+```
+
+### Plot
+
+```{r hill-pair, echo = FALSE, fig.height = 3.6, fig.width = 9, fig.alt = "Heatmaps of Sorensen-type Hill dissimilarity between wet-season sites for q = 0, 1 and 2"}
+autoplot(hp)
+```
+
+### Table
+
+```{r hill-pair-table}
+hp
+```
+
+### Code
+
+```r
+wet <- dplyr::filter(png_ants, season == "wet")
+hp <- beta_hill_pair(wet, abundance = workers)
+autoplot(hp)
 ```
 
 ## Coverage-standardised beta diversity {.tabset}

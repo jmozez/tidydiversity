@@ -1,6 +1,18 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* `beta_permanova()` now defaults to `by = "margin"`: each term is tested
+  after all the others, so results no longer depend on the order of terms
+  in the formula. The previous default, sequential tests
+  (`by = "terms"`, also vegan's default), is still available.
+* `beta_decay_model()`: fits exponential or power distance-decay models of
+  similarity to `beta_decay()` output and tests them by permuting sites
+  (Mantel-style). Estimates match `betapart::decay.model()`; the p-value
+  uses (1 + count) / (1 + permutations), so it is never zero.
+* `beta_hill_pair()`: pairwise Hill-number gamma, alpha and beta with the
+  four normalised dissimilarities (Chao, Chiu and Jost 2014) for every
+  pair of sites. At q = 0 it gives Sorensen and Jaccard, at q = 2
+  Morisita-Horn. `beta_dist()` and `autoplot()` accept its output.
 * Ordination plots and the pairwise heatmap keep a fixed aspect ratio; they
   now paint the whole image white, so no transparent margin is left on
   web pages, slides or transparent devices.

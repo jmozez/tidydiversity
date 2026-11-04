@@ -40,8 +40,12 @@ check_one_sided <- function(formula, arg = "formula", call = caller_env()) {
 #' @inheritParams ord_fit
 #' @param formula One-sided formula of site variables, such as
 #'   `~ elevation + season`.
-#' @param by `"terms"` (sequential), `"margin"` (each term after all
-#'   others) or `"model"` (all terms together).
+#' @param by `"margin"` (the default: each term tested after all the
+#'   others, so the result does not depend on the order of terms),
+#'   `"terms"` (sequential: each term after those listed before it, so
+#'   order matters when terms are correlated) or `"model"` (all terms
+#'   together). Note that [vegan::adonis2()] defaults to `"terms"`; set
+#'   `by = "terms"` to reproduce its default output.
 #' @param strata Optional site variable (unquoted) within which to restrict
 #'   permutations, for example a block or transect.
 #' @return A tibble: one row per term, with `df`, `sum_sq`, `r2`,
@@ -68,7 +72,7 @@ beta_permanova <- function(data,
                            env = NULL,
                            distance = "bray",
                            transform = "none",
-                           by = c("terms", "margin", "model"),
+                           by = c("margin", "terms", "model"),
                            strata = NULL,
                            permutations = 999) {
   rlang::check_installed("vegan", "for PERMANOVA.")
