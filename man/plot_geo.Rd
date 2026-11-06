@@ -9,7 +9,9 @@ plot_geo(
   value,
   lon = lon,
   lat = lat,
+  basemap = "none",
   raster = NULL,
+  coastline = NULL,
   size = 3,
   label = NULL
 )
@@ -24,7 +26,13 @@ coordinates with \code{\link[=add_site_data]{add_site_data()}} / \code{\link[=ge
 
 \item{lon, lat}{Coordinate columns when \code{data} is not \code{sf}.}
 
-\item{raster}{Optional \code{SpatRaster} backdrop.}
+\item{basemap}{Basemap: \code{"none"}, \code{"coast"}, tile name, SpatRaster or
+path. See \code{\link[=geo_basemap]{geo_basemap()}}.}
+
+\item{raster}{Optional \code{SpatRaster} backdrop (used when \code{basemap} is
+\code{"none"}).}
+
+\item{coastline}{Optional coastline \code{sf} for a coast basemap.}
 
 \item{size}{Point size when not mapping size to \code{value}.}
 
@@ -46,6 +54,6 @@ est <- tibble::tibble(
   lat = c(-9.4, -9.5, -9.6),
   estimate = c(12, 18, 9)
 )
-plot_geo(est, estimate, lon, lat)
+plot_geo(est, estimate, lon, lat, basemap = "coast")
 \dontshow{\}) # examplesIf}
 }

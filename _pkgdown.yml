@@ -200,9 +200,13 @@ reference:
       - geo_gbif
       - geo_distance
       - geo_decay
+      - geo_basemap
       - plot_sites
       - plot_geo
       - geo_moran
+      - geo-vector
+      - geo-raster
+      - geo-bioclim
 
 articles:
   - title: Get started

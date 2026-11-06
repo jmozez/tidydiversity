@@ -12,6 +12,7 @@ plot_sites(
   shape = NULL,
   label = NULL,
   facet = NULL,
+  basemap = "none",
   raster = NULL,
   coastline = NULL,
   occurrence = NULL,
@@ -39,11 +40,16 @@ labels; overplotting is avoided with \strong{ggrepel} when installed.}
 \item{facet}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> Optional column
 to facet by (taxon, season).}
 
+\item{basemap}{Basemap for the figure: \code{"none"}, \code{"coast"}, \code{"osm"},
+\code{"carto"}, \code{"carto_dark"}, \code{"esri"}, a \code{SpatRaster}, or a file path.
+See \code{\link[=geo_basemap]{geo_basemap()}}. Online tiles fall back to \code{"coast"} offline.}
+
 \item{raster}{Optional \code{terra::SpatRaster} or file path used as an
-elevation / climate backdrop.}
+elevation / climate backdrop (same as passing that object to
+\code{basemap}). Ignored when \code{basemap} is not \code{"none"}.}
 
 \item{coastline}{Optional \code{sf} lines or polygons (for example a country
-outline) drawn under the sites.}
+outline) drawn under the sites when using a coast basemap.}
 
 \item{occurrence}{Optional second data frame of species records with the
 same coordinate columns, drawn as smaller points underneath the sites.}
@@ -82,7 +88,8 @@ rebuilt later as tidy verbs.
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 sites <- geo_example_sites("wilhelm")
-plot_sites(sites, lon, lat, colour = elevation_band, label = site)
+plot_sites(sites, lon, lat, colour = elevation_band, label = site,
+  basemap = "coast")
 
 # Facet by a grouping column
 sites$season <- rep(c("dry", "wet"), length.out = nrow(sites))

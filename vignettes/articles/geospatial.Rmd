@@ -148,3 +148,73 @@ g <- expand.grid(x = 1:8, y = 1:8)
 g$richness <- g$x + g$y + 0.05 * stats::rnorm(nrow(g))
 geo_moran(g, richness, lon = x, lat = y, nperm = 199, correlogram = TRUE)
 ```
+
+
+## Basemaps
+
+`plot_sites()` and `plot_geo()` take a `basemap` argument. Use `"coast"`
+offline, online tile names (`"osm"`, `"carto"`, `"carto_dark"`, `"esri"`)
+when connected, or pass a `SpatRaster` / file path. Tile fetch failures fall
+back to the coast basemap with a message. Scale bar and north arrow stay on.
+
+```{r basemap-coast, fig.width = 7, fig.height = 5, eval = requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)}
+sites <- geo_example_sites("wilhelm")
+sites <- sites[sites$elevation <= 2200, ]
+plot_sites(
+  sites, lon, lat,
+  colour = elevation_band,
+  label = site,
+  basemap = "coast"
+) +
+  ggplot2::labs(title = "Study sites with a coast basemap")
+```
+
+## Vector and raster analysis
+
+Buffer sites, then summarise a raster inside each buffer (for example mean
+elevation). Crop and mask keep the analysis inside the study area.
+
+```{r buffer-zonal, eval = requireNamespace("terra", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)}
+sites_sf <- geo_as_sf(sites, lon, lat)
+buf <- geo_buffer(sites_sf, dist = 5000)
+r <- terra::rast(
+  ncols = 40, nrows = 40,
+  xmin = 144.8, xmax = 145.5, ymin = -6.0, ymax = -5.5,
+  crs = "EPSG:4326"
+)
+terra::values(r) <- sites$elevation[1] +
+  800 * (terra::yFromCell(r, seq_len(terra::ncell(r))) + 6)
+names(r) <- "elev_proxy"
+geo_raster_zonal(r, buf, fun = "mean")
+cropped <- geo_raster_crop(r, buf)
+masked <- geo_raster_mask(r, buf)
+c(ncell_full = terra::ncell(r), ncell_crop = terra::ncell(cropped))
+```
+
+## Bioclimatic variables (WorldClim and CHELSA)
+
+Biodiversity models often need temperature and rainfall surfaces. List the
+19 bioclim variables with [geo_bioclim_vars()], then read or download them
+with [geo_worldclim()] or [geo_chelsa()] (or the front door [geo_bioclim()]).
+Pass `path` for local GeoTIFFs when offline. Cite the data sources in any
+paper that uses them: WorldClim 2 (Fick and Hijmans 2017, CC BY 4.0) and
+CHELSA (Karger et al. 2017, CC BY 4.0).
+
+```{r bioclim-vars}
+geo_bioclim_vars()[c(1, 12), ]
+```
+
+```{r bioclim-extract, eval = requireNamespace("terra", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)}
+# Offline demo: a local stand-in for bio1 joined to sites
+bio1 <- terra::rast(
+  ncols = 20, nrows = 20,
+  xmin = 144.8, xmax = 145.5, ymin = -6.0, ymax = -5.5,
+  crs = "EPSG:4326"
+)
+terra::values(bio1) <- 22
+names(bio1) <- "bio1"
+tmp <- tempfile(fileext = ".tif")
+terra::writeRaster(bio1, tmp, overwrite = TRUE)
+clim <- geo_worldclim(vars = "bio1", path = tmp, download = FALSE)
+geo_extract(sites, clim, lon, lat)
+```

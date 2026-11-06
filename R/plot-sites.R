@@ -27,10 +27,14 @@
 #'   labels; overplotting is avoided with **ggrepel** when installed.
 #' @param facet <[`data-masking`][dplyr::dplyr_data_masking]> Optional column
 #'   to facet by (taxon, season).
+#' @param basemap Basemap for the figure: `"none"`, `"coast"`, `"osm"`,
+#'   `"carto"`, `"carto_dark"`, `"esri"`, a `SpatRaster`, or a file path.
+#'   See [geo_basemap()]. Online tiles fall back to `"coast"` offline.
 #' @param raster Optional `terra::SpatRaster` or file path used as an
-#'   elevation / climate backdrop.
+#'   elevation / climate backdrop (same as passing that object to
+#'   `basemap`). Ignored when `basemap` is not `"none"`.
 #' @param coastline Optional `sf` lines or polygons (for example a country
-#'   outline) drawn under the sites.
+#'   outline) drawn under the sites when using a coast basemap.
 #' @param occurrence Optional second data frame of species records with the
 #'   same coordinate columns, drawn as smaller points underneath the sites.
 #' @param size Point size for sites.
@@ -43,7 +47,8 @@
 #' @export
 #' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)
 #' sites <- geo_example_sites("wilhelm")
-#' plot_sites(sites, lon, lat, colour = elevation_band, label = site)
+#' plot_sites(sites, lon, lat, colour = elevation_band, label = site,
+#'   basemap = "coast")
 #'
 #' # Facet by a grouping column
 #' sites$season <- rep(c("dry", "wet"), length.out = nrow(sites))
@@ -55,6 +60,7 @@ plot_sites <- function(data,
                        shape = NULL,
                        label = NULL,
                        facet = NULL,
+                       basemap = "none",
                        raster = NULL,
                        coastline = NULL,
                        occurrence = NULL,
@@ -81,34 +87,27 @@ plot_sites <- function(data,
   sites <- plot_sites_as_sf(data, enquo(lon), enquo(lat))
   p <- ggplot2::ggplot()
 
-  if (!is.null(raster)) {
-    rlang::check_installed("terra")
-    r <- geo_as_raster(raster)[[1]]
-    rdf <- terra::as.data.frame(r, xy = TRUE, na.rm = TRUE)
-    zname <- setdiff(names(rdf), c("x", "y"))[1]
-    p <- p +
-      ggplot2::geom_raster(
-        data = rdf,
-        ggplot2::aes(.data$x, .data$y, fill = .data[[zname]]),
-        alpha = 0.55
-      ) +
-      ggplot2::scale_fill_viridis_c(
-        name = zname, option = "C",
-        guide = ggplot2::guide_colourbar(order = 1)
-      )
+  # Resolve basemap: explicit basemap wins; otherwise honour raster=
+  bm <- basemap
+  if (identical(bm, "none") && !is.null(raster)) {
+    bm <- raster
   }
-
-  if (!is.null(coastline)) {
-    if (!inherits(coastline, "sf")) {
-      cli::cli_abort("{.arg coastline} must be an sf object.")
-    }
-    coastline <- sf::st_transform(coastline, sf::st_crs(sites))
-    p <- p + ggplot2::geom_sf(
-      data = coastline,
-      fill = "grey95",
-      colour = "grey40",
-      linewidth = 0.3
-    )
+  bb <- sf::st_bbox(sites)
+  # Expand basemap extent a little around the sites
+  dx <- max((bb["xmax"] - bb["xmin"]) * 0.15, 0.02)
+  dy <- max((bb["ymax"] - bb["ymin"]) * 0.15, 0.02)
+  bb["xmin"] <- bb["xmin"] - dx
+  bb["xmax"] <- bb["xmax"] + dx
+  bb["ymin"] <- bb["ymin"] - dy
+  bb["ymax"] <- bb["ymax"] + dy
+  bm_layers <- geo_basemap_layers(
+    bb,
+    basemap = bm,
+    coastline = coastline,
+    crs = sf::st_crs(sites)
+  )
+  for (ly in bm_layers$layers) {
+    p <- p + ly
   }
 
   if (!is.null(occurrence)) {
@@ -123,9 +122,9 @@ plot_sites <- function(data,
     )
   }
 
-  # Site points. A raster backdrop already uses fill, so grouping then maps
+  # Site points. A raster/tile basemap that already uses fill maps grouping
   # to colour instead.
-  use_fill <- is.null(raster)
+  use_fill <- !isTRUE(bm_layers$uses_fill)
   if (is.null(col_nm) && is.null(shp_nm)) {
     p <- p + ggplot2::geom_sf(
       data = sites,

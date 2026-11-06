@@ -1,5 +1,15 @@
 # tidydiversity 0.1.0
 
+* Basemaps for `plot_sites()` and `plot_geo()` via `basemap` / `geo_basemap()`
+  (`none`, `coast`, OSM / Carto / ESRI tiles with offline coast fallback, or a
+  user raster). Vector verbs: `geo_buffer()`, `geo_crop()`,
+  `geo_intersection()`, `geo_difference()`, `geo_union()`, `geo_area()`,
+  `geo_centroid()`, `geo_bbox()`, `geo_join()`, `geo_distance_to()`. Raster
+  verbs: `geo_raster_read()`, `geo_raster_crop()`, `geo_raster_mask()`,
+  `geo_raster_resample()`, `geo_raster_project()`, `geo_raster_terrain()`,
+  `geo_raster_focal()`, `geo_raster_zonal()`. Bioclimate: `geo_bioclim_vars()`,
+  `geo_bioclim()`, `geo_worldclim()`, `geo_chelsa()` with cache and offline
+  `path` (cite Fick and Hijmans 2017; Karger et al. 2017).
 * `plot_sites()` draws publication-ready study-site maps (grouping,
   labels, raster or coastline backdrop, facets, scale bar and north arrow
   without map-package dependencies). `geo_example_sites()` supplies

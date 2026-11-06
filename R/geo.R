@@ -765,7 +765,11 @@ geo_decay <- function(data,
 #' @param value <[`data-masking`][dplyr::dplyr_data_masking]> Column to map
 #'   (fill / size).
 #' @param lon,lat Coordinate columns when `data` is not `sf`.
-#' @param raster Optional `SpatRaster` backdrop.
+#' @param basemap Basemap: `"none"`, `"coast"`, tile name, SpatRaster or
+#'   path. See [geo_basemap()].
+#' @param raster Optional `SpatRaster` backdrop (used when `basemap` is
+#'   `"none"`).
+#' @param coastline Optional coastline `sf` for a coast basemap.
 #' @param size Point size when not mapping size to `value`.
 #' @param label Optional column of site labels.
 #' @return A ggplot object.
@@ -777,12 +781,14 @@ geo_decay <- function(data,
 #'   lat = c(-9.4, -9.5, -9.6),
 #'   estimate = c(12, 18, 9)
 #' )
-#' plot_geo(est, estimate, lon, lat)
+#' plot_geo(est, estimate, lon, lat, basemap = "coast")
 plot_geo <- function(data,
                      value,
                      lon = lon,
                      lat = lat,
+                     basemap = "none",
                      raster = NULL,
+                     coastline = NULL,
                      size = 3,
                      label = NULL) {
   rlang::check_installed("ggplot2")
@@ -799,23 +805,27 @@ plot_geo <- function(data,
   }
 
   p <- ggplot2::ggplot()
-  if (!is.null(raster)) {
-    rlang::check_installed("terra")
-    rasters <- geo_as_raster(raster)
-    r <- rasters[[1]]
-    rdf <- terra::as.data.frame(r, xy = TRUE, na.rm = TRUE)
-    zname <- setdiff(names(rdf), c("x", "y"))[1]
-    p <- p + ggplot2::geom_raster(
-      data = rdf,
-      ggplot2::aes(.data$x, .data$y, fill = .data[[zname]]),
-      alpha = 0.55
-    ) +
-      ggplot2::scale_fill_viridis_c(name = zname, option = "C")
+  bm <- basemap
+  if (identical(bm, "none") && !is.null(raster)) {
+    bm <- raster
+  }
+  bb <- sf::st_bbox(data)
+  dx <- max((bb["xmax"] - bb["xmin"]) * 0.15, 0.02)
+  dy <- max((bb["ymax"] - bb["ymin"]) * 0.15, 0.02)
+  bb["xmin"] <- bb["xmin"] - dx
+  bb["xmax"] <- bb["xmax"] + dx
+  bb["ymin"] <- bb["ymin"] - dy
+  bb["ymax"] <- bb["ymax"] + dy
+  bm_layers <- geo_basemap_layers(
+    bb, basemap = bm, coastline = coastline, crs = sf::st_crs(data)
+  )
+  for (ly in bm_layers$layers) {
+    p <- p + ly
   }
 
   # When a raster fill scale is present, map the estimate to size + colour
   # via a secondary aesthetic; otherwise map fill to the estimate.
-  if (is.null(raster)) {
+  if (!isTRUE(bm_layers$uses_fill)) {
     p <- p +
       ggplot2::geom_sf(
         data = data,
