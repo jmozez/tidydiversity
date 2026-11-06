@@ -26,7 +26,7 @@ sdm_predict(object, newdata = NULL, type = c("response", "link"))
 
 sdm_evaluate(object, newdata = NULL, threshold = NULL)
 
-plot_sdm(x, basemap = "none", ...)
+plot_sdm(x, basemap = "esri", ...)
 }
 \arguments{
 \item{data}{Occurrence table with coordinates and optional absence rows
@@ -69,7 +69,8 @@ suitability SpatRaster.}
 
 \item{basemap}{Basemap for ggplot maps. See \code{\link[=geo_basemap]{geo_basemap()}}.}
 
-\item{...}{Unused.}
+\item{...}{Passed to \code{\link[=plot_geo]{plot_geo()}} (for example \code{inset}, \code{legend_position},
+\code{legend_frame}, \code{north_arrow}).}
 }
 \value{
 An object of class \code{td_sdm} with elements \code{engine}, \code{model},

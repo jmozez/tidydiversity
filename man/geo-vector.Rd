@@ -62,8 +62,11 @@ when needed).}
 \description{
 Native tidyverse-style wrappers around common \strong{sf} operations. Inputs
 accept \code{sf} tables or data frames with lon/lat (converted with
-\code{\link[=geo_as_sf]{geo_as_sf()}}); outputs are \code{sf} tibbles. Users stay inside tidydiversity
-instead of calling sf, rgeos or sp directly.
+\code{\link[=geo_as_sf]{geo_as_sf()}}); outputs are \code{sf} tibbles. sf reads and writes through
+\strong{GDAL/OGR}, so GeoPackage, shapefile, GeoJSON and similar formats work
+via \code{\link[=geo_vector_read]{geo_vector_read()}} / \code{\link[=geo_vector_write]{geo_vector_write()}} without calling GDAL
+utilities or the retired \strong{rgdal} package. Prefer GeoPackage over
+shapefile for new work.
 }
 \examples{
 \dontshow{if (requireNamespace("sf", quietly = TRUE)) withAutoprint(\{ # examplesIf}

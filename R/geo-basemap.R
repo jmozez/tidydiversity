@@ -2,18 +2,21 @@
 #'
 #' @description
 #' `geo_basemap()` prepares a basemap for [plot_sites()] and [plot_geo()]
-#' without sending users to ggmap or other non-tidy tools. Choose `"none"`,
-#' `"coast"` (offline coastline / study extent), an online tile provider
-#' (`"osm"`, `"carto"`, `"carto_dark"`, `"esri"`), a user `SpatRaster`, or a
-#' raster file path. Online tiles are fetched through a wrapped helper (using
-#' **maptiles** when installed, otherwise a small XYZ downloader). If tiles
-#' cannot be fetched, the function falls back to `"coast"` with a message.
+#' without sending users to ggmap or other non-tidy tools. The default
+#' `"esri"` fetches ESRI World Imagery tiles for the study bbox (cached on
+#' disk). Other tile providers: `"osm"`, `"carto"`, `"carto_dark"`,
+#' `"esri_topo"`. `"coast"` draws Natural Earth land polygons over an ocean
+#' fill (offline). Pass a `SpatRaster` or file path for a custom DEM /
+#' hillshade. Online tiles use **maptiles** when installed, otherwise a
+#' small XYZ downloader. If tiles cannot be fetched, the function falls
+#' back to `"coast"` with a message. Attribution stays with the tile provider.
 #'
 #' @param x An `sf` object, a bbox numeric vector
 #'   `c(xmin, ymin, xmax, ymax)`, or a data frame with lon/lat used only to
 #'   set the extent.
-#' @param basemap Basemap specification: `"none"`, `"coast"`, `"osm"`,
-#'   `"carto"`, `"carto_dark"`, `"esri"`, a `SpatRaster`, or a file path.
+#' @param basemap Basemap specification: `"esri"` (default; World Imagery),
+#'   `"esri_topo"`, `"osm"`, `"carto"`, `"carto_dark"`, `"coast"` (Natural
+#'   Earth land), `"none"`, a `SpatRaster`, or a file path.
 #' @param coastline Optional `sf` polygons/lines used when
 #'   `basemap = "coast"`.
 #' @param lon,lat Coordinate columns when `x` is a plain data frame.
@@ -27,10 +30,10 @@
 #' @export
 #' @examplesIf requireNamespace("sf", quietly = TRUE) && requireNamespace("ggplot2", quietly = TRUE)
 #' sites <- geo_example_sites("wilhelm")
-#' bm <- geo_basemap(sites, basemap = "coast", lon = lon, lat = lat)
-#' plot_sites(sites, lon, lat, basemap = "coast", colour = elevation_band)
+#' bm <- geo_basemap(sites, basemap = "esri", lon = lon, lat = lat)
+#' plot_sites(sites, lon, lat, basemap = "esri", colour = elevation_band)
 geo_basemap <- function(x,
-                        basemap = "coast",
+                        basemap = "esri",
                         coastline = NULL,
                         lon = lon,
                         lat = lat,
@@ -110,7 +113,7 @@ geo_basemap_extent <- function(x, lon, lat, crs = 4326) {
 }
 
 geo_basemap_layers <- function(bbox,
-                               basemap = "coast",
+                               basemap = "esri",
                                coastline = NULL,
                                zoom = NULL,
                                alpha = 0.9,
@@ -119,7 +122,7 @@ geo_basemap_layers <- function(bbox,
   if (inherits(basemap, "SpatRaster") ||
     (is.character(basemap) && length(basemap) == 1 &&
       !basemap %in% c(
-        "none", "coast", "osm", "carto", "carto_dark", "esri"
+        "none", "coast", "osm", "carto", "carto_dark", "esri", "esri_topo"
       ) &&
       (file.exists(basemap) || grepl("\\.(tif|tiff|nc|grd)$", basemap, ignore.case = TRUE)))) {
     rlang::check_installed("terra")
@@ -169,13 +172,14 @@ geo_basemap_layers <- function(bbox,
     osm = "OpenStreetMap",
     carto = "CartoDB.Positron",
     carto_dark = "CartoDB.DarkMatter",
-    esri = "Esri.WorldImagery"
+    esri = "Esri.WorldImagery",
+    esri_topo = "Esri.WorldTopoMap"
   )
   if (!basemap %in% names(tile_providers)) {
     cli::cli_abort(
       "Unknown basemap {.val {basemap}}. Use {.val none}, {.val coast},
-      {.val osm}, {.val carto}, {.val carto_dark}, {.val esri}, a raster,
-      or a file path."
+      {.val osm}, {.val carto}, {.val carto_dark}, {.val esri},
+      {.val esri_topo}, a raster, or a file path."
     )
   }
 
@@ -205,15 +209,19 @@ geo_basemap_layers <- function(bbox,
 }
 
 geo_coast_layers <- function(bbox, coastline = NULL, crs = 4326) {
-  xmin <- unname(bbox["xmin"])
-  xmax <- unname(bbox["xmax"])
-  ymin <- unname(bbox["ymin"])
-  ymax <- unname(bbox["ymax"])
-  ocean <- sf::st_as_sf(sf::st_as_sfc(bbox, crs = crs))
+  # Expand the ocean panel slightly so the neatline is not flush with land
+  bb <- bbox
+  dx <- max((unname(bb["xmax"]) - unname(bb["xmin"])) * 0.05, 0.02)
+  dy <- max((unname(bb["ymax"]) - unname(bb["ymin"])) * 0.05, 0.02)
+  bb["xmin"] <- unname(bb["xmin"]) - dx
+  bb["xmax"] <- unname(bb["xmax"]) + dx
+  bb["ymin"] <- unname(bb["ymin"]) - dy
+  bb["ymax"] <- unname(bb["ymax"]) + dy
+  ocean <- sf::st_as_sf(sf::st_as_sfc(bb, crs = crs))
   layers <- list(
     ggplot2::geom_sf(
       data = ocean,
-      fill = "#dceaf6",
+      fill = "#b7d2e8",
       colour = NA,
       inherit.aes = FALSE
     )
@@ -225,11 +233,17 @@ geo_coast_layers <- function(bbox, coastline = NULL, crs = 4326) {
   } else {
     coastline <- sf::st_transform(coastline, crs)
   }
+  # Crop land to a padded bbox so large country polygons do not dominate
+  land_bb <- sf::st_as_sfc(bb, crs = crs)
+  coastline <- tryCatch(
+    suppressWarnings(sf::st_crop(sf::st_make_valid(coastline), land_bb)),
+    error = function(e) coastline
+  )
   layers <- c(layers, list(
     ggplot2::geom_sf(
       data = coastline,
-      fill = "grey92",
-      colour = "grey40",
+      fill = "#e8e0d0",
+      colour = "#5a5248",
       linewidth = 0.35,
       inherit.aes = FALSE
     )
@@ -237,39 +251,78 @@ geo_coast_layers <- function(bbox, coastline = NULL, crs = 4326) {
   layers
 }
 
-# Simple rectangular land proxy for the study extent when no coastline is
-# supplied. Users should pass a real coastline sf for publication maps.
+# Real land polygons for the study extent (Natural Earth when available).
+# Never return a plain rectangle pretending to be coast.
 geo_default_land_poly <- function(bbox, crs = 4326) {
-  xmin <- unname(bbox["xmin"])
-  xmax <- unname(bbox["xmax"])
-  ymin <- unname(bbox["ymin"])
-  ymax <- unname(bbox["ymax"])
-  # Slightly inset rectangle as a stand-in landmass
-  dx <- (xmax - xmin) * 0.05
-  dy <- (ymax - ymin) * 0.05
-  poly <- sf::st_polygon(list(matrix(c(
-    xmin + dx, ymin + dy,
-    xmax - dx, ymin + dy,
-    xmax - dx, ymax - dy,
-    xmin + dx, ymax - dy,
-    xmin + dx, ymin + dy
-  ), ncol = 2, byrow = TRUE)))
-  sf::st_sf(geometry = sf::st_sfc(poly, crs = crs))
+  land <- NULL
+  if (requireNamespace("rnaturalearth", quietly = TRUE)) {
+    land <- tryCatch(
+      rnaturalearth::ne_countries(scale = "medium", returnclass = "sf"),
+      error = function(e) NULL
+    )
+    if (is.null(land)) {
+      land <- tryCatch(
+        rnaturalearth::ne_coastline(scale = "medium", returnclass = "sf"),
+        error = function(e) NULL
+      )
+    }
+  }
+  if (is.null(land) && requireNamespace("rnaturalearthdata", quietly = TRUE)) {
+    land <- tryCatch(
+      sf::st_as_sf(rnaturalearthdata::countries50),
+      error = function(e) NULL
+    )
+  }
+  if (is.null(land)) {
+    cli::cli_warn(
+      c(
+        "No Natural Earth land data available; install {.pkg rnaturalearth}.",
+        "i" = "Returning an empty land layer. Pass {.arg coastline} or use a tile basemap."
+      )
+    )
+    return(sf::st_sf(geometry = sf::st_sfc(crs = crs)))
+  }
+  land <- sf::st_transform(sf::st_make_valid(land), crs)
+  # Expand crop window so coastline context is visible around sites
+  bb <- bbox
+  dx <- max((unname(bb["xmax"]) - unname(bb["xmin"])) * 0.6, 0.4)
+  dy <- max((unname(bb["ymax"]) - unname(bb["ymin"])) * 0.6, 0.4)
+  bb["xmin"] <- unname(bb["xmin"]) - dx
+  bb["xmax"] <- unname(bb["xmax"]) + dx
+  bb["ymin"] <- unname(bb["ymin"]) - dy
+  bb["ymax"] <- unname(bb["ymax"]) + dy
+  crop_win <- sf::st_as_sfc(bb, crs = crs)
+  out <- tryCatch(
+    suppressWarnings(sf::st_crop(land, crop_win)),
+    error = function(e) land
+  )
+  if (nrow(out) == 0) {
+    # Site bbox may be inland; keep intersecting countries by bbox filter
+    out <- land[sf::st_intersects(land, crop_win, sparse = FALSE)[, 1], , drop = FALSE]
+  }
+  out
 }
 
 geo_fetch_tiles <- function(bbox, provider, zoom = NULL, crs = 4326) {
   # Prefer maptiles when available; otherwise try a minimal XYZ fetch.
   if (requireNamespace("maptiles", quietly = TRUE) &&
     requireNamespace("terra", quietly = TRUE)) {
+    cache <- file.path(
+      tools::R_user_dir("tidydiversity", "cache"), "maptiles"
+    )
+    dir.create(cache, recursive = TRUE, showWarnings = FALSE)
     out <- tryCatch(
       {
         x <- sf::st_as_sfc(bbox, crs = crs)
+        # Expand slightly so tiles cover labels / scale bar margins
+        x <- sf::st_buffer(sf::st_as_sf(x), dist = 0) # no-op; keep sfc
         maptiles::get_tiles(
           x = x,
           provider = provider,
           zoom = zoom,
           crop = TRUE,
           project = FALSE,
+          cachedir = cache,
           verbose = FALSE
         )
       },
@@ -291,7 +344,8 @@ geo_fetch_tiles_xyz <- function(bbox, provider, zoom = NULL, crs = 4326) {
     OpenStreetMap = "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
     `CartoDB.Positron` = "https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
     `CartoDB.DarkMatter` = "https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
-    `Esri.WorldImagery` = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+    `Esri.WorldImagery` = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    `Esri.WorldTopoMap` = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
   )
   if (!provider %in% names(templates)) {
     return(NULL)
@@ -336,14 +390,17 @@ geo_fetch_tiles_xyz <- function(bbox, provider, zoom = NULL, crs = 4326) {
   }
   # Build a SpatRaster mosaic in Web Mercator then project if needed
   rasters <- lapply(seq_along(files), function(i) {
-    r <- terra::rast(files[i])
+    r <- suppressWarnings(terra::rast(files[i]))
     # Approximate geographic extent of the XYZ tile
     e <- geo_xyz_tile_extent(tiles$x[i], tiles$y[i], zoom)
-    terra::ext(r) <- e
+    terra::ext(r) <- terra::ext(e[1], e[2], e[3], e[4])
     terra::crs(r) <- "EPSG:4326"
     r
   })
-  tryCatch(terra::merge(terra::sprc(rasters)), error = function(e) NULL)
+  tryCatch(
+    suppressWarnings(terra::merge(terra::sprc(rasters))),
+    error = function(e) NULL
+  )
 }
 
 geo_xyz_tile_index <- function(xmin, ymin, xmax, ymax, zoom) {
@@ -367,7 +424,8 @@ geo_xyz_tile_extent <- function(x, y, zoom) {
   lon_max <- (x + 1) / n * 360 - 180
   lat_rad_max <- atan(sinh(pi * (1 - 2 * y / n)))
   lat_rad_min <- atan(sinh(pi * (1 - 2 * (y + 1) / n)))
-  c(lon_min, lat_rad_min * 180 / pi, lon_max, lat_rad_max * 180 / pi)
+  # terra::ext(numeric) is xmin, xmax, ymin, ymax
+  c(lon_min, lon_max, lat_rad_min * 180 / pi, lat_rad_max * 180 / pi)
 }
 
 geo_tile_layers <- function(tiles, alpha = 0.9) {
@@ -379,11 +437,20 @@ geo_tile_layers <- function(tiles, alpha = 0.9) {
   # Convert to a raster array for ggplot
   if (terra::nlyr(tiles) >= 3) {
     arr <- terra::as.array(tiles[[1:3]])
-    arr <- sweep(arr, 3, apply(arr, 3, max), "/")
+    # Values may be 0-1 or 0-255
+    mx <- max(arr, na.rm = TRUE)
+    if (is.finite(mx) && mx > 1.5) {
+      arr <- arr / 255
+    }
     arr[is.na(arr)] <- 1
+    arr <- pmin(pmax(arr, 0), 1)
+    # Soften with alpha against white
+    if (is.finite(alpha) && alpha < 1) {
+      arr <- alpha * arr + (1 - alpha) * 1
+    }
     img <- grDevices::rgb(arr[, , 1], arr[, , 2], arr[, , 3])
     dim(img) <- dim(arr)[1:2]
-    img <- t(apply(img, 2, rev)) # align with annotation_raster
+    img <- t(img)[, nrow(img):1, drop = FALSE] # annotation_raster orientation
     list(ggplot2::annotation_raster(
       img,
       xmin = e$xmin, xmax = e$xmax,

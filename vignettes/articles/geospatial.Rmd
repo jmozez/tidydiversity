@@ -375,19 +375,98 @@ plot_surface(fit, elevation, litter) +
   )
 ```
 
-## Optional maps with tmap and leaflet
+
+## GADM boundaries and GDAL-backed I/O
+
+Administrative backdrops come from [GADM](https://gadm.org) via
+[geo_gadm()]. Level 0 is the country outline, level 1 provinces, level 2
+districts. Downloads are cached under
+`tools::R_user_dir("tidydiversity", "cache")/gadm` and are **not** bundled
+in the package. GADM is free for academic use; redistribution of the full
+database is restricted ([license](https://gadm.org/license.html)). Set
+`download = FALSE` on CRAN or offline runners, or pass a local GeoPackage
+with `path`.
+
+```{r gadm, eval = FALSE}
+# Online once (needs geodata + network):
+png_prov <- geo_gadm("PNG", level = 1)
+plot_sites(
+  geo_example_sites("wilhelm"), lon, lat,
+  colour = elevation_band, admin = png_prov, inset = "png"
+)
+# Clip a raster to the country outline (GDAL warp via terra):
+# dem <- geo_raster_mask(dem, geo_gadm("PNG", level = 0))
+```
+
+Raster and vector files are read and written through **GDAL** (via terra and
+sf). Prefer [geo_read()] / [geo_write()] (and the vector/raster twins) over
+calling `st_read`, `rast`, `gdal_translate`, or the retired **rgdal** package.
+Format is taken from the file extension; see `?geo_read` for the full table
+(GeoTIFF/COG, NetCDF, ASCII grid, GeoPackage, shapefile, GeoJSON, KML/KMZ,
+GML, FileGDB when available, CSV lon/lat occurrence tables).
+
+```{r gdal-io, eval = FALSE}
+r <- geo_read("elevation.tif")
+geo_write(geo_raster_project(r, "EPSG:32755"), "elev_utm55s.tif", overwrite = TRUE)
+pts <- geo_read("sites.gpkg")
+geo_write(as_sf(geo_example_sites("wilhelm")), "sites.gpkg", overwrite = TRUE)
+occ <- geo_read("occurrences.csv")  # lon/lat columns -> sf
+```
+
+Save map figures from `plot_sites()` / `plot_geo()` / `plot_sdm()` /
+`plot_topo()` with [geo_save()] (or [plot_save()] for journal column sizes):
+
+```{r geo-save, eval = FALSE}
+p <- plot_sites(
+  geo_example_sites("wilhelm"), lon, lat,
+  colour = elevation_band, inset = "png", basemap = "esri"
+)
+geo_save(p, "wilhelm_sites.png", width = 180, height = 140, units = "mm", dpi = 300)
+geo_save(p, "wilhelm_sites.pdf")
+```
+
+## Legends, insets and hand-off to tmap / leaflet
+
+`plot_sites()`, `plot_geo()` and `plot_sdm()` draw ggplot maps with
+collision-aware placement of the scale bar, north arrow, inside legend and
+optional overview inset (the emptiest panel corner wins, so decorations do
+not sit on sites). Legends support a title, inside/outside position, a frame,
+ordered keys, and combined colour + size (for example a Hill number with
+elevation). Set `inset = "png"` or `inset = TRUE` for a Papua New Guinea /
+auto locator map with the main extent marked.
+
+```{r map-legend-inset, eval = FALSE}
+sites <- geo_example_sites("wilhelm")
+plot_sites(
+  sites, lon, lat,
+  colour = elevation_band, size = elevation, label = site,
+  legend_title = "Elevation band",
+  legend_position = "auto",
+  legend_frame = TRUE,
+  inset = "png",
+  basemap = "esri"
+)
+```
 
 [as_sf()] and [as_spat_raster()] return plain **sf** / **terra** objects with
-a CRS so you can hand sites or SDM rasters to tmap or leaflet when you want
-interactive maps. Those packages stay Suggests only.
+a CRS so the same sites hand off to **tmap** (legends via `tm_dots()` /
+`tm_layout()`, overview via `tm_inset()`) or **leaflet**. Those packages stay
+Suggests only.
 
 ```{r tmap-leaflet, eval = FALSE}
-sites <- geo_example_sites()
-sites <- sites[!is.na(sites$lon), ]
+sites <- geo_example_sites("wilhelm")
 pts <- as_sf(sites)
 
 if (requireNamespace("tmap", quietly = TRUE)) {
-  tmap::tm_shape(pts) + tmap::tm_dots(col = "elevation")
+  # tmap v3/v4: col/size legends, compass, scale bar, inset overview
+  bb_png <- c(xmin = 140.5, ymin = -12, xmax = 156.5, ymax = -1)
+  tmap::tm_shape(pts) +
+    tmap::tm_dots(col = "elevation", size = 0.3) +
+    tmap::tm_layout(legend.outside = FALSE, legend.frame = TRUE) +
+    tmap::tm_compass(position = c("right", "top")) +
+    tmap::tm_scale_bar(position = c("left", "bottom")) +
+    tmap::tm_inset(tmap::tm_shape(pts) + tmap::tm_dots(),
+                   position = c("left", "top"))
 }
 if (requireNamespace("leaflet", quietly = TRUE)) {
   leaflet::leaflet(pts) |>

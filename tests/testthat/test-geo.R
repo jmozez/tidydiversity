@@ -243,3 +243,75 @@ test_that("geo_example_sites() covers Wilhelm and Wanang", {
   a <- geo_example_sites("wanang")
   expect_equal(a$site, c("Wanang", "Numba", "Yawan"))
 })
+
+
+test_that("decoration corners avoid Wilhelm demo sites", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("ggplot2")
+  sites <- geo_example_sites("wilhelm")
+  pts <- geo_as_sf(sites, lon, lat)
+  bb <- sf::st_bbox(pts)
+  dx <- max((bb["xmax"] - bb["xmin"]) * 0.35, 0.15)
+  dy <- max((bb["ymax"] - bb["ymin"]) * 0.45, 0.12)
+  bb["xmin"] <- bb["xmin"] - dx
+  bb["xmax"] <- bb["xmax"] + dx
+  bb["ymin"] <- bb["ymin"] - dy
+  bb["ymax"] <- bb["ymax"] + dy
+
+  decor <- geo_pick_decoration_corner(
+    pts, bb,
+    scale_bar = TRUE, north_arrow = TRUE,
+    inset = TRUE, legend_inside = TRUE
+  )
+  expect_false(any(geo_decoration_contains(pts, decor$scale_box)))
+  expect_false(any(geo_decoration_contains(pts, decor$north_box)))
+  expect_false(any(geo_decoration_contains(pts, decor$inset_box)))
+  expect_false(any(geo_decoration_contains(pts, decor$legend_box)))
+  # Corners must be distinct
+  used <- c(decor$scale_corner, decor$north_corner, decor$inset_corner, decor$legend_corner)
+  expect_equal(length(unique(used)), 4)
+
+  p <- plot_sites(
+    sites, lon, lat,
+    colour = elevation_band, label = site,
+    scale_bar = TRUE, north_arrow = TRUE,
+    inset = "png", legend_position = "auto",
+    basemap = "none"
+  )
+  expect_s3_class(p, "ggplot")
+  d <- attr(p, "td_decoration")
+  expect_false(any(geo_decoration_contains(pts, d$scale_box)))
+  expect_false(any(geo_decoration_contains(pts, d$north_box)))
+})
+
+test_that("plot_sites legend and size aesthetics work", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("ggplot2")
+  sites <- geo_example_sites("wilhelm")
+  p <- plot_sites(
+    sites, lon, lat,
+    colour = elevation_band, size = elevation,
+    legend_title = "Band", legend_position = "outside",
+    legend_frame = FALSE, basemap = "none",
+    scale_bar = FALSE, north_arrow = FALSE
+  )
+  expect_s3_class(p, "ggplot")
+  # Built plot has size and fill/colour scales
+  sc <- ggplot2::ggplot_build(p)
+  expect_true(length(sc$plot$scales$scales) >= 1)
+})
+
+test_that("plot_geo combines value colour with size column", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("ggplot2")
+  sites <- geo_example_sites("wilhelm")
+  sites$diversity <- seq_len(nrow(sites))
+  p <- plot_geo(
+    sites, diversity, lon, lat, size = elevation,
+    basemap = "none", inset = FALSE,
+    legend_position = "tr", legend_frame = TRUE
+  )
+  expect_s3_class(p, "ggplot")
+  d <- attr(p, "td_decoration")
+  expect_equal(d$legend_corner, "tr")
+})

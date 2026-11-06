@@ -227,9 +227,10 @@ sdm_evaluate <- function(object, newdata = NULL, threshold = NULL) {
 #' @param x A `td_sdm`, a prediction tibble from [sdm_predict()], or a
 #'   suitability SpatRaster.
 #' @param basemap Basemap for ggplot maps. See [geo_basemap()].
-#' @param ... Unused.
+#' @param ... Passed to [plot_geo()] (for example `inset`, `legend_position`,
+#'   `legend_frame`, `north_arrow`).
 #' @export
-plot_sdm <- function(x, basemap = "none", ...) {
+plot_sdm <- function(x, basemap = "esri", ...) {
   rlang::check_installed("ggplot2")
   if (inherits(x, "td_sdm")) {
     pred <- sdm_predict(x)
@@ -260,7 +261,7 @@ plot_sdm <- function(x, basemap = "none", ...) {
   plot_geo(
     x, value = suitability, lon = !!rlang::sym(lon_col),
     lat = !!rlang::sym(lat_col), basemap = basemap,
-    legend_title = "Suitability", scale_bar = TRUE
+    legend_title = "Suitability", scale_bar = TRUE, ...
   )
 }
 

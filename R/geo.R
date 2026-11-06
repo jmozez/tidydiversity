@@ -876,7 +876,19 @@ geo_decay <- function(data,
 #' @param scale_bar,north_arrow Draw a scale bar and north arrow?
 #' @param scale_bar_km Length of the scale bar in kilometres.
 #' @param legend_title Optional legend title (defaults to the value column).
-#' @return A ggplot object.
+#' @param legend_position `"auto"` (collision-aware inside corner),
+#'   `"outside"`, or a corner `"bl"` / `"br"` / `"tl"` / `"tr"`.
+#' @param legend_frame Draw a frame around an inside legend?
+#' @param size Point size, or a bare column mapped to point size (combined
+#'   with `value` like tmap size + col, e.g. Hill number and elevation).
+#' @param inset Overview map: `FALSE`, `TRUE`/`"auto"`, `"png"`, or a
+#'   length-4 bbox. Uses the same collision reservation as the scale bar
+#'   and north arrow. PNG insets prefer GADM provinces when cached.
+#' @param admin Optional administrative boundaries (`sf` or ISO3 code);
+#'   see [plot_sites()].
+#' @param admin_level GADM level when `admin` is a country code.
+#' @param admin_fill Fill admin polygons instead of outlines only.
+#' @return A ggplot object with attribute `td_decoration`.
 #' @export
 #' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)
 #' est <- tibble::tibble(
@@ -890,7 +902,7 @@ plot_geo <- function(data,
                      value = NULL,
                      lon = lon,
                      lat = lat,
-                     basemap = "none",
+                     basemap = "esri",
                      raster = NULL,
                      coastline = NULL,
                      size = 3,
@@ -898,7 +910,13 @@ plot_geo <- function(data,
                      scale_bar = TRUE,
                      north_arrow = TRUE,
                      scale_bar_km = NULL,
-                     legend_title = NULL) {
+                     legend_title = NULL,
+                     legend_position = "auto",
+                     legend_frame = TRUE,
+                     inset = FALSE,
+                     admin = NULL,
+                     admin_level = 1,
+                     admin_fill = FALSE) {
   rlang::check_installed("ggplot2")
   rlang::check_installed("sf")
   td_check_data(data)
@@ -932,8 +950,8 @@ plot_geo <- function(data,
     bm <- raster
   }
   bb <- sf::st_bbox(data)
-  dx <- max((bb["xmax"] - bb["xmin"]) * 0.15, 0.02)
-  dy <- max((bb["ymax"] - bb["ymin"]) * 0.15, 0.02)
+  dx <- max((bb["xmax"] - bb["xmin"]) * 0.35, 0.15)
+  dy <- max((bb["ymax"] - bb["ymin"]) * 0.45, 0.12)
   bb["xmin"] <- bb["xmin"] - dx
   bb["xmax"] <- bb["xmax"] + dx
   bb["ymin"] <- bb["ymin"] - dy
@@ -945,28 +963,74 @@ plot_geo <- function(data,
     p <- p + ly
   }
 
-  # When a raster fill scale is present, map the estimate to size + colour
-  # via a secondary aesthetic; otherwise map fill to the estimate.
-  if (!isTRUE(bm_layers$uses_fill)) {
+  admin_sf <- geo_resolve_admin(admin, level = admin_level, crs = sf::st_crs(data))
+  if (!is.null(admin_sf)) {
+    for (ly in geo_admin_layers(admin_sf, fill = isTRUE(admin_fill))) {
+      p <- p + ly
+    }
+  }
+
+  # size may be a constant or a second column (e.g. elevation) combined with value
+  size_q <- enquo(size)
+  size_expr <- rlang::quo_get_expr(size_q)
+  size_aes <- NULL
+  size_const <- 3
+  if (is.symbol(size_expr) && as.character(size_expr) %in% names(data)) {
+    size_aes <- as.character(size_expr)
+  } else {
+    sv <- rlang::eval_tidy(size_q, data = data)
+    if (is.numeric(sv) && length(sv) == 1L) size_const <- sv
+  }
+
+  # Map value to fill (or colour when basemap uses fill); optional size_aes
+  use_fill <- !isTRUE(bm_layers$uses_fill)
+  if (use_fill && is.null(size_aes)) {
     p <- p +
       ggplot2::geom_sf(
         data = data,
         ggplot2::aes(fill = .data[[val_col]]),
-        shape = 21,
-        colour = "grey20",
-        size = size,
-        stroke = 0.3
+        shape = 21, colour = "grey20", size = size_const, stroke = 0.3
       ) +
-      ggplot2::scale_fill_viridis_c(name = leg, option = "C")
+      ggplot2::scale_fill_viridis_c(
+        name = leg, option = "C",
+        guide = ggplot2::guide_colourbar(order = 1)
+      )
+  } else if (use_fill && !is.null(size_aes)) {
+    p <- p +
+      ggplot2::geom_sf(
+        data = data,
+        ggplot2::aes(fill = .data[[val_col]], size = .data[[size_aes]]),
+        shape = 21, colour = "grey20", stroke = 0.3
+      ) +
+      ggplot2::scale_fill_viridis_c(
+        name = leg, option = "C",
+        guide = ggplot2::guide_colourbar(order = 1)
+      ) +
+      ggplot2::scale_size_area(
+        name = size_aes, max_size = 10,
+        guide = ggplot2::guide_legend(order = 2)
+      )
+  } else if (!is.null(size_aes)) {
+    p <- p +
+      ggplot2::geom_sf(
+        data = data,
+        ggplot2::aes(colour = .data[[val_col]], size = .data[[size_aes]]),
+        shape = 16, stroke = 0.3
+      ) +
+      ggplot2::scale_colour_viridis_c(
+        name = leg, option = "C",
+        guide = ggplot2::guide_colourbar(order = 1)
+      ) +
+      ggplot2::scale_size_area(
+        name = size_aes, max_size = 10,
+        guide = ggplot2::guide_legend(order = 2)
+      )
   } else {
     p <- p +
       ggplot2::geom_sf(
         data = data,
         ggplot2::aes(size = .data[[val_col]]),
-        shape = 21,
-        fill = plot_palette(1),
-        colour = "grey10",
-        stroke = 0.4
+        shape = 21, fill = plot_palette(1), colour = "grey10", stroke = 0.4
       ) +
       ggplot2::scale_size_area(name = leg, max_size = 8)
   }
@@ -982,24 +1046,67 @@ plot_geo <- function(data,
       ggplot2::aes(.data$x, .data$y, label = .data$.lab),
       size = 3,
       min.segment.length = 0,
-      box.padding = 0.3,
-      max.overlaps = Inf
+      box.padding = 0.4,
+      point.padding = 0.3,
+      max.overlaps = Inf,
+      colour = "grey10",
+      segment.colour = "grey50",
+      seed = 1
     )
   }
-  if (isTRUE(scale_bar)) {
-    for (ly in geo_annotation_scale_bar(bb, length_km = scale_bar_km)) {
+  legend_inside <- !identical(legend_position, "outside") &&
+    (identical(legend_position, "auto") ||
+       legend_position %in% c("bl", "br", "tl", "tr"))
+  want_inset <- !isFALSE(inset) && !is.null(inset)
+  decor <- geo_pick_decoration_corner(
+    data, bb,
+    scale_bar = isTRUE(scale_bar),
+    north_arrow = isTRUE(north_arrow),
+    inset = want_inset,
+    legend_inside = legend_inside
+  )
+  if (legend_position %in% c("bl", "br", "tl", "tr")) {
+    lj <- geo_legend_npc(legend_position)
+    decor$legend_corner <- legend_position
+    decor$legend_position <- lj$position
+    decor$legend_justification <- lj$justification
+    decor$legend_box <- geo_decoration_box(bb, legend_position)
+  }
+  if (isTRUE(scale_bar) && !is.null(decor$scale_box)) {
+    for (ly in geo_annotation_scale_bar(
+      bb, length_km = scale_bar_km, crs = sf::st_crs(data),
+      corner = decor$scale_corner, box = decor$scale_box
+    )) {
       p <- p + ly
     }
   }
-  if (isTRUE(north_arrow)) {
-    for (ly in geo_annotation_north_arrow(bb)) {
+  if (isTRUE(north_arrow) && !is.null(decor$north_box)) {
+    for (ly in geo_annotation_north_arrow(
+      bb, corner = decor$north_corner, box = decor$north_box
+    )) {
       p <- p + ly
     }
   }
-  p +
-    ggplot2::coord_sf() +
+  if (want_inset && !is.null(decor$inset_box)) {
+    for (ly in geo_annotation_inset(
+      bb, decor$inset_box, inset = inset, crs = sf::st_crs(data)
+    )) {
+      p <- p + ly
+    }
+  }
+  p <- p +
+    ggplot2::coord_sf(expand = FALSE) +
     theme_tidydiversity(grid = "none") +
+    ggplot2::theme(
+      panel.background = ggplot2::element_rect(fill = "white", colour = NA),
+      panel.border = ggplot2::element_rect(fill = NA, colour = "grey20", linewidth = 0.4)
+    ) +
+    geo_legend_theme(
+      position = legend_position, frame = legend_frame, decor = decor
+    ) +
     ggplot2::labs(x = NULL, y = NULL)
+  attr(p, "td_decoration") <- decor
+  p
 }
 
 #' Moran's I for spatial autocorrelation of diversity

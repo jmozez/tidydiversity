@@ -3,8 +3,11 @@
 #' @description
 #' Native tidyverse-style wrappers around common **sf** operations. Inputs
 #' accept `sf` tables or data frames with lon/lat (converted with
-#' [geo_as_sf()]); outputs are `sf` tibbles. Users stay inside tidydiversity
-#' instead of calling sf, rgeos or sp directly.
+#' [geo_as_sf()]); outputs are `sf` tibbles. sf reads and writes through
+#' **GDAL/OGR**, so GeoPackage, shapefile, GeoJSON and similar formats work
+#' via [geo_vector_read()] / [geo_vector_write()] without calling GDAL
+#' utilities or the retired **rgdal** package. Prefer GeoPackage over
+#' shapefile for new work.
 #'
 #' @param data An `sf` object or a data frame with coordinates.
 #' @param lon,lat Coordinate columns when `data` is not `sf`.

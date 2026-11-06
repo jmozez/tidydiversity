@@ -2,24 +2,26 @@
 % Please edit documentation in R/plot-sites.R
 \name{geo_example_sites}
 \alias{geo_example_sites}
-\title{Illustrative coordinates for the package PNG example sites}
+\title{Demonstration coordinates for the package PNG example sites}
 \usage{
 geo_example_sites(which = c("wilhelm", "wanang"))
 }
 \arguments{
-\item{which}{\code{"wilhelm"} (Mt Wilhelm elevation bands) or \code{"wanang"}
-(Wanang, Numba and Yawan canopy plots).}
+\item{which}{\code{"wilhelm"} (elevational-band demo) or \code{"wanang"}
+(Wanang, Numba and Yawan canopy-plot demo).}
 }
 \value{
-A tibble with \code{site}, \code{lon}, \code{lat}, \code{elevation} and
-\code{elevation_band}.
+A tibble with \code{site}, \code{lon}, \code{lat}, \code{elevation},
+\code{elevation_band} (ordered factor) and \code{coordinate_note}.
 }
 \description{
-Returns a small tibble of WGS84 longitude and latitude for the Mt Wilhelm
+Returns a small tibble of WGS84 longitude and latitude laid out along the
 elevational bands used by \link{png_ants} and \link{png_frogs}, or for the three
-canopy plots in \link{png_tree_ants}. Positions are approximate, for trying
-study-site maps and geospatial verbs; replace them with your own GPS
-records in a published figure.
+canopy plots in \link{png_tree_ants}. The shipped community tables carry
+elevation but not GPS, so these coordinates are \strong{demonstration only}
+(approximate corridor near Mt Wilhelm / northern PNG). Do not treat them
+as surveyed station locations in a publication; replace them with your
+own GPS records and cite the source.
 }
 \examples{
 geo_example_sites("wilhelm")

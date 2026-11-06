@@ -2,7 +2,6 @@
 % Please edit documentation in R/geo-raster.R
 \name{geo-raster}
 \alias{geo-raster}
-\alias{geo_raster_read}
 \alias{geo_raster_crop}
 \alias{geo_raster_mask}
 \alias{geo_raster_resample}
@@ -12,8 +11,6 @@
 \alias{geo_raster_zonal}
 \title{Tidy raster analysis verbs}
 \usage{
-geo_raster_read(path, ...)
-
 geo_raster_crop(raster, y, ...)
 
 geo_raster_mask(raster, y, ...)
@@ -34,13 +31,11 @@ geo_raster_focal(raster, w = 3, fun = "mean", ...)
 geo_raster_zonal(raster, y, fun = "mean", ..., as_tibble = TRUE)
 }
 \arguments{
-\item{path}{File path for \code{\link[=geo_raster_read]{geo_raster_read()}}.}
-
-\item{...}{Passed to the underlying terra helper.}
-
 \item{raster}{A \code{terra::SpatRaster} or a file path.}
 
 \item{y}{An \code{sf} polygon/line used to crop, mask or summarise.}
+
+\item{...}{Passed to the underlying terra helper.}
 
 \item{res}{Target resolution (one or two numbers) for resampling.}
 
@@ -56,13 +51,18 @@ geo_raster_zonal(raster, y, fun = "mean", ..., as_tibble = TRUE)
 \item{w}{Window size (odd integer or matrix) for the focal filter.}
 
 \item{fun}{Summary function name or function.}
+
+\item{path}{File path for \code{\link[=geo_raster_read]{geo_raster_read()}}.}
 }
 \description{
 Native tidyverse-style wrappers around common \strong{terra} operations for
-elevation and climate rasters. Callers stay inside tidydiversity; the
-heavy lifting is delegated to terra's compiled code. Pair with
-\code{\link[=geo_extract]{geo_extract()}} to join raster values to sites, and with \code{\link[=geo_buffer]{geo_buffer()}}
-plus \code{\link[=geo_raster_zonal]{geo_raster_zonal()}} for mean elevation in a site buffer.
+elevation and climate rasters. terra (and therefore these helpers) reads
+and writes through \strong{GDAL}, so GeoTIFF, COG, netCDF and similar formats
+work without calling \code{gdal_translate} yourself. Do not use the retired
+\strong{rgdal} package. Pair with \code{\link[=geo_extract]{geo_extract()}} to join raster values to
+sites, and with \code{\link[=geo_buffer]{geo_buffer()}} plus \code{\link[=geo_raster_zonal]{geo_raster_zonal()}} for mean
+elevation in a site buffer. \code{\link[=geo_raster_project]{geo_raster_project()}}, \code{\link[=geo_raster_crop]{geo_raster_crop()}}
+and \code{\link[=geo_raster_mask]{geo_raster_mask()}} are the tidy entry points for GDAL warps / clips.
 }
 \examples{
 \dontshow{if (requireNamespace("terra", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)) withAutoprint(\{ # examplesIf}

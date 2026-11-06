@@ -6,7 +6,7 @@
 \usage{
 geo_basemap(
   x,
-  basemap = "coast",
+  basemap = "esri",
   coastline = NULL,
   lon = lon,
   lat = lat,
@@ -20,8 +20,9 @@ geo_basemap(
 \code{c(xmin, ymin, xmax, ymax)}, or a data frame with lon/lat used only to
 set the extent.}
 
-\item{basemap}{Basemap specification: \code{"none"}, \code{"coast"}, \code{"osm"},
-\code{"carto"}, \code{"carto_dark"}, \code{"esri"}, a \code{SpatRaster}, or a file path.}
+\item{basemap}{Basemap specification: \code{"esri"} (default; World Imagery),
+\code{"esri_topo"}, \code{"osm"}, \code{"carto"}, \code{"carto_dark"}, \code{"coast"} (Natural
+Earth land), \code{"none"}, a \code{SpatRaster}, or a file path.}
 
 \item{coastline}{Optional \code{sf} polygons/lines used when
 \code{basemap = "coast"}.}
@@ -42,17 +43,19 @@ metadata (\code{provider}, \code{offline}). Add it to a ggplot with \code{+} via
 }
 \description{
 \code{geo_basemap()} prepares a basemap for \code{\link[=plot_sites]{plot_sites()}} and \code{\link[=plot_geo]{plot_geo()}}
-without sending users to ggmap or other non-tidy tools. Choose \code{"none"},
-\code{"coast"} (offline coastline / study extent), an online tile provider
-(\code{"osm"}, \code{"carto"}, \code{"carto_dark"}, \code{"esri"}), a user \code{SpatRaster}, or a
-raster file path. Online tiles are fetched through a wrapped helper (using
-\strong{maptiles} when installed, otherwise a small XYZ downloader). If tiles
-cannot be fetched, the function falls back to \code{"coast"} with a message.
+without sending users to ggmap or other non-tidy tools. The default
+\code{"esri"} fetches ESRI World Imagery tiles for the study bbox (cached on
+disk). Other tile providers: \code{"osm"}, \code{"carto"}, \code{"carto_dark"},
+\code{"esri_topo"}. \code{"coast"} draws Natural Earth land polygons over an ocean
+fill (offline). Pass a \code{SpatRaster} or file path for a custom DEM /
+hillshade. Online tiles use \strong{maptiles} when installed, otherwise a
+small XYZ downloader. If tiles cannot be fetched, the function falls
+back to \code{"coast"} with a message. Attribution stays with the tile provider.
 }
 \examples{
 \dontshow{if (requireNamespace("sf", quietly = TRUE) && requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 sites <- geo_example_sites("wilhelm")
-bm <- geo_basemap(sites, basemap = "coast", lon = lon, lat = lat)
-plot_sites(sites, lon, lat, basemap = "coast", colour = elevation_band)
+bm <- geo_basemap(sites, basemap = "esri", lon = lon, lat = lat)
+plot_sites(sites, lon, lat, basemap = "esri", colour = elevation_band)
 \dontshow{\}) # examplesIf}
 }

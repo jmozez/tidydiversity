@@ -215,6 +215,9 @@ reference:
       - plot_topo
       - plot_geo
       - geo_moran
+      - geo-io
+      - geo_save
+      - geo_gadm
       - geo-vector
       - geo-raster
       - geo-bioclim

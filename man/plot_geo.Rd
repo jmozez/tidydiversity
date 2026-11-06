@@ -9,7 +9,7 @@ plot_geo(
   value = NULL,
   lon = lon,
   lat = lat,
-  basemap = "none",
+  basemap = "esri",
   raster = NULL,
   coastline = NULL,
   size = 3,
@@ -17,7 +17,13 @@ plot_geo(
   scale_bar = TRUE,
   north_arrow = TRUE,
   scale_bar_km = NULL,
-  legend_title = NULL
+  legend_title = NULL,
+  legend_position = "auto",
+  legend_frame = TRUE,
+  inset = FALSE,
+  admin = NULL,
+  admin_level = 1,
+  admin_fill = FALSE
 )
 }
 \arguments{
@@ -38,7 +44,8 @@ path. See \code{\link[=geo_basemap]{geo_basemap()}}.}
 
 \item{coastline}{Optional coastline \code{sf} for a coast basemap.}
 
-\item{size}{Point size when not mapping size to \code{value}.}
+\item{size}{Point size, or a bare column mapped to point size (combined
+with \code{value} like tmap size + col, e.g. Hill number and elevation).}
 
 \item{label}{Optional column of site labels.}
 
@@ -47,9 +54,25 @@ path. See \code{\link[=geo_basemap]{geo_basemap()}}.}
 \item{scale_bar_km}{Length of the scale bar in kilometres.}
 
 \item{legend_title}{Optional legend title (defaults to the value column).}
+
+\item{legend_position}{\code{"auto"} (collision-aware inside corner),
+\code{"outside"}, or a corner \code{"bl"} / \code{"br"} / \code{"tl"} / \code{"tr"}.}
+
+\item{legend_frame}{Draw a frame around an inside legend?}
+
+\item{inset}{Overview map: \code{FALSE}, \code{TRUE}/\code{"auto"}, \code{"png"}, or a
+length-4 bbox. Uses the same collision reservation as the scale bar
+and north arrow. PNG insets prefer GADM provinces when cached.}
+
+\item{admin}{Optional administrative boundaries (\code{sf} or ISO3 code);
+see \code{\link[=plot_sites]{plot_sites()}}.}
+
+\item{admin_level}{GADM level when \code{admin} is a country code.}
+
+\item{admin_fill}{Fill admin polygons instead of outlines only.}
 }
 \value{
-A ggplot object.
+A ggplot object with attribute \code{td_decoration}.
 }
 \description{
 Plots site-level diversity estimates as points on an sf map, with an

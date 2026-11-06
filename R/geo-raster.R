@@ -2,10 +2,13 @@
 #'
 #' @description
 #' Native tidyverse-style wrappers around common **terra** operations for
-#' elevation and climate rasters. Callers stay inside tidydiversity; the
-#' heavy lifting is delegated to terra's compiled code. Pair with
-#' [geo_extract()] to join raster values to sites, and with [geo_buffer()]
-#' plus [geo_raster_zonal()] for mean elevation in a site buffer.
+#' elevation and climate rasters. terra (and therefore these helpers) reads
+#' and writes through **GDAL**, so GeoTIFF, COG, netCDF and similar formats
+#' work without calling `gdal_translate` yourself. Do not use the retired
+#' **rgdal** package. Pair with [geo_extract()] to join raster values to
+#' sites, and with [geo_buffer()] plus [geo_raster_zonal()] for mean
+#' elevation in a site buffer. [geo_raster_project()], [geo_raster_crop()]
+#' and [geo_raster_mask()] are the tidy entry points for GDAL warps / clips.
 #'
 #' @param raster A `terra::SpatRaster` or a file path.
 #' @param y An `sf` polygon/line used to crop, mask or summarise.
@@ -22,21 +25,6 @@
 #' geo_raster_zonal(r, geo_buffer(sites, dist = 2000), fun = "mean")
 NULL
 
-#' @rdname geo-raster
-#' @export
-geo_raster_read <- function(path, ...) {
-  rlang::check_installed("terra")
-  if (inherits(path, "SpatRaster")) {
-    return(path)
-  }
-  if (!is.character(path) || length(path) != 1) {
-    cli::cli_abort("{.arg path} must be a single file path or a SpatRaster.")
-  }
-  if (!file.exists(path)) {
-    cli::cli_abort("Raster file {.path {path}} does not exist.")
-  }
-  terra::rast(path, ...)
-}
 
 #' @rdname geo-raster
 #' @export

@@ -12,7 +12,7 @@ plot_sites(
   shape = NULL,
   label = NULL,
   facet = NULL,
-  basemap = "none",
+  basemap = "esri",
   raster = NULL,
   coastline = NULL,
   occurrence = NULL,
@@ -21,7 +21,14 @@ plot_sites(
   scale_bar = TRUE,
   north_arrow = TRUE,
   scale_bar_km = NULL,
-  palette = c("okabe_ito", "grey")
+  palette = c("okabe_ito", "grey"),
+  legend_title = NULL,
+  legend_position = "auto",
+  legend_frame = TRUE,
+  inset = FALSE,
+  admin = NULL,
+  admin_level = 1,
+  admin_fill = FALSE
 )
 }
 \arguments{
@@ -54,19 +61,47 @@ outline) drawn under the sites when using a coast basemap.}
 \item{occurrence}{Optional second data frame of species records with the
 same coordinate columns, drawn as smaller points underneath the sites.}
 
-\item{size}{Point size for sites.}
+\item{size}{Point size, or a bare column name mapped to point size
+(combined with \code{colour} when both are set, like tmap size + col).}
 
 \item{occurrence_size}{Point size for occurrence records.}
 
 \item{scale_bar, north_arrow}{Draw a scale bar and north arrow?}
 
 \item{scale_bar_km}{Length of the scale bar in kilometres. When \code{NULL},
-a round length is chosen from the map extent.}
+a round length is chosen from the map extent (true metres via a local
+UTM projection when the map CRS is geographic).}
 
 \item{palette}{Discrete palette: \code{"okabe_ito"} or \code{"grey"}.}
+
+\item{legend_title}{Optional legend title (defaults to the colour column).}
+
+\item{legend_position}{\code{"auto"} (collision-aware inside corner),
+\code{"outside"}, or a corner \code{"bl"} / \code{"br"} / \code{"tl"} / \code{"tr"}.}
+
+\item{legend_frame}{Draw a frame around an inside legend?}
+
+\item{inset}{Overview / locator map: \code{FALSE}, \code{TRUE} / \code{"auto"},
+\code{"png"} (Papua New Guinea), or a length-4 bbox
+\code{c(xmin, ymin, xmax, ymax)}. Placed in a free corner that does not
+overlap sites, the scale bar, north arrow or inside legend. When
+GADM data are cached, the PNG inset uses province boundaries from
+\code{\link[=geo_gadm]{geo_gadm()}}.}
+
+\item{admin}{Optional administrative boundaries: an \code{sf} object (for
+example from \code{\link[=geo_gadm]{geo_gadm()}}), or an ISO3 country code that is fetched
+with \code{geo_gadm(admin, level = admin_level)}. Drawn as borders, or
+filled by province when \code{admin_fill} is \code{TRUE}.}
+
+\item{admin_level}{GADM level used when \code{admin} is a country code
+(\code{0} country, \code{1} province, \code{2} district).}
+
+\item{admin_fill}{Fill administrative polygons (province choropleth
+colours) instead of outline-only borders.}
 }
 \value{
-A ggplot object.
+A ggplot object. Attribute \code{td_decoration} holds the reserved
+corner boxes (for tests and debugging).
 }
 \description{
 \code{plot_sites()} draws sampling locations for a manuscript figure: points

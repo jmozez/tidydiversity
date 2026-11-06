@@ -73,6 +73,10 @@ plot_topo <- function(data,
   col_q <- enquo(colour)
   size_q <- enquo(size)
   col_nm <- if (quo_is_null(col_q)) NULL else td_pick(col_q, data, "colour")
+  if (!is.null(col_nm) && (identical(col_nm, "species") ||
+      any(grepl("[_.]", as.character(data[[col_nm]]))))) {
+    data[[col_nm]] <- geo_pretty_species(data[[col_nm]])
+  }
   if (quo_is_null(size_q)) {
     size_nm <- if ("dbh" %in% names(data)) "dbh" else NULL
   } else {
@@ -154,16 +158,25 @@ plot_topo_dem_layers <- function(p, dem, contours, hillshade,
   if (isTRUE(hillshade)) {
     slope <- terra::terrain(r, v = "slope", unit = "radians")
     aspect <- terra::terrain(r, v = "aspect", unit = "radians")
-    hs <- terra::shade(slope, aspect, angle = 45, direction = 315)
+    # Multi-direction hillshade (smoother, less harsh than a single light)
+    dirs <- c(315, 045, 270, 135)
+    shades <- lapply(dirs, function(d) {
+      terra::shade(slope, aspect, angle = 40, direction = d)
+    })
+    hs <- shades[[1]]
+    for (i in 2:length(shades)) {
+      hs <- hs + shades[[i]]
+    }
+    hs <- hs / length(shades)
     hdf <- terra::as.data.frame(hs, xy = TRUE, na.rm = TRUE)
     z <- setdiff(names(hdf), c("x", "y"))[1]
     p <- p + ggplot2::geom_raster(
       data = hdf,
       ggplot2::aes(.data$x, .data$y, fill = .data[[z]]),
-      alpha = 0.9
+      alpha = 1
     ) +
       ggplot2::scale_fill_gradient(
-        low = "grey30", high = "grey95",
+        low = "#2b2b2b", high = "#f4f1ea",
         guide = "none"
       )
   }
@@ -196,10 +209,22 @@ plot_topo_dem_layers <- function(p, dem, contours, hillshade,
         data = cdf,
         ggplot2::aes(.data$x, .data$y, z = .data$z),
         breaks = contour_breaks,
-        colour = "grey25",
-        linewidth = 0.3,
-        alpha = 0.8
+        colour = "grey20",
+        linewidth = 0.35,
+        alpha = 0.85
       )
+      # Label a subset of contours (metres)
+      if (requireNamespace("metR", quietly = TRUE)) {
+        p <- p + metR::geom_text_contour(
+          data = cdf,
+          ggplot2::aes(.data$x, .data$y, z = .data$z),
+          breaks = contour_breaks,
+          size = 2.4,
+          colour = "grey15",
+          skip = 1,
+          label.placer = metR::label_placer_n(1)
+        )
+      }
     }
   }
   p
@@ -444,4 +469,13 @@ geo_example_censuses <- function(n = 80, seed = 1, time = 5) {
   rec$status <- "A"
   c2 <- vctrs::vec_rbind(c2, rec)
   list(census1 = tibble::as_tibble(c1), census2 = tibble::as_tibble(c2))
+}
+
+
+# Convert Genus_species / Genus.species to "Genus species" for legends.
+geo_pretty_species <- function(x) {
+  x <- as.character(x)
+  x <- gsub("[_.]+", " ", x)
+  x <- gsub("\\s+", " ", x)
+  trimws(x)
 }
