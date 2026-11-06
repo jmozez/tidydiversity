@@ -129,11 +129,12 @@ glance.td_count_model <- function(x, ...) {
 
 #' @export
 predict.td_count_model <- function( # nolint: object_name_linter.
-                                    object,
-                                    newdata = NULL,
-                                    type = "response",
-                                    se.fit = FALSE, # nolint: object_name_linter.
-                                    ...) {
+  object,
+  newdata = NULL,
+  type = "response",
+  se.fit = FALSE, # nolint: object_name_linter.
+  ...
+) {
   stats::predict(
     object$fit, newdata = newdata, type = type, se.fit = se.fit, ...
   )
