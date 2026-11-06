@@ -2,7 +2,7 @@
 # dynamics plot, Papua New Guinea (Luk et al. 2019, Biotropica). Only the
 # Wanang ("WAN") sheet is used; the other sheets are from outside PNG.
 # Source: Luk, C.-L., Basset, Y., Kongnoo, P., Hau, B. C. H. & Bonebrake,
-# T. C. (2018). Data from: Inter-annual monitoring improves diversity
+# T. C. (2019). Data from: Inter-annual monitoring improves diversity
 # estimation of tropical butterfly assemblages. Dryad,
 # https://doi.org/10.5061/dryad.j35fq7r (CC0 1.0), mirrored on Zenodo
 # record 4931308.

@@ -43,7 +43,7 @@ Three more Papua New Guinea datasets cover other designs and taxa:
 * `png_tree_ants`: every ant nest in 1254 trees in plots at 200, 900 and
   1800 m (Plowman et al. 2020).
 * `png_frogs`: 3390 frogs of 55 species at eight elevations on Mt Wilhelm
-  (Dahl et al. 2023).
+  (Dahl et al. 2024).
 * `wanang_butterflies`: butterflies counted on 36 days over three years in
   the Wanang forest dynamics plot (Luk et al. 2019).
 
