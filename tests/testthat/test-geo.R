@@ -196,3 +196,50 @@ test_that("compiled haversine matches the R reference", {
   ref <- 6371000 * 2 * atan2(sqrt(a), sqrt(pmax(0, 1 - a)))
   expect_equal(cpp, ref, tolerance = 1e-6)
 })
+
+test_that("plot_sites() returns a ggplot and drops missing coords", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("sf")
+  sites <- geo_example_sites("wilhelm")
+  sites$lon[1] <- NA_real_
+  p <- plot_sites(sites, lon, lat, colour = elevation_band, label = site)
+  expect_s3_class(p, "ggplot")
+  # CRS is WGS84
+  sf_sites <- geo_as_sf(geo_example_sites("wilhelm"), lon, lat)
+  expect_equal(sf::st_crs(sf_sites)$epsg, 4326)
+  p2 <- plot_sites(sf_sites, colour = elevation_band)
+  expect_s3_class(p2, "ggplot")
+})
+
+test_that("plot_sites() facets and groups without error", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("sf")
+  sites <- geo_example_sites("wilhelm")
+  sites$season <- rep(c("dry", "wet"), length.out = nrow(sites))
+  p <- plot_sites(
+    sites, lon, lat,
+    colour = elevation_band,
+    shape = season,
+    facet = season,
+    scale_bar = TRUE,
+    north_arrow = TRUE
+  )
+  expect_s3_class(p, "ggplot")
+  # Built plot has facet and site layers
+  built <- ggplot2::ggplot_build(p)
+  expect_true(length(built$layout$layout$PANEL) >= 2)
+})
+
+test_that("plot_sites() errors on empty coordinates", {
+  skip_if_not_installed("sf")
+  bad <- tibble::tibble(site = "a", lon = NA_real_, lat = NA_real_)
+  expect_error(plot_sites(bad, lon, lat), "finite coordinates")
+})
+
+test_that("geo_example_sites() covers Wilhelm and Wanang", {
+  w <- geo_example_sites("wilhelm")
+  expect_true(all(c("site", "lon", "lat", "elevation") %in% names(w)))
+  expect_equal(nrow(w), 8)
+  a <- geo_example_sites("wanang")
+  expect_equal(a$site, c("Wanang", "Numba", "Yawan"))
+})

@@ -194,11 +194,13 @@ reference:
   - title: Geospatial
     contents:
       - geo_as_sf
+      - geo_example_sites
       - geo_extract
       - geo_clean
       - geo_gbif
       - geo_distance
       - geo_decay
+      - plot_sites
       - plot_geo
       - geo_moran
 

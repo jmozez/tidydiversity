@@ -1,5 +1,11 @@
 # tidydiversity 0.1.0
 
+* `plot_sites()` draws publication-ready study-site maps (grouping,
+  labels, raster or coastline backdrop, facets, scale bar and north arrow
+  without map-package dependencies). `geo_example_sites()` supplies
+  illustrative Mt Wilhelm and Wanang coordinates for the PNG examples,
+  which carry elevation but not GPS. SDM tools such as biomod2 and Maxent
+  remain out of scope until rebuilt as tidy verbs.
 * Geospatial workflow (native tidyverse-style verbs; **sf** and **terra**
   as Suggests): `geo_as_sf()`, `geo_drop_geometry()`, `geo_extract()`,
   `geo_clean()` (occurrence flags rebuilt so callers never need

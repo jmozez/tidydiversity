@@ -18,20 +18,64 @@ library(tidydiversity)
 ```
 
 tidydiversity keeps the whole spatial biodiversity workflow in one tidy
-pipeline: sites become `sf` tables, rasters join as columns, occurrence
-records are cleaned without leaving the package, distances feed
-`beta_decay()`, Hill numbers map with ggplot2, and Moran's I diagnoses
-spatial autocorrelation.
+pipeline: study-site maps for papers, sites as `sf` tables, rasters joined
+as columns, occurrence cleaning without leaving the package, distances for
+`beta_decay()`, Hill numbers on maps, and Moran's I for spatial
+autocorrelation. Advanced SDM tools such as biomod2 and Maxent are not
+tidy-friendly yet; they stay out of this workflow until rebuilt as tidy
+verbs.
+
+## Study-site map (publication figure)
+
+Papers almost always need a map of the sampling sites. The Papua New Guinea
+example tables (`png_ants`, `png_frogs`, `png_tree_ants`) record elevation
+but not GPS, so [geo_example_sites()] supplies illustrative WGS84 positions
+near Mt Wilhelm and the Wanang canopy plots. Replace them with your own GPS
+before publication.
+
+```{r study-sites-map, fig.width = 7, fig.height = 5.2, eval = requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)}
+sites <- geo_example_sites("wilhelm")
+# Keep the five elevations shared by both seasons in png_ants
+sites <- sites[sites$elevation <= 2200, ]
+sites$season <- "both"
+
+plot_sites(
+  sites,
+  lon,
+  lat,
+  colour = elevation_band,
+  label = site,
+  scale_bar = TRUE,
+  north_arrow = TRUE
+) +
+  ggplot2::labs(
+    title = "Study sites along Mt Wilhelm, Papua New Guinea",
+    subtitle = "Illustrative coordinates for the elevational gradient"
+  )
+```
+
+Join the same coordinates to community data when you need a map per season
+or taxon:
+
+```{r study-sites-facet, fig.width = 8, fig.height = 4.2, eval = requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)}
+ants <- unique(png_ants[c("site", "elevation", "season")])
+ants <- dplyr::left_join(ants, sites[c("site", "lon", "lat")], by = "site")
+plot_sites(
+  ants,
+  lon,
+  lat,
+  colour = elevation,
+  facet = season,
+  label = site
+) +
+  ggplot2::labs(title = "PNG ant bait sites by season")
+```
 
 ## Sites and rasters
 
 ```{r sites}
-sites <- tibble::tibble(
-  site = c("MW0200", "MW0700", "MW1200", "MW1700", "MW2200"),
-  lon = c(145.23, 145.18, 145.12, 145.06, 145.01),
-  lat = c(-5.72, -5.74, -5.78, -5.81, -5.85),
-  elevation = c(200, 700, 1200, 1700, 2200)
-)
+sites <- geo_example_sites("wilhelm")
+sites <- sites[sites$elevation <= 2200, ]
 sf_sites <- geo_as_sf(sites, lon, lat, site = site)
 sf_sites
 ```
