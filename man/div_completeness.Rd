@@ -43,7 +43,10 @@ column, \code{q}, \code{completeness}, \code{se}, \code{lower} and \code{upper}.
 Estimates sample completeness of order \code{q} for each site (Chao et al.
 2020). Completeness at q = 0 is the proportion of species richness
 detected, at q = 1 it is the sample coverage, and higher orders give
-increasing weight to abundant species. Values lie between 0 and 1.
+increasing weight to abundant species. Values lie between 0 and 1,
+except in samples made up only of singletons, where estimates for q > 0
+are unreliable and can be negative (as in iNEXT.4steps); a warning flags
+such sites.
 }
 \examples{
 div_completeness(png_ants, q = c(0, 1, 2), .by = season, nboot = 0)

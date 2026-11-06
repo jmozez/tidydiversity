@@ -15,17 +15,17 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
 
-      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
         with:
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
         with:
-          extra-packages: any::lintr, local::.
+          extra-packages: any::lintr, any::spelling, local::.
           needs: lint
 
       - name: Lint
@@ -33,3 +33,20 @@ jobs:
         shell: Rscript {0}
         env:
           LINTR_ERROR_ON_LINT: true
+
+      # spelling has no en-NZ dictionary, so check against en-GB.
+      - name: Spelling
+        run: |
+          files <- c(
+            list.files("man", "\\.Rd$", full.names = TRUE),
+            list.files("vignettes", "\\.Rmd$", full.names = TRUE, recursive = TRUE),
+            "README.Rmd", "NEWS.md", "DESCRIPTION"
+          )
+          bad <- spelling::spell_check_files(
+            files, ignore = readLines("inst/WORDLIST"), lang = "en_GB"
+          )
+          print(bad)
+          if (nrow(bad) > 0) {
+            stop("Fix the spelling or add the words to inst/WORDLIST.")
+          }
+        shell: Rscript {0}

@@ -5,7 +5,12 @@ template:
   includes:
     # Tell browsers the site has its own light and dark themes, so their
     # automatic dark mode does not invert (darken) the figures.
-    in_header: <meta name="color-scheme" content="light dark">
+    # The CSP allows only the site's own scripts; GitHub Pages cannot send
+    # security headers, so they are set as meta tags.
+    in_header: |
+      <meta name="color-scheme" content="light dark">
+      <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+      <meta name="referrer" content="strict-origin-when-cross-origin">
   opengraph:
     image:
       src: man/figures/logo.png
