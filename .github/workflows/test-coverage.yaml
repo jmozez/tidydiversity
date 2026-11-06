@@ -22,29 +22,33 @@ jobs:
         with:
           persist-credentials: false
 
-      # Each Linux job's Azure apt mirror is sometimes ~40 kB/s, which made
-      # setup-r take 20+ min. Time a small download from three mirrors, use
-      # the fastest, and make apt retry a stalled connection.
-      - name: Pick a fast Ubuntu mirror
+      # setup-r installs ~200 apt packages, and the runner's Azure apt mirror
+      # sometimes serves them at ~40 kB/s (20+ min). Keep the .deb files in the
+      # Actions cache so only the first run on a new runner image downloads them.
+      - name: Prepare apt cache
+        id: apt
         if: runner.os == 'Linux'
         run: |
           printf '%s\n' 'Acquire::Retries "5";' 'Acquire::http::Timeout "20";' \
-            'Acquire::https::Timeout "20";' | sudo tee /etc/apt/apt.conf.d/80-retries
-          . /etc/os-release
-          azure=http://azure.archive.ubuntu.com/ubuntu
-          best=$azure; best_speed=0
-          for m in $azure http://archive.ubuntu.com/ubuntu http://mirrors.edge.kernel.org/ubuntu; do
-            s=$(curl -s -o /dev/null --max-time 10 -w '%{speed_download}' \
-              "$m/dists/$VERSION_CODENAME/main/binary-amd64/Packages.gz" || true)
-            s=${s%.*}; s=${s:-0}
-            echo "$m: $((s / 1024)) kB/s"
-            if [ "$s" -gt "$best_speed" ]; then best=$m; best_speed=$s; fi
-          done
-          echo "Using $best"
-          if [ "$best" != "$azure" ]; then
-            sudo sed -i "s|$azure|$best|g" /etc/apt/apt-mirrors.txt \
-              /etc/apt/sources.list /etc/apt/sources.list.d/*.sources 2>/dev/null || true
-          fi
+            'Acquire::https::Timeout "20";' 'APT::Keep-Downloaded-Packages "true";' \
+            'Binary::apt::APT::Keep-Downloaded-Packages "true";' |
+            sudo tee /etc/apt/apt.conf.d/80-ci
+          prefix="apt-$ImageOS-$GITHUB_JOB-${R_VERSION:-release}-"
+          echo "prefix=$prefix" >> "$GITHUB_OUTPUT"
+          echo "key=$prefix$ImageVersion" >> "$GITHUB_OUTPUT"
+
+      - name: Restore apt cache
+        id: apt-cache
+        if: runner.os == 'Linux'
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.apt-debs
+          key: ${{ steps.apt.outputs.key }}
+          restore-keys: ${{ steps.apt.outputs.prefix }}
+
+      - name: Load cached .deb files
+        if: runner.os == 'Linux' && steps.apt-cache.outputs.cache-matched-key != ''
+        run: sudo cp ~/.apt-debs/*.deb /var/cache/apt/archives/ || true
 
       - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
         with:
@@ -54,6 +58,21 @@ jobs:
         with:
           extra-packages: any::covr, any::xml2
           needs: coverage
+
+      - name: Collect .deb files
+        id: debs
+        if: runner.os == 'Linux' && steps.apt-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.apt-debs
+          cp /var/cache/apt/archives/*.deb ~/.apt-debs/ 2>/dev/null || true
+          echo "n=$(ls ~/.apt-debs | wc -l)" >> "$GITHUB_OUTPUT"
+
+      - name: Save apt cache
+        if: runner.os == 'Linux' && steps.debs.outputs.n != '' && steps.debs.outputs.n != '0'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.apt-debs
+          key: ${{ steps.apt.outputs.key }}
 
       - name: Test coverage
         run: |
