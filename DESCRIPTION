@@ -77,6 +77,10 @@ Suggests:
     CoordinateCleaner,
     maptiles,
     geodata,
+    elevatr,
+    leaflet,
+    tmap,
+    MASS,
     vegan
 VignetteBuilder: 
     knitr

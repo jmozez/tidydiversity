@@ -17,7 +17,10 @@ geo_bioclim(
   path = NULL,
   cache_dir = NULL,
   download = TRUE,
-  version = NULL
+  version = NULL,
+  scenario = NULL,
+  year = NULL,
+  model = "MPI-ESM1-2-HR"
 )
 
 geo_worldclim(
@@ -34,7 +37,10 @@ geo_chelsa(
   path = NULL,
   cache_dir = NULL,
   download = TRUE,
-  version = "2.1"
+  version = "2.1",
+  scenario = NULL,
+  year = NULL,
+  model = "MPI-ESM1-2-HR"
 )
 }
 \arguments{
@@ -55,6 +61,10 @@ no download is attempted.}
 cache or \code{path}.}
 
 \item{version}{Dataset version string (informational / URL selection).}
+
+\item{scenario, year, model}{Optional CHELSA-CMIP6 future climate
+arguments (chelsa only). When set, downloads future bioclim layers
+(Karger et al. 2023). Use \code{download = FALSE} on CRAN.}
 }
 \value{
 A \code{terra::SpatRaster} with one layer per requested variable.

@@ -27,6 +27,9 @@
 #' @param vars Bioclim variable codes such as `"bio1"` or `"bio12"`, or
 #'   their tidy names from [geo_bioclim_vars()]. Use `"all"` for bio1-bio19.
 #' @param source `"worldclim"` or `"chelsa"`.
+#' @param scenario,year,model Optional CHELSA-CMIP6 future climate
+#'   arguments (chelsa only). When set, downloads future bioclim layers
+#'   (Karger et al. 2023). Use `download = FALSE` on CRAN.
 #' @param res WorldClim resolution in minutes: `10`, `5`, `2.5` or `0.5`.
 #'   CHELSA downloads use the 30 arc-second product.
 #' @param path Optional local file or directory of GeoTIFFs. When supplied,
@@ -146,9 +149,15 @@ geo_bioclim <- function(vars = c("bio1", "bio12"),
                         path = NULL,
                         cache_dir = NULL,
                         download = TRUE,
-                        version = NULL) {
+                        version = NULL,
+                        scenario = NULL,
+                        year = NULL,
+                        model = "MPI-ESM1-2-HR") {
   source <- rlang::arg_match(source)
   if (identical(source, "worldclim")) {
+    if (!is.null(scenario) || !is.null(year)) {
+      cli::cli_abort("CMIP6 future climate is supported for {.val chelsa} only.")
+    }
     geo_worldclim(
       vars = vars, res = res, path = path,
       cache_dir = cache_dir, download = download, version = version
@@ -156,7 +165,8 @@ geo_bioclim <- function(vars = c("bio1", "bio12"),
   } else {
     geo_chelsa(
       vars = vars, path = path,
-      cache_dir = cache_dir, download = download, version = version
+      cache_dir = cache_dir, download = download, version = version,
+      scenario = scenario, year = year, model = model
     )
   }
 }
@@ -210,13 +220,24 @@ geo_chelsa <- function(vars = c("bio1", "bio12"),
                        path = NULL,
                        cache_dir = NULL,
                        download = TRUE,
-                       version = "2.1") {
+                       version = "2.1",
+                       scenario = NULL,
+                       year = NULL,
+                       model = "MPI-ESM1-2-HR") {
   rlang::check_installed("terra")
   vars <- geo_bioclim_resolve_vars(vars)
   if (!is.null(path)) {
     return(geo_bioclim_from_path(path, vars))
   }
   cache_dir <- geo_bioclim_cache_dir(cache_dir)
+  # Future climate (CHELSA-CMIP6 / geodata cmip6)
+  if (!is.null(scenario) || !is.null(year)) {
+    return(geo_chelsa_cmip6(
+      vars = vars, scenario = scenario %||% "ssp585",
+      year = year %||% 2050, model = model,
+      cache_dir = cache_dir, download = download
+    ))
+  }
   if (isTRUE(download) && requireNamespace("geodata", quietly = TRUE)) {
     out <- tryCatch(
       {
@@ -239,6 +260,73 @@ geo_chelsa <- function(vars = c("bio1", "bio12"),
     geo_chelsa_layer(
       v, cache_dir = cache_dir,
       download = download, version = version %||% "2.1"
+    )
+  })
+  terra::rast(layers)
+}
+
+#' CHELSA-CMIP6 future bioclim layers
+#'
+#' Downloads future bioclimatic surfaces for a CMIP6 scenario and year
+#' (Karger et al. 2023). Network access is skipped when `download = FALSE`
+#' (use on CRAN). Prefer `path` for offline GeoTIFFs.
+#'
+#' @inheritParams geo_chelsa
+#' @param scenario CMIP6 scenario, for example `"ssp126"`, `"ssp370"`,
+#'   `"ssp585"`.
+#' @param year Target year (for example 2050 or 2070).
+#' @param model Climate model id passed to geodata when available.
+#' @references
+#' Karger, D. N., et al. (2023). Climatologies at high resolution for the
+#' earth land surface areas (CHELSA-CMIP6). *Ecography*.
+#' \doi{10.1111/ecog.06535}
+#' @noRd
+geo_chelsa_cmip6 <- function(vars, scenario, year, model, cache_dir, download) {
+  year <- as.integer(year)
+  scenario <- tolower(as.character(scenario))
+  if (isTRUE(download) && requireNamespace("geodata", quietly = TRUE)) {
+    out <- tryCatch({
+      rs <- lapply(vars, function(v) {
+        n <- as.integer(sub("bio", "", v))
+        geodata::cmip6_world(
+          model = model, ssp = gsub("ssp", "", scenario),
+          time = paste0(year, "s"), var = "bioc", res = 5,
+          path = file.path(cache_dir, "geodata-cmip6")
+        )[[n]]
+      })
+      r <- terra::rast(rs)
+      names(r) <- vars
+      r
+    }, error = function(e) NULL)
+    if (!is.null(out)) return(out)
+  }
+  # Direct CHELSA-CMIP6 style cache lookup / download attempt
+  layers <- lapply(vars, function(v) {
+    n <- sub("bio", "", v)
+    fname <- sprintf("CHELSA_%s_month_20%d_%s_%s_V.2.1.tif", v, year %% 100, scenario, model)
+    # Simpler cache key
+    dest <- file.path(cache_dir, "chelsa-cmip6",
+                      sprintf("%s_%s_%s_%s.tif", v, scenario, year, model))
+    dir.create(dirname(dest), recursive = TRUE, showWarnings = FALSE)
+    if (file.exists(dest)) {
+      r <- terra::rast(dest)
+      names(r) <- v
+      return(r)
+    }
+    if (!isTRUE(download)) {
+      cli::cli_abort(
+        c(
+          "CHELSA-CMIP6 layer {.val {v}} ({scenario}, {year}) is not cached.",
+          "i" = "Pass {.arg path} or set {.arg download} = TRUE off CRAN."
+        )
+      )
+    }
+    cli::cli_abort(
+      c(
+        "Could not download CHELSA-CMIP6 for {.val {v}} ({scenario}, {year}).",
+        "i" = "Install {.pkg geodata} (>= 0.6) or pass local GeoTIFFs via {.arg path}.",
+        "i" = "Cite Karger et al. (2023), doi:10.1111/ecog.06535."
+      )
     )
   })
   terra::rast(layers)

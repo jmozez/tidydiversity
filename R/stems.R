@@ -508,3 +508,205 @@ stems_neighbours <- function(data,
   d$conspecific <- conspecific
   tibble::as_tibble(d)
 }
+
+
+#' Torus-translation habitat association test (ForestGEO)
+#'
+#' Tests whether a species' density differs among habitat classes by
+#' shifting the habitat map on a torus while keeping relative habitat
+#' structure (Harms et al. 2001). Observed mean density per habitat is
+#' compared to the null distribution from torus shifts.
+#'
+#' @param data Stem or tree table with `gx`, `gy` and species.
+#' @param habitat Either a data frame with `gx`, `gy` (quadrat centres) and
+#'   a habitat class column, or a character/factor column name already on
+#'   `data` after [stems_habitat()].
+#' @param species Species column.
+#' @param habitat_col Name of the habitat class column in `habitat` (or in
+#'   `data` when `habitat` is a column name).
+#' @param grid Quadrat size in metres (ForestGEO default 20).
+#' @param nperm Number of torus shifts.
+#' @param mindbh Optional minimum DBH filter.
+#' @param dbh_unit `"mm"` or `"cm"`.
+#' @param seed Optional RNG seed.
+#' @return A tibble (`td_stems_habitat_test`) with species, habitat,
+#'   observed density, null mean, and two-sided permutation p-value.
+#' @references
+#' Harms, K. E., Condit, R., Hubbell, S. P. and Foster, R. B. (2001). Habitat
+#' associations of trees and shrubs in a 50-ha neotropical forest plot.
+#' *Journal of Ecology*, 89, 947-959. \doi{10.1111/j.1365-2745.2001.00615.x}
+#' @export
+#' @examples
+#' stems <- geo_example_stems()
+#' # Toy habitat: low vs high elevation from the example DEM
+#' dem <- geo_example_dem()
+#' elev <- terra::extract(dem, cbind(stems$gx, stems$gy))[, 2]
+#' stems$habitat <- ifelse(elev > mean(elev, na.rm = TRUE), "ridge", "valley")
+#' # Aggregate to 20 m quadrats for the torus grid
+#' q <- stems_quadrat(stems)
+#' hab <- unique(q[c("quadrat", "gx", "gy")])
+#' # Habitat of quadrat centre
+#' hab$habitat <- ifelse(
+#'   hab$gx + hab$gy > 100, "ridge", "valley"
+#' )
+#' set.seed(1)
+#' stems_habitat_test(stems, habitat = hab, nperm = 49)
+stems_habitat_test <- function(data,
+                               habitat,
+                               species = species,
+                               habitat_col = "habitat",
+                               grid = 20,
+                               nperm = 999,
+                               mindbh = NULL,
+                               dbh_unit = c("mm", "cm"),
+                               seed = NULL) {
+  dbh_unit <- rlang::arg_match(dbh_unit)
+  td_check_data(data)
+  td_check_number(nperm, "nperm", 0, whole = TRUE)
+  td_check_number(grid, "grid", 0)
+  sp_col <- td_pick(enquo(species), data, "species")
+  prep <- stems_prepare(data)
+  data <- prep$data
+  if (!is.null(mindbh)) {
+    dbh_col <- prep$dbh %||% stems_find_col(data, c("dbh", "DBH"), "dbh")
+    dbh <- as.numeric(data[[dbh_col]])
+    if (identical(dbh_unit, "cm")) dbh <- dbh * 10
+    data <- data[is.finite(dbh) & dbh >= mindbh, , drop = FALSE]
+  }
+  if (!is.null(seed)) set.seed(seed)
+
+  # Build quadrat-level habitat raster (matrix)
+  if (is.character(habitat) && length(habitat) == 1) {
+    habitat_col <- habitat
+    if (!habitat_col %in% names(data)) {
+      cli::cli_abort("Column {.val {habitat_col}} not found on {.arg data}.")
+    }
+    q <- stems_quadrat(data, grid = grid)
+    hab <- unique(q[c("quadrat", "gx", "gy", habitat_col)])
+  } else {
+    td_check_data(habitat)
+    if (!habitat_col %in% names(habitat)) {
+      cli::cli_abort("{.arg habitat} needs column {.val {habitat_col}}.")
+    }
+    hab <- habitat
+    if (!all(c("gx", "gy") %in% names(hab)) && "quadrat" %in% names(hab)) {
+      # derive centres from quadrat keys if needed later
+    }
+  }
+  if (!all(c("gx", "gy") %in% names(hab))) {
+    cli::cli_abort("{.arg habitat} needs {.val gx} and {.val gy} columns.")
+  }
+
+  # Snap to grid indices
+  gx <- as.numeric(hab$gx)
+  gy <- as.numeric(hab$gy)
+  ix <- as.integer(floor(gx / grid))
+  iy <- as.integer(floor(gy / grid))
+  ux <- sort(unique(ix))
+  uy <- sort(unique(iy))
+  ncol <- length(ux)
+  nrow <- length(uy)
+  hab_levels <- sort(unique(as.character(hab[[habitat_col]])))
+  hab_id <- match(as.character(hab[[habitat_col]]), hab_levels)
+  grid_vec <- rep(NA_integer_, nrow * ncol)
+  for (i in seq_along(ix)) {
+    r <- match(iy[i], uy)
+    c <- match(ix[i], ux)
+    grid_vec[(r - 1L) * ncol + c] <- hab_id[i]
+  }
+
+  # Stem counts per species per habitat under observed map
+  stems_q <- stems_quadrat(data, grid = grid)
+  stems_q$.sp <- as.character(stems_q[[sp_col]])
+  stems_q$.ix <- as.integer(floor(as.numeric(stems_q$gx) / grid))
+  stems_q$.iy <- as.integer(floor(as.numeric(stems_q$gy) / grid))
+  stems_q$.r <- match(stems_q$.iy, uy)
+  stems_q$.c <- match(stems_q$.ix, ux)
+  ok <- is.finite(stems_q$.r) & is.finite(stems_q$.c)
+  stems_q <- stems_q[ok, , drop = FALSE]
+  stems_q$.cell <- (stems_q$.r - 1L) * ncol + stems_q$.c
+
+  spp <- sort(unique(stems_q$.sp))
+  stems_q$.sp_i <- match(stems_q$.sp, spp)
+  area_obs <- tabulate(grid_vec, nbins = length(hab_levels))
+  names(area_obs) <- hab_levels
+
+  obs_counts <- matrix(0, length(spp), length(hab_levels))
+  rownames(obs_counts) <- spp
+  colnames(obs_counts) <- hab_levels
+  for (i in seq_len(nrow(stems_q))) {
+    h <- grid_vec[stems_q$.cell[i]]
+    si <- stems_q$.sp_i[i]
+    if (is.finite(h) && is.finite(si)) {
+      obs_counts[si, h] <- obs_counts[si, h] + 1
+    }
+  }
+  dens_obs <- sweep(obs_counts, 2, pmax(area_obs, 1), "/")
+
+  # Null: random torus shifts
+  null_dens <- array(0, dim = c(nperm, length(spp), length(hab_levels)))
+  if (nperm > 0) {
+    for (b in seq_len(nperm)) {
+      dx <- sample.int(ncol, 1) - 1L
+      dy <- sample.int(nrow, 1) - 1L
+      if (exists("geo_torus_shift_cpp", mode = "function")) {
+        shifted <- geo_torus_shift_cpp(as.integer(grid_vec), as.integer(nrow),
+                                       as.integer(ncol), as.integer(dx),
+                                       as.integer(dy))
+      } else {
+        shifted <- geo_torus_shift_r(as.integer(grid_vec), nrow, ncol, dx, dy)
+      }
+      area_b <- tabulate(shifted, nbins = length(hab_levels))
+      counts_b <- matrix(0, length(spp), length(hab_levels))
+      for (i in seq_len(nrow(stems_q))) {
+        h <- shifted[stems_q$.cell[i]]
+        si <- stems_q$.sp_i[i]
+        if (is.finite(h) && h >= 1 && is.finite(si)) {
+          counts_b[si, h] <- counts_b[si, h] + 1
+        }
+      }
+      null_dens[b, , ] <- sweep(counts_b, 2, pmax(area_b, 1), "/")
+    }
+  }
+
+  rows <- list()
+  for (si in seq_along(spp)) {
+    for (hi in seq_along(hab_levels)) {
+      obs <- dens_obs[si, hi]
+      if (nperm > 0) {
+        null_v <- null_dens[, si, hi]
+        p <- (1 + sum(abs(null_v - mean(null_v)) >= abs(obs - mean(null_v)))) /
+          (1 + nperm)
+        null_mean <- mean(null_v)
+      } else {
+        p <- NA_real_
+        null_mean <- NA_real_
+      }
+      rows[[length(rows) + 1]] <- tibble::tibble(
+        species = spp[si],
+        habitat = hab_levels[hi],
+        density = obs,
+        null_mean = null_mean,
+        p_value = p,
+        n_stems = obs_counts[si, hi],
+        n_quadrats = as.integer(area_obs[hi])
+      )
+    }
+  }
+  out <- tibble::as_tibble(vctrs::vec_rbind(!!!rows))
+  td_new(out, "td_stems_habitat_test")
+}
+
+geo_torus_shift_r <- function(grid, nrow, ncol, dx, dy) {
+  sx <- dx %% ncol
+  sy <- dy %% nrow
+  out <- integer(length(grid))
+  for (r in seq_len(nrow) - 1L) {
+    for (c in seq_len(ncol) - 1L) {
+      rr <- (r + sy) %% nrow
+      cc <- (c + sx) %% ncol
+      out[rr * ncol + cc + 1L] <- grid[r * ncol + c + 1L]
+    }
+  }
+  out
+}
