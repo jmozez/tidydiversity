@@ -34,12 +34,9 @@ figures:
 navbar:
   bg: dark
   structure:
-    left: [intro, tutorials, gallery, modelling, publication, reference, news, memorial]
-    right: [search, github, lightswitch]
+    left: [intro, tutorials, guides, gallery, reference, news]
+    right: [memorial, search, github, lightswitch]
   components:
-    memorial:
-      text: In memory
-      href: articles/filip-damen.html
     intro:
       text: Get started
       href: articles/tidydiversity.html
@@ -66,20 +63,18 @@ navbar:
           href: articles/case-birds.html
         - text: Plants (Barro Colorado Island trees)
           href: articles/case-plants.html
-        - text: -------
-        - text: Guides
+    guides:
+      text: Guides
+      menu:
+        - text: Diversity
         - text: "TD, PD and FD on one scale"
           href: articles/dimensions.html
         - text: Alpha diversity and rarefaction
           href: articles/alpha-rarefaction.html
         - text: Beta diversity partitioning
           href: articles/beta-partitioning.html
-    gallery:
-      text: Gallery
-      href: articles/gallery.html
-    modelling:
-      text: Modelling
-      menu:
+        - text: -------
+        - text: Modelling and composition
         - text: Models of diversity estimates
           href: articles/modelling.html
         - text: "Ordination: biplots and triplots"
@@ -90,12 +85,21 @@ navbar:
           href: articles/traits.html
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
+        - text: -------
+        - text: Output
+        - text: Publication figures
+          href: articles/publication.html
+    gallery:
+      text: Gallery
+      href: articles/gallery.html
     news:
       text: News
       href: news/index.html
-    publication:
-      text: Publication figures
-      href: articles/publication.html
+    memorial:
+      text: In memory
+      icon: fa-feather
+      aria-label: In memory of Filip Damen
+      href: articles/filip-damen.html
 
 home:
   title: "tidydiversity: taxonomic, phylogenetic and functional diversity in R"
