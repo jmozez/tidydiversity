@@ -2,6 +2,7 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^SECURITY\.md$
+^cran-comments\.md$
 ^data-raw$
 ^logo$
 ^README\.Rmd$
