@@ -1221,23 +1221,43 @@ geo_moran_i <- function(x, w) {
 geo_correlogram <- function(x, d, bins = 5) {
   n <- length(x)
   ut <- upper.tri(d)
-  dist <- d[ut]
+  dist <- as.numeric(d[ut])
   # Pairwise z_i * z_j
   z <- x - mean(x)
   zz <- outer(z, z)
-  prod <- zz[ut]
-  brks <- stats::quantile(dist[dist > 0], probs = seq(0, 1, length.out = bins + 1))
-  brks <- unique(brks)
-  if (length(brks) < 3) {
-    return(tibble::tibble(bin = 1, distance = mean(dist), moran = NA_real_, n = length(dist)))
+  prod <- as.numeric(zz[ut])
+  ok <- is.finite(dist) & dist > 0 & is.finite(prod)
+  dist <- dist[ok]
+  prod <- prod[ok]
+  if (length(dist) < 2L) {
+    return(tibble::tibble(
+      bin = 1L, distance = NA_real_, moran = NA_real_, n = 0L
+    ))
   }
-  bin <- cut(dist, breaks = brks, include.lowest = TRUE)
+  brks <- unique(as.numeric(stats::quantile(
+    dist, probs = seq(0, 1, length.out = bins + 1L), names = FALSE
+  )))
+  if (length(brks) < 3L) {
+    return(tibble::tibble(
+      bin = 1L, distance = mean(dist), moran = NA_real_, n = length(dist)
+    ))
+  }
+  # Integer labels avoid empty-factor length mismatches in tibble()
+  grp <- cut(dist, breaks = brks, include.lowest = TRUE, labels = FALSE)
+  keep <- !is.na(grp)
+  dist <- dist[keep]
+  prod <- prod[keep]
+  grp <- grp[keep]
+  ids <- sort(unique(grp))
+  scale <- sum(z^2) / n
+  # Precompute outside tibble() so column name `bin` cannot mask `grp`
+  out_distance <- vapply(ids, function(i) mean(dist[grp == i]), numeric(1))
+  out_moran <- vapply(ids, function(i) mean(prod[grp == i]) / scale, numeric(1))
+  out_n <- vapply(ids, function(i) sum(grp == i), integer(1))
   tibble::tibble(
-    bin = seq_along(levels(bin)),
-    distance = as.numeric(tapply(dist, bin, mean)),
-    moran = as.numeric(tapply(prod, bin, function(v) {
-      mean(v) / (sum(z^2) / n)
-    })),
-    n = as.integer(tapply(dist, bin, length))
+    bin = as.integer(ids),
+    distance = out_distance,
+    moran = out_moran,
+    n = out_n
   )
 }
