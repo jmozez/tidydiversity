@@ -574,7 +574,9 @@ trait_itv <- function(data,
       } else {
         d <- as.data.frame(env)[ok, , drop = FALSE]
         d$.v <- v[ok]
-        f <- stats::as.formula(paste(".v ~", deparse(formula[[2]])))
+        f <- stats::as.formula(
+          paste(".v ~", paste(deparse(formula[[2]]), collapse = " "))
+        )
         fit <- stats::fitted(stats::lm(f, d))
         sum((fit - mean(d$.v))^2)
       }

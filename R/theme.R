@@ -23,7 +23,7 @@
 #' @return A ggplot2 theme, a character vector of colours or a ggplot2
 #'   scale.
 #' @references Okabe, M. and Ito, K. (2008). Color universal design (CUD):
-#'   how to make figures and presentations that are friendly to colorblind
+#'   how to make figures and presentations that are friendly to colour-blind
 #'   people. <https://jfly.uni-koeln.de/color/>
 #' @name theme_tidydiversity
 #' @examplesIf requireNamespace("ggplot2", quietly = TRUE)

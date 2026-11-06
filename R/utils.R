@@ -173,12 +173,16 @@ td_rename_site <- function(x, site) {
   tibble::as_tibble(x)
 }
 
-td_check_q <- function(q, integer = FALSE, call = caller_env()) {
+td_check_q <- function(q, integer = FALSE, finite = FALSE,
+                       call = caller_env()) {
   if (!is.numeric(q) || length(q) == 0 || anyNA(q) || any(q < 0)) {
     cli::cli_abort(
       "{.arg q} must be a numeric vector of non-negative orders.",
       call = call
     )
+  }
+  if (finite && !all(is.finite(q))) {
+    cli::cli_abort("{.arg q} must contain finite orders.", call = call)
   }
   if (integer && !all(q %in% c(0, 1, 2))) {
     cli::cli_abort(
@@ -190,6 +194,20 @@ td_check_q <- function(q, integer = FALSE, call = caller_env()) {
     )
   }
   sort(unique(q))
+}
+
+# rmultinom() draws at most .Machine$integer.max individuals.
+td_check_boot_n <- function(n, call = caller_env()) {
+  if (any(n > .Machine$integer.max)) {
+    cli::cli_abort(
+      c(
+        "Bootstrap resampling needs at most \\
+        {format(.Machine$integer.max, big.mark = \",\")} individuals per sample.",
+        "i" = "Use {.code nboot = 0} for larger totals."
+      ),
+      call = call
+    )
+  }
 }
 
 td_check_number <- function(x, arg, min = 0, max = Inf, whole = FALSE,

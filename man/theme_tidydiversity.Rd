@@ -64,6 +64,6 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 }
 \references{
 Okabe, M. and Ito, K. (2008). Color universal design (CUD):
-how to make figures and presentations that are friendly to colorblind
+how to make figures and presentations that are friendly to colour-blind
 people. \url{https://jfly.uni-koeln.de/color/}
 }

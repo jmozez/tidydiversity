@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^SECURITY\.md$
 ^data-raw$
 ^logo$
 ^README\.Rmd$

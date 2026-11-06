@@ -32,7 +32,7 @@ div_completeness <- function(data,
     counts = TRUE
   )
   td_check_min_n(prep)
-  q <- td_check_q(q)
+  q <- td_check_q(q, finite = TRUE)
   td_check_number(conf, "conf", 0, 1)
   td_check_number(nboot, "nboot", 0, whole = TRUE)
   z <- stats::qnorm(1 - (1 - conf) / 2)

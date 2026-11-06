@@ -1,6 +1,12 @@
 # tidydiversity 0.0.0.9000
 
 * Package scaffold.
+* Input checks: `beta_hill()`, `beta_hill_pair()` and `div_completeness()`
+  now reject infinite `q`, which used to return `NaN`. Bootstrapping a
+  sample of more than 2,147,483,647 individuals now gives a clear error
+  instead of failing inside `stats::rmultinom()`. `div_evenness()` and the
+  other extrapolating verbs no longer fail at high `q`, where the
+  asymptotic estimator is undefined; they fall back to the observed value.
 * tidydiversity is dedicated to the memory of Filip Damen (about
   1966-2026) of Wanang Village, Papua New Guinea: a new article tells his
   story, linked from the navigation bar and the README.
