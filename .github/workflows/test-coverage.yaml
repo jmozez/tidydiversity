@@ -10,7 +10,7 @@ permissions: read-all
 
 jobs:
   test-coverage:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -21,6 +21,15 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+
+      # On ubuntu-latest (now the 26.04 image) setup-r downloads ~200 apt
+      # packages from an Azure mirror that is often slow (20+ min).
+      # Pin 24.04 and make apt retry or give up on a stalled mirror quickly.
+      - name: Make apt fail fast and retry
+        if: runner.os == 'Linux'
+        run: |
+          printf '%s\n' 'Acquire::Retries "5";' 'Acquire::http::Timeout "20";' \
+            'Acquire::https::Timeout "20";' | sudo tee /etc/apt/apt.conf.d/80-retries
 
       - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
         with:
