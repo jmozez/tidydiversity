@@ -330,7 +330,8 @@ geo_clean <- function(data,
   flags <- tibble::tibble(.rows = n)
   if ("validity" %in% tests) {
     flags$.val <- !(is.finite(lon_v) & is.finite(lat_v) &
-      lon_v >= -180 & lon_v <= 180 & lat_v >= -90 & lat_v <= 90)
+                      lon_v >= -180 & lon_v <= 180 &
+                      lat_v >= -90 & lat_v <= 90)
   }
   if ("equal" %in% tests) {
     flags$.equ <- is.finite(lon_v) & is.finite(lat_v) & lon_v == lat_v
@@ -431,7 +432,7 @@ geo_haversine_m <- function(lon1, lat1, lon2, lat2) {
   n1 <- length(lon1)
   n2 <- length(lon2)
   if (n1 == n2 && length(lat1) == n1 && length(lat2) == n2 &&
-      exists("geo_haversine_pair_cpp", mode = "function")) {
+        exists("geo_haversine_pair_cpp", mode = "function")) {
     return(geo_haversine_pair_cpp(lon1, lat1, lon2, lat2))
   }
   if (n1 == 1L && n2 > 1L) {
@@ -529,7 +530,7 @@ geo_flag_outliers <- function(lon, lat, species, method, mtp) {
 #' )
 #' geo_gbif(gbif_like, clean = FALSE, as_sf = FALSE)
 geo_gbif <- function(data = NULL,
-                     scientificName = NULL,
+                     scientificName = NULL, # nolint: object_name_linter.
                      country = NULL,
                      limit = 500,
                      clean = TRUE,
@@ -1190,7 +1191,7 @@ geo_moran <- function(data,
   s2 <- sum((rowSums(w) + colSums(w))^2)
   b2 <- (sum((x - mean(x))^4) / n) / (sum((x - mean(x))^2) / n)^2
   vi <- (n * ((n^2 - 3 * n + 3) * s1 - n * s2 + 3 * s0^2) -
-    b2 * ((n^2 - n) * s1 - 2 * n * s2 + 6 * s0^2)) /
+           b2 * ((n^2 - n) * s1 - 2 * n * s2 + 6 * s0^2)) /
     ((n - 1) * (n - 2) * (n - 3) * s0^2) - ei^2
 
   out <- tibble::tibble(

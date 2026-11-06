@@ -238,24 +238,8 @@ geo_chelsa <- function(vars = c("bio1", "bio12"),
       cache_dir = cache_dir, download = download
     ))
   }
-  if (isTRUE(download) && requireNamespace("geodata", quietly = TRUE)) {
-    out <- tryCatch(
-      {
-        # geodata::chelsa downloads one variable at a time
-        rs <- lapply(vars, function(v) {
-          n <- as.integer(sub("bio", "", v))
-          geodata::chelsa(var = "bio", layer = n, path = file.path(cache_dir, "geodata"))
-        })
-        r <- terra::rast(rs)
-        names(r) <- vars
-        r
-      },
-      error = function(e) NULL
-    )
-    if (!is.null(out)) {
-      return(out)
-    }
-  }
+  # Current geodata releases do not export chelsa(); download CHELSA
+  # GeoTIFFs directly (geo_chelsa_layer) and cache under cache_dir.
   layers <- lapply(vars, function(v) {
     geo_chelsa_layer(
       v, cache_dir = cache_dir,

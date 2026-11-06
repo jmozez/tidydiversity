@@ -25,6 +25,12 @@
 #' @param .by Optional grouping columns (species, quadrat, habitat).
 #' @param dbh_unit `"mm"` or `"cm"` for the `dbh` column.
 #' @param alive Character codes of `status` that mean alive (default `"A"`).
+#' @param alive_only Keep only stems/trees whose `status` is in `alive`?
+#' @param gx,gy Bare column names for local metre coordinates (defaults
+#'   `gx`, `gy`) used by [stems_quadrat()] and neighbours.
+#' @param level `"tree"` (collapse to one row per `treeID`) or `"stem"`.
+#' @param conspecific For [stems_neighbours()], count only neighbours of the
+#'   same species (`TRUE`) or all neighbours (`FALSE`).
 #' @param grid Quadrat size in metres for [stems_quadrat()] (ForestGEO
 #'   default 20).
 #' @references Condit, R. (1998). *Tropical Forest Census Plots*. Springer.
@@ -329,18 +335,18 @@ stems_demography <- function(census1,
   in1 <- match(keys2, keys1)
   recruit <- above2 & (is.na(in1) | !above1[in1])
 
-  N <- sum(above1, na.rm = TRUE)
-  S <- sum(surv, na.rm = TRUE)
-  D <- sum(dead, na.rm = TRUE)
-  R <- sum(recruit, na.rm = TRUE)
-  mort_rate <- if (N > 0 && S > 0 && time > 0) {
-    (log(N) - log(S)) / time
+  n_start <- sum(above1, na.rm = TRUE)
+  n_surv <- sum(surv, na.rm = TRUE)
+  n_dead <- sum(dead, na.rm = TRUE)
+  n_recruit <- sum(recruit, na.rm = TRUE)
+  mort_rate <- if (n_start > 0 && n_surv > 0 && time > 0) {
+    (log(n_start) - log(n_surv)) / time
   } else {
     NA_real_
   }
   # Recruitment rate (Condit-style): based on survivors as the risk set
-  recr_rate <- if (S > 0 && time > 0) {
-    (log(S + R) - log(S)) / time
+  recr_rate <- if (n_surv > 0 && time > 0) {
+    (log(n_surv + n_recruit) - log(n_surv)) / time
   } else {
     NA_real_
   }
@@ -363,10 +369,10 @@ stems_demography <- function(census1,
   }
 
   out <- tibble::tibble(
-    N = N,
-    S = S,
-    D = D,
-    R = R,
+    N = n_start,
+    S = n_surv,
+    D = n_dead,
+    R = n_recruit,
     mortality_rate = mort_rate,
     recruitment_rate = recr_rate,
     growth_rate = growth_rate,

@@ -369,8 +369,10 @@ geo_annotation_scale_bar <- function(bb, length_km = NULL, facet = NULL,
                                      box = NULL) {
   corner <- rlang::arg_match(corner)
   if (!is.null(box)) {
-    xmin <- unname(box[1]); xmax <- unname(box[3])
-    ymin <- unname(box[2]); ymax <- unname(box[4])
+    xmin <- unname(box[1])
+    xmax <- unname(box[3])
+    ymin <- unname(box[2])
+    ymax <- unname(box[4])
   } else {
     xmin <- unname(bb["xmin"])
     xmax <- unname(bb["xmax"])
@@ -501,8 +503,10 @@ geo_annotation_north_arrow <- function(bb, facet = NULL, data = NULL,
                                        box = NULL) {
   corner <- rlang::arg_match(corner)
   if (!is.null(box)) {
-    xmin <- unname(box[1]); xmax <- unname(box[3])
-    ymin <- unname(box[2]); ymax <- unname(box[4])
+    xmin <- unname(box[1])
+    xmax <- unname(box[3])
+    ymin <- unname(box[2])
+    ymax <- unname(box[4])
   } else {
     xmin <- unname(bb["xmin"])
     xmax <- unname(bb["xmax"])

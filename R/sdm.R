@@ -352,14 +352,16 @@ plot_sdm_raster <- function(r, basemap = "esri", ...) {
 }
 
 geo_is_regular_grid <- function(x, y, tol = 1e-8) {
-  x <- as.numeric(x); y <- as.numeric(y)
+  x <- as.numeric(x)
+  y <- as.numeric(y)
   ux <- sort(unique(x[is.finite(x)]))
   uy <- sort(unique(y[is.finite(y)]))
   if (length(ux) < 3 || length(uy) < 3) return(FALSE)
   # Nearly complete rectangular lattice
   expected <- length(ux) * length(uy)
   if (length(x) < expected * 0.85) return(FALSE)
-  dx <- diff(ux); dy <- diff(uy)
+  dx <- diff(ux)
+  dy <- diff(uy)
   isTRUE(diff(range(dx)) < max(tol, mean(dx) * 1e-3)) &&
     isTRUE(diff(range(dy)) < max(tol, mean(dy) * 1e-3))
 }
@@ -402,7 +404,8 @@ sdm_sample_background <- function(data, lon_col, lat_col, predictors,
   xr <- range(data[[lon_col]], na.rm = TRUE)
   yr <- range(data[[lat_col]], na.rm = TRUE)
   # Expand bbox so background covers a wider environmental space
-  dx <- diff(xr); dy <- diff(yr)
+  dx <- diff(xr)
+  dy <- diff(yr)
   if (!is.finite(dx) || dx == 0) dx <- 1
   if (!is.finite(dy) || dy == 0) dy <- 1
   bg <- tibble::tibble(
@@ -470,15 +473,15 @@ sdm_ridge_logit <- function(x, y, lambda = 1e-4, link = "logit",
     }
     # Weighted ridge regression with intercept
     sqrtw <- sqrt(pmax(w, 1e-8))
-    X <- cbind(1, x)
-    Xw <- X * sqrtw
-    zw <- z * sqrtw
-    XtX <- crossprod(Xw)
-    diag(XtX) <- diag(XtX) + c(0, rep(lambda, p))
+    design <- cbind(1, x)
+    design_w <- design * sqrtw
+    z_w <- z * sqrtw
+    xtx <- crossprod(design_w)
+    diag(xtx) <- diag(xtx) + c(0, rep(lambda, p))
     coef <- tryCatch(
-      solve(XtX, crossprod(Xw, zw)),
+      solve(xtx, crossprod(design_w, z_w)),
       error = function(e) {
-        qr.coef(qr(XtX), as.numeric(crossprod(Xw, zw)))
+        qr.coef(qr(xtx), as.numeric(crossprod(design_w, z_w)))
       }
     )
     intercept_new <- coef[1]
@@ -507,12 +510,12 @@ sdm_eta <- function(object, newdata) {
       q <- z^2
       cols <- c(cols, list(q))
     }
-    X <- do.call(cbind, cols)
+    design <- do.call(cbind, cols)
     if (exists("sdm_linear_predict_cpp", mode = "function")) {
       return(object$model$intercept +
-               sdm_linear_predict_cpp(X, object$model$beta))
+               sdm_linear_predict_cpp(design, object$model$beta))
     }
-    return(as.numeric(object$model$intercept + X %*% object$model$beta))
+    return(as.numeric(object$model$intercept + design %*% object$model$beta))
   }
   if (identical(object$engine, "gam")) {
     return(as.numeric(stats::predict(object$model, newdata = newdata, type = "link")))

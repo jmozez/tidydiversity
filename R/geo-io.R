@@ -122,7 +122,10 @@ geo_io_guess_type <- function(path, type = NULL) {
   cli::cli_abort(
     c(
       "Cannot detect whether {.path {path}} is vector or raster.",
-      "i" = "Pass {.arg type} = {.val vector} or {.val raster}, or use {.fn geo_vector_read} / {.fn geo_raster_read}."
+      "i" = paste(
+        "Pass {.arg type} = {.val vector} or {.val raster},",
+        "or use {.fn geo_vector_read} / {.fn geo_raster_read}."
+      )
     )
   )
 }

@@ -66,9 +66,18 @@ geo_gadm <- function(country = "PNG",
   if (!isTRUE(download)) {
     cli::cli_abort(
       c(
-        "No cached GADM file for {.val {country}} level {level} and {.arg download} is FALSE.",
-        "i" = "Pass {.arg path} to a local GeoPackage, or set {.arg download} = TRUE once online.",
-        "i" = "GADM license: https://gadm.org/license.html (non-commercial; do not redistribute the full database)."
+        paste(
+          "No cached GADM file for {.val {country}} level {level}",
+          "and {.arg download} is FALSE."
+        ),
+        "i" = paste(
+          "Pass {.arg path} to a local GeoPackage,",
+          "or set {.arg download} = TRUE once online."
+        ),
+        "i" = paste(
+          "GADM license: https://gadm.org/license.html",
+          "(non-commercial; do not redistribute the full database)."
+        )
       )
     )
   }

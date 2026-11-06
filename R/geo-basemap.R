@@ -63,8 +63,19 @@ geo_basemap <- function(x,
   )
 }
 
-#' @export
-ggplot_add.td_geo_basemap <- function(object, plot, object_name) {
+#' Add a tidydiversity basemap to a ggplot
+#'
+#' S3 method for [ggplot2::ggplot_add()] so that
+#' `ggplot2::ggplot() + geo_basemap(...)` works. Not intended to be called
+#' directly.
+#'
+#' @param object A `td_geo_basemap` from [geo_basemap()].
+#' @param plot A ggplot object.
+#' @param object_name Not used.
+#' @return `plot` with basemap layers added.
+#' @keywords internal
+#' @exportS3Method ggplot2::ggplot_add
+ggplot_add.td_geo_basemap <- function(object, plot, object_name) { # nolint: object_name_linter.
   for (ly in object$layers) {
     plot <- plot + ly
   }
@@ -298,7 +309,8 @@ geo_default_land_poly <- function(bbox, crs = 4326) {
   )
   if (nrow(out) == 0) {
     # Site bbox may be inland; keep intersecting countries by bbox filter
-    out <- land[sf::st_intersects(land, crop_win, sparse = FALSE)[, 1], , drop = FALSE]
+    hit <- sf::st_intersects(land, crop_win, sparse = FALSE)[, 1]
+    out <- land[hit, , drop = FALSE]
   }
   out
 }
@@ -306,7 +318,7 @@ geo_default_land_poly <- function(bbox, crs = 4326) {
 geo_fetch_tiles <- function(bbox, provider, zoom = NULL, crs = 4326) {
   # Prefer maptiles when available; otherwise try a minimal XYZ fetch.
   if (requireNamespace("maptiles", quietly = TRUE) &&
-    requireNamespace("terra", quietly = TRUE)) {
+        requireNamespace("terra", quietly = TRUE)) {
     cache <- file.path(
       tools::R_user_dir("tidydiversity", "cache"), "maptiles"
     )
@@ -342,10 +354,18 @@ geo_fetch_tiles_xyz <- function(bbox, provider, zoom = NULL, crs = 4326) {
   # Tiny XYZ templates (raster tiles). Attribution remains with the provider.
   templates <- c(
     OpenStreetMap = "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-    `CartoDB.Positron` = "https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
-    `CartoDB.DarkMatter` = "https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
-    `Esri.WorldImagery` = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    `Esri.WorldTopoMap` = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+    `CartoDB.Positron` =
+      "https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+    `CartoDB.DarkMatter` =
+      "https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+    `Esri.WorldImagery` = paste0(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/",
+      "World_Imagery/MapServer/tile/{z}/{y}/{x}"
+    ),
+    `Esri.WorldTopoMap` = paste0(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/",
+      "World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+    )
   )
   if (!provider %in% names(templates)) {
     return(NULL)
@@ -357,7 +377,17 @@ geo_fetch_tiles_xyz <- function(bbox, provider, zoom = NULL, crs = 4326) {
   ymax <- unname(bbox["ymax"])
   if (is.null(zoom)) {
     span <- max(xmax - xmin, ymax - ymin)
-    zoom <- if (span > 40) 3 else if (span > 10) 5 else if (span > 2) 7 else if (span > 0.5) 9 else 11
+    zoom <- if (span > 40) {
+      3
+    } else if (span > 10) {
+      5
+    } else if (span > 2) {
+      7
+    } else if (span > 0.5) {
+      9
+    } else {
+      11
+    }
   }
   # Limit tile count for safety
   tiles <- geo_xyz_tile_index(xmin, ymin, xmax, ymax, zoom)

@@ -80,9 +80,16 @@ when several measures share a stem.}
 
 \item{grid}{Quadrat size used to build keys when joining on coordinates.}
 
+\item{gx, gy}{Bare column names for local metre coordinates (defaults
+\code{gx}, \code{gy}) used by \code{\link[=stems_quadrat]{stems_quadrat()}} and neighbours.}
+
 \item{.by}{Optional grouping columns (species, quadrat, habitat).}
 
+\item{alive_only}{Keep only stems/trees whose \code{status} is in \code{alive}?}
+
 \item{alive}{Character codes of \code{status} that mean alive (default \code{"A"}).}
+
+\item{level}{\code{"tree"} (collapse to one row per \code{treeID}) or \code{"stem"}.}
 
 \item{dbh_unit}{\code{"mm"} or \code{"cm"} for the \code{dbh} column.}
 
@@ -108,6 +115,9 @@ preferred).}
 (default \code{quadrat} after \code{\link[=stems_quadrat]{stems_quadrat()}}, or \code{plot}).}
 
 \item{radius}{Neighbourhood radius in metres (local coordinates).}
+
+\item{conspecific}{For \code{\link[=stems_neighbours]{stems_neighbours()}}, count only neighbours of the
+same species (\code{TRUE}) or all neighbours (\code{FALSE}).}
 }
 \description{
 Tidyverse-style helpers for ForestGEO / CTFS plot inventories. They accept

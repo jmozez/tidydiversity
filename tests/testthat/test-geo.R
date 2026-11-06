@@ -134,8 +134,10 @@ test_that("geo_distance() and geo_decay() feed beta_decay_model()", {
   expect_s3_class(decay, "td_beta_decay")
   expect_true("distance" %in% names(decay))
   fit <- beta_decay_model(decay, component = "total")
-  expect_true(all(c("model", "a", "b", "p.value") %in% names(fit)) ||
-    all(c("a", "b") %in% names(fit)))
+  expect_true(
+    all(c("model", "a", "b", "p.value") %in% names(fit)) ||
+      all(c("a", "b") %in% names(fit))
+  )
 })
 
 test_that("plot_geo() returns a ggplot", {

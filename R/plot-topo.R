@@ -74,7 +74,7 @@ plot_topo <- function(data,
   size_q <- enquo(size)
   col_nm <- if (quo_is_null(col_q)) NULL else td_pick(col_q, data, "colour")
   if (!is.null(col_nm) && (identical(col_nm, "species") ||
-      any(grepl("[_.]", as.character(data[[col_nm]]))))) {
+                             any(grepl("[_.]", as.character(data[[col_nm]]))))) {
     data[[col_nm]] <- geo_pretty_species(data[[col_nm]])
   }
   if (quo_is_null(size_q)) {
@@ -289,10 +289,14 @@ plot_topo_boundary <- function(p, boundary, geographic = FALSE, crs = NULL) {
       names(boundary) <- c("xmin", "ymin", "xmax", "ymax")
     }
     rect <- data.frame(
-      x = c(boundary[["xmin"]], boundary[["xmax"]], boundary[["xmax"]],
-        boundary[["xmin"]], boundary[["xmin"]]),
-      y = c(boundary[["ymin"]], boundary[["ymin"]], boundary[["ymax"]],
-        boundary[["ymax"]], boundary[["ymin"]])
+      x = c(
+        boundary[["xmin"]], boundary[["xmax"]], boundary[["xmax"]],
+        boundary[["xmin"]], boundary[["xmin"]]
+      ),
+      y = c(
+        boundary[["ymin"]], boundary[["ymin"]], boundary[["ymax"]],
+        boundary[["ymax"]], boundary[["ymin"]]
+      )
     )
     return(p + ggplot2::geom_path(
       data = rect,
@@ -446,8 +450,10 @@ plot_topo_scales <- function(p, data, col_nm, size_nm, palette, aes = "colour") 
 geo_example_stems <- function(n = 120, seed = 1) {
   td_check_number(n, "n", 1, whole = TRUE)
   if (!is.null(seed)) set.seed(seed)
-  spp <- c("Pometia_pinnata", "Intsia_bijuga", "Pterocarpus_indicus",
-    "Homalanthus_novoguineensis", "Ficus_sp")
+  spp <- c(
+    "Pometia_pinnata", "Intsia_bijuga", "Pterocarpus_indicus",
+    "Homalanthus_novoguineensis", "Ficus_sp"
+  )
   tibble::tibble(
     plot = "demo100",
     treeID = seq_len(n),

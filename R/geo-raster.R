@@ -101,6 +101,7 @@ geo_raster_focal <- function(raster, w = 3, fun = "mean", ...) {
 }
 
 #' @rdname geo-raster
+#' @param as_tibble Return a tibble (default) instead of the raw terra extract matrix?
 #' @export
 geo_raster_zonal <- function(raster, y, fun = "mean", ..., as_tibble = TRUE) {
   rlang::check_installed("terra")
@@ -135,8 +136,8 @@ geo_raster_vect <- function(y, raster) {
     if (is.na(sf::st_crs(y)) && !is.na(terra::crs(raster))) {
       y <- sf::st_set_crs(y, terra::crs(raster))
     } else if (!is.na(sf::st_crs(y)) &&
-      !is.na(terra::crs(raster)) &&
-      sf::st_crs(y) != sf::st_crs(terra::crs(raster))) {
+                 !is.na(terra::crs(raster)) &&
+                 sf::st_crs(y) != sf::st_crs(terra::crs(raster))) {
       y <- sf::st_transform(y, terra::crs(raster))
     }
     return(terra::vect(y))
