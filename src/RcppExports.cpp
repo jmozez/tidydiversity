@@ -36,6 +36,103 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// geo_euclidean_pair_cpp
+NumericVector geo_euclidean_pair_cpp(NumericMatrix x1, NumericMatrix x2);
+RcppExport SEXP _tidydiversity_geo_euclidean_pair_cpp(SEXP x1SEXP, SEXP x2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x1(x1SEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type x2(x2SEXP);
+    rcpp_result_gen = Rcpp::wrap(geo_euclidean_pair_cpp(x1, x2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// geo_euclidean_matrix_cpp
+NumericMatrix geo_euclidean_matrix_cpp(NumericMatrix x);
+RcppExport SEXP _tidydiversity_geo_euclidean_matrix_cpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(geo_euclidean_matrix_cpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// geo_neighbour_count_cpp
+IntegerVector geo_neighbour_count_cpp(NumericVector x, NumericVector y, double radius);
+RcppExport SEXP _tidydiversity_geo_neighbour_count_cpp(SEXP xSEXP, SEXP ySEXP, SEXP radiusSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double >::type radius(radiusSEXP);
+    rcpp_result_gen = Rcpp::wrap(geo_neighbour_count_cpp(x, y, radius));
+    return rcpp_result_gen;
+END_RCPP
+}
+// geo_torus_shift_cpp
+IntegerVector geo_torus_shift_cpp(IntegerVector grid, int nrow, int ncol, int dx, int dy);
+RcppExport SEXP _tidydiversity_geo_torus_shift_cpp(SEXP gridSEXP, SEXP nrowSEXP, SEXP ncolSEXP, SEXP dxSEXP, SEXP dySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type grid(gridSEXP);
+    Rcpp::traits::input_parameter< int >::type nrow(nrowSEXP);
+    Rcpp::traits::input_parameter< int >::type ncol(ncolSEXP);
+    Rcpp::traits::input_parameter< int >::type dx(dxSEXP);
+    Rcpp::traits::input_parameter< int >::type dy(dySEXP);
+    rcpp_result_gen = Rcpp::wrap(geo_torus_shift_cpp(grid, nrow, ncol, dx, dy));
+    return rcpp_result_gen;
+END_RCPP
+}
+// geo_spatial_rarefy_cpp
+IntegerVector geo_spatial_rarefy_cpp(NumericVector dist_to_seed, IntegerMatrix incidence);
+RcppExport SEXP _tidydiversity_geo_spatial_rarefy_cpp(SEXP dist_to_seedSEXP, SEXP incidenceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type dist_to_seed(dist_to_seedSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type incidence(incidenceSEXP);
+    rcpp_result_gen = Rcpp::wrap(geo_spatial_rarefy_cpp(dist_to_seed, incidence));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sdm_cloglog_cpp
+NumericVector sdm_cloglog_cpp(NumericVector eta);
+RcppExport SEXP _tidydiversity_sdm_cloglog_cpp(SEXP etaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type eta(etaSEXP);
+    rcpp_result_gen = Rcpp::wrap(sdm_cloglog_cpp(eta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sdm_logistic_cpp
+NumericVector sdm_logistic_cpp(NumericVector eta);
+RcppExport SEXP _tidydiversity_sdm_logistic_cpp(SEXP etaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type eta(etaSEXP);
+    rcpp_result_gen = Rcpp::wrap(sdm_logistic_cpp(eta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sdm_linear_predict_cpp
+NumericVector sdm_linear_predict_cpp(NumericMatrix x, NumericVector beta);
+RcppExport SEXP _tidydiversity_sdm_linear_predict_cpp(SEXP xSEXP, SEXP betaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type beta(betaSEXP);
+    rcpp_result_gen = Rcpp::wrap(sdm_linear_predict_cpp(x, beta));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rare_gk
 NumericVector rare_gk(NumericVector a, NumericVector w, double n, double m, int kmax);
 RcppExport SEXP _tidydiversity_rare_gk(SEXP aSEXP, SEXP wSEXP, SEXP nSEXP, SEXP mSEXP, SEXP kmaxSEXP) {
@@ -55,6 +152,14 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_tidydiversity_geo_haversine_pair_cpp", (DL_FUNC) &_tidydiversity_geo_haversine_pair_cpp, 4},
     {"_tidydiversity_geo_haversine_matrix_cpp", (DL_FUNC) &_tidydiversity_geo_haversine_matrix_cpp, 2},
+    {"_tidydiversity_geo_euclidean_pair_cpp", (DL_FUNC) &_tidydiversity_geo_euclidean_pair_cpp, 2},
+    {"_tidydiversity_geo_euclidean_matrix_cpp", (DL_FUNC) &_tidydiversity_geo_euclidean_matrix_cpp, 1},
+    {"_tidydiversity_geo_neighbour_count_cpp", (DL_FUNC) &_tidydiversity_geo_neighbour_count_cpp, 3},
+    {"_tidydiversity_geo_torus_shift_cpp", (DL_FUNC) &_tidydiversity_geo_torus_shift_cpp, 5},
+    {"_tidydiversity_geo_spatial_rarefy_cpp", (DL_FUNC) &_tidydiversity_geo_spatial_rarefy_cpp, 2},
+    {"_tidydiversity_sdm_cloglog_cpp", (DL_FUNC) &_tidydiversity_sdm_cloglog_cpp, 1},
+    {"_tidydiversity_sdm_logistic_cpp", (DL_FUNC) &_tidydiversity_sdm_logistic_cpp, 1},
+    {"_tidydiversity_sdm_linear_predict_cpp", (DL_FUNC) &_tidydiversity_sdm_linear_predict_cpp, 2},
     {"_tidydiversity_rare_gk", (DL_FUNC) &_tidydiversity_rare_gk, 5},
     {NULL, NULL, 0}
 };

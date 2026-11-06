@@ -2,7 +2,7 @@
 % Please edit documentation in R/geo.R
 \name{geo_decay}
 \alias{geo_decay}
-\title{Distance decay with geographic or elevational distance}
+\title{Distance decay with geographic, elevational or environmental distance}
 \usage{
 geo_decay(
   data,
@@ -13,7 +13,10 @@ geo_decay(
   species = species,
   abundance = NULL,
   index = c("sorensen", "jaccard", "bray"),
-  method = c("haversine", "elevation", "euclidean"),
+  method = c("haversine", "elevation", "euclidean", "environmental"),
+  vars = NULL,
+  scale = TRUE,
+  metric = c("euclidean", "gower"),
   .by = NULL
 )
 }
@@ -32,7 +35,7 @@ used when present, otherwise every row counts as one individual.}
 \item{index}{Family of dissimilarity: \code{"sorensen"} or \code{"jaccard"}
 (presence and absence) or \code{"bray"} (abundance-based Bray-Curtis).}
 
-\item{method}{Passed to \code{\link[=geo_distance]{geo_distance()}}.}
+\item{method, vars, scale, metric}{Passed to \code{\link[=geo_distance]{geo_distance()}}.}
 
 \item{.by}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optional grouping
 columns, kept in the output. Grouped data frames are also respected.}
@@ -41,10 +44,10 @@ columns, kept in the output. Grouped data frames are also respected.}
 A \code{td_beta_decay} tibble.
 }
 \description{
-Computes pairwise beta diversity with \code{\link[=beta_pair]{beta_pair()}} and joins
-great-circle or elevational distances from \code{\link[=geo_distance]{geo_distance()}}, returning a
-\link[=beta_decay]{td_beta_decay} object for \code{\link[=beta_decay_model]{beta_decay_model()}} and
-\code{\link[ggplot2:autoplot]{ggplot2::autoplot()}}.
+Computes pairwise beta diversity with \code{\link[=beta_pair]{beta_pair()}} and joins distances
+from \code{\link[=geo_distance]{geo_distance()}} (great-circle, elevational or environmental),
+returning a \link[=beta_decay]{td_beta_decay} object for \code{\link[=beta_decay_model]{beta_decay_model()}}
+and \code{\link[ggplot2:autoplot]{ggplot2::autoplot()}}.
 }
 \examples{
 sites <- unique(png_ants[c("site", "elevation", "season")])

@@ -10,7 +10,10 @@ geo_distance(
   lat = lat,
   elevation = NULL,
   site = site,
-  method = c("haversine", "elevation", "euclidean"),
+  method = c("haversine", "elevation", "euclidean", "environmental"),
+  vars = NULL,
+  scale = TRUE,
+  metric = c("euclidean", "gower"),
   .by = NULL
 )
 }
@@ -21,8 +24,19 @@ site) with coordinates and optional elevation.}
 \item{lon, lat, elevation, site}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}>
 Column selections.}
 
-\item{method}{\code{"haversine"} (metres), \code{"elevation"} (metres), or
-\code{"euclidean"} on lon/lat in degrees.}
+\item{method}{\code{"haversine"} (metres), \code{"elevation"} (metres),
+\code{"euclidean"} on lon/lat in degrees, or \code{"environmental"} for Euclidean
+or Gower distance on numeric covariate columns (for example bioclim
+layers from \code{\link[=geo_extract]{geo_extract()}} / \code{\link[=geo_bioclim]{geo_bioclim()}}).}
+
+\item{vars}{Character vector of covariate columns for
+\code{method = "environmental"}. When \code{NULL}, every numeric column except
+coordinates, elevation and the site id is used.}
+
+\item{scale}{Standardise environmental columns to mean 0 and sd 1 before
+Euclidean distance? Ignored for Gower.}
+
+\item{metric}{\code{"euclidean"} or \code{"gower"} for environmental distances.}
 
 \item{.by}{Optional grouping columns.}
 }

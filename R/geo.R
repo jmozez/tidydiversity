@@ -597,8 +597,16 @@ geo_gbif <- function(data = NULL,
 #'   site) with coordinates and optional elevation.
 #' @param lon,lat,elevation,site <[`data-masking`][dplyr::dplyr_data_masking]>
 #'   Column selections.
-#' @param method `"haversine"` (metres), `"elevation"` (metres), or
-#'   `"euclidean"` on lon/lat in degrees.
+#' @param method `"haversine"` (metres), `"elevation"` (metres),
+#'   `"euclidean"` on lon/lat in degrees, or `"environmental"` for Euclidean
+#'   or Gower distance on numeric covariate columns (for example bioclim
+#'   layers from [geo_extract()] / [geo_bioclim()]).
+#' @param vars Character vector of covariate columns for
+#'   `method = "environmental"`. When `NULL`, every numeric column except
+#'   coordinates, elevation and the site id is used.
+#' @param scale Standardise environmental columns to mean 0 and sd 1 before
+#'   Euclidean distance? Ignored for Gower.
+#' @param metric `"euclidean"` or `"gower"` for environmental distances.
 #' @param .by Optional grouping columns.
 #' @return A tibble with `site_1`, `site_2`, `distance` and grouping columns.
 #' @export
@@ -616,15 +624,22 @@ geo_distance <- function(data,
                          lat = lat,
                          elevation = NULL,
                          site = site,
-                         method = c("haversine", "elevation", "euclidean"),
+                         method = c("haversine", "elevation", "euclidean",
+                                    "environmental"),
+                         vars = NULL,
+                         scale = TRUE,
+                         metric = c("euclidean", "gower"),
                          .by = NULL) {
   method <- rlang::arg_match(method)
+  metric <- rlang::arg_match(metric)
   td_check_data(data)
   site_col <- td_pick(enquo(site), data, "site")
   by_cols <- td_group_cols(data, enquo(.by))
   elev_q <- enquo(elevation)
 
   cols <- c(by_cols, site_col)
+  lon_col <- lat_col <- elev_col <- NULL
+  env_cols <- character()
   if (method %in% c("haversine", "euclidean")) {
     lon_col <- td_pick(enquo(lon), data, "lon")
     lat_col <- td_pick(enquo(lat), data, "lat")
@@ -639,8 +654,19 @@ geo_distance <- function(data,
   } else if (!quo_is_null(elev_q)) {
     elev_col <- td_pick(elev_q, data, "elevation")
     cols <- c(cols, elev_col)
-  } else {
-    elev_col <- NULL
+  }
+  if (method == "environmental") {
+    # Prefer lon/lat when present so sites stay unique; not used in distance
+    lon_try <- tryCatch(td_pick(enquo(lon), data, "lon"), error = function(e) NULL)
+    lat_try <- tryCatch(td_pick(enquo(lat), data, "lat"), error = function(e) NULL)
+    if (!is.null(lon_try) && !is.null(lat_try)) {
+      lon_col <- lon_try
+      lat_col <- lat_try
+      cols <- c(cols, lon_col, lat_col)
+    }
+    env_cols <- geo_distance_env_cols(data, vars, site_col, by_cols,
+                                      lon_col, lat_col, elev_col)
+    cols <- c(cols, env_cols)
   }
 
   sites <- tibble::as_tibble(dplyr::ungroup(data)[unique(cols)])
@@ -649,9 +675,13 @@ geo_distance <- function(data,
     cli::cli_abort("Coordinates must be constant within each site.")
   }
   names(sites)[names(sites) == site_col] <- ".site"
-  if (!is.null(elev_col)) names(sites)[names(sites) == elev_col] <- ".elev"
-  if (method != "elevation") {
+  if (!is.null(elev_col) && elev_col %in% names(sites)) {
+    names(sites)[names(sites) == elev_col] <- ".elev"
+  }
+  if (!is.null(lon_col) && lon_col %in% names(sites)) {
     names(sites)[names(sites) == lon_col] <- ".lon"
+  }
+  if (!is.null(lat_col) && lat_col %in% names(sites)) {
     names(sites)[names(sites) == lat_col] <- ".lat"
   }
 
@@ -678,6 +708,9 @@ geo_distance <- function(data,
       euclidean = sqrt(
         (s$.lon[ij[1, ]] - s$.lon[ij[2, ]])^2 +
           (s$.lat[ij[1, ]] - s$.lat[ij[2, ]])^2
+      ),
+      environmental = geo_env_pairwise(
+        s[env_cols], ij, scale = scale, metric = metric
       )
     )
     out <- tibble::tibble(
@@ -695,16 +728,76 @@ geo_distance <- function(data,
   td_new(out, "td_geo_distance")
 }
 
-#' Distance decay with geographic or elevational distance
+geo_distance_env_cols <- function(data, vars, site_col, by_cols,
+                                  lon_col, lat_col, elev_col) {
+  if (!is.null(vars)) {
+    missing <- setdiff(vars, names(data))
+    if (length(missing) > 0) {
+      cli::cli_abort("Unknown environmental column{?s}: {.val {missing}}.")
+    }
+    return(vars)
+  }
+  skip <- unique(c(site_col, by_cols, lon_col, lat_col, elev_col,
+                   "site_1", "site_2", "distance"))
+  skip <- skip[!is.null(skip) & nzchar(skip)]
+  num <- names(data)[vapply(data, is.numeric, logical(1))]
+  env <- setdiff(num, skip)
+  if (length(env) == 0) {
+    cli::cli_abort(
+      c(
+        "No environmental columns found for {.arg method} = {.val environmental}.",
+        "i" = "Pass {.arg vars} or join bioclim columns with {.fn geo_extract}."
+      )
+    )
+  }
+  env
+}
+
+geo_env_pairwise <- function(mat, ij, scale = TRUE, metric = "euclidean") {
+  x <- as.matrix(mat)
+  storage.mode(x) <- "double"
+  if (identical(metric, "gower")) {
+    # Simple Gower on numeric columns: |xi-xj| / range
+    rng <- apply(x, 2, function(v) {
+      r <- diff(range(v, na.rm = TRUE))
+      if (!is.finite(r) || r == 0) 1 else r
+    })
+    d <- numeric(ncol(ij))
+    for (k in seq_len(ncol(ij))) {
+      a <- x[ij[1, k], ]
+      b <- x[ij[2, k], ]
+      d[k] <- mean(abs(a - b) / rng, na.rm = TRUE)
+    }
+    return(d)
+  }
+  if (isTRUE(scale)) {
+    for (j in seq_len(ncol(x))) {
+      s <- stats::sd(x[, j], na.rm = TRUE)
+      m <- mean(x[, j], na.rm = TRUE)
+      if (is.finite(s) && s > 0) {
+        x[, j] <- (x[, j] - m) / s
+      } else {
+        x[, j] <- x[, j] - m
+      }
+    }
+  }
+  if (exists("geo_euclidean_pair_cpp", mode = "function")) {
+    return(geo_euclidean_pair_cpp(x[ij[1, ], , drop = FALSE],
+                                  x[ij[2, ], , drop = FALSE]))
+  }
+  sqrt(rowSums((x[ij[1, ], , drop = FALSE] - x[ij[2, ], , drop = FALSE])^2))
+}
+
+#' Distance decay with geographic, elevational or environmental distance
 #'
-#' Computes pairwise beta diversity with [beta_pair()] and joins
-#' great-circle or elevational distances from [geo_distance()], returning a
-#' [td_beta_decay][beta_decay] object for [beta_decay_model()] and
-#' [ggplot2::autoplot()].
+#' Computes pairwise beta diversity with [beta_pair()] and joins distances
+#' from [geo_distance()] (great-circle, elevational or environmental),
+#' returning a [td_beta_decay][beta_decay] object for [beta_decay_model()]
+#' and [ggplot2::autoplot()].
 #'
 #' @inheritParams beta_pair
 #' @param lon,lat,elevation Coordinate and elevation columns of `data`.
-#' @param method Passed to [geo_distance()].
+#' @param method,vars,scale,metric Passed to [geo_distance()].
 #' @return A `td_beta_decay` tibble.
 #' @export
 #' @examples
@@ -725,10 +818,15 @@ geo_decay <- function(data,
                       species = species,
                       abundance = NULL,
                       index = c("sorensen", "jaccard", "bray"),
-                      method = c("haversine", "elevation", "euclidean"),
+                      method = c("haversine", "elevation", "euclidean",
+                                 "environmental"),
+                      vars = NULL,
+                      scale = TRUE,
+                      metric = c("euclidean", "gower"),
                       .by = NULL) {
   index <- rlang::arg_match(index)
   method <- rlang::arg_match(method)
+  metric <- rlang::arg_match(metric)
   pairs <- beta_pair(
     data,
     site = {{ site }},
@@ -744,6 +842,9 @@ geo_decay <- function(data,
     elevation = {{ elevation }},
     site = {{ site }},
     method = method,
+    vars = vars,
+    scale = scale,
+    metric = metric,
     .by = {{ .by }}
   )
   keys <- intersect(names(pairs), names(dist))
@@ -772,6 +873,9 @@ geo_decay <- function(data,
 #' @param coastline Optional coastline `sf` for a coast basemap.
 #' @param size Point size when not mapping size to `value`.
 #' @param label Optional column of site labels.
+#' @param scale_bar,north_arrow Draw a scale bar and north arrow?
+#' @param scale_bar_km Length of the scale bar in kilometres.
+#' @param legend_title Optional legend title (defaults to the value column).
 #' @return A ggplot object.
 #' @export
 #' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)
@@ -779,24 +883,42 @@ geo_decay <- function(data,
 #'   site = c("a", "b", "c"),
 #'   lon = c(147.0, 147.2, 147.4),
 #'   lat = c(-9.4, -9.5, -9.6),
-#'   estimate = c(12, 18, 9)
+#'   diversity = c(12, 18, 9)
 #' )
-#' plot_geo(est, estimate, lon, lat, basemap = "coast")
+#' plot_geo(est, diversity, lon, lat, basemap = "coast", label = site)
 plot_geo <- function(data,
-                     value,
+                     value = NULL,
                      lon = lon,
                      lat = lat,
                      basemap = "none",
                      raster = NULL,
                      coastline = NULL,
                      size = 3,
-                     label = NULL) {
+                     label = NULL,
+                     scale_bar = TRUE,
+                     north_arrow = TRUE,
+                     scale_bar_km = NULL,
+                     legend_title = NULL) {
   rlang::check_installed("ggplot2")
   rlang::check_installed("sf")
   td_check_data(data)
-  val_col <- td_pick(enquo(value), data, "value")
+  val_q <- enquo(value)
+  if (rlang::quo_is_null(val_q)) {
+    # Auto-pick common Hill / coverage columns when value is omitted
+    candidates <- c("diversity", "estimate", "coverage", "qD", "obs")
+    hit <- candidates[candidates %in% names(data)]
+    if (length(hit) == 0) {
+      cli::cli_abort(
+        "{.arg value} is required unless {.arg data} has a diversity/estimate column."
+      )
+    }
+    val_col <- hit[[1]]
+  } else {
+    val_col <- td_pick(val_q, data, "value")
+  }
   lab_q <- enquo(label)
   lab_col <- if (quo_is_null(lab_q)) NULL else td_pick(lab_q, data, "label")
+  leg <- legend_title %||% val_col
 
   if (!inherits(data, "sf")) {
     data <- geo_as_sf(data, lon = {{ lon }}, lat = {{ lat }}, drop_na = TRUE)
@@ -835,7 +957,7 @@ plot_geo <- function(data,
         size = size,
         stroke = 0.3
       ) +
-      ggplot2::scale_fill_viridis_c(name = val_col, option = "C")
+      ggplot2::scale_fill_viridis_c(name = leg, option = "C")
   } else {
     p <- p +
       ggplot2::geom_sf(
@@ -846,7 +968,7 @@ plot_geo <- function(data,
         colour = "grey10",
         stroke = 0.4
       ) +
-      ggplot2::scale_size_area(name = val_col, max_size = 8)
+      ggplot2::scale_size_area(name = leg, max_size = 8)
   }
   if (!is.null(lab_col)) {
     rlang::check_installed("ggrepel")
@@ -863,6 +985,16 @@ plot_geo <- function(data,
       box.padding = 0.3,
       max.overlaps = Inf
     )
+  }
+  if (isTRUE(scale_bar)) {
+    for (ly in geo_annotation_scale_bar(bb, length_km = scale_bar_km)) {
+      p <- p + ly
+    }
+  }
+  if (isTRUE(north_arrow)) {
+    for (ly in geo_annotation_north_arrow(bb)) {
+      p <- p + ly
+    }
   }
   p +
     ggplot2::coord_sf() +

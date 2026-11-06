@@ -6,14 +6,18 @@
 \usage{
 plot_geo(
   data,
-  value,
+  value = NULL,
   lon = lon,
   lat = lat,
   basemap = "none",
   raster = NULL,
   coastline = NULL,
   size = 3,
-  label = NULL
+  label = NULL,
+  scale_bar = TRUE,
+  north_arrow = TRUE,
+  scale_bar_km = NULL,
+  legend_title = NULL
 )
 }
 \arguments{
@@ -37,6 +41,12 @@ path. See \code{\link[=geo_basemap]{geo_basemap()}}.}
 \item{size}{Point size when not mapping size to \code{value}.}
 
 \item{label}{Optional column of site labels.}
+
+\item{scale_bar, north_arrow}{Draw a scale bar and north arrow?}
+
+\item{scale_bar_km}{Length of the scale bar in kilometres.}
+
+\item{legend_title}{Optional legend title (defaults to the value column).}
 }
 \value{
 A ggplot object.
@@ -52,8 +62,8 @@ est <- tibble::tibble(
   site = c("a", "b", "c"),
   lon = c(147.0, 147.2, 147.4),
   lat = c(-9.4, -9.5, -9.6),
-  estimate = c(12, 18, 9)
+  diversity = c(12, 18, 9)
 )
-plot_geo(est, estimate, lon, lat, basemap = "coast")
+plot_geo(est, diversity, lon, lat, basemap = "coast", label = site)
 \dontshow{\}) # examplesIf}
 }
