@@ -35,14 +35,29 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
 
-      # On ubuntu-latest (now the 26.04 image) setup-r downloads ~200 apt
-      # packages from an Azure mirror that is often slow (20+ min).
-      # Pin 24.04 and make apt retry or give up on a stalled mirror quickly.
-      - name: Make apt fail fast and retry
+      # Each Linux job's Azure apt mirror is sometimes ~40 kB/s, which made
+      # setup-r take 20+ min. Time a small download from three mirrors, use
+      # the fastest, and make apt retry a stalled connection.
+      - name: Pick a fast Ubuntu mirror
         if: runner.os == 'Linux'
         run: |
           printf '%s\n' 'Acquire::Retries "5";' 'Acquire::http::Timeout "20";' \
             'Acquire::https::Timeout "20";' | sudo tee /etc/apt/apt.conf.d/80-retries
+          . /etc/os-release
+          azure=http://azure.archive.ubuntu.com/ubuntu
+          best=$azure; best_speed=0
+          for m in $azure http://archive.ubuntu.com/ubuntu http://mirrors.edge.kernel.org/ubuntu; do
+            s=$(curl -s -o /dev/null --max-time 10 -w '%{speed_download}' \
+              "$m/dists/$VERSION_CODENAME/main/binary-amd64/Packages.gz" || true)
+            s=${s%.*}; s=${s:-0}
+            echo "$m: $((s / 1024)) kB/s"
+            if [ "$s" -gt "$best_speed" ]; then best=$m; best_speed=$s; fi
+          done
+          echo "Using $best"
+          if [ "$best" != "$azure" ]; then
+            sudo sed -i "s|$azure|$best|g" /etc/apt/apt-mirrors.txt \
+              /etc/apt/sources.list /etc/apt/sources.list.d/*.sources 2>/dev/null || true
+          fi
 
       - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
         with:
