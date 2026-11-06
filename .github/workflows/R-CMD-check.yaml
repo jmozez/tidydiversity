@@ -11,7 +11,8 @@ permissions: read-all
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
-    timeout-minutes: 45
+    # R-devel has no binary packages, so a cold dependency cache builds everything from source (~35-50 min).
+    timeout-minutes: ${{ matrix.config.r == 'devel' && 90 || 45 }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
