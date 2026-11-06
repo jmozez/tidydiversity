@@ -1,5 +1,14 @@
 # tidydiversity 0.1.0
 
+* Geospatial workflow (native tidyverse-style verbs; **sf** and **terra**
+  as Suggests): `geo_as_sf()`, `geo_drop_geometry()`, `geo_extract()`,
+  `geo_clean()` (occurrence flags rebuilt so callers never need
+  CoordinateCleaner), `geo_gbif()`, `geo_distance()`, `geo_decay()`
+  (feeds `beta_decay_model()` with great-circle or elevational distance),
+  `plot_geo()` and `geo_moran()` (Moran's I with a permutation p-value,
+  rebuilt so callers never need spdep). Compiled haversine kernels speed
+  large distance tables. New article "Geospatial diversity workflows".
+
 * Package scaffold.
 * Input checks: `beta_hill()`, `beta_hill_pair()` and `div_completeness()`
   now reject infinite `q`, which used to return `NaN`. Bootstrapping a

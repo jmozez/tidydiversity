@@ -51,7 +51,7 @@ and reports the larger p-value. It controls Type I error whether the
 null hypothesis concerns the environment or the traits.
 }
 \examples{
-\dontshow{if (rlang::is_installed("ade4")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("ade4")) withAutoprint(\{ # examplesIf}
 aravo <- data_aravo()
 set.seed(1)
 trait_cwm_test(aravo$community, aravo$traits, abundance = cover,

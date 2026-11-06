@@ -55,6 +55,14 @@ export(div_hill)
 export(div_rarefy)
 export(div_standardise)
 export(div_table)
+export(geo_as_sf)
+export(geo_clean)
+export(geo_decay)
+export(geo_distance)
+export(geo_drop_geometry)
+export(geo_extract)
+export(geo_gbif)
+export(geo_moran)
 export(glance)
 export(model_case_weights)
 export(model_group_folds)
@@ -65,6 +73,7 @@ export(ord_varpart)
 export(phylo_combine_dist)
 export(phylo_dist)
 export(phylo_signal)
+export(plot_geo)
 export(plot_palette)
 export(plot_panel)
 export(plot_save)
@@ -84,13 +93,17 @@ export(trait_ses)
 export(trait_tpd)
 export(trait_tpd_dissim)
 importFrom(Rcpp,sourceCpp)
-importFrom(generics,glance)
-importFrom(generics,tidy)
+importFrom(generics,
+  glance,
+  tidy
+)
 importFrom(pillar,tbl_sum)
-importFrom(rlang,"%||%")
-importFrom(rlang,":=")
-importFrom(rlang,.data)
-importFrom(rlang,caller_env)
-importFrom(rlang,enquo)
-importFrom(rlang,quo_is_null)
+importFrom(rlang,
+  "%||%",
+  ":=",
+  .data,
+  caller_env,
+  enquo,
+  quo_is_null
+)
 useDynLib(tidydiversity, .registration = TRUE)

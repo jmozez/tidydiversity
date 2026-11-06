@@ -90,6 +90,8 @@ navbar:
           href: articles/traits.html
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
+        - text: Geospatial workflows
+          href: articles/geospatial.html
         - text: -------
         - text: Output
         - text: Publication figures
@@ -189,6 +191,16 @@ reference:
       - model_group_folds
       - model_case_weights
       - step_hill
+  - title: Geospatial
+    contents:
+      - geo_as_sf
+      - geo_extract
+      - geo_clean
+      - geo_gbif
+      - geo_distance
+      - geo_decay
+      - plot_geo
+      - geo_moran
 
 articles:
   - title: Get started
@@ -205,6 +217,7 @@ articles:
       - articles/composition-tests
       - articles/traits
       - articles/tidymodels
+      - articles/geospatial
       - articles/publication
   - title: Papua New Guinea case studies
     contents:

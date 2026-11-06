@@ -1,0 +1,106 @@
+---
+title: "Geospatial diversity workflows"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5,
+  dpi = 150,
+  out.width = "100%"
+)
+```
+
+```{r setup}
+library(tidydiversity)
+```
+
+tidydiversity keeps the whole spatial biodiversity workflow in one tidy
+pipeline: sites become `sf` tables, rasters join as columns, occurrence
+records are cleaned without leaving the package, distances feed
+`beta_decay()`, Hill numbers map with ggplot2, and Moran's I diagnoses
+spatial autocorrelation.
+
+## Sites and rasters
+
+```{r sites}
+sites <- tibble::tibble(
+  site = c("MW0200", "MW0700", "MW1200", "MW1700", "MW2200"),
+  lon = c(145.23, 145.18, 145.12, 145.06, 145.01),
+  lat = c(-5.72, -5.74, -5.78, -5.81, -5.85),
+  elevation = c(200, 700, 1200, 1700, 2200)
+)
+sf_sites <- geo_as_sf(sites, lon, lat, site = site)
+sf_sites
+```
+
+```{r extract, eval = requireNamespace("terra", quietly = TRUE)}
+# Demo raster in place of CHELSA / WorldClim / SRTM
+r <- terra::rast(
+  ncols = 40, nrows = 40,
+  xmin = 144.8, xmax = 145.5, ymin = -6.0, ymax = -5.5,
+  crs = "EPSG:4326"
+)
+terra::values(r) <- sites$elevation[1] +
+  800 * (terra::yFromCell(r, seq_len(terra::ncell(r))) + 6)
+names(r) <- "elev_proxy"
+sites_x <- geo_extract(sites, r, lon, lat)
+sites_x
+```
+
+## Clean occurrence records
+
+```{r clean}
+occ <- tibble::tibble(
+  species = c("Camponotus_sp1", "Camponotus_sp1", "Polyrhachis_sp2",
+              "Pheidole_sp3", "ghost"),
+  lon = c(145.23, 145.23, 145.12, 0, 12.58),
+  lat = c(-5.72, -5.72, -5.78, 0, 55.67)
+)
+geo_clean(occ, lon, lat, species = species, value = "flagged")[
+  c("species", "lon", "lat", ".zer", ".gbf", ".dpl", ".summary")
+]
+```
+
+`geo_gbif()` accepts a pre-downloaded GBIF table (or downloads with
+**rgbif** when installed) and pipes into the same cleaner.
+
+## Distance decay without leaving the package
+
+```{r decay}
+com <- dplyr::left_join(
+  png_ants,
+  sites[c("site", "lon", "lat")],
+  by = "site"
+)
+decay_geo <- geo_decay(com, lon, lat, .by = season, method = "haversine")
+decay_elev <- geo_decay(
+  com, elevation = elevation, .by = season, method = "elevation"
+)
+head(decay_geo)
+```
+
+```{r decay-plot, eval = requireNamespace("ggplot2", quietly = TRUE)}
+ggplot2::autoplot(decay_geo) + ggplot2::labs(title = "Geographic distance decay")
+```
+
+## Map Hill numbers
+
+```{r map, eval = requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)}
+est <- div_estimate(png_ants, q = 0, nboot = 0, .by = season)
+est <- dplyr::left_join(est, sites[c("site", "lon", "lat")], by = "site")
+est_dry <- est[est$season == "dry", ]
+plot_geo(est_dry, estimate, lon, lat, label = site) +
+  ggplot2::labs(title = "Observed richness of PNG ants (dry season)")
+```
+
+## Spatial autocorrelation
+
+```{r moran}
+set.seed(1)
+g <- expand.grid(x = 1:8, y = 1:8)
+g$richness <- g$x + g$y + 0.05 * stats::rnorm(nrow(g))
+geo_moran(g, richness, lon = x, lat = y, nperm = 199, correlogram = TRUE)
+```

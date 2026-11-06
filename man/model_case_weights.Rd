@@ -23,7 +23,7 @@ inverse-variance weights, normalised to mean 1, as
 \code{\link[hardhat:importance_weights]{hardhat::importance_weights()}} for use with \code{workflows::add_case_weights()}.
 }
 \examples{
-\dontshow{if (rlang::is_installed("hardhat")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("hardhat")) withAutoprint(\{ # examplesIf}
 est <- div_estimate(png_ants, q = 1, .by = season)
 est$w <- model_case_weights(est$se)
 est

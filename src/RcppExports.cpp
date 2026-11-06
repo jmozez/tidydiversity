@@ -10,6 +10,32 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// geo_haversine_pair_cpp
+NumericVector geo_haversine_pair_cpp(NumericVector lon1, NumericVector lat1, NumericVector lon2, NumericVector lat2);
+RcppExport SEXP _tidydiversity_geo_haversine_pair_cpp(SEXP lon1SEXP, SEXP lat1SEXP, SEXP lon2SEXP, SEXP lat2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type lon1(lon1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lat1(lat1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lon2(lon2SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lat2(lat2SEXP);
+    rcpp_result_gen = Rcpp::wrap(geo_haversine_pair_cpp(lon1, lat1, lon2, lat2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// geo_haversine_matrix_cpp
+NumericMatrix geo_haversine_matrix_cpp(NumericVector lon, NumericVector lat);
+RcppExport SEXP _tidydiversity_geo_haversine_matrix_cpp(SEXP lonSEXP, SEXP latSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type lon(lonSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lat(latSEXP);
+    rcpp_result_gen = Rcpp::wrap(geo_haversine_matrix_cpp(lon, lat));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rare_gk
 NumericVector rare_gk(NumericVector a, NumericVector w, double n, double m, int kmax);
 RcppExport SEXP _tidydiversity_rare_gk(SEXP aSEXP, SEXP wSEXP, SEXP nSEXP, SEXP mSEXP, SEXP kmaxSEXP) {
@@ -27,6 +53,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_tidydiversity_geo_haversine_pair_cpp", (DL_FUNC) &_tidydiversity_geo_haversine_pair_cpp, 4},
+    {"_tidydiversity_geo_haversine_matrix_cpp", (DL_FUNC) &_tidydiversity_geo_haversine_matrix_cpp, 2},
     {"_tidydiversity_rare_gk", (DL_FUNC) &_tidydiversity_rare_gk, 5},
     {NULL, NULL, 0}
 };
