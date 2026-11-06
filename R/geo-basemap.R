@@ -480,7 +480,7 @@ geo_tile_layers <- function(tiles, alpha = 0.9) {
     }
     img <- grDevices::rgb(arr[, , 1], arr[, , 2], arr[, , 3])
     dim(img) <- dim(arr)[1:2]
-    img <- t(img)[, nrow(img):1, drop = FALSE] # annotation_raster orientation
+    img <- t(img)[, rev(seq_len(nrow(img))), drop = FALSE] # annotation_raster
     list(ggplot2::annotation_raster(
       img,
       xmin = e$xmin, xmax = e$xmax,

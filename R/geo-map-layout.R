@@ -45,18 +45,39 @@ geo_pick_decoration_corner <- function(sites,
   )
 
   free <- corners
-  pick <- function(kind) {
-    if (length(free) == 0) return(NA_character_)
-    ord <- order(counts[free], match(free, prefer[[kind]]))
-    chosen <- free[[ord[[1]]]]
-    free <<- free[free != chosen]
-    chosen
+  pick <- function(kind, available) {
+    if (length(available) == 0) {
+      return(list(corner = NA_character_, remaining = available))
+    }
+    ord <- order(counts[available], match(available, prefer[[kind]]))
+    chosen <- available[[ord[[1]]]]
+    list(corner = chosen, remaining = available[available != chosen])
   }
 
-  scale_corner <- if (isTRUE(scale_bar)) pick("scale") else NA_character_
-  north_corner <- if (isTRUE(north_arrow)) pick("north") else NA_character_
-  inset_corner <- if (isTRUE(inset)) pick("inset") else NA_character_
-  legend_corner <- if (isTRUE(legend_inside)) pick("legend") else NA_character_
+  scale_corner <- NA_character_
+  north_corner <- NA_character_
+  inset_corner <- NA_character_
+  legend_corner <- NA_character_
+  if (isTRUE(scale_bar)) {
+    got <- pick("scale", free)
+    scale_corner <- got$corner
+    free <- got$remaining
+  }
+  if (isTRUE(north_arrow)) {
+    got <- pick("north", free)
+    north_corner <- got$corner
+    free <- got$remaining
+  }
+  if (isTRUE(inset)) {
+    got <- pick("inset", free)
+    inset_corner <- got$corner
+    free <- got$remaining
+  }
+  if (isTRUE(legend_inside)) {
+    got <- pick("legend", free)
+    legend_corner <- got$corner
+    free <- got$remaining
+  }
 
   legend_pos <- NULL
   legend_just <- NULL
@@ -84,10 +105,14 @@ geo_pick_decoration_corner <- function(sites,
 }
 
 geo_decoration_box <- function(bb, corner, margin = 0.22) {
-  xmin <- unname(bb[["xmin"]]); xmax <- unname(bb[["xmax"]])
-  ymin <- unname(bb[["ymin"]]); ymax <- unname(bb[["ymax"]])
-  w <- xmax - xmin; h <- ymax - ymin
-  mw <- margin * w; mh <- margin * h
+  xmin <- unname(bb[["xmin"]])
+  xmax <- unname(bb[["xmax"]])
+  ymin <- unname(bb[["ymin"]])
+  ymax <- unname(bb[["ymax"]])
+  w <- xmax - xmin
+  h <- ymax - ymin
+  mw <- margin * w
+  mh <- margin * h
   switch(
     corner,
     bl = c(xmin = xmin, ymin = ymin, xmax = xmin + mw, ymax = ymin + mh),
@@ -194,16 +219,20 @@ geo_inset_region_bbox <- function(inset, main_bb) {
     return(c(xmin = 140.5, ymin = -12.0, xmax = 156.5, ymax = -1.0))
   }
   if (identical(key, "auto") || identical(key, "TRUE")) {
-    xmin <- unname(main_bb[["xmin"]]); xmax <- unname(main_bb[["xmax"]])
-    ymin <- unname(main_bb[["ymin"]]); ymax <- unname(main_bb[["ymax"]])
+    xmin <- unname(main_bb[["xmin"]])
+    xmax <- unname(main_bb[["xmax"]])
+    ymin <- unname(main_bb[["ymin"]])
+    ymax <- unname(main_bb[["ymax"]])
     # New Guinea-ish longitudes: prefer PNG overview
     if (is.finite(xmin) && xmin > 130 && xmax < 160 &&
           is.finite(ymin) && ymin > -15 && ymax < 2) {
       return(c(xmin = 140.5, ymin = -12.0, xmax = 156.5, ymax = -1.0))
     }
     # Otherwise expand main extent ~8x, capped
-    cx <- (xmin + xmax) / 2; cy <- (ymin + ymax) / 2
-    w <- max((xmax - xmin) * 4, 2); h <- max((ymax - ymin) * 4, 2)
+    cx <- (xmin + xmax) / 2
+    cy <- (ymin + ymax) / 2
+    w <- max((xmax - xmin) * 4, 2)
+    h <- max((ymax - ymin) * 4, 2)
     return(c(
       xmin = cx - w / 2, ymin = cy - h / 2,
       xmax = cx + w / 2, ymax = cy + h / 2
@@ -251,8 +280,10 @@ geo_inset_grob <- function(main_bb, inset = "auto", crs = 4326) {
 
 geo_inset_land <- function(bbox, crs = 4326, prefer_gadm = TRUE) {
   # Prefer cached GADM provinces for a PNG / New Guinea overview
-  xmin <- unname(bbox[["xmin"]]); xmax <- unname(bbox[["xmax"]])
-  ymin <- unname(bbox[["ymin"]]); ymax <- unname(bbox[["ymax"]])
+  xmin <- unname(bbox[["xmin"]])
+  xmax <- unname(bbox[["xmax"]])
+  ymin <- unname(bbox[["ymin"]])
+  ymax <- unname(bbox[["ymax"]])
   png_ish <- is.finite(xmin) && xmin > 130 && xmax < 160 &&
     is.finite(ymin) && ymin > -15 && ymax < 2
   land <- NULL
@@ -358,8 +389,12 @@ geo_annotation_inset <- function(bb, box, inset = "auto", crs = 4326) {
   )
   if (is.null(grob)) return(list())
   # Shrink slightly so the frame does not touch panel edges
-  xmin <- box[[1]]; ymin <- box[[2]]; xmax <- box[[3]]; ymax <- box[[4]]
-  dx <- 0.06 * (xmax - xmin); dy <- 0.06 * (ymax - ymin)
+  xmin <- box[[1]]
+  ymin <- box[[2]]
+  xmax <- box[[3]]
+  ymax <- box[[4]]
+  dx <- 0.06 * (xmax - xmin)
+  dy <- 0.06 * (ymax - ymin)
   list(
     ggplot2::annotation_custom(
       grob = grob,

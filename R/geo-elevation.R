@@ -130,7 +130,7 @@ geo_elevation_download <- function(bb, cache_dir, z) {
     if (!is.null(out)) return(out)
   }
   if (requireNamespace("elevatr", quietly = TRUE) &&
-      requireNamespace("sf", quietly = TRUE)) {
+        requireNamespace("sf", quietly = TRUE)) {
     out <- tryCatch({
       poly <- sf::st_as_sf(sf::st_as_sfc(sf::st_bbox(
         c(xmin = bb[1], ymin = bb[2], xmax = bb[3], ymax = bb[4]),
