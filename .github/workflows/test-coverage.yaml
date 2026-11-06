@@ -35,6 +35,7 @@ jobs:
             sudo tee /etc/apt/apt.conf.d/80-ci
           prefix="apt-$ImageOS-$GITHUB_JOB-${R_VERSION:-release}-"
           echo "prefix=$prefix" >> "$GITHUB_OUTPUT"
+          echo "any_job=apt-$ImageOS-" >> "$GITHUB_OUTPUT"
           echo "key=$prefix$ImageVersion" >> "$GITHUB_OUTPUT"
 
       - name: Restore apt cache
@@ -44,7 +45,9 @@ jobs:
         with:
           path: ~/.apt-debs
           key: ${{ steps.apt.outputs.key }}
-          restore-keys: ${{ steps.apt.outputs.prefix }}
+          restore-keys: |
+            ${{ steps.apt.outputs.prefix }}
+            ${{ steps.apt.outputs.any_job }}
 
       - name: Load cached .deb files
         if: runner.os == 'Linux' && steps.apt-cache.outputs.cache-matched-key != ''
