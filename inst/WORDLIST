@@ -84,6 +84,7 @@ GeoJSON
 GeoPackage
 GeoTIFF
 GeoTIFFs
+Geographics
 Gillet
 Gotelli
 Gro
@@ -286,6 +287,7 @@ indicspecies
 io
 jimmy
 jmozez
+joc
 kable
 knitr
 ks
@@ -311,6 +313,7 @@ neotropical
 nestedness
 netCDF
 nonlinear
+org
 overfitted
 penicillatus
 persp
