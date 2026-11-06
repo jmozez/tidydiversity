@@ -1,5 +1,9 @@
 # tidydiversity 0.1.0
 
+* ForestGEO-style census verbs: `stems_as_trees()`, `stems_quadrat()`,
+  `stems_abundance()`, `stems_basal_area()`, `stems_size_class()`,
+  `stems_demography()`, `stems_habitat()`, `stems_as_community()`,
+  `stems_neighbours()`, plus `geo_example_censuses()`.
 * `plot_topo()` maps ForestGEO-style stems (`gx`, `gy`, DBH, species)
   over contour and hillshade backdrops; `geo_example_stems()` and
   `geo_example_dem()` supply an illustrative local-metre plot.

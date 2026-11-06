@@ -245,3 +245,29 @@ plot_topo(
     subtitle = "Illustrative ForestGEO-style plot (replace with real gx, gy, DEM)"
   )
 ```
+
+## ForestGEO-style plots
+
+Forest dynamics plots (ForestGEO / CTFS) map every stem in local metres and
+repeat the census about every five years (Condit 1998; Anderson-Teixeira
+et al. 2015). tidydiversity keeps that workflow tidy:
+
+1. [stems_as_trees()] picks the main stem per tree.
+2. [stems_quadrat()] assigns 20 m x 20 m quadrats from `gx` / `gy`.
+3. [stems_abundance()] and [stems_basal_area()] summarise counts and
+   basal area (`pi/4 * dbh^2`).
+4. [stems_size_class()] bins DBH.
+5. [stems_demography()] estimates mortality, recruitment and growth between
+   two censuses.
+6. [stems_habitat()] joins quadrat topography or habitat.
+7. [stems_as_community()] feeds [div_hill()] and friends.
+8. [plot_topo()] maps stems on hillshade and contours.
+
+```{r forestgeo-demo, eval = requireNamespace("terra", quietly = TRUE)}
+stems <- geo_example_stems()
+stems_basal_area(stems, dbh_unit = "mm", .by = species)
+cens <- geo_example_censuses()
+stems_demography(cens$census1, cens$census2, time = 5, dbh_unit = "mm")
+com <- stems_as_community(stems_quadrat(stems))
+div_hill(com, q = c(0, 1, 2))
+```

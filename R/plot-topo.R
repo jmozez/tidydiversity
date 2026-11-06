@@ -406,3 +406,42 @@ geo_example_dem <- function(res = 2) {
   names(r) <- "elevation"
   r
 }
+
+#' Two illustrative censuses for demography demos
+#'
+#' Builds a pair of ForestGEO-style tree tables five years apart, with
+#' mortality, recruitment and growth, for trying [stems_demography()].
+#'
+#' @param n Number of trees in census 1.
+#' @param seed RNG seed.
+#' @param time Interval in years between censuses.
+#' @return A list with `census1` and `census2` tibbles.
+#' @export
+#' @examples
+#' cens <- geo_example_censuses()
+#' stems_demography(cens$census1, cens$census2, time = 5, dbh_unit = "mm")
+geo_example_censuses <- function(n = 80, seed = 1, time = 5) {
+  td_check_number(n, "n", 1, whole = TRUE)
+  td_check_number(time, "time", 0)
+  if (!is.null(seed)) set.seed(seed)
+  c1 <- geo_example_stems(n = n, seed = seed)
+  c1$census <- 1L
+  c1$date <- as.Date("2015-01-01")
+  c1$status <- "A"
+  c2 <- c1
+  c2$census <- 2L
+  c2$date <- as.Date("2015-01-01") + as.integer(round(time * 365.25))
+  grow <- stats::runif(n, 0.5, 4)
+  c2$dbh <- c1$dbh + grow
+  die <- seq_len(n) %in% sample.int(n, max(1, floor(0.08 * n)))
+  c2$status[die] <- "D"
+  n_rec <- max(2, floor(0.1 * n))
+  rec <- geo_example_stems(n = n_rec, seed = seed + 1)
+  rec$treeID <- n + seq_len(n_rec)
+  rec$stemID <- rec$treeID
+  rec$census <- 2L
+  rec$date <- c2$date[1]
+  rec$status <- "A"
+  c2 <- vctrs::vec_rbind(c2, rec)
+  list(census1 = tibble::as_tibble(c1), census2 = tibble::as_tibble(c2))
+}

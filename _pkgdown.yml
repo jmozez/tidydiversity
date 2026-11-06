@@ -210,6 +210,8 @@ reference:
       - geo-vector
       - geo-raster
       - geo-bioclim
+      - stems
+      - geo_example_censuses
 
 articles:
   - title: Get started
