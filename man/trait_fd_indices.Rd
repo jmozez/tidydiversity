@@ -52,7 +52,7 @@ dispersion (FDis) and Rao's quadratic entropy (RaoQ) for each site
 Hill-number functional diversity of \code{\link[=div_hill]{div_hill()}}.
 }
 \examples{
-\dontshow{if (rlang::is_installed(c("ade4", "FD"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("ade4", "FD"))) withAutoprint(\{ # examplesIf}
 aravo <- data_aravo()
 trait_fd_indices(aravo$community, aravo$traits, abundance = cover,
               indices = c("FDis", "RaoQ"))

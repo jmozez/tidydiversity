@@ -92,10 +92,12 @@ plot_panel <- function(...,
 #' @param size `"single"` (85 mm wide), `"onehalf"` (120 mm) or `"double"`
 #'   (175 mm) column width. Ignored if `width` is given.
 #' @param width,height Size in `units`. `height` defaults to 0.8 x width.
-#' @param units Units for `width` and `height`.
-#' @param dpi Resolution for raster formats.
+#' @param units Units for `width` and `height` (`"mm"`, `"cm"`, `"in"`,
+#'   or `"px"`).
+#' @param dpi Resolution for raster formats (default 300).
 #' @param ... Passed to [ggplot2::ggsave()].
 #' @return `filename`, invisibly.
+#' @seealso [geo_save()] for map-oriented defaults (path, 180x140 mm).
 #' @examplesIf rlang::is_installed("ggplot2")
 #' r <- div_rarefy(png_ants, q = 0, .by = season, knots = 20)
 #' f <- tempfile(fileext = ".png")
@@ -106,7 +108,7 @@ plot_save <- function(plot,
                       size = c("single", "onehalf", "double"),
                       width = NULL,
                       height = NULL,
-                      units = c("mm", "cm", "in"),
+                      units = c("mm", "cm", "in", "px"),
                       dpi = 300,
                       ...) {
   rlang::check_installed("ggplot2", reason = "to save plots.")
@@ -114,14 +116,24 @@ plot_save <- function(plot,
   units <- match.arg(units)
   if (is.null(width)) {
     mm <- c(single = 85, onehalf = 120, double = 175)[[size]]
-    width <- switch(units, mm = mm, cm = mm / 10, `in` = mm / 25.4)
+    width <- switch(
+      units,
+      mm = mm, cm = mm / 10, `in` = mm / 25.4,
+      px = mm / 25.4 * dpi
+    )
   }
   if (is.null(height)) {
     height <- 0.8 * width
   }
+  g_units <- units
+  if (identical(units, "px")) {
+    width <- width / dpi
+    height <- height / dpi
+    g_units <- "in"
+  }
   ggplot2::ggsave(filename,
     plot = plot, width = width, height = height,
-    units = units, dpi = dpi, bg = "white", ...
+    units = g_units, dpi = dpi, bg = "white", ...
   )
   invisible(filename)
 }

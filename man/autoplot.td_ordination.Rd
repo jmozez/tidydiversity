@@ -75,7 +75,7 @@ DCA) and NMDS, whose scores are optima.
 }
 \details{
 Groups of sites can be summarised with ellipses, convex hulls or
-spiders. Ellipses follow \code{\link[vegan:ordihull]{vegan::ordiellipse()}}: \code{"sd"} covers one
+spiders. Ellipses follow \code{\link[vegan:ordiellipse]{vegan::ordiellipse()}}: \code{"sd"} covers one
 standard deviation of the points, \code{"ci"} the region expected to hold
 \code{level} of the points, and \code{"se"} a \code{level} confidence region for the
 group centroid.
@@ -95,7 +95,7 @@ Every option is an argument, and the result is an ordinary ggplot that
 can be changed further with \code{+}.
 }
 \examples{
-\dontshow{if (rlang::is_installed(c("vegan", "ggplot2"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("vegan", "ggplot2"))) withAutoprint(\{ # examplesIf}
 library(ggplot2)
 butterflies <- wanang_butterflies
 butterflies$year <- factor(paste("Year", butterflies$year))

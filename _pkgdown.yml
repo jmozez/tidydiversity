@@ -90,6 +90,8 @@ navbar:
           href: articles/traits.html
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
+        - text: Geospatial workflows
+          href: articles/geospatial.html
         - text: -------
         - text: Output
         - text: Publication figures
@@ -193,6 +195,45 @@ reference:
       - model_group_folds
       - model_case_weights
       - step_hill
+  - title: Count models and partial-effect plots
+    contents:
+      - model_count
+      - plot_partial
+      - plot_surface
+  - title: Geospatial
+    contents:
+      - geo_as_sf
+      - as_sf
+      - as_spat_raster
+      - geo_example_sites
+      - geo_example_stems
+      - geo_example_dem
+      - geo_example_censuses
+      - geo_extract
+      - geo_clean
+      - geo_gbif
+      - geo_distance
+      - geo_decay
+      - geo_basemap
+      - plot_sites
+      - plot_topo
+      - plot_geo
+      - geo_moran
+      - geo-io
+      - geo_save
+      - geo_gadm
+      - geo-vector
+      - geo-raster
+      - geo-bioclim
+      - geo_elevation
+      - geo_mem
+      - geo_rarefy_spatial
+      - geo_grain
+      - geo_middomain
+      - geo_as_features
+      - stems
+      - stems_habitat_test
+      - sdm
 
 articles:
   - title: Get started
@@ -209,6 +250,7 @@ articles:
       - articles/composition-tests
       - articles/traits
       - articles/tidymodels
+      - articles/geospatial
       - articles/publication
   - title: Papua New Guinea case studies
     contents:

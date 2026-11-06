@@ -95,7 +95,7 @@ with \code{\link[vegan:envfit]{vegan::envfit()}}, so they appear as supplementar
 centroids (as in CANOCO) without changing the ordination.
 }
 \examples{
-\dontshow{if (requireNamespace("vegan", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("vegan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Tree-nesting ants: one sample per plot and subplot
 ants <- png_tree_ants
 ants$plot <- paste(ants$site, ants$subplot)

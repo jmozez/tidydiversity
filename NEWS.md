@@ -1,5 +1,57 @@
 # tidydiversity 0.1.0
 
+* Map interoperability: `as_sf()` and `as_spat_raster()` return CRS-aware
+  **sf** / **terra** objects for optional use with tmap and leaflet
+  (Suggests only; not hard Imports).
+* Tidy replacements for the Moses et al. (2021) Biotropica plotting stack
+  (doi:10.1111/btp.12914): `plot_partial()` (visreg-like partial effects),
+  `plot_surface()` (plotmo / visreg2d-like two-predictor contours), and
+  `model_count()` (Poisson, quasi-Poisson, negative binomial, binomial,
+  quasi-binomial) so callers never need visreg, plotmo or aods3.
+* Geospatial follow-up: environmental distance in `geo_distance()` /
+  `geo_decay()` (Euclidean or Gower on bioclim columns); Hill-number site
+  maps via `plot_geo()` with scale bar and north arrow; `geo_elevation()`
+  (SRTM-style DEM with cache / offline path); `geo_mem()` (dbMEM /
+  PCNM); `geo_rarefy_spatial()`; `geo_grain()` (MAUP / multi-grain Hill
+  numbers); `geo_middomain()`; CHELSA-CMIP6 via `geo_chelsa(scenario=,
+  year=)`; ForestGEO `stems_habitat_test()` (torus); tidy SDM family
+  `sdm_fit()` / `sdm_predict()` / `sdm_evaluate()` / `plot_sdm()` (glm,
+  gam, native maxnet-like; no Java Maxent, no biomod2); `geo_as_features()`
+  for prioritizr hand-off. Spectral / rgee remain deferred. New Rcpp
+  kernels for Euclidean distances, neighbour counts, torus shifts,
+  spatial rarefaction and SDM link functions.
+* ForestGEO-style census verbs: `stems_as_trees()`, `stems_quadrat()`,
+  `stems_abundance()`, `stems_basal_area()`, `stems_size_class()`,
+  `stems_demography()`, `stems_habitat()`, `stems_as_community()`,
+  `stems_neighbours()`, plus `geo_example_censuses()`.
+* `plot_topo()` maps ForestGEO-style stems (`gx`, `gy`, DBH, species)
+  over contour and hillshade backdrops; `geo_example_stems()` and
+  `geo_example_dem()` supply an illustrative local-metre plot.
+* Basemaps for `plot_sites()` and `plot_geo()` via `basemap` / `geo_basemap()`
+  (`none`, `coast`, OSM / Carto / ESRI tiles with offline coast fallback, or a
+  user raster). Vector verbs: `geo_buffer()`, `geo_crop()`,
+  `geo_intersection()`, `geo_difference()`, `geo_union()`, `geo_area()`,
+  `geo_centroid()`, `geo_bbox()`, `geo_join()`, `geo_distance_to()`. Raster
+  verbs: `geo_raster_read()`, `geo_raster_crop()`, `geo_raster_mask()`,
+  `geo_raster_resample()`, `geo_raster_project()`, `geo_raster_terrain()`,
+  `geo_raster_focal()`, `geo_raster_zonal()`. Bioclimate: `geo_bioclim_vars()`,
+  `geo_bioclim()`, `geo_worldclim()`, `geo_chelsa()` with cache and offline
+  `path` (cite Fick and Hijmans 2017; Karger et al. 2017).
+* `plot_sites()` draws publication-ready study-site maps (grouping,
+  labels, raster or coastline backdrop, facets, scale bar and north arrow
+  without map-package dependencies). `geo_example_sites()` supplies
+  illustrative Mt Wilhelm and Wanang coordinates for the PNG examples,
+  which carry elevation but not GPS. SDM tools such as biomod2 and Maxent
+  remain out of scope until rebuilt as tidy verbs.
+* Geospatial workflow (native tidyverse-style verbs; **sf** and **terra**
+  as Suggests): `geo_as_sf()`, `geo_drop_geometry()`, `geo_extract()`,
+  `geo_clean()` (occurrence flags rebuilt so callers never need
+  CoordinateCleaner), `geo_gbif()`, `geo_distance()`, `geo_decay()`
+  (feeds `beta_decay_model()` with great-circle or elevational distance),
+  `plot_geo()` and `geo_moran()` (Moran's I with a permutation p-value,
+  rebuilt so callers never need spdep). Compiled haversine kernels speed
+  large distance tables. New article "Geospatial diversity workflows".
+
 * Package scaffold.
 * New plots: `plot_venn()` draws Venn diagrams of the species shared by two
   to four groups; `plot_phylo()` draws a phylogeny with a column of

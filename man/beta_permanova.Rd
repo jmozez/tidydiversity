@@ -63,7 +63,7 @@ otherwise overweight abundant species; Legendre and Gallagher 2001),
 others, so the result does not depend on the order of terms),
 \code{"terms"} (sequential: each term after those listed before it, so
 order matters when terms are correlated) or \code{"model"} (all terms
-together). Note that \code{\link[vegan:adonis]{vegan::adonis2()}} defaults to \code{"terms"}; set
+together). Note that \code{\link[vegan:adonis2]{vegan::adonis2()}} defaults to \code{"terms"}; set
 \code{by = "terms"} to reproduce its default output.}
 
 \item{strata}{Optional site variable (unquoted) within which to restrict
@@ -88,7 +88,7 @@ attribute \code{"test"} (also printed). Use \code{autoplot()} to draw it.
 \description{
 \code{beta_permanova()} tests whether composition differs with site variables
 using permutational multivariate analysis of variance
-(\code{\link[vegan:adonis]{vegan::adonis2()}}, Anderson 2001). \code{beta_dispersion()} tests whether
+(\code{\link[vegan:adonis2]{vegan::adonis2()}}, Anderson 2001). \code{beta_dispersion()} tests whether
 groups differ in their spread (multivariate dispersion,
 \code{\link[vegan:betadisper]{vegan::betadisper()}}, Anderson 2006). PERMANOVA is sensitive to
 differences in dispersion, so report both.
@@ -98,7 +98,7 @@ Site variables are taken from the data when they are constant within
 sites, as in \code{\link[=ord_fit]{ord_fit()}}, or from \code{env}.
 }
 \examples{
-\dontshow{if (rlang::is_installed("vegan")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("vegan")) withAutoprint(\{ # examplesIf}
 ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect))
 set.seed(1)
 beta_permanova(ants, site = unit, formula = ~ elevation + season,

@@ -52,7 +52,7 @@ theme. The result is an ordinary patchwork object, so you can still add
 \code{patchwork::plot_annotation()} or \code{&} theme changes.
 }
 \examples{
-\dontshow{if (rlang::is_installed(c("ggplot2", "patchwork"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("ggplot2", "patchwork"))) withAutoprint(\{ # examplesIf}
 r0 <- div_rarefy(png_ants, q = 0, .by = season, knots = 20)
 r2 <- div_rarefy(png_ants, q = 2, .by = season, knots = 20)
 plot_panel(ggplot2::autoplot(r0), ggplot2::autoplot(r2), ncol = 2)

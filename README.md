@@ -113,6 +113,14 @@ one consistent, tested interface.
 - **Publication output.** CANOCO-style biplots and triplots with
   ellipses, hulls and spiders; consistent colour-blind-safe themes on
   white backgrounds; multi-panel figures with panel tags.
+- **Geospatial and ForestGEO in one tidy workflow.** Study-site maps,
+  basemaps, vector/raster verbs, WorldClim/CHELSA bioclim (including
+  CHELSA-CMIP6), stem maps on topography, census demography, dbMEM,
+  spatial rarefaction, grain helpers, mid-domain nulls, and tidy SDMs
+  (`sdm_*`) that never send you to biomod2 or Java Maxent.
+- **Partial effects without package-hopping.** `plot_partial()` and
+  `plot_surface()` replace the visreg / plotmo jump in Moses et al.
+  (2021); `model_count()` covers overdispersed counts without aods3.
 
 ### Fast where it matters
 
@@ -144,7 +152,8 @@ when a function needs them, so `library(tidydiversity)` stays light.
 - **ggplot2.** `autoplot()` returns ordinary ggplot objects you can
   extend with `+`; patchwork composes them.
 - **Predictable names.** Functions are grouped by prefix: `div_` (alpha
-  diversity), `beta_`, `ord_`, `trait_`, `phylo_`, `model_` and `plot_`.
+  diversity), `beta_`, `ord_`, `trait_`, `phylo_`, `model_`, `geo_`,
+  `stems_`, `sdm_` and `plot_`.
 - **Checked.** Results match iNEXT, iNEXT.3D, betapart, vegan, FD, ade4,
   iNEXT.beta3D, indicspecies, TPD and phytools in more than 400 tests.
 
@@ -163,6 +172,10 @@ when a function needs them, so `library(tidydiversity)` stays light.
 | Trait probability densities                                                               | `trait_tpd()`                                                                            | TPD                                     |
 | Phylogenetic signal and distances                                                         | `phylo_*()`                                                                              | phytools, picante, ape                  |
 | Modelling with tidymodels                                                                 | `model_*()`, `step_hill()`                                                               | hand-written glue                       |
+| Geospatial sites, basemaps, GADM, GDAL I/O, maps | `geo_*()`, `geo_read()`/`geo_write()`, `geo_save()`, `plot_sites()`, `plot_geo()` | sf, terra, maptiles, geodata |
+| ForestGEO stems and topography                                                            | `stems_*()`, `plot_topo()`                                                               | fgeo, CTFS R package                    |
+| Species distribution models (tidy)                                                        | `sdm_fit()`, `sdm_predict()`, `plot_sdm()`                                               | biomod2, dismo, maxnet                  |
+| Partial-effect and surface plots; overdispersed counts                                    | `plot_partial()`, `plot_surface()`, `model_count()`                                      | visreg, plotmo, aods3                   |
 | Publication figures and tables                                                            | `autoplot()`, `plot_*()`, `div_table()`                                                  | ggplot2, patchwork, gt                  |
 
 ## Installation
@@ -315,8 +328,13 @@ of unequal sampling effort before you compare sites.
 | Traits (`trait_`)          | `trait_dist()`, `trait_cwm()`, `trait_cwm_test()`, `trait_fd_indices()`, `trait_rao()`, `trait_ses()`, `trait_itv()`, `trait_fourth_corner()`, `trait_tpd()`, `trait_tpd_dissim()`                 |
 | Phylogeny (`phylo_`)       | `phylo_signal()`, `phylo_dist()`, `phylo_combine_dist()`                                                                                                                                           |
 | Modelling (`model_`)       | `model_group_folds()`, `model_case_weights()`, `step_hill()`, `tidy()`, `glance()`                                                                                                                 |
-| Plots and tables (`plot_`) | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `theme_tidydiversity()`, `div_table()`                                                                                              |
-| Example data               | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `wanang_caterpillars`, `data_aravo()`                                                                                                                     |
+| Geospatial (`geo_`)        | `geo_as_sf()`, `geo_extract()`, `geo_clean()`, `geo_gbif()`, `geo_distance()`, `geo_decay()`, `geo_basemap()`, `geo_bioclim()`, `geo_worldclim()`, `geo_chelsa()`, `geo_elevation()`, `geo_mem()`, `geo_rarefy_spatial()`, `geo_grain()`, `geo_middomain()`, `geo_moran()`, `geo_as_features()`, `as_sf()`, `as_spat_raster()`, vector/raster verbs |
+| ForestGEO (`stems_`)       | `stems_as_trees()`, `stems_quadrat()`, `stems_abundance()`, `stems_basal_area()`, `stems_size_class()`, `stems_demography()`, `stems_habitat()`, `stems_habitat_test()`, `stems_as_community()`, `stems_neighbours()` |
+| SDM (`sdm_`)               | `sdm_fit()`, `sdm_predict()`, `sdm_evaluate()`, `plot_sdm()`                                                                                                                                       |
+| Count / partial plots      | `model_count()`, `plot_partial()`, `plot_surface()`                                                                                                                                                |
+| Plots and tables (`plot_`) | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `plot_sites()`, `plot_geo()`, `plot_topo()`, `plot_partial()`, `plot_surface()`, `plot_phylo()`, `plot_trait_space()`, `plot_venn()`, `theme_tidydiversity()`, `div_table()` |
+| Example data               | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `wanang_caterpillars`, `data_aravo()`, `geo_example_sites()`, `geo_example_stems()`, `geo_example_dem()`, `geo_example_censuses()` |
+
 
 ## Gallery
 
@@ -391,6 +409,37 @@ Pairwise total, turnover and nestedness dissimilarity against elevation
 difference, with quasibinomial (logit) trends that stay within 0-1.
 
 <img src="man/figures/README-beta-decay-1.png" alt="Distance decay" width="100%" />
+
+
+### Study-site map
+
+Publication-ready study sites with a coast basemap, labels, scale bar and north arrow.
+
+<img src="man/figures/README-geo-sites-1.png" alt="Study-site map with coast basemap" width="100%" />
+
+### Hill numbers on a map
+
+Site-level Hill diversity estimates mapped with a colour-blind viridis scale.
+
+<img src="man/figures/README-geo-map-1.png" alt="Hill-number site map" width="100%" />
+
+### Stems over topography
+
+ForestGEO-style stem map with hillshade and contours (illustrative local-metre plot).
+
+<img src="man/figures/README-geo-topo-1.png" alt="Stem map over topography" width="100%" />
+
+### Basemap and bioclim
+
+OSM/Carto/ESRI tiles (with offline coast fallback) and WorldClim/CHELSA bioclim extracts feed the same tidy workflow.
+
+<img src="man/figures/README-geo-basemap-1.png" alt="Study sites with tile basemap" width="100%" />
+
+### Species distribution model (demonstration)
+
+Tidy presence-absence / presence-background SDM prediction map. Simulated data: a species present only at high bio1.
+
+<img src="man/figures/README-geo-sdm-1.png" alt="SDM suitability map demonstration" width="100%" />
 
 ## Output tables
 

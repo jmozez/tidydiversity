@@ -24,7 +24,7 @@ first appearance.
 \description{
 Returns one component of \code{\link[=beta_pair]{beta_pair()}}, or one dissimilarity of
 \code{\link[=beta_hill_pair]{beta_hill_pair()}}, as a \link[stats:dist]{stats::dist} object, ready for ordination and
-testing with vegan, for example \code{\link[vegan:metaMDS]{vegan::metaMDS()}}, \code{\link[vegan:adonis]{vegan::adonis2()}}
+testing with vegan, for example \code{\link[vegan:metaMDS]{vegan::metaMDS()}}, \code{\link[vegan:adonis2]{vegan::adonis2()}}
 or \code{\link[vegan:betadisper]{vegan::betadisper()}}, or for clustering with \code{\link[stats:hclust]{stats::hclust()}}.
 }
 \examples{
