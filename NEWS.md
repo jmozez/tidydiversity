@@ -1,5 +1,8 @@
 # tidydiversity 0.1.0
 
+* `plot_topo()` maps ForestGEO-style stems (`gx`, `gy`, DBH, species)
+  over contour and hillshade backdrops; `geo_example_stems()` and
+  `geo_example_dem()` supply an illustrative local-metre plot.
 * Basemaps for `plot_sites()` and `plot_geo()` via `basemap` / `geo_basemap()`
   (`none`, `coast`, OSM / Carto / ESRI tiles with offline coast fallback, or a
   user raster). Vector verbs: `geo_buffer()`, `geo_crop()`,

@@ -163,3 +163,34 @@ test_that("bioclim download paths are skipped on CRAN", {
     "not in the cache"
   )
 })
+
+test_that("plot_topo() maps stems over DEM contours and hillshade", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("terra")
+  stems <- geo_example_stems(n = 40, seed = 2)
+  dem <- geo_example_dem(res = 5)
+  p <- plot_topo(
+    stems,
+    colour = species,
+    size = dbh,
+    dem = dem,
+    boundary = c(0, 0, 100, 100),
+    contours = TRUE,
+    hillshade = TRUE
+  )
+  expect_s3_class(p, "ggplot")
+  # Missing coordinates error
+  bad <- stems
+  bad$gx <- NA_real_
+  bad$gy <- NA_real_
+  expect_error(plot_topo(bad, dem = dem), "finite stem coordinates")
+})
+
+test_that("geo_example_stems() is ForestGEO-like", {
+  s <- geo_example_stems(10)
+  expect_true(all(c(
+    "plot", "treeID", "stemID", "gx", "gy", "dbh", "species", "status"
+  ) %in% names(s)))
+  expect_equal(nrow(s), 10)
+  expect_true(all(s$gx >= 0 & s$gx <= 100))
+})

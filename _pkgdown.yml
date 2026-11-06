@@ -195,6 +195,8 @@ reference:
     contents:
       - geo_as_sf
       - geo_example_sites
+      - geo_example_stems
+      - geo_example_dem
       - geo_extract
       - geo_clean
       - geo_gbif
@@ -202,6 +204,7 @@ reference:
       - geo_decay
       - geo_basemap
       - plot_sites
+      - plot_topo
       - plot_geo
       - geo_moran
       - geo-vector

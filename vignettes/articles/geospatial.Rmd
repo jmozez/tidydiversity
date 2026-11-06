@@ -218,3 +218,30 @@ terra::writeRaster(bio1, tmp, overwrite = TRUE)
 clim <- geo_worldclim(vars = "bio1", path = tmp, download = FALSE)
 geo_extract(sites, clim, lon, lat)
 ```
+
+## Tree stems over topography (ForestGEO / Wanang)
+
+Large forest dynamics plots map every stem in local metre coordinates
+(`gx`, `gy`) over a DEM. [plot_topo()] draws stems with contour lines and
+hillshade, coloured by species and sized by DBH. The package does not yet
+ship real Wanang stem coordinates; [geo_example_stems()] and
+[geo_example_dem()] give an illustrative 100 m x 100 m plot in the
+ForestGEO column layout. Replace them with your inventory for publication.
+ForestGEO / Wanang background: Anderson-Teixeira et al. (2015),
+doi:10.1111/gcb.12712; ForestGEO <https://forestgeo.si.edu/>.
+
+```{r topo-stems, fig.width = 6.5, fig.height = 5.5, eval = requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("terra", quietly = TRUE)}
+stems <- geo_example_stems()
+dem <- geo_example_dem()
+plot_topo(
+  stems,
+  colour = species,
+  size = dbh,
+  dem = dem,
+  boundary = c(0, 0, 100, 100)
+) +
+  ggplot2::labs(
+    title = "Stem map over topography",
+    subtitle = "Illustrative ForestGEO-style plot (replace with real gx, gy, DEM)"
+  )
+```
