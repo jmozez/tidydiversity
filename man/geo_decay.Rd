@@ -50,12 +50,10 @@ returning a \link[=beta_decay]{td_beta_decay} object for \code{\link[=beta_decay
 and \code{\link[ggplot2:autoplot]{ggplot2::autoplot()}}.
 }
 \examples{
-sites <- unique(png_ants[c("site", "elevation", "season")])
-# Illustrative lon/lat near Mt Wilhelm for the example
-sites$lon <- 145.0 + sites$elevation / 1e5
-sites$lat <- -5.8 - sites$elevation / 2e5
-com <- dplyr::left_join(png_ants, sites[c("site", "season", "lon", "lat")],
-  by = c("site", "season")
+# Published bait GPS for the Mt Wilhelm sites
+sites <- geo_example_sites()
+com <- dplyr::left_join(png_ants, sites[c("site", "lon", "lat")],
+  by = "site"
 )
 decay <- geo_decay(com, lon, lat, .by = season, method = "haversine")
 head(decay)

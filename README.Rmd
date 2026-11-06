@@ -222,6 +222,7 @@ deposits by scripts in `data-raw/`.
 | Dataset | What it holds | Source |
 |---|---|---|
 | `png_ants` | Ants at nutrient baits, Mt Wilhelm, 200-3700 m, dry and wet season | Moses et al. (2023) *Global Ecology and Biogeography*, [doi:10.1111/geb.13757](https://doi.org/10.1111/geb.13757) |
+| `png_ants_sites` | GPS of the 16 Mt Wilhelm bait transects behind `png_ants` | Mottl, Moses and Klimes (2023) Zenodo, [doi:10.5281/zenodo.8191946](https://doi.org/10.5281/zenodo.8191946) |
 | `png_tree_ants` | Every ant nest in 1254 trees at 200, 900 and 1800 m | Plowman et al. (2020) *Ecography*, [doi:10.1111/ecog.04730](https://doi.org/10.1111/ecog.04730) |
 | `png_frogs` | 3390 frogs of 55 species at eight elevations, Mt Wilhelm | Dahl et al. (2024) *Biotropica*, [doi:10.1111/btp.13283](https://doi.org/10.1111/btp.13283) |
 | `wanang_butterflies` | Butterflies on 36 days over three years, Wanang forest plot | Luk et al. (2019) *Biotropica*, [doi:10.1111/btp.12671](https://doi.org/10.1111/btp.12671) |
@@ -304,7 +305,7 @@ the effect of unequal sampling effort before you compare sites.
 | SDM (`sdm_`) | `sdm_fit()`, `sdm_predict()`, `sdm_evaluate()`, `plot_sdm()` |
 | Count models and partial plots | `model_count()`, `plot_partial()`, `plot_surface()` |
 | Plots and tables (`plot_`) | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `plot_sites()`, `plot_geo()`, `plot_topo()`, `plot_partial()`, `plot_surface()`, `plot_phylo()`, `plot_trait_space()`, `plot_venn()`, `theme_tidydiversity()`, `div_table()` |
-| Example data | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `wanang_caterpillars`, `data_aravo()`, `geo_example_sites()`, `geo_example_stems()`, `geo_example_dem()`, `geo_example_censuses()` |
+| Example data | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `wanang_caterpillars`, `data_aravo()`, `png_ants_sites`, `geo_example_sites()`, `geo_example_stems()`, `geo_example_dem()` and `geo_example_censuses()` (simulated, for tests only) |
 
 ## Gallery
 
@@ -416,43 +417,44 @@ beta_decay(png_ants, gradient = elevation, .by = season) |>
 
 ### Study-site map
 
-Publication-ready study sites with a coast basemap, labels, scale bar and north arrow.
+Published bait GPS for the Mt Wilhelm ant transects (`png_ants_sites`,
+Mottl, Moses and Klimes 2023) on Esri imagery, with labels, scale bar,
+north arrow and a Papua New Guinea inset.
 
-```{r geo-sites, echo = FALSE, fig.height = 4.2, fig.alt = "Study-site map with coast basemap"}
-knitr::include_graphics("man/figures/README-geo-sites-1.png")
+```{r geo-sites, echo = FALSE, fig.height = 4.2, fig.alt = "Map of the eight Mt Wilhelm ant bait sites on satellite imagery"}
+knitr::include_graphics("man/figures/gallery-map-sites.png")
 ```
 
 ### Hill numbers on a map
 
-Site-level Hill diversity estimates mapped with a colour-blind viridis scale.
+Estimated ant species richness per elevation band (`png_ants`, dry season)
+at the same published coordinates.
 
-```{r geo-map, echo = FALSE, fig.height = 4.0, fig.alt = "Hill-number site map"}
-knitr::include_graphics("man/figures/README-geo-map-1.png")
+```{r geo-map, echo = FALSE, fig.height = 4.0, fig.alt = "Map of estimated ant species richness at the Mt Wilhelm sites"}
+knitr::include_graphics("man/figures/gallery-map-hill.png")
 ```
 
-### Stems over topography
+### Elevation
 
-ForestGEO-style stem map with hillshade and contours (illustrative local-metre plot).
+The transects over NASA SRTM elevation.
 
-```{r geo-topo, echo = FALSE, fig.height = 4.5, fig.alt = "Stem map over topography"}
-knitr::include_graphics("man/figures/README-geo-topo-1.png")
+```{r geo-basemap, echo = FALSE, fig.height = 4.0, fig.alt = "Mt Wilhelm sites over SRTM elevation"}
+knitr::include_graphics("man/figures/gallery-map-elevation.png")
 ```
 
-### Basemap and bioclim
+### Species distribution model
 
-OSM/Carto/ESRI tiles (with offline coast fallback) and WorldClim/CHELSA bioclim extracts feed the same tidy workflow.
+Habitat suitability of the green tree ant *Oecophylla smaragdina* in
+Papua New Guinea from GBIF occurrence records (CC0 and CC BY 4.0) and
+WorldClim 2.1 climate, fitted with `sdm_fit(engine = "maxnet")`.
 
-```{r geo-basemap, echo = FALSE, fig.height = 4.0, fig.alt = "Study sites with tile basemap"}
-knitr::include_graphics("man/figures/README-geo-basemap-1.png")
+```{r geo-sdm, echo = FALSE, fig.height = 4.0, fig.alt = "Habitat suitability map of Oecophylla smaragdina in Papua New Guinea"}
+knitr::include_graphics("man/figures/gallery-map-sdm.png")
 ```
 
-### Species distribution model (demonstration)
-
-Tidy presence-absence / presence-background SDM prediction map. Simulated data: a species present only at high bio1.
-
-```{r geo-sdm, echo = FALSE, fig.height = 4.0, fig.alt = "SDM suitability map demonstration"}
-knitr::include_graphics("man/figures/README-geo-sdm-1.png")
-```
+All four maps are drawn from real records by `data-raw/gallery_maps.R`;
+the [Gallery](https://jmozez.github.io/tidydiversity/articles/gallery.html)
+shows them with their tables and code.
 
 ## Output tables
 

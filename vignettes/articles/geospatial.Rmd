@@ -26,15 +26,15 @@ partial-effect and surface plots after Moses et al. (2021), and Moran's I
 for spatial autocorrelation. Hand off to **tmap** or **leaflet** with
 `as_sf()` / `as_spat_raster()` when you want interactive maps; those stay
 Suggests only. See also the [Get started](tidydiversity.html) guide and the
-README gallery.
+bonus maps in the [Gallery](gallery.html#maps-bonus).
 
 ## Study-site map (publication figure)
 
-Papers almost always need a map of the sampling sites. The Papua New Guinea
-example tables (`png_ants`, `png_frogs`, `png_tree_ants`) record elevation
-but not GPS, so [geo_example_sites()] supplies illustrative WGS84 positions
-near Mt Wilhelm and the Wanang canopy plots. Replace them with your own GPS
-before publication.
+Papers almost always need a map of the sampling sites. The Mt Wilhelm ant
+survey behind `png_ants` published a GPS position for every bait (Mottl,
+Moses and Klimes 2023, doi:10.5281/zenodo.8191946). [png_ants_sites] holds
+one point per transect and [geo_example_sites()] one point per elevation
+band, so the maps below show the real sampling sites.
 
 ```{r study-sites-map, fig.width = 7, fig.height = 5.2, eval = requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)}
 sites <- geo_example_sites("wilhelm")
@@ -53,7 +53,7 @@ plot_sites(
 ) +
   ggplot2::labs(
     title = "Study sites along Mt Wilhelm, Papua New Guinea",
-    subtitle = "Illustrative coordinates for the elevational gradient"
+    subtitle = "Published bait GPS (doi:10.5281/zenodo.8191946)"
   )
 ```
 
@@ -84,7 +84,8 @@ sf_sites
 ```
 
 ```{r extract, eval = requireNamespace("terra", quietly = TRUE)}
-# Demo raster in place of CHELSA / WorldClim / SRTM
+# Synthetic raster to show the verb offline; use geo_elevation() or
+# geo_worldclim() for real values
 r <- terra::rast(
   ncols = 40, nrows = 40,
   xmin = 144.8, xmax = 145.5, ymin = -6.0, ymax = -5.5,
@@ -226,27 +227,23 @@ geo_extract(sites, clim, lon, lat)
 
 Large forest dynamics plots map every stem in local metre coordinates
 (`gx`, `gy`) over a DEM. [plot_topo()] draws stems with contour lines and
-hillshade, coloured by species and sized by DBH. The package does not yet
-ship real Wanang stem coordinates; [geo_example_stems()] and
-[geo_example_dem()] give an illustrative 100 m x 100 m plot in the
-ForestGEO column layout. Replace them with your inventory for publication.
-ForestGEO / Wanang background: Anderson-Teixeira et al. (2015),
-doi:10.1111/gcb.12712; ForestGEO <https://forestgeo.si.edu/>.
+hillshade, coloured by species and sized by DBH. The package ships no
+openly licensed stem inventory, so no stem map is drawn here: pass your
+own census and DEM. [geo_example_stems()] and [geo_example_dem()] are
+simulated tables for testing code only. ForestGEO / Wanang background:
+Anderson-Teixeira et al. (2015), doi:10.1111/gcb.12712; ForestGEO
+<https://forestgeo.si.edu/>.
 
-```{r topo-stems, fig.width = 6.5, fig.height = 5.5, eval = requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("terra", quietly = TRUE)}
-stems <- geo_example_stems()
-dem <- geo_example_dem()
+```{r topo-stems, eval = FALSE}
+stems <- read.csv("my_plot_census.csv") # plot, treeID, gx, gy, dbh, species
+dem <- geo_read("my_plot_dem.tif")
 plot_topo(
   stems,
   colour = species,
   size = dbh,
   dem = dem,
-  boundary = c(0, 0, 100, 100)
-) +
-  ggplot2::labs(
-    title = "Stem map over topography",
-    subtitle = "Illustrative ForestGEO-style plot (replace with real gx, gy, DEM)"
-  )
+  boundary = c(0, 0, 500, 1000)
+)
 ```
 
 ## ForestGEO-style plots
@@ -266,6 +263,9 @@ et al. 2015). tidydiversity keeps that workflow tidy:
 7. [stems_as_community()] feeds [div_hill()] and friends.
 8. [plot_topo()] maps stems on hillshade and contours.
 
+The verbs below run on the simulated test tables, so the numbers carry no
+ecological meaning.
+
 ```{r forestgeo-demo, eval = requireNamespace("terra", quietly = TRUE)}
 stems <- geo_example_stems()
 stems_basal_area(stems, dbh_unit = "mm", .by = species)
@@ -284,14 +284,14 @@ Euclidean (scaled) or Gower distances among sites. The result feeds
 [beta_decay_model()] the same way as geographic or elevational distance.
 
 ```{r env-decay, eval = requireNamespace("sf", quietly = TRUE)}
-sites <- unique(png_ants[c("site", "elevation", "season")])
-sites$lon <- 145.0 + sites$elevation / 1e5
-sites$lat <- -5.8 - sites$elevation / 2e5
+sites <- geo_example_sites()
+# A simple lapse-rate stand-in for bio1 keeps this offline; extract
+# WorldClim with geo_worldclim() and geo_extract() for real analyses
 sites$bio1 <- 25 - sites$elevation / 400
 com <- dplyr::left_join(
   dplyr::filter(png_ants, season == "wet"),
-  sites[c("site", "season", "lon", "lat", "bio1")],
-  by = c("site", "season")
+  sites[c("site", "lon", "lat", "bio1")],
+  by = "site"
 )
 decay <- geo_decay(com, lon, lat, method = "environmental", vars = "bio1")
 head(decay)
@@ -319,23 +319,32 @@ tidyverse-style SDM workflow. Engines: `"glm"`, `"gam"` (mgcv) and a native
 (no Java Maxent, no biomod2 or dismo). Predictors may be columns or a
 SpatRaster from [geo_bioclim()].
 
-```{r sdm-demo, fig.width = 6.5, fig.height = 4.5, eval = requireNamespace("ggplot2", quietly = TRUE)}
-set.seed(1)
-grid <- expand.grid(
-  lon = seq(145, 145.5, length.out = 20),
-  lat = seq(-5.9, -5.5, length.out = 16)
+The map below models the green tree ant *Oecophylla smaragdina* across
+Papua New Guinea from GBIF records released under CC0 or CC BY 4.0
+(shipped as `inst/extdata/gbif_oecophylla_png.csv`, with GBIF dataset
+keys) and WorldClim 2.1 bio1 and bio12 (Fick and Hijmans 2017,
+doi:10.1002/joc.5086). The climate rasters are downloaded at run time, so
+the chunk is not evaluated here; `data-raw/gallery_maps.R` renders the
+figure.
+
+```{r sdm-real, eval = FALSE}
+occ <- read.csv(
+  system.file("extdata", "gbif_oecophylla_png.csv", package = "tidydiversity")
 )
-grid$bio1 <- 15 + 12 * (grid$lat - min(grid$lat)) / diff(range(grid$lat))
-pa <- grid
-pa$present <- as.integer(pa$bio1 > 22)
-fit <- sdm_fit(pa, predictors = "bio1", present = present, engine = "glm")
+clim <- geo_worldclim(c("bio1", "bio12"), res = 5)
+clim <- terra::crop(clim, terra::ext(140.8, 156.1, -11.7, -0.8))
+fit <- sdm_fit(occ, predictors = clim, engine = "maxnet",
+               n_background = 2000, seed = 1)
 sdm_evaluate(fit)
-plot_sdm(sdm_predict(fit, newdata = grid)) +
-  ggplot2::labs(
-    title = "SDM suitability (demonstration)",
-    subtitle = "Simulated species present only at high bio1"
-  )
+grid <- terra::as.data.frame(clim, xy = TRUE, cells = TRUE, na.rm = TRUE)
+names(grid)[2:3] <- c("lon", "lat")
+suit <- clim[[1]]
+terra::values(suit) <- NA_real_
+suit[grid$cell] <- sdm_predict(fit, newdata = grid)$suitability
+plot_sdm(suit, basemap = "coast")
 ```
+
+<img src="../reference/figures/gallery-map-sdm.png" alt="Habitat suitability of Oecophylla smaragdina in Papua New Guinea" style="width: 100%;">
 
 ## Elevation, future climate and planning export
 

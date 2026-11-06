@@ -1,5 +1,21 @@
 # tidydiversity 0.1.0
 
+* Maps now use real, published records only. New `png_ants_sites` holds
+  the published bait GPS of the 16 Mt Wilhelm ant transects (Mottl, Moses
+  and Klimes 2023, doi:10.5281/zenodo.8191946), and `geo_example_sites()`
+  returns their band centroids instead of invented coordinates (the
+  `"wanang"` option, which had no published coordinates, is removed). The
+  README and the new "Maps (bonus)" section of the website Gallery show a
+  study-site map, a Hill-number map, an SRTM elevation map and an SDM of
+  *Oecophylla smaragdina* from GBIF records (CC0 / CC BY 4.0, shipped in
+  `inst/extdata/gbif_oecophylla_png.csv`) and WorldClim 2.1, rendered by
+  `data-raw/gallery_maps.R`. The simulated stem map and demonstration SDM
+  figures are gone. `plot_sdm()` no longer adds a default
+  "demonstration" subtitle.
+* Tile basemaps from maptiles are now projected to the map CRS and drawn
+  the right way up, and tile zoom is chosen from the map extent so site
+  maps are sharp.
+
 * Map interoperability: `as_sf()` and `as_spat_raster()` return CRS-aware
   **sf** / **terra** objects for optional use with tmap and leaflet
   (Suggests only; not hard Imports).
@@ -25,8 +41,9 @@
   `stems_demography()`, `stems_habitat()`, `stems_as_community()`,
   `stems_neighbours()`, plus `geo_example_censuses()`.
 * `plot_topo()` maps ForestGEO-style stems (`gx`, `gy`, DBH, species)
-  over contour and hillshade backdrops; `geo_example_stems()` and
-  `geo_example_dem()` supply an illustrative local-metre plot.
+  over contour and hillshade backdrops. `geo_example_stems()`,
+  `geo_example_dem()` and `geo_example_censuses()` are simulated test data
+  for checking code only; no map in the documentation is drawn from them.
 * Basemaps for `plot_sites()` and `plot_geo()` via `basemap` / `geo_basemap()`
   (`none`, `coast`, OSM / Carto / ESRI tiles with offline coast fallback, or a
   user raster). Vector verbs: `geo_buffer()`, `geo_crop()`,
@@ -39,9 +56,8 @@
   `path` (cite Fick and Hijmans 2017; Karger et al. 2017).
 * `plot_sites()` draws publication-ready study-site maps (grouping,
   labels, raster or coastline backdrop, facets, scale bar and north arrow
-  without map-package dependencies). `geo_example_sites()` supplies
-  illustrative Mt Wilhelm and Wanang coordinates for the PNG examples,
-  which carry elevation but not GPS. SDM tools such as biomod2 and Maxent
+  without map-package dependencies). `geo_example_sites()` returns the
+  published bait GPS positions for the Mt Wilhelm elevation bands. SDM tools such as biomod2 and Maxent
   remain out of scope until rebuilt as tidy verbs.
 * Geospatial workflow (native tidyverse-style verbs; **sf** and **terra**
   as Suggests): `geo_as_sf()`, `geo_drop_geometry()`, `geo_extract()`,
