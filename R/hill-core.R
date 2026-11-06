@@ -132,7 +132,7 @@ hill_at_size <- function(x, m, q) {
         s2 <- sum(x * (x - 1)) / (n * (n - 1))
         return(1 / (1 / mm + (1 - 1 / mm) * s2))
       }
-      if (asy[j] == rfd[j]) {
+      if (!is.finite(asy[j]) || !is.finite(rfd[j]) || asy[j] == rfd[j]) {
         return(obs[j])
       }
       beta <- (obs[j] - rfd[j]) / (asy[j] - rfd[j])
@@ -244,6 +244,7 @@ boot_draws <- function(x, nboot, fn, dim = list(type = "TD")) {
     p <- comm$p
     dim <- comm$dim
   }
+  td_check_boot_n(n, call = NULL)
   draws <- lapply(seq_len(nboot), function(b) {
     xb <- as.vector(stats::rmultinom(1, n, p))
     names(xb) <- names(p)

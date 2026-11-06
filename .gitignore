@@ -10,3 +10,4 @@ src/*.o
 src/*.so
 src/*.dll
 figure/
+tests/testthat/Rplots.pdf

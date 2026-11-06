@@ -49,8 +49,9 @@ beta_hill_pair <- function(data,
                            weight = c("equal", "size"),
                            .by = NULL) {
   weight <- rlang::arg_match(weight)
-  if (!is.numeric(q) || length(q) == 0 || anyNA(q) || any(q < 0)) {
-    cli::cli_abort("{.arg q} must be non-negative numbers.")
+  if (!is.numeric(q) || length(q) == 0 || anyNA(q) || any(q < 0) ||
+        !all(is.finite(q))) {
+    cli::cli_abort("{.arg q} must be non-negative, finite numbers.")
   }
   call <- rlang::current_env()
   prep <- td_prepare(
