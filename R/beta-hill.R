@@ -80,7 +80,7 @@ beta_hill <- function(data,
                       nboot = 0,
                       conf = 0.95,
                       .by = NULL) {
-  td_check_q(q)
+  q <- td_check_q(q)
   if (!is.null(coverage) &&
         (!is.numeric(coverage) || any(coverage <= 0 | coverage > 1))) {
     cli::cli_abort("{.arg coverage} must be in (0, 1].")

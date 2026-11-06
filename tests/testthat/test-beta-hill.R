@@ -47,6 +47,12 @@ test_that("beta_hill defaults, bounds and errors", {
   expect_error(beta_hill(one), "two sites")
 })
 
+test_that("beta_hill sorts and de-duplicates q", {
+  b <- beta_hill(png_ants, .by = season, q = c(2, 0, 0))
+  expect_equal(nrow(b), 4)
+  expect_equal(b$q[b$season == "dry"], c(0, 2))
+})
+
 bh_ref_compare <- function(ours, ref, tol = 1e-8) {
   for (reg in names(ref)) {
     o <- ours[ours$region == reg, ]

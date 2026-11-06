@@ -18,3 +18,10 @@ test_that("plot_save writes a white figure at journal width", {
   expect_equal(plot_save(ggplot2::autoplot(r0), f, size = "double"), f)
   expect_true(file.exists(f))
 })
+
+test_that("plot_panel combines the panels' alt text", {
+  skip_if_not_installed("patchwork")
+  r <- div_rarefy(png_ants, q = 0, .by = season, knots = 5)
+  p <- plot_panel(ggplot2::autoplot(r), ggplot2::autoplot(r))
+  expect_match(ggplot2::get_alt_text(p), "^Figure with 2 panels\\. Plot of")
+})
