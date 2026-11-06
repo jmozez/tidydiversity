@@ -85,7 +85,9 @@ geo_rarefy_spatial <- function(data,
         if (length(by_cols) > 0) {
           key <- vctrs::vec_slice(split$key, rep(i, nrow(out)))
           vctrs::vec_cbind(key, out)
-        } else out
+        } else {
+          out
+        }
       })()
   })
   out <- tibble::as_tibble(vctrs::vec_rbind(!!!rows))
@@ -125,7 +127,7 @@ geo_rarefy_one <- function(coords, long, site_col, sp_col, lon_col, lat_col,
   curves <- lapply(seed_ids, function(sid) {
     i0 <- match(sid, sites)
     d <- if (exists("geo_haversine_pair_cpp", mode = "function") &&
-             max(abs(xy_lon), na.rm = TRUE) <= 180) {
+               max(abs(xy_lon), na.rm = TRUE) <= 180) {
       geo_haversine_m(rep(xy_lon[i0], n), rep(xy_lat[i0], n), xy_lon, xy_lat)
     } else {
       sqrt((xy_lon - xy_lon[i0])^2 + (xy_lat - xy_lat[i0])^2)

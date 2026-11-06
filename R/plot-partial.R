@@ -219,7 +219,7 @@ tidyr_expand_grid <- function(xs, by_vals, x_name, by_name) {
 plot_predict_response <- function(model, newdata, se = TRUE, level = 0.95, ...) {
   m <- if (inherits(model, "td_count_model")) model$fit else model
   if (inherits(m, "negbin") || inherits(m, "glm") || inherits(m, "lm") ||
-      inherits(m, "gam")) {
+        inherits(m, "gam")) {
     pr <- stats::predict(m, newdata = newdata, type = "response", se.fit = se)
     if (isTRUE(se)) {
       z <- stats::qnorm(1 - (1 - level) / 2)
