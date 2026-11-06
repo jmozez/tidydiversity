@@ -390,3 +390,47 @@ geo_local_utm_crs <- function(lon, lat) {
   epsg <- if (lat >= 0) 32600L + zone else 32700L + zone
   sf::st_crs(epsg)
 }
+
+
+#' Padded white label-repel layer shared by plot_sites / plot_geo
+#' @keywords internal
+#' @noRd
+geo_label_repel_layer <- function(labs, facet = NULL) {
+  rlang::check_installed("ggrepel")
+  repel_fun <- if (is.function(ggrepel::geom_label_repel)) {
+    ggrepel::geom_label_repel
+  } else {
+    ggrepel::geom_text_repel
+  }
+  # Prefer labels on the uphill/NW side of a SW-NE transect so large
+  # high-elevation markers (MW3200/MW3700) are not covered.
+  xr <- diff(range(labs$x, na.rm = TRUE))
+  yr <- diff(range(labs$y, na.rm = TRUE))
+  nudge_x <- if (is.finite(xr) && xr > 0) -0.04 * xr else 0
+  nudge_y <- if (is.finite(yr) && yr > 0)  0.05 * yr else 0
+  repel_args <- list(
+    data = labs,
+    mapping = ggplot2::aes(.data$x, .data$y, label = .data$.lab),
+    size = 2.8,
+    min.segment.length = 0,
+    box.padding = 0.9,
+    point.padding = 1.0,
+    max.overlaps = Inf,
+    force = 2.8,
+    force_pull = 0.15,
+    max.iter = 12000,
+    nudge_x = nudge_x,
+    nudge_y = nudge_y,
+    colour = "grey10",
+    segment.colour = "grey40",
+    segment.size = 0.35,
+    seed = 1,
+    inherit.aes = FALSE
+  )
+  if (identical(repel_fun, ggrepel::geom_label_repel)) {
+    repel_args$fill <- "white"
+    repel_args$label.size <- 0.15
+    repel_args$label.padding <- ggplot2::unit(0.15, "lines")
+  }
+  do.call(repel_fun, repel_args)
+}

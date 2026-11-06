@@ -981,6 +981,8 @@ plot_geo <- function(data,
     sv <- rlang::eval_tidy(size_q, data = data)
     if (is.numeric(sv) && length(sv) == 1L) size_const <- sv
   }
+  # Keep labelled maps readable: large size aesthetics crowd geom_label_repel
+  size_max <- if (!is.null(lab_col)) 6.5 else 10
 
   # Map value to fill (or colour when basemap uses fill); optional size_aes
   use_fill <- !isTRUE(bm_layers$uses_fill)
@@ -1007,7 +1009,7 @@ plot_geo <- function(data,
         guide = ggplot2::guide_colourbar(order = 1)
       ) +
       ggplot2::scale_size_area(
-        name = geo_pretty_label(size_aes), max_size = 10,
+        name = geo_pretty_label(size_aes), max_size = size_max,
         guide = ggplot2::guide_legend(order = 2)
       )
   } else if (!is.null(size_aes)) {
@@ -1022,7 +1024,7 @@ plot_geo <- function(data,
         guide = ggplot2::guide_colourbar(order = 1)
       ) +
       ggplot2::scale_size_area(
-        name = geo_pretty_label(size_aes), max_size = 10,
+        name = geo_pretty_label(size_aes), max_size = size_max,
         guide = ggplot2::guide_legend(order = 2)
       )
   } else {
@@ -1032,7 +1034,7 @@ plot_geo <- function(data,
         ggplot2::aes(size = .data[[val_col]]),
         shape = 21, fill = plot_palette(1), colour = "grey10", stroke = 0.4
       ) +
-      ggplot2::scale_size_area(name = leg, max_size = 8)
+      ggplot2::scale_size_area(name = leg, max_size = size_max)
   }
   if (!is.null(lab_col)) {
     rlang::check_installed("ggrepel")
@@ -1041,19 +1043,7 @@ plot_geo <- function(data,
       x = xy[, 1], y = xy[, 2],
       .lab = as.character(data[[lab_col]])
     )
-    p <- p + ggrepel::geom_text_repel(
-      data = labs,
-      ggplot2::aes(.data$x, .data$y, label = .data$.lab),
-      size = 3,
-      min.segment.length = 0.2,
-      box.padding = 0.55,
-      point.padding = 0.4,
-      max.overlaps = Inf,
-      force = 1.4,
-      colour = "grey10",
-      segment.colour = "grey40",
-      seed = 1
-    )
+    p <- p + geo_label_repel_layer(labs)
   }
   legend_inside <- !identical(legend_position, "outside") &&
     (identical(legend_position, "auto") ||

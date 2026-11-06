@@ -279,32 +279,7 @@ plot_sites <- function(data,
     if (!is.null(fac_nm)) {
       labs[[fac_nm]] <- sites[[fac_nm]]
     }
-    repel_fun <- if (is.function(ggrepel::geom_label_repel)) {
-      ggrepel::geom_label_repel
-    } else {
-      ggrepel::geom_text_repel
-    }
-    repel_args <- list(
-      data = labs,
-      mapping = ggplot2::aes(.data$x, .data$y, label = .data$.lab),
-      size = 2.9,
-      min.segment.length = 0.15,
-      box.padding = 0.6,
-      point.padding = 0.45,
-      max.overlaps = Inf,
-      force = 1.6,
-      colour = "grey10",
-      segment.colour = "grey40",
-      segment.size = 0.3,
-      seed = 1,
-      inherit.aes = FALSE
-    )
-    if (identical(repel_fun, ggrepel::geom_label_repel)) {
-      repel_args$fill <- "white"
-      repel_args$label.size <- 0.15
-      repel_args$label.padding <- ggplot2::unit(0.15, "lines")
-    }
-    p <- p + do.call(repel_fun, repel_args)
+    p <- p + geo_label_repel_layer(labs)
   }
 
   if (!is.null(fac_nm)) {
