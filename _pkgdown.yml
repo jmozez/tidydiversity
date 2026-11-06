@@ -129,6 +129,7 @@ reference:
       - png_tree_ants
       - png_frogs
       - wanang_butterflies
+      - wanang_caterpillars
       - portal_rodents
   - title: Alpha diversity
     contents:
@@ -182,6 +183,9 @@ reference:
     contents:
       - autoplot-tidydiversity
       - theme_tidydiversity
+      - plot_venn
+      - plot_phylo
+      - plot_trait_space
       - plot_panel
       - plot_save
       - div_table

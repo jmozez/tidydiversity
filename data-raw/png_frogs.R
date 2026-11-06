@@ -1,7 +1,7 @@
 # Frogs recorded at eight sites from 200 to 3700 m on Mt Wilhelm, Papua New
-# Guinea (Dahl et al. 2023, Biotropica).
+# Guinea (Dahl et al. 2024, Biotropica).
 # Source: Dahl, C., Richards, S. J., Basien, I., Mungkaje, A. J. &
-# Novotny, V. (2023). Local and regional diversity of frog communities
+# Novotny, V. (2024). Local and regional diversity of frog communities
 # along an extensive rainforest elevation gradient in Papua New Guinea.
 # Dryad, https://doi.org/10.5061/dryad.3n5tb2rqf (CC0 1.0), mirrored on
 # Zenodo record 10150940.

@@ -389,3 +389,111 @@ curves
 autoplot(curves, palette = "grey", facet = FALSE,
   theme = theme_tidydiversity(base_size = 9, grid = "none"))
 ```
+
+## Ordination triplot {.tabset}
+
+An RDA of the Wanang butterflies constrained by year and month: sites,
+the ten best-fitting species (red arrows), the month gradient (dark arrow),
+year centroids and
+ellipses for each year.
+
+```{r triplot-data, include = FALSE}
+butterflies <- mutate(wanang_butterflies, year = factor(paste("Year", year)))
+rda <- ord_fit(butterflies, method = "rda", formula = ~ year + month)
+```
+
+### Plot
+
+```{r triplot, echo = FALSE, fig.height = 6, fig.alt = "RDA triplot of Wanang butterfly sampling days coloured by year, with species arrows, year and month centroids and year ellipses"}
+autoplot(rda, colour = year, ellipse = "sd", species = 10)
+```
+
+### Code
+
+```r
+butterflies <- mutate(wanang_butterflies, year = factor(paste("Year", year)))
+rda <- ord_fit(butterflies, method = "rda", formula = ~ year + month)
+autoplot(rda, colour = year, ellipse = "sd", species = 10)
+```
+
+## Shared species: Venn diagram {.tabset}
+
+`plot_venn()` counts the species found in each combination of two to four
+groups. Here, ant species at four elevations on Mt Wilhelm.
+
+### Plot
+
+```{r venn, echo = FALSE, fig.height = 5.5, fig.alt = "Venn diagram of ant species shared between 200, 700, 1200 and 1700 m on Mt Wilhelm"}
+plot_venn(filter(png_ants, elevation %in% c(200, 700, 1200, 1700)), group = elevation)
+```
+
+### Two groups
+
+```{r venn-2, echo = FALSE, fig.height = 4.5, fig.alt = "Venn diagram of caterpillar morphospecies shared between primary and secondary forest at Wanang"}
+plot_venn(wanang_caterpillars, group = site)
+```
+
+### Code
+
+```r
+plot_venn(filter(png_ants, elevation %in% c(200, 700, 1200, 1700)), group = elevation)
+plot_venn(wanang_caterpillars, group = site)
+```
+
+## Phylogenetic diversity {.tabset}
+
+`plot_phylo()` draws the tree with each species' relative abundance per
+site. The coloured branches lead to the frogs found at 200 m: their total
+length is Faith's PD for that site. The tree here is a taxonomic tree
+(family, genus, species) with Grafen branch lengths; use a dated
+phylogeny where one exists.
+
+```{r phylo-data, include = FALSE}
+frogs <- mutate(png_frogs,
+  genus = sub(" .*", "", scientific_name),
+  tip = gsub(" ", "_", scientific_name)
+)
+tax <- distinct(as.data.frame(frogs[c("family", "genus", "tip")]))
+tax[] <- lapply(tax, factor)
+tree <- ape::compute.brlen(ape::as.phylo(~ family / genus / tip, data = tax))
+```
+
+### Plot
+
+```{r phylo, echo = FALSE, fig.height = 9, fig.alt = "Phylogram of Mt Wilhelm frogs with dots for relative abundance at each elevation and the branches present at 200 m highlighted"}
+plot_phylo(tree, frogs, species = tip, abundance = abundance, highlight = "MW0200")
+```
+
+### Code
+
+```r
+frogs <- mutate(png_frogs,
+  genus = sub(" .*", "", scientific_name),
+  tip = gsub(" ", "_", scientific_name)
+)
+tax <- distinct(as.data.frame(frogs[c("family", "genus", "tip")]))
+tax[] <- lapply(tax, factor)
+tree <- ape::compute.brlen(ape::as.phylo(~ family / genus / tip, data = tax))
+plot_phylo(tree, frogs, species = tip, abundance = abundance, highlight = "MW0200")
+```
+
+## Functional trait space {.tabset}
+
+`plot_trait_space()` places the alpine plants of the `aravo` data in a
+PCoA of Gower trait distances. Each hull encloses the species found under
+one level of zoogenic disturbance (its area is the two-dimensional
+functional richness) and the diamonds are cover-weighted mean positions.
+
+### Plot
+
+```{r trait-space, echo = FALSE, fig.height = 5.5, fig.alt = "Functional trait space of alpine plants with convex hulls and weighted mean positions for three levels of zoogenic disturbance"}
+aravo <- data_aravo()
+plot_trait_space(aravo$traits, aravo$community, group = ZoogD, abundance = cover)
+```
+
+### Code
+
+```r
+aravo <- data_aravo()
+plot_trait_space(aravo$traits, aravo$community, group = ZoogD, abundance = cover)
+```

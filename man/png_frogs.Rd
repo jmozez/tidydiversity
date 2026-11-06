@@ -30,7 +30,7 @@ png_frogs
 }
 \description{
 Real field data: 3390 frogs of 55 species recorded at eight sites from
-200 to 3700 m on Mt Wilhelm, Papua New Guinea (Dahl et al. 2023).
+200 to 3700 m on Mt Wilhelm, Papua New Guinea (Dahl et al. 2024).
 Species not formally described carry a provisional name such as
 \code{"Copiula sp 1"}.
 }
@@ -40,8 +40,8 @@ div_estimate(png_frogs, nboot = 0)
 }
 \references{
 Dahl, C., Richards, S. J., Basien, I., Mungkaje, A. J. and
-Novotny, V. (2023). Local and regional diversity of frog communities
+Novotny, V. (2024). Local and regional diversity of frog communities
 along an extensive rainforest elevation gradient in Papua New Guinea.
-\emph{Biotropica}. \doi{10.1111/btp.13283}
+\emph{Biotropica}, 56, 90-97. \doi{10.1111/btp.13283}
 }
 \keyword{datasets}

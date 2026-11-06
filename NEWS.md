@@ -53,6 +53,19 @@
   large distance tables. New article "Geospatial diversity workflows".
 
 * Package scaffold.
+* New plots: `plot_venn()` draws Venn diagrams of the species shared by two
+  to four groups; `plot_phylo()` draws a phylogeny with a column of
+  relative abundances per site and can highlight the branches (Faith's PD)
+  of one site; `plot_trait_space()` places species in a PCoA trait space
+  with each group's convex hull (functional richness) and
+  community-weighted mean.
+* New dataset `wanang_caterpillars`: 9,363 Lepidoptera larvae of 849
+  morphospecies reared from host trees in primary and secondary forest at
+  Wanang (Butterill and Redmond 2023, GBIF, CC BY 4.0).
+* Citations corrected: Moses et al. (2023) pages 2212-2229, Dahl et al.
+  (2024) volume 56 pages 90-97, the Portal Project data paper (Ernest et al.
+  2018, bioRxiv) and the authors and years of the Plowman et al. and Luk et
+  al. Dryad datasets, all checked against Crossref and DataCite.
 * Input checks: `beta_hill()`, `beta_hill_pair()` and `div_completeness()`
   now reject infinite `q`, which used to return `NaN`. Bootstrapping a
   sample of more than 2,147,483,647 individuals now gives a clear error
@@ -160,7 +173,7 @@
   replacing the simulated `ant_gradient`: `png_ants` (ants at nutrient
   baits along Mt Wilhelm; Moses et al. 2023), `png_tree_ants` (tree-nesting
   ants in three plots; Plowman et al. 2020), `png_frogs` (frogs along
-  Mt Wilhelm; Dahl et al. 2023) and `wanang_butterflies` (butterfly
+  Mt Wilhelm; Dahl et al. 2024) and `wanang_butterflies` (butterfly
   monitoring at Wanang; Luk et al. 2019). Each is rebuilt from its Zenodo
   deposit by a script in `data-raw/`.
 * New case-study articles for the Papua New Guinea ants, frogs and

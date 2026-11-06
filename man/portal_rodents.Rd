@@ -40,7 +40,7 @@ div_hill(portal_rodents, q = 0, .by = c(treatment, year))
 }
 \references{
 Ernest, S. K. M., Yenni, G. M., Allington, G., Bledsoe,
-E. K., Christensen, E. M., Diaz, R. M. et al. (2020). The Portal
+E. K., Christensen, E. M., Diaz, R. M. et al. (2018). The Portal
 Project: a long-term study of a Chihuahuan desert ecosystem. bioRxiv.
 \doi{10.1101/332783}
 }

@@ -38,7 +38,7 @@ div_estimate(png_tree_ants, abundance = nests, nboot = 50) |>
 ### Frogs
 
 Frogs at eight elevations from 200 to 3700 m on Mt Wilhelm (`png_frogs`;
-Dahl et al. 2023). [Full tutorial](case-png-frogs.html).
+Dahl et al. 2024). [Full tutorial](case-png-frogs.html).
 
 ```{r png-frogs, fig.alt = "Frog dissimilarity against elevational distance"}
 beta_decay(png_frogs, gradient = elevation) |>

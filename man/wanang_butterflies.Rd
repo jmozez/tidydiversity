@@ -18,7 +18,7 @@ columns:
 }
 \source{
 Luk, C.-L., Basset, Y., Kongnoo, P., Hau, B. C. H. and
-Bonebrake, T. C. (2018). Data from: Inter-annual monitoring improves
+Bonebrake, T. C. (2019). Data from: Inter-annual monitoring improves
 diversity estimation of tropical butterfly assemblages. Dryad.
 \doi{10.5061/dryad.j35fq7r}, released under CC0 1.0. Built by
 \code{data-raw/wanang_butterflies.R}.

@@ -250,6 +250,7 @@ deposits by scripts in `data-raw/`.
 | `png_tree_ants`      | Every ant nest in 1254 trees at 200, 900 and 1800 m                | Plowman et al. (2020) *Ecography*, [doi:10.1111/ecog.04730](https://doi.org/10.1111/ecog.04730)                   |
 | `png_frogs`          | 3390 frogs of 55 species at eight elevations, Mt Wilhelm           | Dahl et al. (2023) *Biotropica*, [doi:10.1111/btp.13283](https://doi.org/10.1111/btp.13283)                       |
 | `wanang_butterflies` | Butterflies on 36 days over three years, Wanang forest plot        | Luk et al. (2019) *Biotropica*, [doi:10.1111/btp.12671](https://doi.org/10.1111/btp.12671)                        |
+| `wanang_caterpillars` | 9363 reared caterpillars of 849 morphospecies, primary and secondary forest at Wanang | Butterill and Redmond (2023) GBIF, [doi:10.15468/7e96ht](https://doi.org/10.15468/7e96ht) (CC BY 4.0) |
 
 ## TD, PD and FD on one scale
 
@@ -331,8 +332,9 @@ of unequal sampling effort before you compare sites.
 | ForestGEO (`stems_`)       | `stems_as_trees()`, `stems_quadrat()`, `stems_abundance()`, `stems_basal_area()`, `stems_size_class()`, `stems_demography()`, `stems_habitat()`, `stems_habitat_test()`, `stems_as_community()`, `stems_neighbours()` |
 | SDM (`sdm_`)               | `sdm_fit()`, `sdm_predict()`, `sdm_evaluate()`, `plot_sdm()`                                                                                                                                       |
 | Count / partial plots      | `model_count()`, `plot_partial()`, `plot_surface()`                                                                                                                                                |
-| Plots and tables (`plot_`) | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `plot_sites()`, `plot_geo()`, `plot_topo()`, `plot_partial()`, `plot_surface()`, `theme_tidydiversity()`, `div_table()`             |
-| Example data               | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `data_aravo()`, `geo_example_sites()`, `geo_example_stems()`, `geo_example_dem()`, `geo_example_censuses()`                         | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `data_aravo()`                                                                                                                     |
+| Plots and tables (`plot_`) | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `plot_sites()`, `plot_geo()`, `plot_topo()`, `plot_partial()`, `plot_surface()`, `plot_phylo()`, `plot_trait_space()`, `plot_venn()`, `theme_tidydiversity()`, `div_table()` |
+| Example data               | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `wanang_caterpillars`, `data_aravo()`, `geo_example_sites()`, `geo_example_stems()`, `geo_example_dem()`, `geo_example_censuses()` |
+
 
 ## Gallery
 
@@ -653,7 +655,7 @@ Welch-type PERMANOVA (W\*d), robust to unequal dispersion: the
 - Moses, J. et al. (2023). Nutrient use by tropical ant communities
   varies among three extensive elevational gradients: a
   cross-continental comparison. *Global Ecology and Biogeography*, 32,
-  1958-1973.
+  2212-2229.
 - Nekola, J. C. and White, P. S. (1999). The distance decay of
   similarity in biogeography and ecology. *Journal of Biogeography*, 26,
   867-878.
