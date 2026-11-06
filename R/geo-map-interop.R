@@ -152,5 +152,5 @@ as_spat_raster.td_sdm <- function(x, ...) {
   if (inherits(pred, "SpatRaster")) {
     return(as_spat_raster(pred, ...))
   }
-  as_spat_raster(pred, value = suitability, ...)
+  as_spat_raster(pred, value = "suitability", ...)
 }

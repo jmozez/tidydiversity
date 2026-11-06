@@ -84,6 +84,12 @@ then \code{x}/\code{y}.}
 lon/lat columns for \code{\link[=geo_write]{geo_write()}} / \code{\link[=geo_vector_write]{geo_vector_write()}}.}
 
 \item{overwrite}{Overwrite an existing file? Default \code{FALSE}.}
+
+\item{data}{Vector object or table for \code{\link[=geo_vector_write]{geo_vector_write()}} (\code{sf} or
+a data frame with lon/lat columns).}
+
+\item{raster}{A \code{terra::SpatRaster} (or coercible) for
+\code{\link[=geo_raster_write]{geo_raster_write()}}.}
 }
 \value{
 \itemize{

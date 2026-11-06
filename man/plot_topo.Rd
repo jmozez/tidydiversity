@@ -6,8 +6,8 @@
 \usage{
 plot_topo(
   data,
-  x = gx,
-  y = gy,
+  x = "gx",
+  y = "gy",
   lon = NULL,
   lat = NULL,
   colour = NULL,

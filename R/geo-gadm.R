@@ -3,7 +3,7 @@
 #' Downloads (and caches) Global Administrative Areas (GADM) boundaries as an
 #' `sf` tibble via **geodata**. Level 0 is the country outline, level 1
 #' provinces / states, and level 2 districts. Use the result as `admin` in
-#' [plot_sites()] / [plot_geo()], as an overview for [geo_annotation_inset()],
+#' [plot_sites()] / [plot_geo()], as an overview for `geo_annotation_inset()`,
 #' or to clip occurrences with [geo_intersection()] / [geo_raster_mask()].
 #'
 #' GADM data are free for academic and non-commercial use; redistribution of

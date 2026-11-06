@@ -38,7 +38,7 @@ An \code{sf} tibble of multipolygons (class \code{td_geo_sf}).
 Downloads (and caches) Global Administrative Areas (GADM) boundaries as an
 \code{sf} tibble via \strong{geodata}. Level 0 is the country outline, level 1
 provinces / states, and level 2 districts. Use the result as \code{admin} in
-\code{\link[=plot_sites]{plot_sites()}} / \code{\link[=plot_geo]{plot_geo()}}, as an overview for \code{\link[=geo_annotation_inset]{geo_annotation_inset()}},
+\code{\link[=plot_sites]{plot_sites()}} / \code{\link[=plot_geo]{plot_geo()}}, as an overview for \code{geo_annotation_inset()},
 or to clip occurrences with \code{\link[=geo_intersection]{geo_intersection()}} / \code{\link[=geo_raster_mask]{geo_raster_mask()}}.
 }
 \details{

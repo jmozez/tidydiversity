@@ -261,7 +261,7 @@ plot_sdm <- function(x, basemap = "esri", ...) {
   dots$legend_title <- dots$legend_title %||% "Suitability"
   dots$scale_bar <- dots$scale_bar %||% TRUE
   rlang::inject(plot_geo(
-    x, value = suitability,
+    x, value = "suitability",
     lon = !!rlang::sym(lon_col), lat = !!rlang::sym(lat_col),
     basemap = basemap, !!!dots
   ))

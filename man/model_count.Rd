@@ -32,6 +32,8 @@ Hill richness).}
 to \code{\link[stats:glm]{stats::glm()}} / \code{\link[MASS:glm.nb]{MASS::glm.nb()}}.}
 
 \item{...}{Additional arguments forwarded to the fitter.}
+
+\item{x}{A \code{td_count_model} from \code{\link[=model_count]{model_count()}}.}
 }
 \value{
 A \code{td_count_model} list with \code{fit}, \code{family}, \code{formula}, \code{data},

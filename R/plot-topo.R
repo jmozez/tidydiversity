@@ -48,8 +48,8 @@
 #' dem <- geo_example_dem()
 #' plot_topo(stems, colour = species, size = dbh, dem = dem, boundary = c(0, 0, 100, 100))
 plot_topo <- function(data,
-                      x = gx,
-                      y = gy,
+                      x = "gx",
+                      y = "gy",
                       lon = NULL,
                       lat = NULL,
                       colour = NULL,

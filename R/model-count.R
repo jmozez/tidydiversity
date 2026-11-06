@@ -96,6 +96,7 @@ print.td_count_model <- function(x, ...) {
   invisible(x)
 }
 
+#' @param x A `td_count_model` from [model_count()].
 #' @export
 #' @importFrom generics tidy
 #' @rdname model_count

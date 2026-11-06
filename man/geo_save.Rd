@@ -18,7 +18,7 @@ geo_save(
 \arguments{
 \item{plot}{A ggplot or patchwork map object.}
 
-\item{path, filename}{Output path. The extension selects the device
+\item{path}{Output path. The extension selects the device
 (\code{.png}, \code{.pdf}, \code{.svg}, \code{.tiff}/\code{.tif}, \code{.jpg}/\code{.jpeg}).}
 
 \item{width, height}{Size in \code{units}. For \code{\link[=geo_save]{geo_save()}}, defaults are
@@ -34,7 +34,7 @@ geo_save(
 \code{compression}, \code{family}, or \code{useDingbats}).}
 }
 \value{
-\code{path} / \code{filename}, invisibly.
+\code{path}, invisibly.
 }
 \description{
 Writes ggplot maps from \code{\link[=plot_sites]{plot_sites()}}, \code{\link[=plot_geo]{plot_geo()}}, \code{\link[=plot_sdm]{plot_sdm()}},

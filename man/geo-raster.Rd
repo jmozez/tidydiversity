@@ -53,8 +53,6 @@ geo_raster_zonal(raster, y, fun = "mean", ..., as_tibble = TRUE)
 \item{fun}{Summary function name or function.}
 
 \item{as_tibble}{Return a tibble (default) instead of the raw terra extract matrix?}
-
-\item{path}{File path for \code{\link[=geo_raster_read]{geo_raster_read()}}.}
 }
 \description{
 Native tidyverse-style wrappers around common \strong{terra} operations for

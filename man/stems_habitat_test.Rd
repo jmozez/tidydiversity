@@ -50,17 +50,10 @@ compared to the null distribution from torus shifts.
 }
 \examples{
 stems <- geo_example_stems()
-# Toy habitat: low vs high elevation from the example DEM
-dem <- geo_example_dem()
-elev <- terra::extract(dem, cbind(stems$gx, stems$gy))[, 2]
-stems$habitat <- ifelse(elev > mean(elev, na.rm = TRUE), "ridge", "valley")
-# Aggregate to 20 m quadrats for the torus grid
+# Toy habitat on 20 m quadrats for the torus grid
 q <- stems_quadrat(stems)
 hab <- unique(q[c("quadrat", "gx", "gy")])
-# Habitat of quadrat centre
-hab$habitat <- ifelse(
-  hab$gx + hab$gy > 100, "ridge", "valley"
-)
+hab$habitat <- ifelse(hab$gx + hab$gy > 100, "ridge", "valley")
 set.seed(1)
 stems_habitat_test(stems, habitat = hab, nperm = 49)
 }

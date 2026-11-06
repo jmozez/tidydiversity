@@ -37,6 +37,10 @@
 #'   is set.
 #' @param x Object to write: `sf`, `SpatRaster`, or a data frame with
 #'   lon/lat columns for [geo_write()] / [geo_vector_write()].
+#' @param data Vector object or table for [geo_vector_write()] (`sf` or
+#'   a data frame with lon/lat columns).
+#' @param raster A `terra::SpatRaster` (or coercible) for
+#'   [geo_raster_write()].
 #' @param type Force `"vector"` or `"raster"` in [geo_read()]; `NULL`
 #'   auto-detects.
 #' @param driver Optional GDAL/OGR driver name (for example `"GPKG"`,
@@ -551,7 +555,7 @@ geo_raster_write <- function(raster,
 #' [plot_save()] is the general journal-size helper (also used outside maps).
 #'
 #' @param plot A ggplot or patchwork map object.
-#' @param path,filename Output path. The extension selects the device
+#' @param path Output path. The extension selects the device
 #'   (`.png`, `.pdf`, `.svg`, `.tiff`/`.tif`, `.jpg`/`.jpeg`).
 #' @param width,height Size in `units`. For [geo_save()], defaults are
 #'   180 mm wide and 140 mm tall (a comfortable single map panel).
@@ -560,7 +564,7 @@ geo_raster_write <- function(raster,
 #' @param bg Background colour (default `"white"`).
 #' @param ... Passed to [ggplot2::ggsave()] (device-specific extras such as
 #'   `compression`, `family`, or `useDingbats`).
-#' @return `path` / `filename`, invisibly.
+#' @return `path`, invisibly.
 #' @seealso [plot_save()], [geo_write()], [plot_sites()]
 #' @export
 #' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("sf", quietly = TRUE)
