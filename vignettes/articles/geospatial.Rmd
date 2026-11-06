@@ -20,10 +20,13 @@ library(tidydiversity)
 tidydiversity keeps the whole spatial biodiversity workflow in one tidy
 pipeline: study-site maps for papers, sites as `sf` tables, rasters joined
 as columns, occurrence cleaning without leaving the package, distances for
-`beta_decay()`, Hill numbers on maps, and Moran's I for spatial
-autocorrelation. Advanced SDM tools such as biomod2 and Maxent are not
-tidy-friendly yet; they stay out of this workflow until rebuilt as tidy
-verbs.
+`beta_decay()`, Hill numbers on maps, ForestGEO stem and census verbs,
+WorldClim/CHELSA bioclim (including CMIP6), tidy SDMs (`sdm_*`),
+partial-effect and surface plots after Moses et al. (2021), and Moran's I
+for spatial autocorrelation. Hand off to **tmap** or **leaflet** with
+`as_sf()` / `as_spat_raster()` when you want interactive maps; those stay
+Suggests only. See also the [Get started](tidydiversity.html) guide and the
+README gallery.
 
 ## Study-site map (publication figure)
 
@@ -270,4 +273,125 @@ cens <- geo_example_censuses()
 stems_demography(cens$census1, cens$census2, time = 5, dbh_unit = "mm")
 com <- stems_as_community(stems_quadrat(stems))
 div_hill(com, q = c(0, 1, 2))
+```
+
+
+## Environmental distance decay
+
+After joining bioclim columns with [geo_extract()] / [geo_bioclim()], pass
+`method = "environmental"` to [geo_distance()] or [geo_decay()] to get
+Euclidean (scaled) or Gower distances among sites. The result feeds
+[beta_decay_model()] the same way as geographic or elevational distance.
+
+```{r env-decay, eval = requireNamespace("sf", quietly = TRUE)}
+sites <- unique(png_ants[c("site", "elevation", "season")])
+sites$lon <- 145.0 + sites$elevation / 1e5
+sites$lat <- -5.8 - sites$elevation / 2e5
+sites$bio1 <- 25 - sites$elevation / 400
+com <- dplyr::left_join(
+  dplyr::filter(png_ants, season == "wet"),
+  sites[c("site", "season", "lon", "lat", "bio1")],
+  by = c("site", "season")
+)
+decay <- geo_decay(com, lon, lat, method = "environmental", vars = "bio1")
+head(decay)
+```
+
+## Spatial eigenvectors, rarefaction and grain
+
+[geo_mem()] builds dbMEM / PCNM eigenvectors from site coordinates.
+[geo_rarefy_spatial()] accumulates richness by distance from a seed sample.
+[geo_grain()] rebins sites into square cells of several sizes and recomputes
+Hill numbers, so MAUP / grain effects are visible. [geo_middomain()] adds a
+geometric mid-domain null for elevational richness.
+
+```{r spatial-helpers}
+g <- expand.grid(lon = 1:5, lat = 1:4)
+g$site <- paste0("s", seq_len(nrow(g)))
+names(geo_mem(g, lon, lat, site = site, method = "euclidean"))[1:6]
+```
+
+## Tidy species distribution models
+
+[sdm_fit()], [sdm_predict()], [sdm_evaluate()] and [plot_sdm()] provide a
+tidyverse-style SDM workflow. Engines: `"glm"`, `"gam"` (mgcv) and a native
+`"maxnet"`-like presence-background model with linear and quadratic features
+(no Java Maxent, no biomod2 or dismo). Predictors may be columns or a
+SpatRaster from [geo_bioclim()].
+
+```{r sdm-demo, fig.width = 6.5, fig.height = 4.5, eval = requireNamespace("ggplot2", quietly = TRUE)}
+set.seed(1)
+grid <- expand.grid(
+  lon = seq(145, 145.5, length.out = 20),
+  lat = seq(-5.9, -5.5, length.out = 16)
+)
+grid$bio1 <- 15 + 12 * (grid$lat - min(grid$lat)) / diff(range(grid$lat))
+pa <- grid
+pa$present <- as.integer(pa$bio1 > 22)
+fit <- sdm_fit(pa, predictors = "bio1", present = present, engine = "glm")
+sdm_evaluate(fit)
+plot_sdm(sdm_predict(fit, newdata = grid)) +
+  ggplot2::labs(
+    title = "SDM suitability (demonstration)",
+    subtitle = "Simulated species present only at high bio1"
+  )
+```
+
+## Elevation, future climate and planning export
+
+[geo_elevation()] downloads or reads an SRTM-style DEM (geodata / elevatr,
+with offline `path`). [geo_chelsa()] accepts `scenario` and `year` for
+CHELSA-CMIP6 future layers (Karger et al. 2023; skip network with
+`download = FALSE` on CRAN). [geo_as_features()] exports a site-by-feature
+matrix for prioritizr; spectral / Google Earth Engine helpers remain
+deferred.
+
+
+## Partial-effect and surface plots (Moses et al. 2021)
+
+The Mt Wilhelm litter-ant analysis in Moses et al. (2021,
+doi:10.1111/btp.12914) fitted Poisson and negative-binomial GLMs for
+richness and abundance against elevation and litter depth, then used
+**visreg** (`visreg2d`) for the interaction surface and hand-converted the
+result to ggplot. tidydiversity replaces that jump with [model_count()],
+[plot_partial()] and [plot_surface()] in one tidy workflow (no visreg,
+plotmo or aods3).
+
+```{r moses-partial, fig.width = 7, fig.height = 4.2, eval = requireNamespace("ggplot2", quietly = TRUE)}
+ants <- png_ants |>
+  dplyr::group_by(site, elevation) |>
+  dplyr::summarise(richness = dplyr::n_distinct(species), .groups = "drop")
+set.seed(1)
+ants$litter <- 1 + ants$elevation / 2000 + stats::rnorm(nrow(ants), 0, 0.25)
+fit <- model_count(
+  ants, richness ~ elevation * litter, family = "poisson"
+)
+plot_partial(fit, elevation, residuals = TRUE) +
+  ggplot2::labs(title = "Partial effect of elevation on richness")
+plot_surface(fit, elevation, litter) +
+  ggplot2::labs(
+    title = "Elevation x litter surface",
+    subtitle = "Pattern after Moses et al. 2021; illustrative litter values"
+  )
+```
+
+## Optional maps with tmap and leaflet
+
+[as_sf()] and [as_spat_raster()] return plain **sf** / **terra** objects with
+a CRS so you can hand sites or SDM rasters to tmap or leaflet when you want
+interactive maps. Those packages stay Suggests only.
+
+```{r tmap-leaflet, eval = FALSE}
+sites <- geo_example_sites()
+sites <- sites[!is.na(sites$lon), ]
+pts <- as_sf(sites)
+
+if (requireNamespace("tmap", quietly = TRUE)) {
+  tmap::tm_shape(pts) + tmap::tm_dots(col = "elevation")
+}
+if (requireNamespace("leaflet", quietly = TRUE)) {
+  leaflet::leaflet(pts) |>
+    leaflet::addTiles() |>
+    leaflet::addCircleMarkers(popup = ~site)
+}
 ```

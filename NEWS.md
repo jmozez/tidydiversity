@@ -1,5 +1,25 @@
 # tidydiversity 0.1.0
 
+* Map interoperability: `as_sf()` and `as_spat_raster()` return CRS-aware
+  **sf** / **terra** objects for optional use with tmap and leaflet
+  (Suggests only; not hard Imports).
+* Tidy replacements for the Moses et al. (2021) Biotropica plotting stack
+  (doi:10.1111/btp.12914): `plot_partial()` (visreg-like partial effects),
+  `plot_surface()` (plotmo / visreg2d-like two-predictor contours), and
+  `model_count()` (Poisson, quasi-Poisson, negative binomial, binomial,
+  quasi-binomial) so callers never need visreg, plotmo or aods3.
+* Geospatial follow-up: environmental distance in `geo_distance()` /
+  `geo_decay()` (Euclidean or Gower on bioclim columns); Hill-number site
+  maps via `plot_geo()` with scale bar and north arrow; `geo_elevation()`
+  (SRTM-style DEM with cache / offline path); `geo_mem()` (dbMEM /
+  PCNM); `geo_rarefy_spatial()`; `geo_grain()` (MAUP / multi-grain Hill
+  numbers); `geo_middomain()`; CHELSA-CMIP6 via `geo_chelsa(scenario=,
+  year=)`; ForestGEO `stems_habitat_test()` (torus); tidy SDM family
+  `sdm_fit()` / `sdm_predict()` / `sdm_evaluate()` / `plot_sdm()` (glm,
+  gam, native maxnet-like; no Java Maxent, no biomod2); `geo_as_features()`
+  for prioritizr hand-off. Spectral / rgee remain deferred. New Rcpp
+  kernels for Euclidean distances, neighbour counts, torus shifts,
+  spatial rarefaction and SDM link functions.
 * ForestGEO-style census verbs: `stems_as_trees()`, `stems_quadrat()`,
   `stems_abundance()`, `stems_basal_area()`, `stems_size_class()`,
   `stems_demography()`, `stems_habitat()`, `stems_as_community()`,
