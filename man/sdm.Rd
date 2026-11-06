@@ -69,8 +69,10 @@ suitability SpatRaster.}
 
 \item{basemap}{Basemap for ggplot maps. See \code{\link[=geo_basemap]{geo_basemap()}}.}
 
-\item{...}{Passed to \code{\link[=plot_geo]{plot_geo()}} (for example \code{inset}, \code{legend_position},
-\code{legend_frame}, \code{north_arrow}).}
+\item{...}{Passed through to the surface / \code{\link[=plot_geo]{plot_geo()}} helpers (for
+example \code{legend_position}, \code{scale_bar}, \code{north_arrow}, \code{subtitle}).
+Regular prediction grids are drawn as a continuous raster surface;
+sparse tables stay as points.}
 }
 \value{
 An object of class \code{td_sdm} with elements \code{engine}, \code{model},

@@ -117,10 +117,10 @@ plot_topo <- function(data,
       p, pts, col_nm, size_nm, palette, point_alpha,
       fill_free = !isTRUE(bm$uses_fill)
     )
-    p +
-      ggplot2::coord_sf(crs = sf::st_crs(pts), expand = FALSE) +
-      theme_tidydiversity(grid = "none") +
-      ggplot2::labs(x = NULL, y = NULL)
+    plot_topo_finish(
+      p, crs = sf::st_crs(pts), geographic = TRUE,
+      col_nm = col_nm, size_nm = size_nm
+    )
   } else {
     x_col <- td_pick(enquo(x), data, "x")
     y_col <- td_pick(enquo(y), data, "y")
@@ -141,11 +141,60 @@ plot_topo <- function(data,
     p <- plot_topo_points_xy(
       p, df, x_col, y_col, col_nm, size_nm, palette, point_alpha
     )
-    p +
-      ggplot2::coord_fixed(expand = FALSE) +
-      theme_tidydiversity(grid = "none") +
-      ggplot2::labs(x = paste0(x_col, " (m)"), y = paste0(y_col, " (m)"))
+    plot_topo_finish(
+      p, geographic = FALSE, x_lab = paste0(x_col, " (m)"),
+      y_lab = paste0(y_col, " (m)"), col_nm = col_nm, size_nm = size_nm
+    )
   }
+}
+
+plot_topo_finish <- function(p,
+                             crs = NULL,
+                             geographic = FALSE,
+                             x_lab = NULL,
+                             y_lab = NULL,
+                             col_nm = NULL,
+                             size_nm = NULL) {
+  if (isTRUE(geographic)) {
+    p <- p + ggplot2::coord_sf(crs = crs, expand = FALSE)
+  } else {
+    p <- p + ggplot2::coord_fixed(expand = FALSE)
+  }
+  # Keep full species names visible: legend outside, wrapped to two rows.
+  # Italicise binomial labels only (not the DBH size key).
+  col_guide <- if (!is.null(col_nm)) {
+    args <- list(
+      nrow = 2, byrow = TRUE, order = 1,
+      title = geo_pretty_label(col_nm)
+    )
+    if (identical(col_nm, "species")) {
+      args$label.theme <- ggplot2::element_text(face = "italic", size = 9)
+    }
+    do.call(ggplot2::guide_legend, args)
+  } else {
+    "none"
+  }
+  p <- p +
+    theme_tidydiversity(grid = "none") +
+    ggplot2::theme(
+      legend.position = "bottom",
+      legend.box = "vertical",
+      legend.box.just = "left",
+      plot.margin = ggplot2::margin(5, 12, 5, 5)
+    ) +
+    ggplot2::guides(
+      colour = col_guide,
+      size = if (!is.null(size_nm)) {
+        ggplot2::guide_legend(
+          order = 2, title = geo_pretty_label(size_nm),
+          label.theme = ggplot2::element_text(face = "plain", size = 9)
+        )
+      } else {
+        "none"
+      }
+    ) +
+    ggplot2::labs(x = x_lab, y = y_lab)
+  p
 }
 
 plot_topo_dem_layers <- function(p, dem, contours, hillshade,
@@ -350,19 +399,24 @@ plot_topo_points_sf <- function(p, pts, col_nm, size_nm, palette,
 plot_topo_scales <- function(p, data, col_nm, size_nm, palette, aes = "colour") {
   if (!is.null(col_nm)) {
     col_v <- data[[col_nm]]
+    pretty_nm <- geo_pretty_label(col_nm)
     if (is.numeric(col_v) && !is.factor(col_v)) {
-      p <- p + ggplot2::scale_colour_viridis_c(name = col_nm, option = "C")
+      p <- p + ggplot2::scale_colour_viridis_c(name = pretty_nm, option = "C")
     } else {
       levs <- if (is.factor(col_v)) levels(col_v) else as.character(
         vctrs::vec_unique(col_v)
       )
       cols <- plot_palette(length(levs), palette = palette)
       names(cols) <- levs
-      p <- p + ggplot2::scale_colour_manual(name = col_nm, values = cols)
+      p <- p + ggplot2::scale_colour_manual(
+        name = pretty_nm, values = cols, breaks = levs, labels = levs
+      )
     }
   }
   if (!is.null(size_nm)) {
-    p <- p + ggplot2::scale_size_area(name = size_nm, max_size = 7)
+    p <- p + ggplot2::scale_size_area(
+      name = geo_pretty_label(size_nm), max_size = 7
+    )
   }
   p
 }
@@ -473,9 +527,32 @@ geo_example_censuses <- function(n = 80, seed = 1, time = 5) {
 
 
 # Convert Genus_species / Genus.species to "Genus species" for legends.
+# "Ficus_sp" / "Ficus sp" become "Ficus sp."
 geo_pretty_species <- function(x) {
   x <- as.character(x)
   x <- gsub("[_.]+", " ", x)
   x <- gsub("\\s+", " ", x)
-  trimws(x)
+  x <- trimws(x)
+  x <- sub("(?i)\\bsp$", "sp.", x, perl = TRUE)
+  x
+}
+
+# Humanise column names for legend titles (elevation_band -> Elevation).
+geo_pretty_label <- function(x) {
+  if (is.null(x) || !nzchar(as.character(x)[[1]])) return(x)
+  x <- as.character(x)[[1]]
+  known <- c(
+    elevation_band = "Elevation",
+    elevation = "Elevation",
+    diversity = "Diversity",
+    suitability = "Suitability",
+    species = "Species",
+    dbh = "DBH (mm)",
+    season = "Season",
+    site = "Site"
+  )
+  if (x %in% names(known)) return(unname(known[[x]]))
+  x <- gsub("[_.]+", " ", x)
+  x <- gsub("\\s+", " ", trimws(x))
+  paste(toupper(substring(x, 1, 1)), substring(x, 2), sep = "")
 }

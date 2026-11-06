@@ -227,27 +227,20 @@ sdm_evaluate <- function(object, newdata = NULL, threshold = NULL) {
 #' @param x A `td_sdm`, a prediction tibble from [sdm_predict()], or a
 #'   suitability SpatRaster.
 #' @param basemap Basemap for ggplot maps. See [geo_basemap()].
-#' @param ... Passed to [plot_geo()] (for example `inset`, `legend_position`,
-#'   `legend_frame`, `north_arrow`).
+#' @param ... Passed through to the surface / [plot_geo()] helpers (for
+#'   example `legend_position`, `scale_bar`, `north_arrow`, `subtitle`).
+#'   Regular prediction grids are drawn as a continuous raster surface;
+#'   sparse tables stay as points.
 #' @export
 plot_sdm <- function(x, basemap = "esri", ...) {
   rlang::check_installed("ggplot2")
+  dots <- list(...)
   if (inherits(x, "td_sdm")) {
     pred <- sdm_predict(x)
     return(plot_sdm(pred, basemap = basemap, ...))
   }
   if (inherits(x, "SpatRaster")) {
-    rlang::check_installed("terra")
-    df <- terra::as.data.frame(x, xy = TRUE)
-    names(df)[1:2] <- c("lon", "lat")
-    val <- setdiff(names(df), c("lon", "lat"))[1]
-    p <- ggplot2::ggplot(df, ggplot2::aes(.data$lon, .data$lat, fill = .data[[val]])) +
-      ggplot2::geom_raster() +
-      ggplot2::scale_fill_viridis_c(name = "Suitability", option = "C", na.value = NA) +
-      ggplot2::coord_fixed() +
-      theme_tidydiversity(grid = "none") +
-      ggplot2::labs(x = NULL, y = NULL)
-    return(p)
+    return(plot_sdm_raster(x, basemap = basemap, ...))
   }
   td_check_data(x)
   if (!"suitability" %in% names(x)) {
@@ -258,11 +251,139 @@ plot_sdm <- function(x, basemap = "esri", ...) {
   if (is.na(lon_col) || is.na(lat_col)) {
     cli::cli_abort("Prediction table needs lon/lat columns.")
   }
-  plot_geo(
-    x, value = suitability, lon = !!rlang::sym(lon_col),
-    lat = !!rlang::sym(lat_col), basemap = basemap,
-    legend_title = "Suitability", scale_bar = TRUE, ...
+  # Regular prediction grids become a continuous raster surface (not a point lattice)
+  if (geo_is_regular_grid(x[[lon_col]], x[[lat_col]])) {
+    r <- geo_grid_to_raster(x, lon_col, lat_col, value = "suitability")
+    return(plot_sdm_raster(r, basemap = basemap, ...))
+  }
+  # Sparse presence/background predictions stay as points via plot_geo
+  dots$legend_position <- dots$legend_position %||% "outside"
+  dots$legend_title <- dots$legend_title %||% "Suitability"
+  dots$scale_bar <- dots$scale_bar %||% TRUE
+  rlang::inject(plot_geo(
+    x, value = suitability,
+    lon = !!rlang::sym(lon_col), lat = !!rlang::sym(lat_col),
+    basemap = basemap, !!!dots
+  ))
+}
+
+# Continuous suitability surface from a SpatRaster
+plot_sdm_raster <- function(r, basemap = "esri", ...) {
+  rlang::check_installed("terra")
+  rlang::check_installed("sf")
+  dots <- list(...)
+  # Use first layer as suitability
+  if (terra::nlyr(r) > 1) r <- r[[1]]
+  names(r) <- "suitability"
+  df <- terra::as.data.frame(r, xy = TRUE, na.rm = FALSE)
+  names(df)[1:3] <- c("lon", "lat", "suitability")
+  bb <- sf::st_bbox(
+    c(
+      xmin = min(df$lon, na.rm = TRUE), ymin = min(df$lat, na.rm = TRUE),
+      xmax = max(df$lon, na.rm = TRUE), ymax = max(df$lat, na.rm = TRUE)
+    ),
+    crs = sf::st_crs(terra::crs(r))
   )
+  # Expand slightly for basemap context
+  dx <- max((bb["xmax"] - bb["xmin"]) * 0.05, 1e-4)
+  dy <- max((bb["ymax"] - bb["ymin"]) * 0.05, 1e-4)
+  bb["xmin"] <- bb["xmin"] - dx
+  bb["xmax"] <- bb["xmax"] + dx
+  bb["ymin"] <- bb["ymin"] - dy
+  bb["ymax"] <- bb["ymax"] + dy
+
+  p <- ggplot2::ggplot()
+  bm <- geo_basemap_layers(bb, basemap = basemap, crs = sf::st_crs(bb))
+  for (ly in bm$layers) p <- p + ly
+  p <- p +
+    ggplot2::geom_raster(
+      data = df,
+      ggplot2::aes(.data$lon, .data$lat, fill = .data$suitability),
+      interpolate = TRUE,
+      alpha = if (isTRUE(bm$uses_fill) || identical(basemap, "none")) 1 else 0.85
+    ) +
+    ggplot2::scale_fill_viridis_c(
+      name = "Suitability", option = "C", na.value = "transparent",
+      guide = ggplot2::guide_colourbar(order = 1)
+    )
+
+  scale_bar <- dots$scale_bar %||% TRUE
+  north_arrow <- dots$north_arrow %||% TRUE
+  # Dummy points at corners so decoration picker has coordinates
+  corners <- tibble::tibble(
+    lon = c(bb["xmin"], bb["xmax"], bb["xmin"], bb["xmax"]),
+    lat = c(bb["ymin"], bb["ymin"], bb["ymax"], bb["ymax"])
+  )
+  decor <- geo_pick_decoration_corner(
+    corners, bb,
+    scale_bar = isTRUE(scale_bar),
+    north_arrow = isTRUE(north_arrow),
+    inset = FALSE,
+    legend_inside = FALSE
+  )
+  if (isTRUE(scale_bar) && !is.null(decor$scale_box)) {
+    for (ly in geo_annotation_scale_bar(
+      bb, crs = sf::st_crs(bb), corner = decor$scale_corner, box = decor$scale_box
+    )) p <- p + ly
+  }
+  if (isTRUE(north_arrow) && !is.null(decor$north_box)) {
+    for (ly in geo_annotation_north_arrow(
+      bb, corner = decor$north_corner, box = decor$north_box
+    )) p <- p + ly
+  }
+  p <- p +
+    ggplot2::coord_sf(
+      xlim = c(bb["xmin"], bb["xmax"]),
+      ylim = c(bb["ymin"], bb["ymax"]),
+      expand = FALSE, crs = sf::st_crs(bb)
+    ) +
+    theme_tidydiversity(grid = "none") +
+    ggplot2::theme(
+      panel.background = ggplot2::element_rect(fill = "white", colour = NA),
+      panel.border = ggplot2::element_rect(fill = NA, colour = "grey20", linewidth = 0.4),
+      legend.position = dots$legend_position %||% "right"
+    ) +
+    ggplot2::labs(
+      x = NULL, y = NULL,
+      subtitle = dots$subtitle %||% "Demonstration suitability surface (not a published model)"
+    )
+  attr(p, "td_decoration") <- decor
+  p
+}
+
+geo_is_regular_grid <- function(x, y, tol = 1e-8) {
+  x <- as.numeric(x); y <- as.numeric(y)
+  ux <- sort(unique(x[is.finite(x)]))
+  uy <- sort(unique(y[is.finite(y)]))
+  if (length(ux) < 3 || length(uy) < 3) return(FALSE)
+  # Nearly complete rectangular lattice
+  expected <- length(ux) * length(uy)
+  if (length(x) < expected * 0.85) return(FALSE)
+  dx <- diff(ux); dy <- diff(uy)
+  isTRUE(diff(range(dx)) < max(tol, mean(dx) * 1e-3)) &&
+    isTRUE(diff(range(dy)) < max(tol, mean(dy) * 1e-3))
+}
+
+geo_grid_to_raster <- function(data, lon_col, lat_col, value = "suitability") {
+  rlang::check_installed("terra")
+  xs <- sort(unique(data[[lon_col]]))
+  ys <- sort(unique(data[[lat_col]]))
+  r <- terra::rast(
+    nrows = length(ys), ncols = length(xs),
+    xmin = min(xs) - diff(xs)[1] / 2,
+    xmax = max(xs) + diff(xs)[1] / 2,
+    ymin = min(ys) - diff(ys)[1] / 2,
+    ymax = max(ys) + diff(ys)[1] / 2,
+    crs = "EPSG:4326"
+  )
+  # terra rasterize from points
+  pts <- data.frame(
+    x = data[[lon_col]], y = data[[lat_col]], z = data[[value]]
+  )
+  v <- terra::vect(pts, geom = c("x", "y"), crs = "EPSG:4326")
+  out <- terra::rasterize(v, r, field = "z")
+  names(out) <- value
+  out
 }
 
 # ---- internals ----------------------------------------------------------

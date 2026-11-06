@@ -126,7 +126,9 @@ plot_sites <- function(data,
       size_const <- size_val
     }
   }
-  leg_title <- legend_title
+  leg_title <- legend_title %||% (
+    if (!is.null(col_nm)) geo_pretty_label(col_nm) else NULL
+  )
 
   sites <- plot_sites_as_sf(data, enquo(lon), enquo(lat))
   p <- ggplot2::ggplot()
@@ -261,7 +263,7 @@ plot_sites <- function(data,
   }
   if (!is.null(size_aes)) {
     p <- p + ggplot2::scale_size_area(
-      name = size_aes, max_size = 10,
+      name = geo_pretty_label(size_aes), max_size = 10,
       guide = ggplot2::guide_legend(order = 3)
     )
   }
@@ -277,17 +279,32 @@ plot_sites <- function(data,
     if (!is.null(fac_nm)) {
       labs[[fac_nm]] <- sites[[fac_nm]]
     }
-    p <- p + ggrepel::geom_text_repel(
+    repel_fun <- if (is.function(ggrepel::geom_label_repel)) {
+      ggrepel::geom_label_repel
+    } else {
+      ggrepel::geom_text_repel
+    }
+    repel_args <- list(
       data = labs,
-      ggplot2::aes(.data$x, .data$y, label = .data$.lab),
-      size = 3,
-      min.segment.length = 0,
-      box.padding = 0.35,
+      mapping = ggplot2::aes(.data$x, .data$y, label = .data$.lab),
+      size = 2.9,
+      min.segment.length = 0.15,
+      box.padding = 0.6,
+      point.padding = 0.45,
       max.overlaps = Inf,
+      force = 1.6,
       colour = "grey10",
-      segment.colour = "grey50",
-      segment.size = 0.25
+      segment.colour = "grey40",
+      segment.size = 0.3,
+      seed = 1,
+      inherit.aes = FALSE
     )
+    if (identical(repel_fun, ggrepel::geom_label_repel)) {
+      repel_args$fill <- "white"
+      repel_args$label.size <- 0.15
+      repel_args$label.padding <- ggplot2::unit(0.15, "lines")
+    }
+    p <- p + do.call(repel_fun, repel_args)
   }
 
   if (!is.null(fac_nm)) {
@@ -425,8 +442,8 @@ geo_annotation_scale_bar <- function(bb, length_km = NULL, facet = NULL,
     }
   }
   # Place inside the reserved box (or corner inset of the panel)
-  pad_x <- 0.12 * width
-  pad_y <- 0.18 * height
+  # Offsets are fractions of the reserved box (not the full panel)
+  pad_x <- 0.10 * width
   if (corner %in% c("bl", "tl")) {
     x0 <- xmin + pad_x
     x1 <- x0 + len_map
@@ -434,10 +451,11 @@ geo_annotation_scale_bar <- function(bb, length_km = NULL, facet = NULL,
     x1 <- xmax - pad_x
     x0 <- x1 - len_map
   }
+  # Sit the bar in the lower third of the box; label above it
   if (corner %in% c("bl", "br")) {
-    y0 <- ymin + pad_y
+    y0 <- ymin + 0.28 * height
   } else {
-    y0 <- ymax - pad_y
+    y0 <- ymax - 0.55 * height
   }
   bar <- tibble::tibble(
     x = c(x0, x1),
@@ -446,39 +464,58 @@ geo_annotation_scale_bar <- function(bb, length_km = NULL, facet = NULL,
   ticks <- tibble::tibble(
     x = c(x0, x1),
     y = c(y0, y0),
-    yend = c(y0 + 0.02 * height, y0 + 0.02 * height)
+    yend = c(y0 + 0.12 * height, y0 + 0.12 * height)
   )
   lab <- tibble::tibble(
     x = (x0 + x1) / 2,
-    y = y0 + 0.045 * height,
+    y = y0 + 0.42 * height,
     label = paste0(length_km, " km")
+  )
+  # White panel behind the bar so it stays readable on imagery / dark tiles
+  panel <- tibble::tibble(
+    xmin = min(x0, x1) - 0.08 * abs(width),
+    xmax = max(x0, x1) + 0.08 * abs(width),
+    ymin = y0 - 0.18 * abs(height),
+    ymax = max(lab$y, y0) + 0.22 * abs(height)
   )
   if (!is.null(facet) && !is.null(data) && facet %in% names(data)) {
     first <- vctrs::vec_slice(data, 1L)[[facet]]
     bar[[facet]] <- first
     ticks[[facet]] <- first
     lab[[facet]] <- first
+    panel[[facet]] <- first
   }
   list(
+    ggplot2::geom_rect(
+      data = panel,
+      ggplot2::aes(
+        xmin = .data$xmin, xmax = .data$xmax,
+        ymin = .data$ymin, ymax = .data$ymax
+      ),
+      fill = "white", colour = "grey25", linewidth = 0.35,
+      alpha = 0.95, inherit.aes = FALSE
+    ),
     ggplot2::geom_line(
       data = bar,
       ggplot2::aes(.data$x, .data$y),
-      linewidth = 0.7,
-      colour = "grey10",
+      linewidth = 1.15,
+      colour = "grey5",
+      lineend = "butt",
       inherit.aes = FALSE
     ),
     ggplot2::geom_segment(
       data = ticks,
       ggplot2::aes(.data$x, .data$y, xend = .data$x, yend = .data$yend),
-      colour = "grey10",
-      linewidth = 0.6,
+      colour = "grey5",
+      linewidth = 0.85,
       inherit.aes = FALSE
     ),
     ggplot2::geom_text(
       data = lab,
       ggplot2::aes(.data$x, .data$y, label = .data$label),
-      size = 2.8,
-      colour = "grey10",
+      size = 3.1,
+      fontface = "bold",
+      colour = "grey5",
       inherit.aes = FALSE
     )
   )

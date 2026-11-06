@@ -936,7 +936,7 @@ plot_geo <- function(data,
   }
   lab_q <- enquo(label)
   lab_col <- if (quo_is_null(lab_q)) NULL else td_pick(lab_q, data, "label")
-  leg <- legend_title %||% val_col
+  leg <- legend_title %||% geo_pretty_label(val_col)
 
   if (!inherits(data, "sf")) {
     data <- geo_as_sf(data, lon = {{ lon }}, lat = {{ lat }}, drop_na = TRUE)
@@ -1007,7 +1007,7 @@ plot_geo <- function(data,
         guide = ggplot2::guide_colourbar(order = 1)
       ) +
       ggplot2::scale_size_area(
-        name = size_aes, max_size = 10,
+        name = geo_pretty_label(size_aes), max_size = 10,
         guide = ggplot2::guide_legend(order = 2)
       )
   } else if (!is.null(size_aes)) {
@@ -1022,7 +1022,7 @@ plot_geo <- function(data,
         guide = ggplot2::guide_colourbar(order = 1)
       ) +
       ggplot2::scale_size_area(
-        name = size_aes, max_size = 10,
+        name = geo_pretty_label(size_aes), max_size = 10,
         guide = ggplot2::guide_legend(order = 2)
       )
   } else {
@@ -1045,12 +1045,13 @@ plot_geo <- function(data,
       data = labs,
       ggplot2::aes(.data$x, .data$y, label = .data$.lab),
       size = 3,
-      min.segment.length = 0,
-      box.padding = 0.4,
-      point.padding = 0.3,
+      min.segment.length = 0.2,
+      box.padding = 0.55,
+      point.padding = 0.4,
       max.overlaps = Inf,
+      force = 1.4,
       colour = "grey10",
-      segment.colour = "grey50",
+      segment.colour = "grey40",
       seed = 1
     )
   }
