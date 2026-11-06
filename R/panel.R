@@ -64,6 +64,14 @@ plot_panel <- function(...,
     ncol = ncol, nrow = nrow, guides = guides,
     widths = widths, heights = heights
   )
+  alts <- vapply(plots, function(p) ggplot2::get_alt_text(p), character(1))
+  alts <- alts[nzchar(alts)]
+  if (length(alts)) {
+    out <- out + ggplot2::labs(alt = paste0(
+      "Figure with ", length(plots), " panels. ",
+      paste(alts, collapse = " ")
+    ))
+  }
   out + patchwork::plot_annotation(
     title = title, subtitle = subtitle, caption = caption,
     tag_levels = if (is.null(tag_levels)) NULL else list(tag_levels),

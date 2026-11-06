@@ -135,7 +135,39 @@ td_style <- function(p, palette, theme, fill = TRUE) {
     )
   }
   if (!is.null(theme)) p <- p + theme
-  p
+  td_alt(p)
+}
+
+# Default alt text for screen readers (see ggplot2::get_alt_text(), used by
+# Shiny), built from the plot's labels unless labs(alt = ) already set one.
+td_alt <- function(p) {
+  if (!is.null(p$labels$alt)) return(p)
+  lab <- function(a) {
+    l <- p$labels[[a]]
+    if (is.null(l) && !is.null(p$mapping[[a]])) {
+      l <- rlang::as_label(p$mapping[[a]])
+    }
+    if (!is.character(l) || length(l) != 1 || !nzchar(l)) return(NULL)
+    gsub("\\s+", " ", sub("^\\.data\\$", "", l))
+  }
+  x <- lab("x")
+  y <- lab("y")
+  group <- lab("colour") %||% lab("fill")
+  txt <- if (!is.null(x) && !is.null(y)) {
+    paste("Plot of", y, "against", x)
+  } else {
+    "Plot"
+  }
+  if (!is.null(group) && !startsWith(group, ".")) {
+    txt <- paste0(txt, ", coloured by ", group)
+  }
+  params <- p$facet$params
+  panels <- as.character(names(c(params$facets, params$rows, params$cols)))
+  panels <- panels[!startsWith(panels, ".")]
+  if (length(panels)) {
+    txt <- paste0(txt, ", in panels by ", paste(panels, collapse = " and "))
+  }
+  p + ggplot2::labs(alt = paste0(txt, "."))
 }
 
 # Plots with a fixed aspect ratio (ordinations, heatmaps) do not fill the
