@@ -44,7 +44,7 @@
 #'   Farwig, N., Fayle, T. M., Novotny, V., Sanders, N. J. and Klimes, P.
 #'   (2023). Nutrient use by tropical ant communities varies among three
 #'   extensive elevational gradients: a cross-continental comparison.
-#'   *Global Ecology and Biogeography*, 32, 1958-1973.
+#'   *Global Ecology and Biogeography*, 32, 2212-2229.
 #'   \doi{10.1111/geb.13757}
 #' @examples
 #' png_ants
@@ -72,8 +72,8 @@
 #'   \item{species}{Ant morphospecies code.}
 #'   \item{nests}{Number of nests of the species in the tree.}
 #' }
-#' @source Plowman, N. S., Mottl, O., Novotny, V., Idigel, C., Philip, F. J.,
-#'   Rimandai, M. and Klimes, P. (2019). Data from: Nest microhabitats and
+#' @source Plowman, N. S., Mottl, O., Novotny, V., Idigel, C., Philip, F. J.
+#'   and Klimes, P. (2019). Data from: Nest microhabitats and
 #'   tree size mediate shifts in ant community structure across elevation in
 #'   tropical rainforest canopies. Dryad. \doi{10.5061/dryad.2fqz612k6},
 #'   released under CC0 1.0. Built by `data-raw/png_tree_ants.R`.
@@ -93,7 +93,7 @@
 #' Frogs along the Mt Wilhelm elevational gradient, Papua New Guinea
 #'
 #' Real field data: 3390 frogs of 55 species recorded at eight sites from
-#' 200 to 3700 m on Mt Wilhelm, Papua New Guinea (Dahl et al. 2023).
+#' 200 to 3700 m on Mt Wilhelm, Papua New Guinea (Dahl et al. 2024).
 #' Species not formally described carry a provisional name such as
 #' `"Copiula sp 1"`.
 #'
@@ -115,9 +115,9 @@
 #'   New Guinea. Dryad. \doi{10.5061/dryad.3n5tb2rqf}, released under CC0
 #'   1.0. Built by `data-raw/png_frogs.R`.
 #' @references Dahl, C., Richards, S. J., Basien, I., Mungkaje, A. J. and
-#'   Novotny, V. (2023). Local and regional diversity of frog communities
+#'   Novotny, V. (2024). Local and regional diversity of frog communities
 #'   along an extensive rainforest elevation gradient in Papua New Guinea.
-#'   *Biotropica*. \doi{10.1111/btp.13283}
+#'   *Biotropica*, 56, 90-97. \doi{10.1111/btp.13283}
 #' @examples
 #' png_frogs
 #' div_estimate(png_frogs, nboot = 0)
@@ -144,7 +144,7 @@
 #'   \item{abundance}{Number of individuals counted.}
 #' }
 #' @source Luk, C.-L., Basset, Y., Kongnoo, P., Hau, B. C. H. and
-#'   Bonebrake, T. C. (2018). Data from: Inter-annual monitoring improves
+#'   Bonebrake, T. C. (2019). Data from: Inter-annual monitoring improves
 #'   diversity estimation of tropical butterfly assemblages. Dryad.
 #'   \doi{10.5061/dryad.j35fq7r}, released under CC0 1.0. Built by
 #'   `data-raw/wanang_butterflies.R`.
@@ -156,6 +156,46 @@
 #' wanang_butterflies
 #' div_hill(wanang_butterflies, q = 0, .by = year) |> head()
 "wanang_butterflies"
+
+#' Caterpillars reared from trees in primary and secondary forest at Wanang
+#'
+#' Real field data: Lepidoptera larvae collected from the foliage of trees
+#' in a primary and a secondary forest plot in the Wanang Conservation
+#' Area, Madang Province, Papua New Guinea, between 2003 and 2009, and
+#' reared to adults where possible by the New Guinea Binatang Research
+#' Centre (Butterill and Redmond 2023). Each plot has five sampling units
+#' (`WP1`-`WP5` in primary and `WS1`-`WS5` in secondary forest). Counts are
+#' the number of individuals of each morphospecies reared from each host
+#' plant species. Taxa are morphospecies codes identified to different
+#' ranks (species, genus, family or order), so treat them as
+#' morphospecies, not as named species. The host plant makes the data
+#' suited to species-overlap diagrams ([plot_venn()]) and host-use
+#' comparisons.
+#'
+#' @format A tibble with one row per sampling unit, host plant and
+#'   morphospecies, and eight columns:
+#' \describe{
+#'   \item{site}{Forest type, `"primary"` or `"secondary"`.}
+#'   \item{plot}{Sampling unit, `"WP1"`-`"WP5"` and `"WS1"`-`"WS5"`.}
+#'   \item{host}{Host plant species (`NA` when not recorded).}
+#'   \item{species}{Morphospecies code (GBIF `taxonID`).}
+#'   \item{scientific_name}{Most precise name given for the morphospecies.}
+#'   \item{rank}{Rank of `scientific_name`.}
+#'   \item{family}{Lepidoptera family (`NA` when only identified to
+#'     order).}
+#'   \item{abundance}{Number of individuals.}
+#' }
+#' @source Butterill, P. and Redmond, C. (2023). Plot-based sampling and
+#'   rearing of adult lepidoptera from lowland rainforest in Wanang, Papua
+#'   New Guinea. Version 1.1. New Guinea Binatang Research Centre.
+#'   Occurrence dataset, GBIF. \doi{10.15468/7e96ht}, released under CC BY
+#'   4.0 (<https://creativecommons.org/licenses/by/4.0/>): cite this source
+#'   when you use the data. Built from all 9,354 GBIF occurrence records by
+#'   `data-raw/wanang_caterpillars.R`.
+#' @examples
+#' wanang_caterpillars
+#' div_hill(wanang_caterpillars, site = plot, q = 0:2) |> head()
+"wanang_caterpillars"
 
 #' Rodent captures at the Portal Project, Arizona
 #'
@@ -182,7 +222,7 @@
 #'   released under the CC0 1.0 public domain dedication. Built by
 #'   `data-raw/portal_rodents.R` in the package source.
 #' @references Ernest, S. K. M., Yenni, G. M., Allington, G., Bledsoe,
-#'   E. K., Christensen, E. M., Diaz, R. M. et al. (2020). The Portal
+#'   E. K., Christensen, E. M., Diaz, R. M. et al. (2018). The Portal
 #'   Project: a long-term study of a Chihuahuan desert ecosystem. bioRxiv.
 #'   \doi{10.1101/332783}
 #' @examples
