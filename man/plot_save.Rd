@@ -42,12 +42,13 @@ white background and 300 dpi by default. Works for ggplot and patchwork
 objects.
 }
 \examples{
-\dontshow{if (rlang::is_installed("ggplot2")) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("ggplot2")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 r <- div_rarefy(png_ants, q = 0, .by = season, knots = 20)
 f <- tempfile(fileext = ".png")
 plot_save(ggplot2::autoplot(r), f, size = "single")
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[=geo_save]{geo_save()}} for map-oriented defaults (path, 180x140 mm).
+\code{tidymapr::geo_save()} for map-oriented defaults (path,
+180x140 mm).
 }

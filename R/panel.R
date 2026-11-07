@@ -97,7 +97,8 @@ plot_panel <- function(...,
 #' @param dpi Resolution for raster formats (default 300).
 #' @param ... Passed to [ggplot2::ggsave()].
 #' @return `filename`, invisibly.
-#' @seealso [geo_save()] for map-oriented defaults (path, 180x140 mm).
+#' @seealso `tidymapr::geo_save()` for map-oriented defaults (path,
+#'   180x140 mm).
 #' @examplesIf rlang::is_installed("ggplot2")
 #' r <- div_rarefy(png_ants, q = 0, .by = season, knots = 20)
 #' f <- tempfile(fileext = ".png")

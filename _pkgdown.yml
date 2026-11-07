@@ -40,8 +40,13 @@ navbar:
   bg: dark
   structure:
     left: [intro, tutorials, guides, gallery, reference, news]
-    right: [memorial, search, github, lightswitch]
+    right: [tidymapr, memorial, search, github, lightswitch]
   components:
+    tidymapr:
+      text: tidymapr
+      icon: fa-map
+      aria-label: Maps with the companion package tidymapr
+      href: https://jmozez.github.io/tidymapr/
     intro:
       text: Get started
       href: articles/tidydiversity.html
@@ -90,8 +95,8 @@ navbar:
           href: articles/traits.html
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
-        - text: Geospatial workflows
-          href: articles/geospatial.html
+        - text: "Maps: the tidymapr package"
+          href: https://jmozez.github.io/tidymapr/
         - text: -------
         - text: Output
         - text: Publication figures
@@ -126,7 +131,6 @@ reference:
   - title: Datasets
     contents:
       - png_ants
-      - png_ants_sites
       - png_tree_ants
       - png_frogs
       - wanang_butterflies
@@ -201,40 +205,9 @@ reference:
       - model_count
       - plot_partial
       - plot_surface
-  - title: Geospatial
+  - title: ForestGEO census tables
     contents:
-      - geo_as_sf
-      - as_sf
-      - as_spat_raster
-      - geo_example_sites
-      - geo_example_stems
-      - geo_example_dem
-      - geo_example_censuses
-      - geo_extract
-      - geo_clean
-      - geo_gbif
-      - geo_distance
-      - geo_decay
-      - geo_basemap
-      - plot_sites
-      - plot_topo
-      - plot_geo
-      - geo_moran
-      - geo-io
-      - geo_save
-      - geo_gadm
-      - geo-vector
-      - geo-raster
-      - geo-bioclim
-      - geo_elevation
-      - geo_mem
-      - geo_rarefy_spatial
-      - geo_grain
-      - geo_middomain
-      - geo_as_features
       - stems
-      - stems_habitat_test
-      - sdm
 
 articles:
   - title: Get started
@@ -251,7 +224,6 @@ articles:
       - articles/composition-tests
       - articles/traits
       - articles/tidymodels
-      - articles/geospatial
       - articles/publication
   - title: Papua New Guinea case studies
     contents:

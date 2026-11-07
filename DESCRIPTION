@@ -70,21 +70,11 @@ Suggests:
     mgcv,
     rmarkdown,
     testthat (>= 3.0.0),
-    sf,
-    terra,
-    rgbif,
-    spdep,
-    CoordinateCleaner,
-    maptiles,
-    geodata,
-    elevatr,
-    leaflet,
-    tmap,
+    tidymapr,
     MASS,
-    metR,
-    rnaturalearth,
-    rnaturalearthdata,
     vegan
+Remotes:
+    jmozez/tidymapr
 VignetteBuilder: 
     knitr
 Config/Needs/website: tidyr
@@ -94,3 +84,4 @@ Language: en-NZ
 LazyData: true
 Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.1.0
+RoxygenNote: 7.3.1

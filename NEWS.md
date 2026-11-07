@@ -1,5 +1,15 @@
 # tidydiversity 0.1.0
 
+* All geospatial and mapping code has moved to the companion package
+  [tidymapr](https://jmozez.github.io/tidymapr/): the `geo_*()` verbs,
+  `as_sf()`, `as_spat_raster()`, `plot_sites()`, `plot_geo()`,
+  `plot_topo()`, `geo_save()`, the `sdm_*()` functions and `plot_sdm()`,
+  the spatial stem verbs `stems_quadrat()`, `stems_habitat()`,
+  `stems_neighbours()` and `stems_habitat_test()`, the
+  `geo_example_*()` helpers and the `png_ants_sites` coordinates. Load
+  both packages to map diversity results; tidymapr returns the same
+  tibbles and ggplots. tidydiversity no longer suggests any spatial
+  package, and the map figures have left its README and website.
 * Maps now use real, published records only. New `png_ants_sites` holds
   the published bait GPS of the 16 Mt Wilhelm ant transects (Mottl, Moses
   and Klimes 2023, doi:10.5281/zenodo.8191946), and `geo_example_sites()`

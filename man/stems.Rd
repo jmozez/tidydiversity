@@ -3,19 +3,14 @@
 \name{stems}
 \alias{stems}
 \alias{stems_as_trees}
-\alias{stems_quadrat}
 \alias{stems_abundance}
 \alias{stems_basal_area}
 \alias{stems_size_class}
 \alias{stems_demography}
-\alias{stems_habitat}
 \alias{stems_as_community}
-\alias{stems_neighbours}
 \title{ForestGEO-style stem and tree census verbs}
 \usage{
 stems_as_trees(data, hom = NULL)
-
-stems_quadrat(data, grid = 20, gx = gx, gy = gy)
 
 stems_abundance(
   data,
@@ -54,8 +49,6 @@ stems_demography(
   .by = NULL
 )
 
-stems_habitat(data, habitat, grid = 20)
-
 stems_as_community(
   data,
   site = NULL,
@@ -63,25 +56,12 @@ stems_as_community(
   alive = "A",
   level = c("tree", "stem")
 )
-
-stems_neighbours(
-  data,
-  radius = 10,
-  conspecific = TRUE,
-  alive_only = TRUE,
-  alive = "A"
-)
 }
 \arguments{
 \item{data}{A ForestGEO-like data frame.}
 
 \item{hom}{Optional height-of-measure column; the largest HOM row is kept
 when several measures share a stem.}
-
-\item{grid}{Quadrat size used to build keys when joining on coordinates.}
-
-\item{gx, gy}{Bare column names for local metre coordinates (defaults
-\code{gx}, \code{gy}) used by \code{\link[=stems_quadrat]{stems_quadrat()}} and neighbours.}
 
 \item{.by}{Optional grouping columns (species, quadrat, habitat).}
 
@@ -108,16 +88,9 @@ preferred).}
 \item{growth}{\code{"absolute"} for (dbh2-dbh1)/time or \code{"relative"} for
 (log dbh2 - log dbh1)/time.}
 
-\item{habitat}{A data frame of quadrat-level habitat or topography
-(\code{quadrat}, or \code{quadrat_x}/\code{quadrat_y}, plus covariates).}
-
 \item{site}{Column to use as the site identifier in the community table
-(default \code{quadrat} after \code{\link[=stems_quadrat]{stems_quadrat()}}, or \code{plot}).}
-
-\item{radius}{Neighbourhood radius in metres (local coordinates).}
-
-\item{conspecific}{For \code{\link[=stems_neighbours]{stems_neighbours()}}, count only neighbours of the
-same species (\code{TRUE}) or all neighbours (\code{FALSE}).}
+(default \code{quadrat}, as added by \code{tidymapr::stems_quadrat()}, or
+\code{plot}).}
 }
 \description{
 Tidyverse-style helpers for ForestGEO / CTFS plot inventories. They accept
@@ -127,21 +100,27 @@ tibbles. Callers stay inside tidydiversity instead of using the fgeo or
 CTFS packages.
 
 Typical workflow: standardise names with \code{\link[=stems_as_trees]{stems_as_trees()}} (main stem per
-tree) or keep stems; assign \code{\link[=stems_quadrat]{stems_quadrat()}}; summarise
-\code{\link[=stems_abundance]{stems_abundance()}} and \code{\link[=stems_basal_area]{stems_basal_area()}}; size classes with
-\code{\link[=stems_size_class]{stems_size_class()}}; demography between two censuses with
-\code{\link[=stems_demography]{stems_demography()}}; join topography or habitat with \code{\link[=stems_habitat]{stems_habitat()}};
-map with \code{\link[=plot_topo]{plot_topo()}}; feed species counts to \code{\link[=div_hill]{div_hill()}} via
-\code{\link[=stems_as_community]{stems_as_community()}}.
+tree) or keep stems; summarise \code{\link[=stems_abundance]{stems_abundance()}} and
+\code{\link[=stems_basal_area]{stems_basal_area()}}; size classes with \code{\link[=stems_size_class]{stems_size_class()}}; demography
+between two censuses with \code{\link[=stems_demography]{stems_demography()}}; feed species counts to
+\code{\link[=div_hill]{div_hill()}} via \code{\link[=stems_as_community]{stems_as_community()}}.
+
+Spatial stem verbs (quadrats, habitat joins, neighbourhoods, the
+torus-translation habitat test) and stem maps over topography are in
+the companion package tidymapr (\code{tidymapr::stems_quadrat()},
+\code{tidymapr::stems_habitat_test()}, \code{tidymapr::plot_topo()}).
 
 Basal area for one stem is \verb{\eqn{\pi/4 \times \mathrm{dbh}^2}} (Condit
 1998; fgeo.analyze). With \code{dbh_unit = "cm"} the result is cm\eqn{^2}; with
 \code{"mm"} it is mm\eqn{^2}. Convert afterwards if you need m\eqn{^2} ha\eqn{^{-1}}.
 }
 \examples{
-stems <- geo_example_stems()
+\dontshow{if (requireNamespace("tidymapr", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# A small simulated ForestGEO-style table, for trying the code only
+stems <- tidymapr::geo_example_stems()
 stems_abundance(stems, .by = species)
 stems_basal_area(stems, dbh_unit = "mm", .by = species)
+\dontshow{\}) # examplesIf}
 }
 \references{
 Condit, R. (1998). \emph{Tropical Forest Census Plots}. Springer.
