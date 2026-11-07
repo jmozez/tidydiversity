@@ -16,6 +16,9 @@ the code. All plots use the colour-blind-safe Okabe-Ito palette and
 `theme_tidydiversity()` by default; see the
 [publication figures](publication.html) article for customisation.
 
+A bonus set of [maps](#maps-bonus) from published site coordinates and
+occurrence records closes the page.
+
 ```{r setup, message = FALSE}
 library(tidydiversity)
 library(dplyr)
@@ -389,3 +392,265 @@ curves
 autoplot(curves, palette = "grey", facet = FALSE,
   theme = theme_tidydiversity(base_size = 9, grid = "none"))
 ```
+
+## Ordination triplot {.tabset}
+
+An RDA of the Wanang butterflies constrained by year and month: sites,
+the ten best-fitting species (red arrows), the month gradient (dark arrow),
+year centroids and
+ellipses for each year.
+
+```{r triplot-data, include = FALSE}
+butterflies <- mutate(wanang_butterflies, year = factor(paste("Year", year)))
+rda <- ord_fit(butterflies, method = "rda", formula = ~ year + month)
+```
+
+### Plot
+
+```{r triplot, echo = FALSE, fig.height = 6, fig.alt = "RDA triplot of Wanang butterfly sampling days coloured by year, with species arrows, year and month centroids and year ellipses"}
+autoplot(rda, colour = year, ellipse = "sd", species = 10)
+```
+
+### Code
+
+```r
+butterflies <- mutate(wanang_butterflies, year = factor(paste("Year", year)))
+rda <- ord_fit(butterflies, method = "rda", formula = ~ year + month)
+autoplot(rda, colour = year, ellipse = "sd", species = 10)
+```
+
+## Shared species: Venn diagram {.tabset}
+
+`plot_venn()` counts the species found in each combination of two to four
+groups. Here, ant species at four elevations on Mt Wilhelm.
+
+### Plot
+
+```{r venn, echo = FALSE, fig.height = 5.5, fig.alt = "Venn diagram of ant species shared between 200, 700, 1200 and 1700 m on Mt Wilhelm"}
+plot_venn(filter(png_ants, elevation %in% c(200, 700, 1200, 1700)), group = elevation)
+```
+
+### Two groups
+
+```{r venn-2, echo = FALSE, fig.height = 4.5, fig.alt = "Venn diagram of caterpillar morphospecies shared between primary and secondary forest at Wanang"}
+plot_venn(wanang_caterpillars, group = site)
+```
+
+### Code
+
+```r
+plot_venn(filter(png_ants, elevation %in% c(200, 700, 1200, 1700)), group = elevation)
+plot_venn(wanang_caterpillars, group = site)
+```
+
+## Phylogenetic diversity {.tabset}
+
+`plot_phylo()` draws the tree with each species' relative abundance per
+site. The coloured branches lead to the frogs found at 200 m: their total
+length is Faith's PD for that site. The tree here is a taxonomic tree
+(family, genus, species) with Grafen branch lengths; use a dated
+phylogeny where one exists.
+
+```{r phylo-data, include = FALSE}
+frogs <- mutate(png_frogs,
+  genus = sub(" .*", "", scientific_name),
+  tip = gsub(" ", "_", scientific_name)
+)
+tax <- distinct(as.data.frame(frogs[c("family", "genus", "tip")]))
+tax[] <- lapply(tax, factor)
+tree <- ape::compute.brlen(ape::as.phylo(~ family / genus / tip, data = tax))
+```
+
+### Plot
+
+```{r phylo, echo = FALSE, fig.height = 9, fig.alt = "Phylogram of Mt Wilhelm frogs with dots for relative abundance at each elevation and the branches present at 200 m highlighted"}
+plot_phylo(tree, frogs, species = tip, abundance = abundance, highlight = "MW0200")
+```
+
+### Code
+
+```r
+frogs <- mutate(png_frogs,
+  genus = sub(" .*", "", scientific_name),
+  tip = gsub(" ", "_", scientific_name)
+)
+tax <- distinct(as.data.frame(frogs[c("family", "genus", "tip")]))
+tax[] <- lapply(tax, factor)
+tree <- ape::compute.brlen(ape::as.phylo(~ family / genus / tip, data = tax))
+plot_phylo(tree, frogs, species = tip, abundance = abundance, highlight = "MW0200")
+```
+
+## Functional trait space {.tabset}
+
+`plot_trait_space()` places the alpine plants of the `aravo` data in a
+PCoA of Gower trait distances. Each hull encloses the species found under
+one level of zoogenic disturbance (its area is the two-dimensional
+functional richness) and the diamonds are cover-weighted mean positions.
+
+### Plot
+
+```{r trait-space, echo = FALSE, fig.height = 5.5, fig.alt = "Functional trait space of alpine plants with convex hulls and weighted mean positions for three levels of zoogenic disturbance"}
+aravo <- data_aravo()
+plot_trait_space(aravo$traits, aravo$community, group = ZoogD, abundance = cover)
+```
+
+### Code
+
+```r
+aravo <- data_aravo()
+plot_trait_space(aravo$traits, aravo$community, group = ZoogD, abundance = cover)
+```
+
+## Maps (bonus) {#maps-bonus}
+
+These maps use real, published records only: the bait GPS positions of
+the Mt Wilhelm ant survey (`png_ants_sites`; Mottl, Moses and Klimes
+2023, [doi:10.5281/zenodo.8191946](https://doi.org/10.5281/zenodo.8191946);
+Moses et al. 2023, [doi:10.1111/geb.13757](https://doi.org/10.1111/geb.13757)),
+NASA SRTM elevation, GBIF occurrence records and WorldClim 2.1 climate.
+The figures are rendered at 300 dpi by `data-raw/gallery_maps.R`, because
+tiles and climate rasters are downloaded at run time and never shipped
+with the package. Imagery is from Esri, Maxar and Earthstar Geographics.
+
+```{r maps-setup, message = FALSE}
+sites <- geo_example_sites()
+```
+
+## Bonus map: study sites {.tabset}
+
+### Plot
+
+<img src="../reference/figures/gallery-map-sites.png" alt="Map of the eight Mt Wilhelm ant bait sites on satellite imagery" style="width: 100%;">
+
+### Table
+
+```{r map-sites-table}
+sites
+```
+
+### Code
+
+```r
+sites <- geo_example_sites()
+plot_sites(
+  sites, lon, lat,
+  colour = elevation_band, label = site,
+  basemap = "esri", inset = "png",
+  legend_title = "Elevation band", legend_position = "outside"
+)
+```
+
+## Bonus map: Hill numbers {.tabset}
+
+### Plot
+
+<img src="../reference/figures/gallery-map-hill.png" alt="Map of estimated ant species richness at the Mt Wilhelm sites in the dry season" style="width: 100%;">
+
+### Table
+
+```{r map-hill-table}
+est <- div_estimate(png_ants, q = 0, nboot = 0, .by = season) |>
+  left_join(sites[c("site", "lon", "lat")], by = "site") |>
+  filter(season == "dry")
+est
+```
+
+### Code
+
+```r
+est <- div_estimate(png_ants, q = 0, nboot = 0, .by = season) |>
+  left_join(sites[c("site", "lon", "lat")], by = "site") |>
+  filter(season == "dry")
+plot_geo(
+  est, estimate, lon, lat,
+  label = site, basemap = "esri", inset = "png",
+  legend_title = "Estimated\nspecies richness"
+)
+```
+
+## Bonus map: elevation {.tabset}
+
+### Plot
+
+<img src="../reference/figures/gallery-map-elevation.png" alt="Mt Wilhelm ant bait sites over SRTM elevation" style="width: 100%;">
+
+### Table
+
+Both transects of every elevation band, with the mean GPS elevation of
+their baits:
+
+```{r map-elev-table}
+png_ants_sites
+```
+
+### Code
+
+```r
+# SRTM 3 arc-second tiles either side of 145 E, cached at run time
+srtm <- file.path(tools::R_user_dir("tidydiversity", "cache"), "elevation")
+dem <- terra::merge(
+  geodata::elevation_3s(lon = 144.9, lat = -5.8, path = srtm),
+  geodata::elevation_3s(lon = 145.2, lat = -5.8, path = srtm)
+)
+dem <- terra::crop(dem, terra::ext(144.85, 145.5, -5.98, -5.55))
+names(dem) <- "Elevation (m)"
+plot_sites(
+  sites, lon, lat,
+  label = site, raster = dem, basemap = "none",
+  inset = "png", legend_position = "outside"
+)
+```
+
+## Bonus map: species distribution model {.tabset}
+
+Habitat suitability of the green tree ant *Oecophylla smaragdina* across
+Papua New Guinea. Presences are GBIF records released under CC0 or
+CC BY 4.0 (GBIF.org occurrence search, 6 November 2026; dataset keys in
+the table), and the predictors are WorldClim 2.1 mean annual temperature
+(bio1) and annual rainfall (bio12) at 5 arc-minutes (Fick and Hijmans
+2017, [doi:10.1002/joc.5086](https://doi.org/10.1002/joc.5086)). The
+model is the native Maxent-like engine of `sdm_fit()` with 2000
+background points; its modest AUC (0.63) is shown on the map.
+
+### Plot
+
+<img src="../reference/figures/gallery-map-sdm.png" alt="Habitat suitability map of Oecophylla smaragdina in Papua New Guinea with GBIF occurrence points" style="width: 100%;">
+
+### Table
+
+```{r map-sdm-table}
+occ <- read.csv(
+  system.file("extdata", "gbif_oecophylla_png.csv", package = "tidydiversity"),
+  colClasses = c(gbif_id = "character")
+)
+tibble::as_tibble(occ)
+```
+
+### Code
+
+```r
+occ <- read.csv(
+  system.file("extdata", "gbif_oecophylla_png.csv", package = "tidydiversity")
+)
+clim <- geo_worldclim(c("bio1", "bio12"), res = 5)
+clim <- terra::crop(clim, terra::ext(140.8, 156.1, -11.7, -0.8))
+png0 <- rnaturalearth::ne_countries(
+  country = "Papua New Guinea", scale = "medium", returnclass = "sf"
+)
+clim <- terra::mask(clim, terra::vect(png0))
+fit <- sdm_fit(occ, predictors = clim, engine = "maxnet",
+               n_background = 2000, seed = 1)
+sdm_evaluate(fit)
+
+grid <- terra::as.data.frame(clim, xy = TRUE, cells = TRUE, na.rm = TRUE)
+names(grid)[2:3] <- c("lon", "lat")
+suit <- clim[[1]]
+terra::values(suit) <- NA_real_
+suit[grid$cell] <- sdm_predict(fit, newdata = grid)$suitability
+plot_sdm(suit, basemap = "coast") +
+  geom_point(data = occ, aes(lon, lat), shape = 21, fill = "white")
+```
+
+A stem map over topography (`plot_topo()`) is not shown: the package has
+no openly licensed stem inventory to draw it from, and it will not map
+invented trees.

@@ -1,6 +1,95 @@
-# tidydiversity 0.0.0.9000
+# tidydiversity 0.1.0
+
+* Maps now use real, published records only. New `png_ants_sites` holds
+  the published bait GPS of the 16 Mt Wilhelm ant transects (Mottl, Moses
+  and Klimes 2023, doi:10.5281/zenodo.8191946), and `geo_example_sites()`
+  returns their band centroids instead of invented coordinates (the
+  `"wanang"` option, which had no published coordinates, is removed). The
+  README and the new "Maps (bonus)" section of the website Gallery show a
+  study-site map, a Hill-number map, an SRTM elevation map and an SDM of
+  *Oecophylla smaragdina* from GBIF records (CC0 / CC BY 4.0, shipped in
+  `inst/extdata/gbif_oecophylla_png.csv`) and WorldClim 2.1, rendered by
+  `data-raw/gallery_maps.R`. The simulated stem map and demonstration SDM
+  figures are gone. `plot_sdm()` no longer adds a default
+  "demonstration" subtitle.
+* Tile basemaps from maptiles are now projected to the map CRS and drawn
+  the right way up, and tile zoom is chosen from the map extent so site
+  maps are sharp.
+
+* Map interoperability: `as_sf()` and `as_spat_raster()` return CRS-aware
+  **sf** / **terra** objects for optional use with tmap and leaflet
+  (Suggests only; not hard Imports).
+* Tidy replacements for the Moses et al. (2021) Biotropica plotting stack
+  (doi:10.1111/btp.12914): `plot_partial()` (visreg-like partial effects),
+  `plot_surface()` (plotmo / visreg2d-like two-predictor contours), and
+  `model_count()` (Poisson, quasi-Poisson, negative binomial, binomial,
+  quasi-binomial) so callers never need visreg, plotmo or aods3.
+* Geospatial follow-up: environmental distance in `geo_distance()` /
+  `geo_decay()` (Euclidean or Gower on bioclim columns); Hill-number site
+  maps via `plot_geo()` with scale bar and north arrow; `geo_elevation()`
+  (SRTM-style DEM with cache / offline path); `geo_mem()` (dbMEM /
+  PCNM); `geo_rarefy_spatial()`; `geo_grain()` (MAUP / multi-grain Hill
+  numbers); `geo_middomain()`; CHELSA-CMIP6 via `geo_chelsa(scenario=,
+  year=)`; ForestGEO `stems_habitat_test()` (torus); tidy SDM family
+  `sdm_fit()` / `sdm_predict()` / `sdm_evaluate()` / `plot_sdm()` (glm,
+  gam, native maxnet-like; no Java Maxent, no biomod2); `geo_as_features()`
+  for prioritizr hand-off. Spectral / rgee remain deferred. New Rcpp
+  kernels for Euclidean distances, neighbour counts, torus shifts,
+  spatial rarefaction and SDM link functions.
+* ForestGEO-style census verbs: `stems_as_trees()`, `stems_quadrat()`,
+  `stems_abundance()`, `stems_basal_area()`, `stems_size_class()`,
+  `stems_demography()`, `stems_habitat()`, `stems_as_community()`,
+  `stems_neighbours()`, plus `geo_example_censuses()`.
+* `plot_topo()` maps ForestGEO-style stems (`gx`, `gy`, DBH, species)
+  over contour and hillshade backdrops. `geo_example_stems()`,
+  `geo_example_dem()` and `geo_example_censuses()` are simulated test data
+  for checking code only; no map in the documentation is drawn from them.
+* Basemaps for `plot_sites()` and `plot_geo()` via `basemap` / `geo_basemap()`
+  (`none`, `coast`, OSM / Carto / ESRI tiles with offline coast fallback, or a
+  user raster). Vector verbs: `geo_buffer()`, `geo_crop()`,
+  `geo_intersection()`, `geo_difference()`, `geo_union()`, `geo_area()`,
+  `geo_centroid()`, `geo_bbox()`, `geo_join()`, `geo_distance_to()`. Raster
+  verbs: `geo_raster_read()`, `geo_raster_crop()`, `geo_raster_mask()`,
+  `geo_raster_resample()`, `geo_raster_project()`, `geo_raster_terrain()`,
+  `geo_raster_focal()`, `geo_raster_zonal()`. Bioclimate: `geo_bioclim_vars()`,
+  `geo_bioclim()`, `geo_worldclim()`, `geo_chelsa()` with cache and offline
+  `path` (cite Fick and Hijmans 2017; Karger et al. 2017).
+* `plot_sites()` draws publication-ready study-site maps (grouping,
+  labels, raster or coastline backdrop, facets, scale bar and north arrow
+  without map-package dependencies). `geo_example_sites()` returns the
+  published bait GPS positions for the Mt Wilhelm elevation bands. SDM tools such as biomod2 and Maxent
+  remain out of scope until rebuilt as tidy verbs.
+* Geospatial workflow (native tidyverse-style verbs; **sf** and **terra**
+  as Suggests): `geo_as_sf()`, `geo_drop_geometry()`, `geo_extract()`,
+  `geo_clean()` (occurrence flags rebuilt so callers never need
+  CoordinateCleaner), `geo_gbif()`, `geo_distance()`, `geo_decay()`
+  (feeds `beta_decay_model()` with great-circle or elevational distance),
+  `plot_geo()` and `geo_moran()` (Moran's I with a permutation p-value,
+  rebuilt so callers never need spdep). Compiled haversine kernels speed
+  large distance tables. New article "Geospatial diversity workflows".
 
 * Package scaffold.
+* New plots: `plot_venn()` draws Venn diagrams of the species shared by two
+  to four groups; `plot_phylo()` draws a phylogeny with a column of
+  relative abundances per site and can highlight the branches (Faith's PD)
+  of one site; `plot_trait_space()` places species in a PCoA trait space
+  with each group's convex hull (functional richness) and
+  community-weighted mean.
+* New dataset `wanang_caterpillars`: 9,363 Lepidoptera larvae of 849
+  morphospecies reared from host trees in primary and secondary forest at
+  Wanang (Butterill and Redmond 2023, GBIF, CC BY 4.0).
+* Citations corrected: Moses et al. (2023) pages 2212-2229, Dahl et al.
+  (2024) volume 56 pages 90-97, the Portal Project data paper (Ernest et al.
+  2018, bioRxiv) and the authors and years of the Plowman et al. and Luk et
+  al. Dryad datasets, all checked against Crossref and DataCite.
+* Input checks: `beta_hill()`, `beta_hill_pair()` and `div_completeness()`
+  now reject infinite `q`, which used to return `NaN`. Bootstrapping a
+  sample of more than 2,147,483,647 individuals now gives a clear error
+  instead of failing inside `stats::rmultinom()`. `div_evenness()` and the
+  other extrapolating verbs no longer fail at high `q`, where the
+  asymptotic estimator is undefined; they fall back to the observed value.
+* `div_completeness()` warns when a sample has only singletons: estimates
+  for q > 0 are then unreliable and can be negative (as in iNEXT.4steps).
 * tidydiversity is dedicated to the memory of Filip Damen (about
   1966-2026) of Wanang Village, Papua New Guinea: a new article tells his
   story, linked from the navigation bar and the README.
@@ -100,7 +189,7 @@
   replacing the simulated `ant_gradient`: `png_ants` (ants at nutrient
   baits along Mt Wilhelm; Moses et al. 2023), `png_tree_ants` (tree-nesting
   ants in three plots; Plowman et al. 2020), `png_frogs` (frogs along
-  Mt Wilhelm; Dahl et al. 2023) and `wanang_butterflies` (butterfly
+  Mt Wilhelm; Dahl et al. 2024) and `wanang_butterflies` (butterfly
   monitoring at Wanang; Luk et al. 2019). Each is rebuilt from its Zenodo
   deposit by a script in `data-raw/`.
 * New case-study articles for the Papua New Guinea ants, frogs and

@@ -5,7 +5,12 @@ template:
   includes:
     # Tell browsers the site has its own light and dark themes, so their
     # automatic dark mode does not invert (darken) the figures.
-    in_header: <meta name="color-scheme" content="light dark">
+    # The CSP allows only the site's own scripts; GitHub Pages cannot send
+    # security headers, so they are set as meta tags.
+    in_header: |
+      <meta name="color-scheme" content="light dark">
+      <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+      <meta name="referrer" content="strict-origin-when-cross-origin">
   opengraph:
     image:
       src: man/figures/logo.png
@@ -34,12 +39,9 @@ figures:
 navbar:
   bg: dark
   structure:
-    left: [intro, tutorials, gallery, modelling, publication, reference, news, memorial]
-    right: [search, github, lightswitch]
+    left: [intro, tutorials, guides, gallery, reference, news]
+    right: [memorial, search, github, lightswitch]
   components:
-    memorial:
-      text: In memory
-      href: articles/filip-damen.html
     intro:
       text: Get started
       href: articles/tidydiversity.html
@@ -66,20 +68,18 @@ navbar:
           href: articles/case-birds.html
         - text: Plants (Barro Colorado Island trees)
           href: articles/case-plants.html
-        - text: -------
-        - text: Guides
+    guides:
+      text: Guides
+      menu:
+        - text: Diversity
         - text: "TD, PD and FD on one scale"
           href: articles/dimensions.html
         - text: Alpha diversity and rarefaction
           href: articles/alpha-rarefaction.html
         - text: Beta diversity partitioning
           href: articles/beta-partitioning.html
-    gallery:
-      text: Gallery
-      href: articles/gallery.html
-    modelling:
-      text: Modelling
-      menu:
+        - text: -------
+        - text: Modelling and composition
         - text: Models of diversity estimates
           href: articles/modelling.html
         - text: "Ordination: biplots and triplots"
@@ -90,12 +90,23 @@ navbar:
           href: articles/traits.html
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
+        - text: Geospatial workflows
+          href: articles/geospatial.html
+        - text: -------
+        - text: Output
+        - text: Publication figures
+          href: articles/publication.html
+    gallery:
+      text: Gallery
+      href: articles/gallery.html
     news:
       text: News
       href: news/index.html
-    publication:
-      text: Publication figures
-      href: articles/publication.html
+    memorial:
+      text: In memory
+      icon: fa-feather
+      aria-label: In memory of Filip Damen
+      href: articles/filip-damen.html
 
 home:
   title: "tidydiversity: taxonomic, phylogenetic and functional diversity in R"
@@ -115,9 +126,11 @@ reference:
   - title: Datasets
     contents:
       - png_ants
+      - png_ants_sites
       - png_tree_ants
       - png_frogs
       - wanang_butterflies
+      - wanang_caterpillars
       - portal_rodents
   - title: Alpha diversity
     contents:
@@ -171,6 +184,9 @@ reference:
     contents:
       - autoplot-tidydiversity
       - theme_tidydiversity
+      - plot_venn
+      - plot_phylo
+      - plot_trait_space
       - plot_panel
       - plot_save
       - div_table
@@ -180,6 +196,45 @@ reference:
       - model_group_folds
       - model_case_weights
       - step_hill
+  - title: Count models and partial-effect plots
+    contents:
+      - model_count
+      - plot_partial
+      - plot_surface
+  - title: Geospatial
+    contents:
+      - geo_as_sf
+      - as_sf
+      - as_spat_raster
+      - geo_example_sites
+      - geo_example_stems
+      - geo_example_dem
+      - geo_example_censuses
+      - geo_extract
+      - geo_clean
+      - geo_gbif
+      - geo_distance
+      - geo_decay
+      - geo_basemap
+      - plot_sites
+      - plot_topo
+      - plot_geo
+      - geo_moran
+      - geo-io
+      - geo_save
+      - geo_gadm
+      - geo-vector
+      - geo-raster
+      - geo-bioclim
+      - geo_elevation
+      - geo_mem
+      - geo_rarefy_spatial
+      - geo_grain
+      - geo_middomain
+      - geo_as_features
+      - stems
+      - stems_habitat_test
+      - sdm
 
 articles:
   - title: Get started
@@ -196,6 +251,7 @@ articles:
       - articles/composition-tests
       - articles/traits
       - articles/tidymodels
+      - articles/geospatial
       - articles/publication
   - title: Papua New Guinea case studies
     contents:

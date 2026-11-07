@@ -20,7 +20,7 @@ functional traits. The data are loaded from ade4, not copied into
 tidydiversity.
 }
 \examples{
-\dontshow{if (rlang::is_installed("ade4")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("ade4")) withAutoprint(\{ # examplesIf}
 aravo <- data_aravo()
 aravo$community
 aravo$traits

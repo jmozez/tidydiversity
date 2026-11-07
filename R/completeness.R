@@ -3,7 +3,10 @@
 #' Estimates sample completeness of order `q` for each site (Chao et al.
 #' 2020). Completeness at q = 0 is the proportion of species richness
 #' detected, at q = 1 it is the sample coverage, and higher orders give
-#' increasing weight to abundant species. Values lie between 0 and 1.
+#' increasing weight to abundant species. Values lie between 0 and 1,
+#' except in samples made up only of singletons, where estimates for q > 0
+#' are unreliable and can be negative (as in iNEXT.4steps); a warning flags
+#' such sites.
 #'
 #' @inheritParams div_estimate
 #' @param nboot Number of bootstrap replicates. Use 0 to skip them.
@@ -32,11 +35,13 @@ div_completeness <- function(data,
     counts = TRUE
   )
   td_check_min_n(prep)
-  q <- td_check_q(q)
+  q <- td_check_q(q, finite = TRUE)
   td_check_number(conf, "conf", 0, 1)
   td_check_number(nboot, "nboot", 0, whole = TRUE)
   z <- stats::qnorm(1 - (1 - conf) / 2)
+  singletons <- 0L
   out <- td_per_site(prep, function(x, i) {
+    if (all(x == 1)) singletons <<- singletons + 1L
     est <- completeness_q(x, q)
     draws <- boot_draws(x, nboot, function(xb, d) completeness_q(xb, q))
     se <- as.vector(boot_se(draws, length(q)))
@@ -48,6 +53,12 @@ div_completeness <- function(data,
       upper = pmin(est + z * se, 1)
     )
   })
+  if (singletons > 0) {
+    cli::cli_warn(c(
+      "{singletons} site{?s} ha{?s/ve} only singletons.",
+      "i" = "Completeness for q > 0 is then unreliable and can be negative."
+    ))
+  }
   td_new(out, "td_completeness")
 }
 

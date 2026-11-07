@@ -230,7 +230,7 @@ bars the bootstrap confidence intervals when they were computed.
 They need the ggplot2 package.
 }
 \examples{
-\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(ggplot2)
 curves <- div_rarefy(png_ants, q = c(0, 1), .by = season, knots = 20)
 autoplot(curves)

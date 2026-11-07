@@ -57,3 +57,12 @@ test_that("bootstrap intervals and plots work", {
     "coverage"
   ))
 })
+
+test_that("div_completeness warns about singleton-only samples", {
+  d <- data.frame(site = "a", species = letters[1:10], abundance = 1)
+  expect_warning(
+    out <- div_completeness(d, q = c(0, 1), nboot = 0),
+    "only singletons"
+  )
+  expect_equal(nrow(out), 2)
+})

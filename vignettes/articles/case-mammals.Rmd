@@ -143,6 +143,6 @@ div_table(div_estimate(filter(pooled, year == 2019), nboot = 100),
 Brown, J. H., Valone, T. J. and Curtin, C. G. (1997). Reorganization of an
 arid ecosystem in response to recent climate change. *PNAS* 94: 9729-9733.
 
-Ernest, S. K. M., Yenni, G. M., Allington, G., et al. (2020). The Portal
+Ernest, S. K. M., Yenni, G. M., Allington, G., et al. (2018). The Portal
 Project: a long-term study of a Chihuahuan desert ecosystem. *bioRxiv*.
 <https://doi.org/10.1101/332783>

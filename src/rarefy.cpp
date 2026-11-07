@@ -12,6 +12,8 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 NumericVector rare_gk(NumericVector a, NumericVector w, double n, double m,
                       int kmax) {
+  if (w.size() != a.size()) stop("`a` and `w` must have the same length.");
+  if (kmax < 0) stop("`kmax` must be non-negative.");
   NumericVector g(kmax);
   const double lchoose_nm = R::lchoose(n, m);
   const int s = a.size();

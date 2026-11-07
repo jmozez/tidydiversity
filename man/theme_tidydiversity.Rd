@@ -53,7 +53,7 @@ print in black and white. \code{scale_colour_tidydiversity()} and
 \code{scale_fill_tidydiversity()} are the matching discrete ggplot2 scales.
 }
 \examples{
-\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(ggplot2)
 plot_palette(3)
 ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
@@ -64,6 +64,6 @@ ggplot(mtcars, aes(wt, mpg, colour = factor(cyl))) +
 }
 \references{
 Okabe, M. and Ito, K. (2008). Color universal design (CUD):
-how to make figures and presentations that are friendly to colorblind
+how to make figures and presentations that are friendly to colour-blind
 people. \url{https://jfly.uni-koeln.de/color/}
 }

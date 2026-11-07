@@ -16,7 +16,7 @@ Papua New Guinea. Repeated sampling of one place suits questions about
 temporal diversity: how much does a year of monitoring capture, and how
 different are years?
 
-**Source and licence.** Data on Dryad (doi:10.5061/dryad.j35fq7r) under
+**Source and licence.** Data on Dryad ([doi:10.5061/dryad.j35fq7r](https://doi.org/10.5061/dryad.j35fq7r)) under
 CC0 1.0. Only the Wanang part of the published multi-site data is
 included. See `?wanang_butterflies` and `data-raw/wanang_butterflies.R`.
 
@@ -68,4 +68,4 @@ several years captures far more of the species pool than any single year.
 
 Luk, C.-L., Basset, Y., Kongnoo, P., Hau, B. C. H. and Bonebrake, T. C.
 (2019). Inter-annual monitoring improves diversity estimation of tropical
-butterfly assemblages. *Biotropica*, 51, 519-528. doi:10.1111/btp.12671
+butterfly assemblages. *Biotropica*, 51, 519-528. [doi:10.1111/btp.12671](https://doi.org/10.1111/btp.12671)

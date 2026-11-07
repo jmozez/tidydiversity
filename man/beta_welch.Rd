@@ -62,7 +62,7 @@ F statistic (\code{\link[stats:oneway.test]{stats::oneway.test()}} with \code{va
 The p-value is obtained by permuting group labels.
 }
 \examples{
-\dontshow{if (rlang::is_installed("vegan")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("vegan")) withAutoprint(\{ # examplesIf}
 ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect))
 set.seed(1)
 beta_welch(ants, site = unit, group = season, permutations = 199)

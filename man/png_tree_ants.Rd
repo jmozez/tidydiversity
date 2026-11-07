@@ -18,8 +18,8 @@ A tibble with one row per tree and ant species, and nine columns:
 }
 }
 \source{
-Plowman, N. S., Mottl, O., Novotny, V., Idigel, C., Philip, F. J.,
-Rimandai, M. and Klimes, P. (2019). Data from: Nest microhabitats and
+Plowman, N. S., Mottl, O., Novotny, V., Idigel, C., Philip, F. J.
+and Klimes, P. (2019). Data from: Nest microhabitats and
 tree size mediate shifts in ant community structure across elevation in
 tropical rainforest canopies. Dryad. \doi{10.5061/dryad.2fqz612k6},
 released under CC0 1.0. Built by \code{data-raw/png_tree_ants.R}.

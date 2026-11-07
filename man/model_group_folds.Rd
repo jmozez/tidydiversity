@@ -27,7 +27,7 @@ skill (Roberts et al. 2017). \code{model_group_folds()} creates folds that keep
 every row of a group together, using \code{\link[rsample:group_vfold_cv]{rsample::group_vfold_cv()}}.
 }
 \examples{
-\dontshow{if (rlang::is_installed("rsample")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("rsample")) withAutoprint(\{ # examplesIf}
 units <- div_hill(png_ants, q = 0, .by = c(season, transect))
 model_group_folds(units, group = site)
 \dontshow{\}) # examplesIf}

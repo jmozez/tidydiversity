@@ -591,7 +591,13 @@ beta_heatmap <- function(df, value, by_cols, fill_lab, theme) {
   ) +
     ggplot2::geom_tile(colour = "white") +
     ggplot2::scale_fill_viridis_c(limits = c(0, 1), option = "D") +
-    ggplot2::labs(x = NULL, y = NULL, fill = fill_lab)
+    ggplot2::labs(
+      x = NULL, y = NULL, fill = fill_lab,
+      alt = paste(
+        "Heatmap of pairwise", tolower(gsub("\n", " ", fill_lab)),
+        "between sites."
+      )
+    )
   if (length(by_cols)) {
     both$.group <- td_label_col(both, by_cols)
     both$.group <- factor(both$.group, unique(both$.group))

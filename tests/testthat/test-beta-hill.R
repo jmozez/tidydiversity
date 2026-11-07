@@ -47,6 +47,12 @@ test_that("beta_hill defaults, bounds and errors", {
   expect_error(beta_hill(one), "two sites")
 })
 
+test_that("beta_hill sorts and de-duplicates q", {
+  b <- beta_hill(png_ants, .by = season, q = c(2, 0, 0))
+  expect_equal(nrow(b), 4)
+  expect_equal(b$q[b$season == "dry"], c(0, 2))
+})
+
 bh_ref_compare <- function(ours, ref, tol = 1e-8) {
   for (reg in names(ref)) {
     o <- ours[ours$region == reg, ]
@@ -181,6 +187,29 @@ test_that("beta_hill bootstrap intervals bracket the estimates", {
   expect_true(all(b$beta_lower <= b$beta & b$beta <= b$beta_upper))
   expect_true(all(b$gamma_upper > b$gamma_lower))
   expect_false("beta_lower" %in% names(beta_hill(png_ants, .by = season)))
+})
+
+test_that("beta_hill bootstraps PD, FD and incidence data", {
+  skip_if_not_installed("iNEXT.beta3D")
+  skip_if_not_installed("ape")
+  b <- bh_brazil()
+  set.seed(2)
+  pd <- beta_hill(b$long,
+    abundance = n, coverage = 0.9, type = "PD", tree = b$tree,
+    .by = region, nboot = 3
+  )
+  expect_true(all(pd$beta_lower <= pd$beta & pd$beta <= pd$beta_upper))
+  fd <- beta_hill(b$long,
+    abundance = n, coverage = 0.9, type = "FD", distance = b$dist,
+    tau = 0.3, .by = region, nboot = 3
+  )
+  expect_true(all(fd$gamma_lower <= fd$gamma & fd$gamma <= fd$gamma_upper))
+  f <- bh_forests()
+  inc <- beta_hill(f$long,
+    unit = plot, n_units = n_plots, coverage = 0.9, .by = region,
+    nboot = 3
+  )
+  expect_true(all(inc$gamma_upper >= inc$gamma_lower))
 })
 
 test_that("beta_hill incidence needs units shared across sites", {

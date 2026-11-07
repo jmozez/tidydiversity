@@ -60,3 +60,15 @@ test_that("fixed-aspect plots are drawn on an opaque white device", {
   expect_true(all(img[2, 2, ] == 1))
   expect_s3_class(ggplot2::autoplot(beta_pair(png_ants)), "td_gg")
 })
+
+test_that("autoplot methods give plots default alt text", {
+  skip_if_not_installed("ggplot2")
+  r <- div_rarefy(png_ants, q = 0, .by = season, knots = 5)
+  p <- ggplot2::autoplot(r)
+  expect_match(ggplot2::get_alt_text(p), "^Plot of .+ against .+\\.$")
+  custom <- ggplot2::autoplot(div_hill(png_ants, .by = season)) +
+    ggplot2::labs(alt = "My description")
+  expect_equal(ggplot2::get_alt_text(custom), "My description")
+  h <- ggplot2::autoplot(beta_pair(png_ants, .by = season))
+  expect_match(ggplot2::get_alt_text(h), "^Heatmap of pairwise")
+})

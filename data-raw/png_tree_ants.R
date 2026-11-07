@@ -1,8 +1,8 @@
 # Tree-nesting ants exhaustively sampled in 1254 trees in rainforest plots
 # at 200 m (Wanang), 900 m (Numba) and 1800 m (Yawan), Papua New Guinea
 # (Plowman et al. 2020, Ecography).
-# Source: Plowman, N., Mottl, O., Novotny, V., Idigel, C., Philip, F. J.,
-# Rimandai, M. & Klimes, P. (2019). Data from: Nest microhabitats and tree
+# Source: Plowman, N., Mottl, O., Novotny, V., Idigel, C., Philip, F. J.
+# & Klimes, P. (2019). Data from: Nest microhabitats and tree
 # size mediate shifts in ant community structure across elevation in
 # tropical rainforest canopies. Dryad, https://doi.org/10.5061/dryad.2fqz612k6
 # (CC0 1.0), mirrored on Zenodo record 4966217.

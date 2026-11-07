@@ -165,3 +165,38 @@ test_that("incidence beta partitions match betapart on real data", {
     expect_equal(beta_pair(long, index = idx)$total, as.vector(refp[[3]]))
   }
 })
+
+test_that("infinite q is rejected where estimates are undefined", {
+  d <- data.frame(
+    site = rep(c("a", "b"), each = 3),
+    species = rep(c("x", "y", "z"), 2),
+    abundance = c(5, 3, 1, 2, 2, 2)
+  )
+  expect_error(beta_hill(d, q = Inf, nboot = 0), "finite")
+  expect_error(beta_hill_pair(d, q = c(0, Inf)), "finite")
+  expect_error(div_completeness(d, q = Inf, nboot = 0), "finite")
+})
+
+test_that("extrapolation at high q falls back to observed diversity", {
+  d <- data.frame(
+    site = rep(c("a", "b"), each = 3),
+    species = rep(c("x", "y", "z"), 2),
+    abundance = c(5, 3, 0, 2, 2, 2)
+  )
+  out <- expect_no_error(div_evenness(d, q = 50))
+  expect_false(anyNA(out$evenness))
+})
+
+test_that("bootstrapping very large samples gives a clear error", {
+  d <- data.frame(
+    site = rep(c("a", "b"), each = 3),
+    species = rep(c("x", "y", "z"), 2),
+    abundance = c(1e12, 3, 1, 2, 2, 2)
+  )
+  expect_error(div_estimate(d, nboot = 2), "nboot = 0")
+})
+
+test_that("rare_gk() checks its arguments", {
+  expect_error(rare_gk(c(1, 2), 1, 3, 2, 2), "same length")
+  expect_error(rare_gk(1, 1, 3, 2, -1), "non-negative")
+})

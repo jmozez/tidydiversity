@@ -10,7 +10,7 @@ plot_save(
   size = c("single", "onehalf", "double"),
   width = NULL,
   height = NULL,
-  units = c("mm", "cm", "in"),
+  units = c("mm", "cm", "in", "px"),
   dpi = 300,
   ...
 )
@@ -26,9 +26,10 @@ plot_save(
 
 \item{width, height}{Size in \code{units}. \code{height} defaults to 0.8 x width.}
 
-\item{units}{Units for \code{width} and \code{height}.}
+\item{units}{Units for \code{width} and \code{height} (\code{"mm"}, \code{"cm"}, \code{"in"},
+or \code{"px"}).}
 
-\item{dpi}{Resolution for raster formats.}
+\item{dpi}{Resolution for raster formats (default 300).}
 
 \item{...}{Passed to \code{\link[ggplot2:ggsave]{ggplot2::ggsave()}}.}
 }
@@ -41,9 +42,12 @@ white background and 300 dpi by default. Works for ggplot and patchwork
 objects.
 }
 \examples{
-\dontshow{if (rlang::is_installed("ggplot2")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("ggplot2")) withAutoprint(\{ # examplesIf}
 r <- div_rarefy(png_ants, q = 0, .by = season, knots = 20)
 f <- tempfile(fileext = ".png")
 plot_save(ggplot2::autoplot(r), f, size = "single")
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link[=geo_save]{geo_save()}} for map-oriented defaults (path, 180x140 mm).
 }

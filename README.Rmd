@@ -118,6 +118,11 @@ consistent, tested interface.
 * **Publication output.** CANOCO-style biplots and triplots with
   ellipses, hulls and spiders; consistent colour-blind-safe themes on white
   backgrounds; multi-panel figures with panel tags.
+* **Geospatial and ForestGEO in one tidy workflow.** Study-site maps,
+  basemaps, vector/raster verbs, WorldClim/CHELSA bioclim (including
+  CHELSA-CMIP6), stem maps on topography, census demography, dbMEM,
+  spatial rarefaction, grain helpers, mid-domain nulls, and tidy SDMs
+  (`sdm_*`) that never send you to biomod2 or Java Maxent.
 
 ### Fast where it matters
 
@@ -149,7 +154,8 @@ when a function needs them, so `library(tidydiversity)` stays light.
 * **ggplot2.** `autoplot()` returns ordinary ggplot objects you can
   extend with `+`; patchwork composes them.
 * **Predictable names.** Functions are grouped by prefix: `div_` (alpha
-  diversity), `beta_`, `ord_`, `trait_`, `phylo_`, `model_` and `plot_`.
+  diversity), `beta_`, `ord_`, `trait_`, `phylo_`, `model_`, `geo_`,
+  `stems_`, `sdm_` and `plot_`.
 * **Checked.** Results match iNEXT, iNEXT.3D, betapart, vegan, FD, ade4,
   iNEXT.beta3D, indicspecies, TPD and phytools in more than 400 tests.
 
@@ -168,6 +174,10 @@ when a function needs them, so `library(tidydiversity)` stays light.
 | Trait probability densities | `trait_tpd()` | TPD |
 | Phylogenetic signal and distances | `phylo_*()` | phytools, picante, ape |
 | Modelling with tidymodels | `model_*()`, `step_hill()` | hand-written glue |
+| Geospatial sites, basemaps, GADM, GDAL I/O, maps | `geo_*()`, `geo_read()`/`geo_write()`, `geo_save()`, `plot_sites()`, `plot_geo()` | sf, terra, maptiles, geodata |
+| ForestGEO stems and topography | `stems_*()`, `plot_topo()` | fgeo, CTFS R package |
+| Species distribution models (tidy) | `sdm_fit()`, `sdm_predict()`, `plot_sdm()` | biomod2, dismo, maxnet |
+| Partial-effect and surface plots; overdispersed counts | `plot_partial()`, `plot_surface()`, `model_count()` | visreg, plotmo, aods3 |
 | Publication figures and tables | `autoplot()`, `plot_*()`, `div_table()` | ggplot2, patchwork, gt |
 
 ## Installation
@@ -212,9 +222,11 @@ deposits by scripts in `data-raw/`.
 | Dataset | What it holds | Source |
 |---|---|---|
 | `png_ants` | Ants at nutrient baits, Mt Wilhelm, 200-3700 m, dry and wet season | Moses et al. (2023) *Global Ecology and Biogeography*, [doi:10.1111/geb.13757](https://doi.org/10.1111/geb.13757) |
+| `png_ants_sites` | GPS of the 16 Mt Wilhelm bait transects behind `png_ants` | Mottl, Moses and Klimes (2023) Zenodo, [doi:10.5281/zenodo.8191946](https://doi.org/10.5281/zenodo.8191946) |
 | `png_tree_ants` | Every ant nest in 1254 trees at 200, 900 and 1800 m | Plowman et al. (2020) *Ecography*, [doi:10.1111/ecog.04730](https://doi.org/10.1111/ecog.04730) |
-| `png_frogs` | 3390 frogs of 55 species at eight elevations, Mt Wilhelm | Dahl et al. (2023) *Biotropica*, [doi:10.1111/btp.13283](https://doi.org/10.1111/btp.13283) |
+| `png_frogs` | 3390 frogs of 55 species at eight elevations, Mt Wilhelm | Dahl et al. (2024) *Biotropica*, [doi:10.1111/btp.13283](https://doi.org/10.1111/btp.13283) |
 | `wanang_butterflies` | Butterflies on 36 days over three years, Wanang forest plot | Luk et al. (2019) *Biotropica*, [doi:10.1111/btp.12671](https://doi.org/10.1111/btp.12671) |
+| `wanang_caterpillars` | 9363 reared caterpillars of 849 morphospecies, primary and secondary forest at Wanang | Butterill and Redmond (2023) GBIF, [doi:10.15468/7e96ht](https://doi.org/10.15468/7e96ht) (CC BY 4.0) |
 
 ## TD, PD and FD on one scale
 
@@ -288,8 +300,12 @@ the effect of unequal sampling effort before you compare sites.
 | Traits (`trait_`) | `trait_dist()`, `trait_cwm()`, `trait_cwm_test()`, `trait_fd_indices()`, `trait_rao()`, `trait_ses()`, `trait_itv()`, `trait_fourth_corner()`, `trait_tpd()`, `trait_tpd_dissim()` |
 | Phylogeny (`phylo_`) | `phylo_signal()`, `phylo_dist()`, `phylo_combine_dist()` |
 | Modelling (`model_`) | `model_group_folds()`, `model_case_weights()`, `step_hill()`, `tidy()`, `glance()` |
-| Plots and tables (`plot_`) | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `theme_tidydiversity()`, `div_table()` |
-| Example data | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `data_aravo()` |
+| Geospatial (`geo_`) | `geo_as_sf()`, `geo_extract()`, `geo_clean()`, `geo_gbif()`, `geo_distance()`, `geo_decay()`, `geo_basemap()`, `geo_bioclim()`, `geo_worldclim()`, `geo_chelsa()`, `geo_elevation()`, `geo_mem()`, `geo_rarefy_spatial()`, `geo_grain()`, `geo_middomain()`, `geo_moran()`, `geo_as_features()`, `as_sf()`, `as_spat_raster()`, vector/raster verbs |
+| ForestGEO (`stems_`) | `stems_as_trees()`, `stems_quadrat()`, `stems_abundance()`, `stems_basal_area()`, `stems_size_class()`, `stems_demography()`, `stems_habitat()`, `stems_habitat_test()`, `stems_as_community()`, `stems_neighbours()` |
+| SDM (`sdm_`) | `sdm_fit()`, `sdm_predict()`, `sdm_evaluate()`, `plot_sdm()` |
+| Count models and partial plots | `model_count()`, `plot_partial()`, `plot_surface()` |
+| Plots and tables (`plot_`) | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `plot_sites()`, `plot_geo()`, `plot_topo()`, `plot_partial()`, `plot_surface()`, `plot_phylo()`, `plot_trait_space()`, `plot_venn()`, `theme_tidydiversity()`, `div_table()` |
+| Example data | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `wanang_caterpillars`, `data_aravo()`, `png_ants_sites`, `geo_example_sites()`, `geo_example_stems()`, `geo_example_dem()` and `geo_example_censuses()` (simulated, for tests only) |
 
 ## Gallery
 
@@ -397,6 +413,48 @@ Pairwise total, turnover and nestedness dissimilarity against elevation differen
 beta_decay(png_ants, gradient = elevation, .by = season) |>
   autoplot()
 ```
+
+
+### Study-site map
+
+Published bait GPS for the Mt Wilhelm ant transects (`png_ants_sites`,
+Mottl, Moses and Klimes 2023) on Esri imagery, with labels, scale bar,
+north arrow and a Papua New Guinea inset.
+
+```{r geo-sites, echo = FALSE, fig.height = 4.2, fig.alt = "Map of the eight Mt Wilhelm ant bait sites on satellite imagery"}
+knitr::include_graphics("man/figures/gallery-map-sites.png")
+```
+
+### Hill numbers on a map
+
+Estimated ant species richness per elevation band (`png_ants`, dry season)
+at the same published coordinates.
+
+```{r geo-map, echo = FALSE, fig.height = 4.0, fig.alt = "Map of estimated ant species richness at the Mt Wilhelm sites"}
+knitr::include_graphics("man/figures/gallery-map-hill.png")
+```
+
+### Elevation
+
+The transects over NASA SRTM elevation.
+
+```{r geo-basemap, echo = FALSE, fig.height = 4.0, fig.alt = "Mt Wilhelm sites over SRTM elevation"}
+knitr::include_graphics("man/figures/gallery-map-elevation.png")
+```
+
+### Species distribution model
+
+Habitat suitability of the green tree ant *Oecophylla smaragdina* in
+Papua New Guinea from GBIF occurrence records (CC0 and CC BY 4.0) and
+WorldClim 2.1 climate, fitted with `sdm_fit(engine = "maxnet")`.
+
+```{r geo-sdm, echo = FALSE, fig.height = 4.0, fig.alt = "Habitat suitability map of Oecophylla smaragdina in Papua New Guinea"}
+knitr::include_graphics("man/figures/gallery-map-sdm.png")
+```
+
+All four maps are drawn from real records by `data-raw/gallery_maps.R`;
+the [Gallery](https://jmozez.github.io/tidydiversity/articles/gallery.html)
+shows them with their tables and code.
 
 ## Output tables
 
@@ -556,7 +614,7 @@ dplyr::mutate(png_ants, unit = paste(site, season, transect)) |>
   role of dispersal processes. *Ecography*, 41, 1825-1834.
 * Moses, J. et al. (2023). Nutrient use by tropical ant communities varies
   among three extensive elevational gradients: a cross-continental
-  comparison. *Global Ecology and Biogeography*, 32, 1958-1973.
+  comparison. *Global Ecology and Biogeography*, 32, 2212-2229.
 * Nekola, J. C. and White, P. S. (1999). The distance decay of similarity
   in biogeography and ecology. *Journal of Biogeography*, 26, 867-878.
 * Zeleny, D. (2018). Which results of the standard test for

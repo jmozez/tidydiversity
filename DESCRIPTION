@@ -1,6 +1,6 @@
 Package: tidydiversity
 Title: Taxonomic, Phylogenetic and Functional Diversity with Tidy Hill Numbers
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Jimmy", "Moses", , "jimmy.moses@pnguot.ac.pg", role = c("aut", "cre", "cph"))
 Description: Tidy, pipe-friendly tools for estimating taxonomic,
@@ -70,6 +70,20 @@ Suggests:
     mgcv,
     rmarkdown,
     testthat (>= 3.0.0),
+    sf,
+    terra,
+    rgbif,
+    spdep,
+    CoordinateCleaner,
+    maptiles,
+    geodata,
+    elevatr,
+    leaflet,
+    tmap,
+    MASS,
+    metR,
+    rnaturalearth,
+    rnaturalearthdata,
     vegan
 VignetteBuilder: 
     knitr
@@ -79,4 +93,4 @@ Encoding: UTF-8
 Language: en-NZ
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+Config/roxygen2/version: 8.1.0
