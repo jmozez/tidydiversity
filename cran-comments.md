@@ -25,7 +25,9 @@ A Zenodo archive of this version is at <https://doi.org/10.5281/zenodo.24046912>
 
 ## Test environments
 
-* Linux (rocker/geospatial, R 4.5), R CMD check --as-cran on GitLab CI
+* Linux (rocker/geospatial, R 4.5, with TeX Live), R CMD check --as-cran on GitLab CI:
+  0 errors, 0 warnings, 2 notes (new submission; compiler flags set by the
+  CI image's R build, not by the package)
 * win-builder (R-devel and R-release)
 * macOS builder (R-release)
 
