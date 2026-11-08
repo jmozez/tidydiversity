@@ -38,7 +38,7 @@
 #' @source Mottl, O., Moses, J. and Klimes, P. (2023). Data and code for
 #'   "Nutrient use by tropical ant communities varies among three extensive
 #'   elevational gradients: a cross-continental comparison". Zenodo.
-#'   \doi{10.5281/zenodo.8191946}. Built by `data-raw/png_ants.R` in the
+#'   \doi{10.5281/zenodo.8191946} (open access). Built by `data-raw/png_ants.R` in the
 #'   package source.
 #' @references Moses, J., Peters, M. K., Tiede, Y., Mottl, O., Donoso, D. A.,
 #'   Farwig, N., Fayle, T. M., Novotny, V., Sanders, N. J. and Klimes, P.

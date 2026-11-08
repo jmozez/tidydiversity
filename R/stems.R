@@ -39,9 +39,19 @@
 #'   ForestGEO: <https://forestgeo.si.edu/>. Analysis conventions also follow
 #'   the fgeo.analyze package (rOpenSci / ForestGEO).
 #' @name stems
-#' @examplesIf requireNamespace("tidymapr", quietly = TRUE)
-#' # A small simulated ForestGEO-style table, for trying the code only
-#' stems <- tidymapr::geo_example_stems()
+#' @examples
+#' # The column layout of a ForestGEO stem table (illustrative rows; use
+#' # your own census, or tidymapr::geo_example_stems())
+#' stems <- tibble::tibble(
+#'   treeID = 1:6,
+#'   stemID = 1:6,
+#'   gx = c(12.1, 40.5, 77.0, 23.9, 61.2, 88.4),
+#'   gy = c(8.3, 55.0, 31.7, 90.2, 14.6, 66.1),
+#'   dbh = c(105, 342, 58, 220, 77, 410),
+#'   species = c("Pometia_pinnata", "Intsia_bijuga", "Pometia_pinnata",
+#'     "Pterocarpus_indicus", "Intsia_bijuga", "Pometia_pinnata"),
+#'   status = "A"
+#' )
 #' stems_abundance(stems, .by = species)
 #' stems_basal_area(stems, dbh_unit = "mm", .by = species)
 NULL

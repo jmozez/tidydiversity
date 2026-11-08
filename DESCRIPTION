@@ -70,11 +70,8 @@ Suggests:
     mgcv,
     rmarkdown,
     testthat (>= 3.0.0),
-    tidymapr,
     MASS,
     vegan
-Remotes:
-    gitlab::jimmy.moses/tidymapr
 VignetteBuilder: 
     knitr
 Config/Needs/website: tidyr

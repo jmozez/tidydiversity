@@ -44,6 +44,19 @@ check:
       - check/*.Rcheck/tests/
     expire_in: 2 weeks
 
+# Full CRAN check (PDF manual included), as CRAN's incoming checks run it.
+cran:
+  stage: check
+  script:
+    - apt-get update -qq && apt-get install -y -qq qpdf tidy >/dev/null
+    - Rscript -e 'pak::local_install_dev_deps(upgrade = FALSE); pak::pkg_install("rcmdcheck")'
+    - _R_CHECK_CRAN_INCOMING_=true _R_CHECK_FORCE_SUGGESTS_=false Rscript -e 'rcmdcheck::rcmdcheck(args = "--as-cran", error_on = "warning", check_dir = "cran-check")'
+  artifacts:
+    when: always
+    paths:
+      - cran-check/*.Rcheck/00check.log
+    expire_in: 4 weeks
+
 lint:
   stage: check
   script:
