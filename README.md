@@ -177,12 +177,14 @@ when a function needs them, so `library(tidydiversity)` stays light.
 
 ## Installation
 
-Install the development version from GitHub:
+Install the development version from GitLab:
 
 ``` r
 # install.packages("pak")
 pak::pak("gitlab::jimmy.moses/tidydiversity")
 ```
+
+The source code lives on GitLab, <https://gitlab.com/jimmy.moses/tidydiversity>, with a full mirror on Codeberg, <https://codeberg.org/jmoses/tidydiversity>.
 
 ## Maps with tidymapr
 
