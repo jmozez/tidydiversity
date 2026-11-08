@@ -2,15 +2,12 @@
 # tidydiversity <a href="https://gitlab.com/jimmy.moses/tidydiversity"><img src="man/figures/logo.png" align="right" height="139" alt="tidydiversity website" /></a>
 
 <!-- badges: start -->
+[![pipeline](https://gitlab.com/jimmy.moses/tidydiversity/badges/main/pipeline.svg)](https://gitlab.com/jimmy.moses/tidydiversity/-/pipelines)
 
-[![R-CMD-check](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/R-CMD-check.yaml/badge.svg)](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/R-CMD-check.yaml)
-[![test-coverage](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/test-coverage.yaml/badge.svg)](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/test-coverage.yaml)
-[![lint](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/lint.yaml/badge.svg)](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/lint.yaml)
-[![pkgdown](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/pkgdown.yaml/badge.svg)](https://gitlab.com/jimmy.moses/tidydiversity)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License:
-MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.com/jimmy.moses/tidydiversity/blob/main/LICENSE.md)
+MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/LICENSE.md)
 <!-- badges: end -->
 
 <div class="td-hero">
