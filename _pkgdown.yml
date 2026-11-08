@@ -1,3 +1,4 @@
+url: https://tidydiversity-033f3f.gitlab.io/
 
 template:
   bootstrap: 5
@@ -45,7 +46,7 @@ navbar:
       text: tidymapr
       icon: fa-map
       aria-label: Maps with the companion package tidymapr
-      href: https://gitlab.com/jimmy.moses/tidymapr
+      href: https://tidymapr-e72c18.gitlab.io/
     intro:
       text: Get started
       href: articles/tidydiversity.html
@@ -95,7 +96,7 @@ navbar:
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
         - text: "Maps: the tidymapr package"
-          href: https://gitlab.com/jimmy.moses/tidymapr
+          href: https://tidymapr-e72c18.gitlab.io/
         - text: -------
         - text: Output
         - text: Publication figures
