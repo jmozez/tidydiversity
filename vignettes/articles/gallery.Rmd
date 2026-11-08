@@ -17,7 +17,7 @@ the code. All plots use the colour-blind-safe Okabe-Ito palette and
 [publication figures](publication.html) article for customisation.
 
 Maps are in the companion package tidymapr; see its
-[Gallery](https://tidymapr-e72c18.gitlab.io/articles/gallery.html).
+[Gallery](https://jmoses.codeberg.page/tidymapr/articles/gallery.html).
 
 ```{r setup, message = FALSE}
 library(tidydiversity)
@@ -505,6 +505,6 @@ plot_trait_space(aravo$traits, aravo$community, group = ZoogD, abundance = cover
 
 Maps are drawn by the companion package
 [tidymapr](https://codeberg.org/jmoses/tidymapr), which takes the same tidy
-tables. Its [Gallery](https://tidymapr-e72c18.gitlab.io/articles/gallery.html)
+tables. Its [Gallery](https://jmoses.codeberg.page/tidymapr/articles/gallery.html)
 shows study-site, Hill-number, elevation and species distribution maps
 from real, published records.

@@ -8,7 +8,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![License:
 MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://codeberg.org/jmoses/tidydiversity/src/branch/main/LICENSE.md)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24046912.svg)](https://doi.org/10.5281/zenodo.24046912)
-[![CRAN checks](https://img.shields.io/badge/R%20CMD%20check-as--cran-1A9E93)](https://tidydiversity-033f3f.gitlab.io/cran-check.txt)
+[![CRAN checks](https://img.shields.io/badge/R%20CMD%20check-as--cran-1A9E93)](https://jmoses.codeberg.page/tidydiversity/cran-check.txt)
 <!-- badges: end -->
 
 <div class="td-hero">
@@ -30,7 +30,7 @@ results come back as tibbles.
 > forest for science, and built a research station, a school and a
 > health post with his community. The `wanang_butterflies` data come
 > from the forest he protected. [Read his
-> story](https://tidydiversity-033f3f.gitlab.io/articles/filip-damen.html).
+> story](https://jmoses.codeberg.page/tidydiversity/articles/filip-damen.html).
 
 <div class="td-cards">
 
