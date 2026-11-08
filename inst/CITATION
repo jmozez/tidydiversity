@@ -1,12 +1,13 @@
 bibentry(
   bibtype = "Manual",
-  title = "tidydiversity: Taxonomic, Phylogenetic and Functional Diversity in a Tidy Workflow",
+  title = "tidydiversity: Taxonomic, Phylogenetic and Functional Diversity with Tidy Hill Numbers",
   author = person("Jimmy", "Moses", email = "jimmy.moses@pnguot.ac.pg"),
   year = "2026",
   note = "R package version 0.1.0",
+  doi = "10.5281/zenodo.24046912",
   url = "https://gitlab.com/jimmy.moses/tidydiversity",
   textVersion = paste0(
-    "Moses, J. (2026). tidydiversity: Taxonomic, Phylogenetic and Functional Diversity in a Tidy Workflow. ",
-    "R package version 0.1.0. https://gitlab.com/jimmy.moses/tidydiversity"
+    "Moses, J. (2026). tidydiversity: Taxonomic, Phylogenetic and Functional Diversity with Tidy Hill Numbers. ",
+    "R package version 0.1.0. Zenodo. https://doi.org/10.5281/zenodo.24046912"
   )
 )

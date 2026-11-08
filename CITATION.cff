@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use tidydiversity, please cite it as below."
 type: software
-title: "tidydiversity: Taxonomic, Phylogenetic and Functional Diversity in a Tidy Workflow"
+title: "tidydiversity: Taxonomic, Phylogenetic and Functional Diversity with Tidy Hill Numbers"
 abstract: "Tidy, pipe-friendly estimation of taxonomic, phylogenetic and functional diversity as Hill numbers, with coverage-based rarefaction and extrapolation, beta-diversity partitioning and publication-ready plots."
 authors:
   - family-names: Moses
@@ -9,6 +9,7 @@ authors:
     email: jimmy.moses@pnguot.ac.pg
     affiliation: "PNG University of Technology"
 version: "0.1.0"
+doi: 10.5281/zenodo.24046912
 date-released: "2026-11-08"
 license: MIT
 repository-code: "https://gitlab.com/jimmy.moses/tidydiversity"

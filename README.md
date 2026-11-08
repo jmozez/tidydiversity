@@ -8,6 +8,7 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License:
 MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/LICENSE.md)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24046912.svg)](https://doi.org/10.5281/zenodo.24046912)
 <!-- badges: end -->
 
 <div class="td-hero">
