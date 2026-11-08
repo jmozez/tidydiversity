@@ -76,10 +76,14 @@ lint:
 
 pages:
   stage: website
-  needs: []
+  # Waits for the CRAN check so its report is published on the website
+  needs:
+    - job: cran
+      artifacts: true
   script:
     - Rscript -e 'pak::local_install_dev_deps(upgrade = FALSE); pak::pkg_install(c("pkgdown", "local::."))'
     - Rscript -e 'pkgdown::build_site(new_process = FALSE, install = FALSE, override = list(destination = "public"))'
+    - cp cran-check/tidydiversity.Rcheck/00check.log public/cran-check.txt
   artifacts:
     paths:
       - public
