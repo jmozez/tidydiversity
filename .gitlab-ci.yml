@@ -59,6 +59,10 @@ cran:
       - cran-check/*.log
       - cran-check/*.Rcheck/*.log
     expire_in: 4 weeks
+  # About 25 minutes with LaTeX: run on the default branch and tags only
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
 
 lint:
   stage: check
@@ -80,10 +84,11 @@ pages:
   needs:
     - job: cran
       artifacts: true
+      optional: true
   script:
     - Rscript -e 'pak::local_install_dev_deps(upgrade = FALSE); pak::pkg_install(c("pkgdown", "local::."))'
     - Rscript -e 'pkgdown::build_site(new_process = FALSE, install = FALSE, override = list(destination = "public"))'
-    - cp cran-check/tidydiversity.Rcheck/00check.log public/cran-check.txt
+    - cp cran-check/tidydiversity.Rcheck/00check.log public/cran-check.txt || true
   artifacts:
     paths:
       - public
