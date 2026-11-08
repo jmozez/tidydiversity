@@ -36,12 +36,24 @@ figures:
   dev.args:
     bg: white
 
+repo:
+  url:
+    home: https://codeberg.org/jmoses/tidydiversity/
+    source: https://codeberg.org/jmoses/tidydiversity/src/branch/main/
+    issue: https://codeberg.org/jmoses/tidydiversity/issues/
+    user: https://codeberg.org/
+  branch: main
+
 navbar:
   bg: dark
   structure:
     left: [intro, tutorials, guides, gallery, reference, news]
-    right: [tidymapr, memorial, search, gitlab]
+    right: [tidymapr, memorial, search, codeberg]
   components:
+    codeberg:
+      icon: fa-code-branch
+      aria-label: Source code on Codeberg
+      href: https://codeberg.org/jmoses/tidydiversity
     tidymapr:
       text: tidymapr
       icon: fa-map

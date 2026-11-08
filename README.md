@@ -1,13 +1,12 @@
 
-# tidydiversity <a href="https://gitlab.com/jimmy.moses/tidydiversity"><img src="man/figures/logo.png" align="right" height="139" alt="tidydiversity website" /></a>
+# tidydiversity <a href="https://codeberg.org/jmoses/tidydiversity"><img src="man/figures/logo.png" align="right" height="139" alt="tidydiversity website" /></a>
 
 <!-- badges: start -->
-[![pipeline](https://gitlab.com/jimmy.moses/tidydiversity/badges/main/pipeline.svg)](https://gitlab.com/jimmy.moses/tidydiversity/-/pipelines)
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License:
-MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/LICENSE.md)
+MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://codeberg.org/jmoses/tidydiversity/src/branch/main/LICENSE.md)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24046912.svg)](https://doi.org/10.5281/zenodo.24046912)
 [![CRAN checks](https://img.shields.io/badge/R%20CMD%20check-as--cran-1A9E93)](https://tidydiversity-033f3f.gitlab.io/cran-check.txt)
 <!-- badges: end -->
@@ -117,7 +116,7 @@ one consistent, tested interface.
   community table, ready for every `div_` and `beta_` verb.
 - **Maps live in tidymapr.** Study-site maps, basemaps, rasters, bioclim
   layers, spatial statistics and species distribution models are in the
-  companion package [tidymapr](https://gitlab.com/jimmy.moses/tidymapr),
+  companion package [tidymapr](https://codeberg.org/jmoses/tidymapr),
   which takes the same tidy tables and returns the same tibbles and
   ggplots.
 
@@ -177,19 +176,19 @@ when a function needs them, so `library(tidydiversity)` stays light.
 
 ## Installation
 
-Install the development version from GitLab:
+Install the development version from Codeberg:
 
 ``` r
 # install.packages("pak")
-pak::pak("gitlab::jimmy.moses/tidydiversity")
+pak::pak("git::https://codeberg.org/jmoses/tidydiversity")
 ```
 
-The source code lives on GitLab, <https://gitlab.com/jimmy.moses/tidydiversity>, with a full mirror on Codeberg, <https://codeberg.org/jmoses/tidydiversity>.
+The source code lives on Codeberg, <https://codeberg.org/jmoses/tidydiversity>.
 
 ## Maps with tidymapr
 
 tidydiversity does no geospatial work. Its companion package
-[tidymapr](https://gitlab.com/jimmy.moses/tidymapr) draws study-site and
+[tidymapr](https://codeberg.org/jmoses/tidymapr) draws study-site and
 diversity maps, reads and writes vector and raster files, downloads
 climate, elevation and boundary layers, computes spatial statistics and
 fits species distribution models. It takes the tidy tables tidydiversity
@@ -197,7 +196,7 @@ uses and returns tibbles and ggplots, so the two packages share one
 workflow, the way dplyr and ggplot2 do:
 
 ``` r
-pak::pak("gitlab::jimmy.moses/tidymapr")
+pak::pak("git::https://codeberg.org/jmoses/tidymapr")
 library(tidydiversity)
 library(tidymapr)
 

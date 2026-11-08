@@ -504,7 +504,7 @@ plot_trait_space(aravo$traits, aravo$community, group = ZoogD, abundance = cover
 ## Maps
 
 Maps are drawn by the companion package
-[tidymapr](https://gitlab.com/jimmy.moses/tidymapr), which takes the same tidy
+[tidymapr](https://codeberg.org/jmoses/tidymapr), which takes the same tidy
 tables. Its [Gallery](https://tidymapr-e72c18.gitlab.io/articles/gallery.html)
 shows study-site, Hill-number, elevation and species distribution maps
 from real, published records.

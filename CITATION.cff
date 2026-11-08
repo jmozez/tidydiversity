@@ -12,8 +12,8 @@ version: "0.1.0"
 doi: 10.5281/zenodo.24046912
 date-released: "2026-11-08"
 license: MIT
-repository-code: "https://gitlab.com/jimmy.moses/tidydiversity"
-url: "https://gitlab.com/jimmy.moses/tidydiversity"
+repository-code: "https://codeberg.org/jmoses/tidydiversity"
+url: "https://codeberg.org/jmoses/tidydiversity"
 keywords:
   - R
   - biodiversity
