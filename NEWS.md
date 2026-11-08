@@ -1,7 +1,7 @@
 # tidydiversity 0.1.0
 
 * All geospatial and mapping code has moved to the companion package
-  [tidymapr](https://codeberg.org/jmoses/tidymapr): the `geo_*()` verbs,
+  [tidymapr](https://gitlab.com/jimmy.moses/tidymapr): the `geo_*()` verbs,
   `as_sf()`, `as_spat_raster()`, `plot_sites()`, `plot_geo()`,
   `plot_topo()`, `geo_save()`, the `sdm_*()` functions and `plot_sdm()`,
   the spatial stem verbs `stems_quadrat()`, `stems_habitat()`,

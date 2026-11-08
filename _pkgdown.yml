@@ -1,4 +1,4 @@
-url: https://jmoses.codeberg.page/tidydiversity/
+url: https://tidydiversity-033f3f.gitlab.io/
 
 template:
   bootstrap: 5
@@ -38,27 +38,27 @@ figures:
 
 repo:
   url:
-    home: https://codeberg.org/jmoses/tidydiversity/
-    source: https://codeberg.org/jmoses/tidydiversity/src/branch/main/
-    issue: https://codeberg.org/jmoses/tidydiversity/issues/
-    user: https://codeberg.org/
+    home: https://gitlab.com/jimmy.moses/tidydiversity/
+    source: https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/
+    issue: https://gitlab.com/jimmy.moses/tidydiversity/-/issues/
+    user: https://gitlab.com/
   branch: main
 
 navbar:
   bg: dark
   structure:
     left: [intro, tutorials, guides, gallery, reference, news]
-    right: [tidymapr, memorial, search, codeberg]
+    right: [tidymapr, memorial, search, gitlab]
   components:
-    codeberg:
-      icon: fa-code-branch
-      aria-label: Source code on Codeberg
-      href: https://codeberg.org/jmoses/tidydiversity
+    gitlab:
+      icon: fa-gitlab
+      aria-label: Source code on GitLab
+      href: https://gitlab.com/jimmy.moses/tidydiversity
     tidymapr:
       text: tidymapr
       icon: fa-map
       aria-label: Maps with the companion package tidymapr
-      href: https://jmoses.codeberg.page/tidymapr/
+      href: https://tidymapr-e72c18.gitlab.io/
     intro:
       text: Get started
       href: articles/tidydiversity.html
@@ -108,7 +108,7 @@ navbar:
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
         - text: "Maps: the tidymapr package"
-          href: https://jmoses.codeberg.page/tidymapr/
+          href: https://tidymapr-e72c18.gitlab.io/
         - text: -------
         - text: Output
         - text: Publication figures
