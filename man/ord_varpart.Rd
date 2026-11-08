@@ -43,7 +43,7 @@ A tibble of fractions with columns \code{fraction}, \code{label} (e.g.
 }
 \description{
 Partitions the variation in community composition among two to four
-groups of explanatory variables with adjusted R² (Borcard et al. 1992;
+groups of explanatory variables with adjusted \eqn{R^2} (Borcard et al. 1992;
 Peres-Neto et al. 2006), using \code{\link[vegan:varpart]{vegan::varpart()}}. Fractions that are
 testable (the unique fraction of each group) are tested by permutation
 with partial RDA.

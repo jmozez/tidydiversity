@@ -241,6 +241,7 @@ autoplot(curves, palette = "grey", ncol = 1) +
   labs(x = "Number of workers") +
   theme_tidydiversity(base_size = 9)
 
+\donttest{
 div_hill(png_ants, q = seq(0, 3, by = 0.25), .by = season) |>
   autoplot()
 div_hill(png_ants, .by = c(season, elevation)) |>
@@ -256,5 +257,6 @@ autoplot(beta_multi(png_ants, .by = season))
 
 beta_decay(png_ants, gradient = elevation, .by = season) |>
   autoplot(xlab = "Difference in elevation (m)")
+}
 \dontshow{\}) # examplesIf}
 }

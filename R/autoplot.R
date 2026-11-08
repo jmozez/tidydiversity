@@ -69,6 +69,7 @@
 #'   labs(x = "Number of workers") +
 #'   theme_tidydiversity(base_size = 9)
 #'
+#' \donttest{
 #' div_hill(png_ants, q = seq(0, 3, by = 0.25), .by = season) |>
 #'   autoplot()
 #' div_hill(png_ants, .by = c(season, elevation)) |>
@@ -84,6 +85,7 @@
 #'
 #' beta_decay(png_ants, gradient = elevation, .by = season) |>
 #'   autoplot(xlab = "Difference in elevation (m)")
+#' }
 NULL
 
 # Columns that describe the diversity dimension rather than a site or group.

@@ -205,7 +205,7 @@ autoplot.td_dispersion <- function(object, palette = "okabe_ito",
 #' Variation partitioning
 #'
 #' Partitions the variation in community composition among two to four
-#' groups of explanatory variables with adjusted R² (Borcard et al. 1992;
+#' groups of explanatory variables with adjusted \eqn{R^2} (Borcard et al. 1992;
 #' Peres-Neto et al. 2006), using [vegan::varpart()]. Fractions that are
 #' testable (the unique fraction of each group) are tested by permutation
 #' with partial RDA.
@@ -300,7 +300,7 @@ varpart_labels <- function(nm, n) {
 #'
 #' Selects site variables for RDA (or CCA, db-RDA) by forward selection
 #' with the double stopping criterion of Blanchet et al. (2008): a variable
-#' enters only if it is significant *and* the adjusted R² of the model stays
+#' enters only if it is significant *and* the adjusted \eqn{R^2} of the model stays
 #' below that of the full model. Uses [vegan::ordiR2step()].
 #'
 #' @inheritParams ord_fit
@@ -308,7 +308,7 @@ varpart_labels <- function(nm, n) {
 #' @param method `"rda"`, `"cca"` or `"dbrda"`.
 #' @param alpha Significance level for entry.
 #' @return A tibble with one row per selected step: `step`, `term`,
-#'   `adj_r2` (cumulative), `statistic` and `p.value`, and the adjusted R²
+#'   `adj_r2` (cumulative), `statistic` and `p.value`, and the adjusted \eqn{R^2}
 #'   of the full model as attribute `"adj_r2_full"`.
 #' @references Blanchet, F. G., Legendre, P. and Borcard, D. (2008).
 #'   Forward selection of explanatory variables. *Ecology*, 89, 2623-2632.

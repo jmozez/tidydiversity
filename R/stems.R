@@ -36,7 +36,7 @@
 #'   Biology*, 21, 528-549. \doi{10.1111/gcb.12712}.
 #'   Condit, R. et al. (2014). Data and database standards for permanent
 #'   forest plots in a global network. *Forest Ecology and Management*.
-#'   ForestGEO: <https://forestgeo.si.edu/>. Analysis conventions also follow
+#'   ForestGEO (Smithsonian Tropical Research Institute). Analysis conventions also follow
 #'   the fgeo.analyze package (rOpenSci / ForestGEO).
 #' @name stems
 #' @examples

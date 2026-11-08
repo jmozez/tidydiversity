@@ -53,13 +53,13 @@ variables.}
 }
 \value{
 A tibble with one row per selected step: \code{step}, \code{term},
-\code{adj_r2} (cumulative), \code{statistic} and \code{p.value}, and the adjusted R²
+\code{adj_r2} (cumulative), \code{statistic} and \code{p.value}, and the adjusted \eqn{R^2}
 of the full model as attribute \code{"adj_r2_full"}.
 }
 \description{
 Selects site variables for RDA (or CCA, db-RDA) by forward selection
 with the double stopping criterion of Blanchet et al. (2008): a variable
-enters only if it is significant \emph{and} the adjusted R² of the model stays
+enters only if it is significant \emph{and} the adjusted \eqn{R^2} of the model stays
 below that of the full model. Uses \code{\link[vegan:ordiR2step]{vegan::ordiR2step()}}.
 }
 \examples{
