@@ -353,8 +353,11 @@ ord_select <- function(data,
   environment(f0) <- e
   f1 <- rhs_formula("y", formula, e)
   fun <- as.name(method)
-  m0 <- eval(as.call(c(list(fun, f0, data = quote(env_df)), extra)), e)
-  m1 <- eval(as.call(c(list(fun, f1, data = quote(env_df)), extra)), e)
+  # Put the data frame itself (not its name) in the call: ordiR2step()
+  # refits with update(), and some vegan versions (2.7-3) look the name up
+  # in the wrong frame.
+  m0 <- eval(as.call(c(list(fun, f0, data = env_df), extra)), e)
+  m1 <- eval(as.call(c(list(fun, f1, data = env_df), extra)), e)
   sel <- vegan::ordiR2step(m0, scope = stats::formula(m1),
     Pin = alpha, permutations = permutations, trace = FALSE
   )
