@@ -48,7 +48,7 @@ check:
 cran:
   stage: check
   script:
-    - apt-get update -qq && apt-get install -y -qq qpdf tidy >/dev/null
+    - apt-get update -qq && apt-get install -y -qq --no-install-recommends qpdf tidy texinfo texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra >/dev/null
     - Rscript -e 'pak::local_install_dev_deps(upgrade = FALSE); pak::pkg_install("rcmdcheck")'
     - mkdir -p cran-check && (R CMD Rd2pdf --no-preview --force --output=cran-check/manual.pdf . > cran-check/manual-build.log 2>&1 || cp -f .Rd2pdf*/Rd2.log cran-check/ 2>/dev/null || true)
     - _R_CHECK_CRAN_INCOMING_=true _R_CHECK_FORCE_SUGGESTS_=false Rscript -e 'rcmdcheck::rcmdcheck(args = "--as-cran", error_on = "warning", check_dir = "cran-check")'
