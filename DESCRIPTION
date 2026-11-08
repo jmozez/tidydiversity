@@ -16,8 +16,8 @@ Description: Tidy, pipe-friendly tools for estimating taxonomic,
     function takes a data frame and returns a tibble, uses data-masking for
     column arguments, and supports grouped data and the '.by' argument.
 License: MIT + file LICENSE
-URL: https://github.com/jmozez/tidydiversity, https://jmozez.github.io/tidydiversity/
-BugReports: https://github.com/jmozez/tidydiversity/issues
+URL: https://gitlab.com/jimmy.moses/tidydiversity
+BugReports: https://gitlab.com/jimmy.moses/tidydiversity/issues
 Depends: 
     R (>= 4.1.0)
 Imports: 
@@ -74,7 +74,7 @@ Suggests:
     MASS,
     vegan
 Remotes:
-    jmozez/tidymapr
+    gitlab::jimmy.moses/tidymapr
 VignetteBuilder: 
     knitr
 Config/Needs/website: tidyr
@@ -83,5 +83,4 @@ Encoding: UTF-8
 Language: en-NZ
 LazyData: true
 Roxygen: list(markdown = TRUE)
-Config/roxygen2/version: 8.1.0
-RoxygenNote: 7.3.1
+Config/roxygen2/version: 8.1.1

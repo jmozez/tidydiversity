@@ -1,4 +1,3 @@
-url: https://jmozez.github.io/tidydiversity/
 
 template:
   bootstrap: 5
@@ -40,13 +39,13 @@ navbar:
   bg: dark
   structure:
     left: [intro, tutorials, guides, gallery, reference, news]
-    right: [tidymapr, memorial, search, github, lightswitch]
+    right: [tidymapr, memorial, search, gitlab, lightswitch]
   components:
     tidymapr:
       text: tidymapr
       icon: fa-map
       aria-label: Maps with the companion package tidymapr
-      href: https://jmozez.github.io/tidymapr/
+      href: https://gitlab.com/jimmy.moses/tidymapr
     intro:
       text: Get started
       href: articles/tidydiversity.html
@@ -96,7 +95,7 @@ navbar:
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
         - text: "Maps: the tidymapr package"
-          href: https://jmozez.github.io/tidymapr/
+          href: https://gitlab.com/jimmy.moses/tidymapr
         - text: -------
         - text: Output
         - text: Publication figures

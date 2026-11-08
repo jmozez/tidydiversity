@@ -1,16 +1,16 @@
 
-# tidydiversity <a href="https://jmozez.github.io/tidydiversity/"><img src="man/figures/logo.png" align="right" height="139" alt="tidydiversity website" /></a>
+# tidydiversity <a href="https://gitlab.com/jimmy.moses/tidydiversity"><img src="man/figures/logo.png" align="right" height="139" alt="tidydiversity website" /></a>
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/jmozez/tidydiversity/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jmozez/tidydiversity/actions/workflows/R-CMD-check.yaml)
-[![test-coverage](https://github.com/jmozez/tidydiversity/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/jmozez/tidydiversity/actions/workflows/test-coverage.yaml)
-[![lint](https://github.com/jmozez/tidydiversity/actions/workflows/lint.yaml/badge.svg)](https://github.com/jmozez/tidydiversity/actions/workflows/lint.yaml)
-[![pkgdown](https://github.com/jmozez/tidydiversity/actions/workflows/pkgdown.yaml/badge.svg)](https://jmozez.github.io/tidydiversity/)
+[![R-CMD-check](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/R-CMD-check.yaml/badge.svg)](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/R-CMD-check.yaml)
+[![test-coverage](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/test-coverage.yaml/badge.svg)](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/test-coverage.yaml)
+[![lint](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/lint.yaml/badge.svg)](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/lint.yaml)
+[![pkgdown](https://gitlab.com/jimmy.moses/tidydiversity/actions/workflows/pkgdown.yaml/badge.svg)](https://gitlab.com/jimmy.moses/tidydiversity)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License:
-MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jmozez/tidydiversity/blob/main/LICENSE.md)
+MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.com/jimmy.moses/tidydiversity/blob/main/LICENSE.md)
 <!-- badges: end -->
 
 <div class="td-hero">
@@ -32,7 +32,7 @@ results come back as tibbles.
 > forest for science, and built a research station, a school and a
 > health post with his community. The `wanang_butterflies` data come
 > from the forest he protected. [Read his
-> story](https://jmozez.github.io/tidydiversity/articles/filip-damen.html).
+> story](https://gitlab.com/jimmy.moses/tidydiversityarticles/filip-damen.html).
 
 <div class="td-cards">
 
@@ -118,7 +118,7 @@ one consistent, tested interface.
   community table, ready for every `div_` and `beta_` verb.
 - **Maps live in tidymapr.** Study-site maps, basemaps, rasters, bioclim
   layers, spatial statistics and species distribution models are in the
-  companion package [tidymapr](https://jmozez.github.io/tidymapr/),
+  companion package [tidymapr](https://gitlab.com/jimmy.moses/tidymapr),
   which takes the same tidy tables and returns the same tibbles and
   ggplots.
 
@@ -182,13 +182,13 @@ Install the development version from GitHub:
 
 ``` r
 # install.packages("pak")
-pak::pak("jmozez/tidydiversity")
+pak::pak("gitlab::jimmy.moses/tidydiversity")
 ```
 
 ## Maps with tidymapr
 
 tidydiversity does no geospatial work. Its companion package
-[tidymapr](https://jmozez.github.io/tidymapr/) draws study-site and
+[tidymapr](https://gitlab.com/jimmy.moses/tidymapr) draws study-site and
 diversity maps, reads and writes vector and raster files, downloads
 climate, elevation and boundary layers, computes spatial statistics and
 fits species distribution models. It takes the tidy tables tidydiversity
@@ -196,7 +196,7 @@ uses and returns tibbles and ggplots, so the two packages share one
 workflow, the way dplyr and ggplot2 do:
 
 ``` r
-pak::pak("jmozez/tidymapr")
+pak::pak("gitlab::jimmy.moses/tidymapr")
 library(tidydiversity)
 library(tidymapr)
 

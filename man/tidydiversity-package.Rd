@@ -13,9 +13,8 @@ Tidy, pipe-friendly tools for estimating taxonomic, phylogenetic and functional 
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/jmozez/tidydiversity}
-  \item \url{https://jmozez.github.io/tidydiversity/}
-  \item Report bugs at \url{https://github.com/jmozez/tidydiversity/issues}
+  \item \url{https://gitlab.com/jimmy.moses/tidydiversity}
+  \item Report bugs at \url{https://gitlab.com/jimmy.moses/tidydiversity/issues}
 }
 
 }
