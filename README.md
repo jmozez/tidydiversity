@@ -2,6 +2,11 @@
 # tidydiversity <a href="https://tidydiversity.in4metrix.dev/"><img src="man/figures/logo.png" align="right" height="139" alt="tidydiversity website" /></a>
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/jmozez/tidydiversity/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jmozez/tidydiversity/actions/workflows/R-CMD-check.yaml)
+[![Tests and coverage](https://github.com/jmozez/tidydiversity/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/jmozez/tidydiversity/actions/workflows/test-coverage.yaml)
+[![Lint](https://github.com/jmozez/tidydiversity/actions/workflows/lint.yaml/badge.svg)](https://github.com/jmozez/tidydiversity/actions/workflows/lint.yaml)
+[![Website deploy](https://github.com/jmozez/tidydiversity/actions/workflows/vercel.yaml/badge.svg)](https://github.com/jmozez/tidydiversity/actions/workflows/vercel.yaml)
+[![GitHub](https://img.shields.io/badge/source-GitHub-181717?logo=github)](https://github.com/jmozez/tidydiversity)
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
