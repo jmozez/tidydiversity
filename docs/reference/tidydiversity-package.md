@@ -25,7 +25,7 @@ Useful links:
 
 - <https://gitlab.com/jimmy.moses/tidydiversity>
 
-- Report bugs at <https://gitlab.com/jimmy.moses/tidydiversity/-/issues>
+- Report bugs at <https://github.com/jmozez/tidydiversity/issues>
 
 ## Author
 

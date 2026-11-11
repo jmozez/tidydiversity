@@ -16,8 +16,8 @@ Description: Tidy, pipe-friendly tools for estimating taxonomic,
     function takes a data frame and returns a tibble, uses data-masking for
     column arguments, and supports grouped data and the '.by' argument.
 License: MIT + file LICENSE
-URL: https://tidydiversity.in4metrix.dev/, https://gitlab.com/jimmy.moses/tidydiversity
-BugReports: https://gitlab.com/jimmy.moses/tidydiversity/-/issues
+URL: https://tidydiversity.in4metrix.dev/, https://github.com/jmozez/tidydiversity, https://gitlab.com/jimmy.moses/tidydiversity
+BugReports: https://github.com/jmozez/tidydiversity/issues
 Depends: 
     R (>= 4.1.0)
 Imports: 

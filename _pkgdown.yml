@@ -39,7 +39,7 @@ repo:
   url:
     home: https://gitlab.com/jimmy.moses/tidydiversity/
     source: https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/
-    issue: https://gitlab.com/jimmy.moses/tidydiversity/-/issues/
+    issue: https://github.com/jmozez/tidydiversity/issues/
     user: https://gitlab.com/
   branch: main
 

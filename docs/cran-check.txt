@@ -1,4 +1,4 @@
-* using log directory ‘/home/user/chk2/tidydiversity.Rcheck’
+* using log directory ‘/home/user/chk_tidydiversity/tidydiversity.Rcheck’
 * using R version 4.3.3 (2024-02-29)
 * using platform: x86_64-pc-linux-gnu (64-bit)
 * R was compiled by
@@ -6,11 +6,11 @@
     GNU Fortran (Ubuntu 13.2.0-23ubuntu3) 13.2.0
 * running under: Ubuntu 24.04.5 LTS
 * using session charset: UTF-8
-* using options ‘--no-manual --as-cran’
+* using option ‘--as-cran’
 * checking for file ‘tidydiversity/DESCRIPTION’ ... OK
 * this is package ‘tidydiversity’ version ‘0.1.0’
 * package encoding: UTF-8
-* checking CRAN incoming feasibility ... [1s/14s] NOTE
+* checking CRAN incoming feasibility ... [1s/15s] NOTE
 Maintainer: ‘Jimmy Moses <jimmy.moses@pnguot.ac.pg>’
 
 Found the following (possibly) invalid URLs:
@@ -77,11 +77,6 @@ Found the following (possibly) invalid URLs:
     From: man/portal_rodents.Rd
     Status: 403
     Message: Forbidden
-  URL: https://gitlab.com/jimmy.moses/tidydiversity/-/issues
-    From: DESCRIPTION
-          man/tidydiversity-package.Rd
-    Status: 429
-    Message: Too Many Requests
   URL: https://jfly.uni-koeln.de/color/
     From: man/theme_tidydiversity.Rd
     Status: Error
@@ -102,11 +97,10 @@ Found the following (possibly) invalid URLs:
     Status: Error
     Message: libcurl error code 56:
       	CONNECT tunnel failed, response 403
-  URL: https://tidydiversity-033f3f.gitlab.io/cran-check.txt
+  URL: https://tidydiversity.in4metrix.dev/cran-check.txt
     From: README.md
-    Status: Error
-    Message: libcurl error code 56:
-      	CONNECT tunnel failed, response 403
+    Status: 404
+    Message: Not Found
 * checking package namespace information ... OK
 * checking package dependencies ... OK
 * checking if this is a source package ... OK
@@ -161,15 +155,18 @@ Compilation used the following non-portable flag(s):
 * checking compiled code ... OK
 * checking installed files from ‘inst/doc’ ... OK
 * checking files in ‘vignettes’ ... OK
-* checking examples ... [28s/28s] OK
-* checking examples with --run-donttest ... [31s/31s] OK
+* checking examples ... [27s/27s] OK
+* checking examples with --run-donttest ... [32s/33s] OK
 * checking for unstated dependencies in ‘tests’ ... OK
-* checking tests ... [28s/29s] OK
-  Running ‘testthat.R’ [28s/29s]
+* checking tests ... [29s/30s] OK
+  Running ‘testthat.R’ [29s/30s]
 * checking for unstated dependencies in vignettes ... OK
 * checking package vignettes in ‘inst/doc’ ... OK
-* checking re-building of vignette outputs ... [12s/12s] OK
+* checking re-building of vignette outputs ... [13s/13s] OK
+* checking PDF version of manual ... OK
+* checking HTML version of manual ... NOTE
+Skipping checking HTML validation: no command 'tidy' found
 * checking for non-standard things in the check directory ... OK
 * checking for detritus in the temp directory ... OK
 * DONE
-Status: 2 NOTEs
+Status: 3 NOTEs
