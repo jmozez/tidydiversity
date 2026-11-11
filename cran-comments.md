@@ -19,18 +19,21 @@ A Zenodo archive of this version is at <https://doi.org/10.5281/zenodo.24046912>
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 2 notes
 
-* This is a new submission.
+* checking CRAN incoming feasibility ... NOTE
+  New submission.
+
+* checking compilation flags used ... NOTE
+  '-mno-omit-leaf-frame-pointer' comes from the R build of the test
+  machine (Ubuntu's r-base), not from the package's Makevars.
 
 ## Test environments
 
-* Linux (rocker/geospatial, R 4.5, with TeX Live), R CMD check --as-cran on GitLab CI:
-  0 errors, 0 warnings, 2 notes (new submission; compiler flags set by the
-  CI image's R build, not by the package)
-* win-builder (R-devel and R-release)
-* macOS builder (R-release)
+* Ubuntu 24.04, R 4.3.3, R CMD check --as-cran (local)
+* Ubuntu (GitHub Actions, R release), R CMD check
 
 ## Downstream dependencies
 
-None (new package).
+None (new package). The companion package tidymapr, by the same author,
+will suggest tidydiversity and will be submitted after this one.
