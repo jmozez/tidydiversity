@@ -1,21 +1,20 @@
-url: https://tidydiversity-033f3f.gitlab.io/
+url: https://tidydiversity.in4metrix.dev/
 
 template:
   bootstrap: 5
   includes:
-    # Light theme only: white pages and plots, and browsers must not apply
-    # their own automatic dark mode either.
+    # Readers can switch the site between light and dark (light-switch
+    # below); plots keep a white background in both (extra.css).
     # The CSP allows only the site's own scripts; GitHub Pages cannot send
     # security headers, so they are set as meta tags.
     in_header: |
-      <meta name="color-scheme" content="only light">
       <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
       <meta name="referrer" content="strict-origin-when-cross-origin">
   opengraph:
     image:
       src: man/figures/logo.png
       alt: "tidydiversity hex logo"
-  light-switch: false
+  light-switch: true
   bslib:
     primary: "#1A9E93"
     secondary: "#0E2A47"
@@ -58,7 +57,7 @@ navbar:
       text: tidymapr
       icon: fa-map
       aria-label: Maps with the companion package tidymapr
-      href: https://tidymapr-e72c18.gitlab.io/
+      href: https://tidymapr.in4metrix.dev/
     intro:
       text: Get started
       href: articles/tidydiversity.html
@@ -108,7 +107,7 @@ navbar:
         - text: Modelling with tidymodels
           href: articles/tidymodels.html
         - text: "Maps: the tidymapr package"
-          href: https://tidymapr-e72c18.gitlab.io/
+          href: https://tidymapr.in4metrix.dev/
         - text: -------
         - text: Output
         - text: Publication figures

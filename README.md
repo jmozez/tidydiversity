@@ -30,7 +30,7 @@ results come back as tibbles.
 > forest for science, and built a research station, a school and a
 > health post with his community. The `wanang_butterflies` data come
 > from the forest he protected. [Read his
-> story](https://tidydiversity-033f3f.gitlab.io/articles/filip-damen.html).
+> story](https://tidydiversity.in4metrix.dev/articles/filip-damen.html).
 
 <div class="td-cards">
 

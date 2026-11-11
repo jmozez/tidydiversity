@@ -25,3 +25,4 @@
 ^public$
 ^CITATION\.cff$
 ^cran-check$
+^vercel\.json$
