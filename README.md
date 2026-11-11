@@ -9,6 +9,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/LICENSE.md)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24046912.svg)](https://doi.org/10.5281/zenodo.24046912)
 [![CRAN checks](https://img.shields.io/badge/R%20CMD%20check-as--cran-1A9E93)](https://tidydiversity-033f3f.gitlab.io/cran-check.txt)
+[![Website](https://img.shields.io/badge/website-tidydiversity.in4metrix.dev-1A9E93)](https://tidydiversity.in4metrix.dev)
+[![Maps with tidymapr](https://img.shields.io/badge/maps%20with-tidymapr-11376B)](https://tidymapr.in4metrix.dev)
 <!-- badges: end -->
 
 <div class="td-hero">
