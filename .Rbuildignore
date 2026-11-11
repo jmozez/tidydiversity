@@ -26,3 +26,4 @@
 ^CITATION\.cff$
 ^cran-check$
 ^vercel\.json$
+^\.vercelignore$
