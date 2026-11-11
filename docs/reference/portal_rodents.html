@@ -66,6 +66,7 @@ identified to species are kept. Each plot and year is one site."><meta property=
 <li class="nav-item"><a class="nav-link" href="../articles/filip-damen.html" aria-label="In memory of Filip Damen"><span class="fa fa-feather"></span> In memory</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul></div>
 
@@ -75,7 +76,7 @@ identified to species are kept. Each plot and year is one site."><meta property=
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Rodent captures at the Portal Project, Arizona</h1>
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/R/data.R" class="external-link"><code>R/data.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/R/data.R" class="external-link"><code>R/data.R</code></a></small>
       <div class="d-none name"><code>portal_rodents.Rd</code></div>
     </div>
 
@@ -137,7 +138,7 @@ Project: a long-term study of a Chihuahuan desert ecosystem. bioRxiv.
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">portal_rodents</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 491 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 491 x 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    site      plot  year treatment species scientific_name           abundance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> P01-2016     1  <span style="text-decoration: underline;">2</span>016 removal   PM      Peromyscus maniculatus            9</span>
@@ -150,9 +151,9 @@ Project: a long-term study of a Chihuahuan desert ecosystem. bioRxiv.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> P01-2017     1  <span style="text-decoration: underline;">2</span>017 removal   PL      Peromyscus leucopus               8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> P01-2017     1  <span style="text-decoration: underline;">2</span>017 removal   PE      Peromyscus eremicus               6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> P01-2017     1  <span style="text-decoration: underline;">2</span>017 removal   RM      Reithrodontomys megalotis         5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 481 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 481 more rows</span></span>
 <span class="r-in"><span><span class="fu"><a href="div_hill.html">div_hill</a></span><span class="op">(</span><span class="va">portal_rodents</span>, q <span class="op">=</span> <span class="fl">0</span>, .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">treatment</span>, <span class="va">year</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 96 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 96 x 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    treatment       year site         q     n diversity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> removal         <span style="text-decoration: underline;">2</span>016 P01-2016     0    29         5</span>
@@ -165,7 +166,7 @@ Project: a long-term study of a Chihuahuan desert ecosystem. bioRxiv.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> krat_exclosure  <span style="text-decoration: underline;">2</span>019 P02-2019     0    70         4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> krat_exclosure  <span style="text-decoration: underline;">2</span>016 P03-2016     0    79         8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> krat_exclosure  <span style="text-decoration: underline;">2</span>017 P03-2017     0    66         8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 86 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 86 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

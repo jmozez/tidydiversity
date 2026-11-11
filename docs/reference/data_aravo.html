@@ -66,6 +66,7 @@ tidydiversity."><meta property="og:image" content="https://tidydiversity.in4metr
 <li class="nav-item"><a class="nav-link" href="../articles/filip-damen.html" aria-label="In memory of Filip Damen"><span class="fa fa-feather"></span> In memory</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul></div>
 
@@ -75,7 +76,7 @@ tidydiversity."><meta property="og:image" content="https://tidydiversity.in4metr
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Alpine plant communities with traits (aravo) in long format</h1>
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/R/traits.R" class="external-link"><code>R/traits.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/R/traits.R" class="external-link"><code>R/traits.R</code></a></small>
       <div class="d-none name"><code>data_aravo.Rd</code></div>
     </div>
 
@@ -111,7 +112,7 @@ Research</em>, 37, 444-453.
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">aravo</span> <span class="op">&lt;-</span> <span class="fu">data_aravo</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">aravo</span><span class="op">$</span><span class="va">community</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,288 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,288 x 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    site  species   cover Aspect Slope Form  PhysD ZoogD  Snow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AR26  Agro.rupe     3      5     0 3        20 no      140</span>
@@ -124,9 +125,9 @@ Research</em>, 37, 444-453.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AR61  Agro.rupe     3      8    15 4        10 no      150</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AR49  Agro.rupe     2      5     2 1        65 no      150</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AR50  Agro.rupe     1      5     0 1        40 no      160</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,278 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 1,278 more rows</span></span>
 <span class="r-in"><span><span class="va">aravo</span><span class="op">$</span><span class="va">traits</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 82 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 82 x 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    species   Height Spread Angle  Area Thick   SLA N_mass  Seed</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Agro.rupe      6     10    80   60   0.12   8.1   219.  0.08</span>
@@ -139,7 +140,7 @@ Research</em>, 37, 444-453.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Care.parv     25     10    80  520   0.2   13.7   237.  0.61</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Care.rupe      9      5    70   75   0.2    8.8   181.  0.64</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Care.semp     20     20    50  600   0.2   11.5   183.  0.83</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 72 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 72 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

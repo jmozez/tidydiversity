@@ -70,6 +70,7 @@ effective number of completely distinct assemblages (1 to N)."><meta property="o
 <li class="nav-item"><a class="nav-link" href="../articles/filip-damen.html" aria-label="In memory of Filip Damen"><span class="fa fa-feather"></span> In memory</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul></div>
 
@@ -79,7 +80,7 @@ effective number of completely distinct assemblages (1 to N)."><meta property="o
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Coverage-standardised beta diversity with Hill numbers</h1>
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/R/beta-hill.R" class="external-link"><code>R/beta-hill.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/R/beta-hill.R" class="external-link"><code>R/beta-hill.R</code></a></small>
       <div class="d-none name"><code>beta_hill.Rd</code></div>
     </div>
 
@@ -275,7 +276,7 @@ Monographs</em>, 93, e1588. <a href="https://doi.org/10.1002/ecm.1588" class="ex
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">beta_hill</span><span class="op">(</span><span class="va">png_ants</span>, .by <span class="op">=</span> <span class="va">season</span>, coverage <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 13</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 x 13</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   season     q coverage m_gamma m_alpha gamma alpha  beta n_sites dis_sorensen</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> dry        0      0.9    150.    244.  44.4 14.5   3.06       5        0.516</span>
@@ -284,7 +285,7 @@ Monographs</em>, 93, e1588. <a href="https://doi.org/10.1002/ecm.1588" class="ex
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> wet        0      0.9    260.    481.  64.1 23.5   2.73       5        0.431</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> wet        1      0.9    260.    481.  35.4 12.3   2.86       5        0.654</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> wet        2      0.9    260.    481.  21.4  7.08  3.02       5        0.836</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: dis_jaccard &lt;dbl&gt;, dis_turnover_sorensen &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 3 more variables: dis_jaccard &lt;dbl&gt;, dis_turnover_sorensen &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dis_turnover_jaccard &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>

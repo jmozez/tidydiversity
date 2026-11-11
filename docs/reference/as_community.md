@@ -92,11 +92,11 @@ ants
 #>  8 dry    MW0200 odon_001         2
 #>  9 dry    MW0200 para_005         4
 #> 10 dry    MW0200 phei_008         3
-#> # ℹ 129 more rows
+#> # i 129 more rows
 
 wide <- community_wide(ants, .by = season)
 wide
-#> # A tibble: 10 × 81
+#> # A tibble: 10 x 81
 #>    season site   ancy_001 ancy_003 anon_003 anon_008 anon_009 anon_012 anon_013
 #>    <chr>  <chr>     <dbl>    <dbl>    <dbl>    <dbl>    <dbl>    <dbl>    <dbl>
 #>  1 dry    MW0200        0        0        0        0        0        0        0
@@ -109,13 +109,13 @@ wide
 #>  8 wet    MW1200        0        1        0        0        1        3        1
 #>  9 wet    MW1700        0        0        1        0        0        0        1
 #> 10 wet    MW2200        8        0        0        0        0        0        0
-#> # ℹ 72 more variables: anon_014 <dbl>, anop_001 <dbl>, apha_001 <dbl>,
+#> # i 72 more variables: anon_014 <dbl>, anop_001 <dbl>, apha_001 <dbl>,
 #> #   camp_001 <dbl>, camp_034 <dbl>, camp_035 <dbl>, care_001 <dbl>,
 #> #   care_002 <dbl>, care_003 <dbl>, care_007 <dbl>, crem_001 <dbl>,
 #> #   crem_003 <dbl>, crem_010 <dbl>, crem_014 <dbl>, lepm_001 <dbl>,
 #> #   lepm_002 <dbl>, mera_001 <dbl>, mera_002 <dbl>, mono_001 <dbl>,
 #> #   mono_002 <dbl>, mono_003 <dbl>, mono_004 <dbl>, odon_001 <dbl>,
-#> #   oeco_001 <dbl>, para_005 <dbl>, para_007 <dbl>, para_010 <dbl>, …
+#> #   oeco_001 <dbl>, para_005 <dbl>, para_007 <dbl>, para_010 <dbl>, ...
 
 community_long(wide, -c(season, site))
 #> # A community: 5 sites, 79 species, 369 individuals
@@ -131,5 +131,5 @@ community_long(wide, -c(season, site))
 #>  8 dry    MW0200 odon_001         2
 #>  9 dry    MW0200 para_005         4
 #> 10 dry    MW0200 phei_008         3
-#> # ℹ 129 more rows
+#> # i 129 more rows
 ```

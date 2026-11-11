@@ -64,13 +64,13 @@ Permutation tests of the whole model and of each term:
 
 ``` r
 ord_test(rda)
-#> # A tibble: 2 × 5
+#> # A tibble: 2 x 5
 #>   term        df variance statistic p.value
 #>   <chr>    <dbl>    <dbl>     <dbl>   <dbl>
 #> 1 Model        3   0.0521      3.29   0.001
 #> 2 Residual    32   0.169      NA     NA
 ord_test(rda, by = "terms")
-#> # A tibble: 3 × 5
+#> # A tibble: 3 x 5
 #>   term        df variance statistic p.value
 #>   <chr>    <dbl>    <dbl>     <dbl>   <dbl>
 #> 1 year         2   0.0336      3.18   0.001
@@ -100,7 +100,7 @@ supplementary variables in CANOCO.
 ``` r
 nmds <- ord_fit(butterflies, method = "nmds", formula = ~ month + year)
 tidy(nmds, "envfit")
-#> # A tibble: 2 × 4
+#> # A tibble: 2 x 4
 #>   term  type      r2 p.value
 #>   <chr> <chr>  <dbl>   <dbl>
 #> 1 month vector 0.198   0.034
@@ -122,7 +122,7 @@ gradient, so a unimodal method suits them. CCA constrained by elevation:
 ``` r
 cca <- ord_fit(png_frogs, method = "cca", formula = ~elevation)
 ord_test(cca)
-#> # A tibble: 2 × 5
+#> # A tibble: 2 x 5
 #>   term        df chi_square statistic p.value
 #>   <chr>    <dbl>      <dbl>     <dbl>   <dbl>
 #> 1 Model        1      0.959      1.44   0.001
@@ -164,7 +164,7 @@ right.](ordination_files/figure-html/custom-1.png)
 
 ``` r
 tidy(rda, "sites")
-#> # A tibble: 36 × 7
+#> # A tibble: 36 x 7
 #>    site    axis1   axis2    axis3   day month year  
 #>    <chr>   <dbl>   <dbl>    <dbl> <int> <int> <fct> 
 #>  1 day01 -0.554  -0.0192 -0.548       1     1 Year 1
@@ -177,16 +177,16 @@ tidy(rda, "sites")
 #>  8 day08 -0.139   0.396  -0.0547      8     3 Year 1
 #>  9 day09 -0.150   0.361  -0.0338      9     3 Year 1
 #> 10 day10  0.0778  0.443  -0.191      10     4 Year 1
-#> # ℹ 26 more rows
+#> # i 26 more rows
 tidy(rda, "axes")
-#> # A tibble: 3 × 4
+#> # A tibble: 3 x 4
 #>   axis  name  eigenvalue explained
 #>   <chr> <chr>      <dbl>     <dbl>
 #> 1 axis1 RDA1     0.0290     0.131 
 #> 2 axis2 RDA2     0.0141     0.0637
 #> 3 axis3 RDA3     0.00903    0.0409
 glance(rda)
-#> # A tibble: 1 × 8
+#> # A tibble: 1 x 8
 #>   method n_sites n_species transform distance scaling stress constrained
 #>   <chr>    <int>     <int> <chr>     <lgl>    <chr>    <dbl>       <dbl>
 #> 1 rda         36       189 hellinger NA       species     NA       0.236

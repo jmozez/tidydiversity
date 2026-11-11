@@ -87,6 +87,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul>
 </div>
@@ -103,7 +104,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Case study: trees on Barro Colorado Island</h1>
             
       
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/vignettes/articles/case-plants.Rmd" class="external-link"><code>vignettes/articles/case-plants.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/vignettes/articles/case-plants.Rmd" class="external-link"><code>vignettes/articles/case-plants.Rmd</code></a></small>
       <div class="d-none name"><code>case-plants.Rmd</code></div>
     </div>
 
@@ -151,7 +152,7 @@ tidydiversity.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ha01  Brosimum.alicastrum             5</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ha01  Casearia.arborea                1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ha01  Casearia.sylvestris             2</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4,529 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># i 4,529 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="completeness-and-curves">Completeness and curves<a class="anchor" aria-label="anchor" href="#completeness-and-curves"></a>
@@ -196,7 +197,7 @@ Simpson diversity are much closer to their asymptotes.</p>
 <span>  weights <span class="op">=</span> <span class="va">weight</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/generics/man/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">fit</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 x 7</span></span></span>
 <span><span class="co">#&gt;   term            estimate std.error statistic  p.value conf.low conf.high</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> (Intercept)        41.2       3.37    12.2   9.72<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span>    34.4       48.0</span></span>

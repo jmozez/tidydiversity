@@ -70,6 +70,7 @@ vignette("modelling")).'><meta property="og:image" content="https://tidydiversit
 <li class="nav-item"><a class="nav-link" href="../articles/filip-damen.html" aria-label="In memory of Filip Damen"><span class="fa fa-feather"></span> In memory</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul></div>
 
@@ -79,7 +80,7 @@ vignette("modelling")).'><meta property="og:image" content="https://tidydiversit
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Bootstrap replicates of diversity estimates</h1>
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/R/boot.R" class="external-link"><code>R/boot.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/R/boot.R" class="external-link"><code>R/boot.R</code></a></small>
       <div class="d-none name"><code>div_boot.Rd</code></div>
     </div>
 
@@ -171,7 +172,7 @@ to (fixed across replicates).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">draws</span> <span class="op">&lt;-</span> <span class="fu">div_boot</span><span class="op">(</span><span class="va">png_ants</span>, q <span class="op">=</span> <span class="fl">0</span>, .by <span class="op">=</span> <span class="va">season</span>, nboot <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">draws</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 200 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 200 x 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    season site       q .draw diversity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> dry    MW0200     0     1      16.6</span>
@@ -184,11 +185,11 @@ to (fixed across replicates).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> dry    MW0200     0     8      20.4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> dry    MW0200     0     9      18.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> dry    MW0200     0    10      16.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 190 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 190 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The bootstrap standard error of each site</span></span></span>
 <span class="r-in"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html" class="external-link">summarise</a></span><span class="op">(</span><span class="va">draws</span>, se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">diversity</span><span class="op">)</span>, .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">season</span>, <span class="va">site</span>, <span class="va">q</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 x 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    season site       q    se</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> dry    MW0200     0  6.36</span>

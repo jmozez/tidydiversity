@@ -64,6 +64,7 @@ hardhat::importance_weights() for use with workflows::add_case_weights()."><meta
 <li class="nav-item"><a class="nav-link" href="../articles/filip-damen.html" aria-label="In memory of Filip Damen"><span class="fa fa-feather"></span> In memory</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul></div>
 
@@ -73,7 +74,7 @@ hardhat::importance_weights() for use with workflows::add_case_weights()."><meta
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Precision weights from estimated diversity</h1>
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/R/tidymodels.R" class="external-link"><code>R/tidymodels.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/R/tidymodels.R" class="external-link"><code>R/tidymodels.R</code></a></small>
       <div class="d-none name"><code>model_case_weights.Rd</code></div>
     </div>
 
@@ -113,7 +114,7 @@ SE near zero from dominating. <code>Inf</code> for no cap.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="div_estimate.html">div_estimate</a></span><span class="op">(</span><span class="va">png_ants</span>, q <span class="op">=</span> <span class="fl">1</span>, .by <span class="op">=</span> <span class="va">season</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est</span><span class="op">$</span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu">model_case_weights</span><span class="op">(</span><span class="va">est</span><span class="op">$</span><span class="va">se</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 x 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    season site       q observed estimate     se lower upper          w</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;imp_wts&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> dry    MW0200     1    12.3     15.2   2.28  12.3  19.6  1.46863740</span>

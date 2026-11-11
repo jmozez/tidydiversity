@@ -146,7 +146,7 @@ ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect))
 set.seed(1)
 beta_permanova(ants, site = unit, formula = ~ elevation + season,
                permutations = 199)
-#> # A tibble: 4 × 6
+#> # A tibble: 4 x 6
 #>   term         df sum_sq     r2 statistic p.value
 #>   <chr>     <dbl>  <dbl>  <dbl>     <dbl>   <dbl>
 #> 1 elevation     1  1.33  0.169       3.75   0.005
@@ -155,7 +155,7 @@ beta_permanova(ants, site = unit, formula = ~ elevation + season,
 #> 4 Total        19  7.87  1          NA     NA    
 beta_dispersion(ants, site = unit, group = season, permutations = 199)
 #> Multivariate dispersion by season 
-#> # A tibble: 20 × 3
+#> # A tibble: 20 x 3
 #>    unit         season distance
 #>    <chr>        <fct>     <dbl>
 #>  1 MW0200 dry 1 dry       0.564
@@ -180,7 +180,7 @@ beta_dispersion(ants, site = unit, group = season, permutations = 199)
 #> 20 MW2200 wet 2 wet       0.671
 #> 
 #> Permutation test:
-#> # A tibble: 2 × 5
+#> # A tibble: 2 x 5
 #>   term         df  sum_sq statistic p.value
 #>   <chr>     <int>   <dbl>     <dbl>   <dbl>
 #> 1 Groups        1 0.00182     0.466   0.485

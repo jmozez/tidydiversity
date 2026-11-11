@@ -87,6 +87,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul>
 </div>
@@ -103,7 +104,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Case study: forest birds and North American bird communities</h1>
             
       
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/vignettes/articles/case-birds.Rmd" class="external-link"><code>vignettes/articles/case-birds.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/vignettes/articles/case-birds.Rmd" class="external-link"><code>vignettes/articles/case-birds.Rmd</code></a></small>
       <div class="d-none name"><code>case-birds.Rmd</code></div>
     </div>
 
@@ -146,7 +147,7 @@ redistributed with tidydiversity.</p>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/as_community.html">as_community</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/div_coverage.html">div_coverage</a></span><span class="op">(</span><span class="va">birds</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 x 6</span></span></span>
 <span><span class="co">#&gt;   site      n s_obs    f1    f2 coverage</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> North   202    27     6     4    0.970</span></span>
@@ -257,7 +258,7 @@ richness.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">1</span>980 AK    1370            1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">1</span>980 AK    1390            1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>980 AK    140             1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16,572 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># i 16,572 more rows</span></span></span></code></pre></div>
 <div class="section level3">
 <h3 id="multiple-site-partitions">Multiple-site partitions<a class="anchor" aria-label="anchor" href="#multiple-site-partitions"></a>
 </h3>
@@ -266,7 +267,7 @@ richness.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/beta_pair.html">beta_multi</a></span><span class="op">(</span><span class="va">bbs</span>, .by <span class="op">=</span> <span class="va">year</span><span class="op">)</span></span>
 <span><span class="va">multi</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 x 5</span></span></span>
 <span><span class="co">#&gt;    year n_sites turnover nestedness total</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">1</span>980      49    0.886     0.032<span style="text-decoration: underline;">5</span> 0.918</span></span>

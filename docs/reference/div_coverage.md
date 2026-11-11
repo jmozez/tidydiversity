@@ -75,7 +75,7 @@ Ecology, 93, 2533-2547.
 
 ``` r
 div_coverage(png_ants, .by = season)
-#> # A tibble: 10 × 7
+#> # A tibble: 10 x 7
 #>    season site       n s_obs    f1    f2 coverage
 #>    <chr>  <chr>  <dbl> <int> <int> <int>    <dbl>
 #>  1 dry    MW0200    47    16     5     5    0.898

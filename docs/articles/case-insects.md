@@ -54,7 +54,7 @@ moths
 #>  8 night02 All             2
 #>  9 night02 Hym             3
 #> 10 night02 Psy             8
-#> # ℹ 305 more rows
+#> # i 305 more rows
 ```
 
 ## How complete is each night?
@@ -113,7 +113,7 @@ std <- div_standardise(filter(moths, site %in% keep),
   nboot = 100
 )
 distinct(std, coverage)
-#> # A tibble: 34 × 1
+#> # A tibble: 34 x 1
 #>    coverage
 #>       <dbl>
 #>  1    0.945
@@ -126,9 +126,9 @@ distinct(std, coverage)
 #>  8    0.945
 #>  9    0.945
 #> 10    0.945
-#> # ℹ 24 more rows
+#> # i 24 more rows
 std
-#> # A tibble: 102 × 9
+#> # A tibble: 102 x 9
 #>    site        q     m method        coverage diversity     se lower upper
 #>    <chr>   <dbl> <dbl> <chr>            <dbl>     <dbl>  <dbl> <dbl> <dbl>
 #>  1 night01     0  41.5 extrapolation    0.945      7.96 1.57    4.87 11.0 
@@ -141,7 +141,7 @@ std
 #>  8 night04     1  36.5 rarefaction      0.945      1.43 0.105   1.23  1.64
 #>  9 night04     2  36.5 rarefaction      0.945      1.18 0.0469  1.09  1.28
 #> 10 night05     0  40.3 rarefaction      0.945      4.49 0.681   3.16  5.83
-#> # ℹ 92 more rows
+#> # i 92 more rows
 ```
 
 ## Diversity and weather
@@ -162,7 +162,7 @@ fit <- lm(estimate ~ evening_temp + wind + humidity,
   weights = weight
 )
 broom::tidy(fit, conf.int = TRUE)
-#> # A tibble: 4 × 7
+#> # A tibble: 4 x 7
 #>   term         estimate std.error statistic p.value conf.low conf.high
 #>   <chr>           <dbl>     <dbl>     <dbl>   <dbl>    <dbl>     <dbl>
 #> 1 (Intercept)    5.87      3.34       1.76   0.0894  -0.959    12.7   

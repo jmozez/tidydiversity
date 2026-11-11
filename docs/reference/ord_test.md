@@ -38,7 +38,7 @@ A tibble with `term`, `df`, `variance` (or `chi_square` for CCA),
 ``` r
 ord <- ord_fit(png_frogs, method = "cca", formula = ~elevation)
 ord_test(ord, permutations = 199)
-#> # A tibble: 2 × 5
+#> # A tibble: 2 x 5
 #>   term        df chi_square statistic p.value
 #>   <chr>    <dbl>      <dbl>     <dbl>   <dbl>
 #> 1 Model        1      0.959      1.44   0.005

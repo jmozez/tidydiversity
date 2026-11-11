@@ -98,7 +98,7 @@ ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect))
 set.seed(1)
 ord_select(ants, site = unit, formula = ~ elevation + season,
            permutations = 199)
-#> # A tibble: 1 × 5
+#> # A tibble: 1 x 5
 #>    step term      adj_r2 statistic p.value
 #>   <int> <chr>      <dbl>     <dbl>   <dbl>
 #> 1     1 elevation  0.101      3.13   0.005

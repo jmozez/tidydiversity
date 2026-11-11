@@ -85,7 +85,7 @@ set.seed(1)
 trait_fourth_corner(aravo$community, aravo$traits, abundance = cover,
                  cols = c(Height, SLA), env_vars = c(Snow, PhysD),
                  permutations = 199)
-#> # A tibble: 4 × 5
+#> # A tibble: 4 x 5
 #>   trait  variable statistic p.value  p.adj
 #>   <chr>  <chr>        <dbl>   <dbl>  <dbl>
 #> 1 Height Snow        -0.272   0.01  0.0133

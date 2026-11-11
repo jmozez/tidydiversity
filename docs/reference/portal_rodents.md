@@ -62,7 +62,7 @@ long-term study of a Chihuahuan desert ecosystem. bioRxiv.
 
 ``` r
 portal_rodents
-#> # A tibble: 491 × 7
+#> # A tibble: 491 x 7
 #>    site      plot  year treatment species scientific_name           abundance
 #>    <chr>    <int> <int> <fct>     <chr>   <chr>                         <int>
 #>  1 P01-2016     1  2016 removal   PM      Peromyscus maniculatus            9
@@ -75,9 +75,9 @@ portal_rodents
 #>  8 P01-2017     1  2017 removal   PL      Peromyscus leucopus               8
 #>  9 P01-2017     1  2017 removal   PE      Peromyscus eremicus               6
 #> 10 P01-2017     1  2017 removal   RM      Reithrodontomys megalotis         5
-#> # ℹ 481 more rows
+#> # i 481 more rows
 div_hill(portal_rodents, q = 0, .by = c(treatment, year))
-#> # A tibble: 96 × 6
+#> # A tibble: 96 x 6
 #>    treatment       year site         q     n diversity
 #>    <fct>          <int> <chr>    <dbl> <int>     <dbl>
 #>  1 removal         2016 P01-2016     0    29         5
@@ -90,5 +90,5 @@ div_hill(portal_rodents, q = 0, .by = c(treatment, year))
 #>  8 krat_exclosure  2019 P02-2019     0    70         4
 #>  9 krat_exclosure  2016 P03-2016     0    79         8
 #> 10 krat_exclosure  2017 P03-2017     0    66         8
-#> # ℹ 86 more rows
+#> # i 86 more rows
 ```

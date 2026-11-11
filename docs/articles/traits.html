@@ -87,6 +87,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul>
 </div>
@@ -103,7 +104,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Trait-based ecology</h1>
             
       
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/vignettes/articles/traits.Rmd" class="external-link"><code>vignettes/articles/traits.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/vignettes/articles/traits.Rmd" class="external-link"><code>vignettes/articles/traits.Rmd</code></a></small>
       <div class="d-none name"><code>traits.Rmd</code></div>
     </div>
 
@@ -146,7 +147,7 @@ gradient in alpine vegetation.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aravo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_aravo.html">data_aravo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">aravo</span><span class="op">$</span><span class="va">community</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,288 × 9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,288 x 9</span></span></span>
 <span><span class="co">#&gt;    site  species   cover Aspect Slope Form  PhysD ZoogD  Snow</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AR26  Agro.rupe     3      5     0 3        20 no      140</span></span>
@@ -159,9 +160,9 @@ gradient in alpine vegetation.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AR61  Agro.rupe     3      8    15 4        10 no      150</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AR49  Agro.rupe     2      5     2 1        65 no      150</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AR50  Agro.rupe     1      5     0 1        40 no      160</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,278 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># i 1,278 more rows</span></span></span>
 <span><span class="va">aravo</span><span class="op">$</span><span class="va">traits</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 82 × 9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 82 x 9</span></span></span>
 <span><span class="co">#&gt;    species   Height Spread Angle  Area Thick   SLA N_mass  Seed</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Agro.rupe      6     10    80   60   0.12   8.1   219.  0.08</span></span>
@@ -174,7 +175,7 @@ gradient in alpine vegetation.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Care.parv     25     10    80  520   0.2   13.7   237.  0.61</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Care.rupe      9      5    70   75   0.2    8.8   181.  0.64</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Care.semp     20     20    50  600   0.2   11.5   183.  0.83</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 72 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># i 72 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="trait-dissimilarity">Trait dissimilarity<a class="anchor" aria-label="anchor" href="#trait-dissimilarity"></a>
@@ -192,7 +193,7 @@ gradient in alpine vegetation.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cwm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trait_cwm.html">trait_cwm</a></span><span class="op">(</span><span class="va">aravo</span><span class="op">$</span><span class="va">community</span>, <span class="va">aravo</span><span class="op">$</span><span class="va">traits</span>, abundance <span class="op">=</span> <span class="va">cover</span><span class="op">)</span></span>
 <span><span class="va">cwm</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 600 × 9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 600 x 9</span></span></span>
 <span><span class="co">#&gt;    site  trait    cwm Aspect Slope Form  PhysD ZoogD  Snow</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AR26  Height  8.80      5     0 3        20 no      140</span></span>
@@ -205,7 +206,7 @@ gradient in alpine vegetation.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AR61  Height  6.38      8    15 4        10 no      150</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AR49  Height  6.90      5     2 1        65 no      150</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AR50  Height  6.78      5     0 1        40 no      160</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 590 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># i 590 more rows</span></span></span>
 <span></span>
 <span><span class="va">cwm</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">trait</span> <span class="op">==</span> <span class="st">"SLA"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -224,7 +225,7 @@ that shuffles traits among species, and reports the larger p-value:</p>
 <span>  abundance <span class="op">=</span> <span class="va">cover</span>,</span>
 <span>  cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Height</span>, <span class="va">SLA</span>, <span class="va">N_mass</span>, <span class="va">Seed</span><span class="op">)</span>, env_vars <span class="op">=</span> <span class="va">Snow</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 x 6</span></span></span>
 <span><span class="co">#&gt;   trait  variable      r p_row p_col p_max</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Height Snow     -<span style="color: #BB0000;">0.737</span> 0.001 0.021 0.021</span></span>
@@ -247,7 +248,7 @@ table. They complement the Hill-number functional diversity of
 <span><span class="va">fd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">index</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 x 3</span></span></span>
 <span><span class="co">#&gt;   index    mean      sd</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> FDis  0.120   0.019<span style="text-decoration: underline;">3</span> </span></span>
@@ -263,7 +264,7 @@ table. They complement the Hill-number functional diversity of
 correction (de Bello et al. 2010):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/trait_rao.html">trait_rao</a></span><span class="op">(</span><span class="va">aravo</span><span class="op">$</span><span class="va">community</span>, abundance <span class="op">=</span> <span class="va">cover</span>, dist <span class="op">=</span> <span class="va">d_gawdis</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 x 4</span></span></span>
 <span><span class="co">#&gt;   component    rao equivalent beta_prop</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> alpha      0.313       1.46   <span style="color: #BB0000;">NA</span>     </span></span>
@@ -308,7 +309,7 @@ directly, also with the max test (ter Braak et al. 2012):</p>
 <span>  abundance <span class="op">=</span> <span class="va">cover</span>,</span>
 <span>  cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Height</span>, <span class="va">SLA</span>, <span class="va">N_mass</span><span class="op">)</span>, env_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Snow</span>, <span class="va">PhysD</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 x 5</span></span></span>
 <span><span class="co">#&gt;   trait  variable statistic p.value  p.adj</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Height Snow        -<span style="color: #BB0000;">0.272</span>   0.007 0.008<span style="text-decoration: underline;">4</span></span></span>
@@ -347,17 +348,6 @@ differing between quadrats (Leps et al. 2011)?</p>
 <span>  cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">height</span>, <span class="va">sla</span><span class="op">)</span>, formula <span class="op">=</span> <span class="op">~</span><span class="va">position</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">itv</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8 × 4</span></span></span>
-<span><span class="co">#&gt;   trait  component         ss   prop</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> height turnover       23.0  0.130 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> height intraspecific  71.8  0.408 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> height covariation    81.2  0.461 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> height total         176.   1     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> sla    turnover        3.22 0.029<span style="text-decoration: underline;">7</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> sla    intraspecific  74.1  0.685 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> sla    covariation    30.9  0.285 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> sla    total         108.   1</span></span>
 <span></span>
 <span><span class="va">itv</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">component</span> <span class="op">!=</span> <span class="st">"total"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -366,7 +356,6 @@ differing between quadrats (Leps et al. 2011)?</p>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="st">"Share of variation explained by position"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_tidydiversity.html">scale_fill_tidydiversity</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_tidydiversity.html">theme_tidydiversity</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="traits_files/figure-html/itv-1.png" class="r-plt" alt="Stacked bars: for SLA, most variation explained by slope position is intraspecific; for height, intraspecific and covariation parts dominate." width="80%"></p>
 <p>Most of the response of SLA to the slope is intraspecific: the same
 species change their leaves along the gradient. Studies that use a
 single mean trait value per species would miss most of it.</p>
@@ -386,20 +375,7 @@ With the same grassland data:</p>
 <span><span class="va">tpd</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">grass</span>, quadrat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">quadrat</span><span class="op">)</span>, <span class="va">position</span><span class="op">)</span>,</span>
 <span>            by <span class="op">=</span> <span class="st">"quadrat"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">position</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 6</span></span></span>
-<span><span class="co">#&gt;    quadrat  FRic  FEve  FDiv redundancy position</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 1        3.77 0.546 0.464       1.97        1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 5        3.54 0.544 0.586       1.97        5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 10       5.83 0.580 0.513       2.31       10</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 14       4.97 0.613 0.535       2.36       14</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 18       5.68 0.497 0.462       3.29       18</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 23       4.55 0.643 0.642       1.36       23</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 27       4.31 0.578 0.537       1.76       27</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 31       4.04 0.343 0.448       3.62       31</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 36       4.21 0.470 0.464       2.95       36</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 40       4.91 0.557 0.535       2.86       40</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">position</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="../reference/trait_tpd.html">trait_tpd_dissim()</a></code> gives the functional dissimilarity
 between quadrats and splits it into the part due to different use of
 shared trait space and the part due to non-shared trait space:</p>
@@ -408,16 +384,7 @@ shared trait space and the part due to non-shared trait space:</p>
 <span>  site <span class="op">=</span> <span class="va">quadrat</span>, abundance <span class="op">=</span> <span class="va">cover</span>, cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">log_height</span>, <span class="va">log_sla</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">dissimilarity</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
-<span><span class="co">#&gt;   site_1 site_2 dissimilarity p_shared p_nonshared</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 31     10             0.670    0.991     0.008<span style="text-decoration: underline;">86</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 31     23             0.622    0.840     0.160  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 14     31             0.602    0.996     0.003<span style="text-decoration: underline;">62</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 10     27             0.568    0.764     0.236  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 31     1              0.552    0.944     0.055<span style="text-decoration: underline;">6</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 31     5              0.545    0.963     0.037<span style="text-decoration: underline;">5</span></span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>The species densities are estimated with <code><a href="https://rdrr.io/pkg/TPD/man/TPDs.html" class="external-link">TPD::TPDs()</a></code>
 (kernel density estimation with a plug-in bandwidth, package ks).
 Everything after that (community densities, richness, evenness,
@@ -438,13 +405,7 @@ LEDA database (Kleyer et al. 2008):</p>
 <span><span class="va">lhs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">base8</span>, <span class="st">"lhs.txt"</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">lhs</span><span class="op">$</span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">" "</span>, <span class="st">"_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">lhs</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/phylo_signal.html">phylo_signal</a></span><span class="op">(</span><span class="va">lhs</span>, <span class="va">tree</span>, cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">log_sla</span>, <span class="va">log_height</span>, <span class="va">log_sm</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
-<span><span class="co">#&gt;   trait      method n_species statistic p.value</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> log_sla    K           <span style="text-decoration: underline;">1</span>641    0.057<span style="text-decoration: underline;">4</span>   0.001</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> log_height K           <span style="text-decoration: underline;">2</span>369    0.075<span style="text-decoration: underline;">2</span>   0.001</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> log_sm     K           <span style="text-decoration: underline;">1</span>959    0.166    0.001</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/phylo_signal.html">phylo_signal</a></span><span class="op">(</span><span class="va">lhs</span>, <span class="va">tree</span>, cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">log_sla</span>, <span class="va">log_height</span>, <span class="va">log_sm</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Blomberg’s K is far below 1 for all three traits: they carry much
 less phylogenetic signal than expected under Brownian motion, although
 seed mass and height are more conserved than SLA. All three are still

@@ -37,8 +37,8 @@ figures:
 
 repo:
   url:
-    home: https://gitlab.com/jimmy.moses/tidydiversity/
-    source: https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/
+    home: https://github.com/jmozez/tidydiversity/
+    source: https://github.com/jmozez/tidydiversity/blob/main/
     issue: https://github.com/jmozez/tidydiversity/issues/
     user: https://gitlab.com/
   branch: main
@@ -47,8 +47,12 @@ navbar:
   bg: dark
   structure:
     left: [intro, tutorials, guides, gallery, reference, news]
-    right: [tidymapr, memorial, search, gitlab]
+    right: [tidymapr, memorial, search, github, gitlab]
   components:
+    github:
+      icon: fa-github
+      aria-label: Source code on GitHub
+      href: https://github.com/jmozez/tidydiversity
     gitlab:
       icon: fa-gitlab
       aria-label: Source code on GitLab

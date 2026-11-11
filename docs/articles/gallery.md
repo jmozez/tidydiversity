@@ -33,7 +33,7 @@ size](gallery_files/figure-html/rarefy-1.png)
 
 ``` r
 curves
-#> # A tibble: 570 × 8
+#> # A tibble: 570 x 8
 #>    site       q     m method      diversity coverage lower upper
 #>    <chr>  <dbl> <dbl> <chr>           <dbl>    <dbl> <dbl> <dbl>
 #>  1 MW0200     0     1 rarefaction      1       0.132  1     1.00
@@ -46,7 +46,7 @@ curves
 #>  8 MW0200     0    29 rarefaction     12.0     0.754  9.97 14.1 
 #>  9 MW0200     0    33 rarefaction     13.0     0.766 10.7  15.3 
 #> 10 MW0200     0    38 rarefaction     14.1     0.780 11.7  16.6 
-#> # ℹ 560 more rows
+#> # i 560 more rows
 ```
 
 ``` r
@@ -65,7 +65,7 @@ coverage](gallery_files/figure-html/rarefy-cov-1.png)
 
 ``` r
 curves
-#> # A tibble: 570 × 8
+#> # A tibble: 570 x 8
 #>    site       q     m method      diversity coverage lower upper
 #>    <chr>  <dbl> <dbl> <chr>           <dbl>    <dbl> <dbl> <dbl>
 #>  1 MW0200     0     1 rarefaction      1       0.132  1     1.00
@@ -78,7 +78,7 @@ curves
 #>  8 MW0200     0    29 rarefaction     12.0     0.754  9.64 14.4 
 #>  9 MW0200     0    33 rarefaction     13.0     0.766 10.4  15.6 
 #> 10 MW0200     0    38 rarefaction     14.1     0.780 11.2  17.1 
-#> # ℹ 560 more rows
+#> # i 560 more rows
 ```
 
 ``` r
@@ -96,7 +96,7 @@ autoplot(curves, x = "coverage")
 
 ``` r
 grouped
-#> # A tibble: 740 × 9
+#> # A tibble: 740 x 9
 #>    season site       q     m method      diversity coverage lower upper
 #>    <chr>  <chr>  <dbl> <dbl> <chr>           <dbl>    <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0     1 rarefaction      1      0.0814    NA    NA
@@ -109,7 +109,7 @@ grouped
 #>  8 dry    MW0200     0    18 rarefaction     10.4    0.682     NA    NA
 #>  9 dry    MW0200     0    21 rarefaction     11.3    0.720     NA    NA
 #> 10 dry    MW0200     0    23 rarefaction     11.8    0.741     NA    NA
-#> # ℹ 730 more rows
+#> # i 730 more rows
 ```
 
 ``` r
@@ -128,7 +128,7 @@ coverage](gallery_files/figure-html/standardise-1.png)
 
 ``` r
 std
-#> # A tibble: 30 × 10
+#> # A tibble: 30 x 10
 #>    season site       q     m method        coverage diversity    se lower upper
 #>    <chr>  <chr>  <dbl> <dbl> <chr>            <dbl>     <dbl> <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0  11.6 rarefaction      0.565      7.96 0.510  6.96  8.96
@@ -141,7 +141,7 @@ std
 #>  8 dry    MW0700     1  46.0 extrapolation    0.565     17.9  3.95  10.1  25.6 
 #>  9 dry    MW0700     2  46.0 extrapolation    0.565     10.5  3.16   4.30 16.7 
 #> 10 wet    MW0700     0 116   extrapolation    0.796     42.2  6.20  30.1  54.4 
-#> # ℹ 20 more rows
+#> # i 20 more rows
 ```
 
 ``` r
@@ -160,7 +160,7 @@ diversity](gallery_files/figure-html/estimate-1.png)
 
 ``` r
 est
-#> # A tibble: 15 × 7
+#> # A tibble: 15 x 7
 #>    site       q observed estimate     se lower  upper
 #>    <chr>  <dbl>    <dbl>    <dbl>  <dbl> <dbl>  <dbl>
 #>  1 MW0200     0    21       32.9  10.5   23.7   73.7 
@@ -195,7 +195,7 @@ autoplot(est)
 
 ``` r
 profile
-#> # A tibble: 65 × 4
+#> # A tibble: 65 x 4
 #>    site       q     n diversity
 #>    <chr>  <dbl> <dbl>     <dbl>
 #>  1 MW0200  0       76     21   
@@ -208,7 +208,7 @@ profile
 #>  8 MW0200  1.75    76      7.58
 #>  9 MW0200  2       76      6.99
 #> 10 MW0200  2.25    76      6.55
-#> # ℹ 55 more rows
+#> # i 55 more rows
 ```
 
 ``` r
@@ -226,7 +226,7 @@ autoplot(profile)
 
 ``` r
 hill
-#> # A tibble: 30 × 6
+#> # A tibble: 30 x 6
 #>    season elevation site       q     n diversity
 #>    <chr>      <int> <chr>  <dbl> <dbl>     <dbl>
 #>  1 dry          200 MW0200     0    47     16   
@@ -239,7 +239,7 @@ hill
 #>  8 dry          700 MW0700     1    23     11.8 
 #>  9 dry          700 MW0700     2    23      8.67
 #> 10 wet          700 MW0700     0    58     28   
-#> # ℹ 20 more rows
+#> # i 20 more rows
 ```
 
 ``` r
@@ -257,7 +257,7 @@ autoplot(hill, gradient = elevation, xlab = "Elevation (m)")
 
 ``` r
 cov
-#> # A tibble: 10 × 7
+#> # A tibble: 10 x 7
 #>    season site       n s_obs    f1    f2 coverage
 #>    <chr>  <chr>  <dbl> <int> <int> <int>    <dbl>
 #>  1 dry    MW0200    47    16     5     5    0.898
@@ -287,7 +287,7 @@ autoplot(cov)
 
 ``` r
 pair
-#> # A tibble: 10 × 5
+#> # A tibble: 10 x 5
 #>    site_1 site_2 turnover nestedness total
 #>    <chr>  <chr>     <dbl>      <dbl> <dbl>
 #>  1 MW0200 MW0700    0.619    0.0544  0.673
@@ -317,7 +317,7 @@ autoplot(pair)
 
 ``` r
 multi
-#> # A tibble: 2 × 5
+#> # A tibble: 2 x 5
 #>   season n_sites turnover nestedness total
 #>   <chr>    <int>    <dbl>      <dbl> <dbl>
 #> 1 dry          5    0.827     0.0507 0.877
@@ -340,7 +340,7 @@ autoplot(multi)
 
 ``` r
 decay
-#> # A tibble: 20 × 9
+#> # A tibble: 20 x 9
 #>    season site_1 site_2 turnover nestedness total gradient_1 gradient_2 distance
 #>    <chr>  <chr>  <chr>     <dbl>      <dbl> <dbl>      <int>      <int>    <dbl>
 #>  1 dry    MW0200 MW0700    0.667    0.0108  0.677        200        700      500
@@ -368,12 +368,12 @@ decay
 ``` r
 set.seed(1)
 beta_decay_model(decay)
-#> # A tibble: 2 × 10
+#> # A tibble: 2 x 10
 #>   season model    component n_pairs     a       b half_distance pseudo_r2    aic
 #>   <chr>  <chr>    <chr>       <int> <dbl>   <dbl>         <dbl>     <dbl>  <dbl>
-#> 1 dry    exponen… total          10 0.257 7.50e-4          924.     0.143  -9.21
-#> 2 wet    exponen… total          10 0.897 2.36e-3          293.     0.694 -17.6 
-#> # ℹ 1 more variable: p.value <dbl>
+#> 1 dry    exponen~ total          10 0.257 7.50e-4          924.     0.143  -9.21
+#> 2 wet    exponen~ total          10 0.897 2.36e-3          293.     0.694 -17.6 
+#> # i 1 more variable: p.value <dbl>
 ```
 
 ``` r
@@ -393,7 +393,7 @@ for q = 0, 1 and 2](gallery_files/figure-html/hill-pair-1.png)
 
 ``` r
 hp
-#> # A tibble: 30 × 10
+#> # A tibble: 30 x 10
 #>    site_1 site_2     q gamma alpha  beta dis_sorensen dis_jaccard
 #>    <chr>  <chr>  <dbl> <dbl> <dbl> <dbl>        <dbl>       <dbl>
 #>  1 MW0200 MW0700     0    41  24.5  1.67        0.673       0.805
@@ -406,8 +406,8 @@ hp
 #>  8 MW1200 MW1700     0    26  15    1.73        0.733       0.846
 #>  9 MW1200 MW2200     0    25  12.5  2           1           1    
 #> 10 MW1700 MW2200     0    14   7.5  1.87        0.867       0.929
-#> # ℹ 20 more rows
-#> # ℹ 2 more variables: dis_turnover_sorensen <dbl>, dis_turnover_jaccard <dbl>
+#> # i 20 more rows
+#> # i 2 more variables: dis_turnover_sorensen <dbl>, dis_turnover_jaccard <dbl>
 ```
 
 ``` r
@@ -430,7 +430,7 @@ season](gallery_files/figure-html/hill-beta-dis-1.png)
 
 ``` r
 hb[c("season", "q", "gamma", "alpha", "beta", "beta_lower", "beta_upper")]
-#> # A tibble: 6 × 7
+#> # A tibble: 6 x 7
 #>   season     q gamma alpha  beta beta_lower beta_upper
 #>   <chr>  <dbl> <dbl> <dbl> <dbl>      <dbl>      <dbl>
 #> 1 dry        0  44.4 14.5   3.06       2.31       3.82
@@ -457,7 +457,7 @@ autoplot(hb, what = "dissimilarity")
 
 ``` r
 curves
-#> # A tibble: 570 × 8
+#> # A tibble: 570 x 8
 #>    site       q     m method      diversity coverage lower upper
 #>    <chr>  <dbl> <dbl> <chr>           <dbl>    <dbl> <dbl> <dbl>
 #>  1 MW0200     0     1 rarefaction      1       0.132  1     1.00
@@ -470,7 +470,7 @@ curves
 #>  8 MW0200     0    29 rarefaction     12.0     0.754  9.64 14.4 
 #>  9 MW0200     0    33 rarefaction     13.0     0.766 10.4  15.6 
 #> 10 MW0200     0    38 rarefaction     14.1     0.780 11.2  17.1 
-#> # ℹ 560 more rows
+#> # i 560 more rows
 ```
 
 ``` r
@@ -568,8 +568,8 @@ plot_trait_space(aravo$traits, aravo$community, group = ZoogD, abundance = cover
 ## Maps
 
 Maps are drawn by the companion package
-[tidymapr](https://gitlab.com/jimmy.moses/tidymapr), which takes the
-same tidy tables. Its
+[tidymapr](https://tidymapr.in4metrix.dev/), which takes the same tidy
+tables. Its
 [Gallery](https://tidymapr.in4metrix.dev/articles/gallery.html) shows
 study-site, Hill-number, elevation and species distribution maps from
 real, published records.

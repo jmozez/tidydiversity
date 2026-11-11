@@ -50,7 +50,7 @@ temporal, spatial, hierarchical, or phylogenetic structure. *Ecography*,
 units <- div_hill(png_ants, q = 0, .by = c(season, transect))
 model_group_folds(units, group = site)
 #> # Group 5-fold cross-validation 
-#> # A tibble: 5 × 2
+#> # A tibble: 5 x 2
 #>   splits         id       
 #>   <list>         <chr>    
 #> 1 <split [16/4]> Resample1

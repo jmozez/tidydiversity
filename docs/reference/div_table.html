@@ -66,6 +66,7 @@ knitr, gt or flextable for HTML, PDF or Word output."><meta property="og:image" 
 <li class="nav-item"><a class="nav-link" href="../articles/filip-damen.html" aria-label="In memory of Filip Damen"><span class="fa fa-feather"></span> In memory</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul></div>
 
@@ -75,7 +76,7 @@ knitr, gt or flextable for HTML, PDF or Word output."><meta property="og:image" 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Publication-ready tables</h1>
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/R/tables.R" class="external-link"><code>R/tables.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/R/tables.R" class="external-link"><code>R/tables.R</code></a></small>
       <div class="d-none name"><code>div_table.Rd</code></div>
     </div>
 
@@ -147,7 +148,7 @@ flextable object.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="div_estimate.html">div_estimate</a></span><span class="op">(</span><span class="va">png_ants</span>, .by <span class="op">=</span> <span class="va">season</span>, nboot <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">div_table</span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 30 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 30 x 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    season site   `Order q` Observed `Estimate [95% CI]`  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> dry    MW0200 0         16.00    18.45 [16.15, 56.45] </span>
@@ -160,9 +161,9 @@ flextable object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> dry    MW0700 1         11.76    38.45 [15.67, 61.23] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> dry    MW0700 2         8.67     13.32 [8.67, 28.21]  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> wet    MW0700 0         28.00    75.34 [42.19, 185.93]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 20 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 20 more rows</span></span>
 <span class="r-in"><span><span class="fu">div_table</span><span class="op">(</span><span class="va">est</span>, wide <span class="op">=</span> <span class="cn">TRUE</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 x 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    season site   `observed (q = 0)` `estimate (q = 0)` `observed (q = 1)`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> dry    MW0200 16.0               18.4 [16.1, 56.5]  12.3              </span>
@@ -175,7 +176,7 @@ flextable object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> wet    MW1700 10.0               18.7 [10.9, 98.4]  5.3               </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> dry    MW2200 6.0                10.2 [6.6, 34.1]   5.0               </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> wet    MW2200 5.0                6.9 [5.2, 26.9]    3.6               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: `estimate (q = 1)` &lt;chr&gt;, `observed (q = 2)` &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 3 more variables: `estimate (q = 1)` &lt;chr&gt;, `observed (q = 2)` &lt;chr&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   `estimate (q = 2)` &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="fu">div_table</span><span class="op">(</span><span class="va">est</span>, output <span class="op">=</span> <span class="st">"kable"</span>, caption <span class="op">=</span> <span class="st">"Asymptotic diversity"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

@@ -88,6 +88,7 @@ Basal area for one stem is \eqn{\pi/4 \times \mathrm{dbh}^2} (Condit
 <li class="nav-item"><a class="nav-link" href="../articles/filip-damen.html" aria-label="In memory of Filip Damen"><span class="fa fa-feather"></span> In memory</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul></div>
 
@@ -97,7 +98,7 @@ Basal area for one stem is \eqn{\pi/4 \times \mathrm{dbh}^2} (Condit
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>ForestGEO-style stem and tree census verbs</h1>
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/R/stems.R" class="external-link"><code>R/stems.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/R/stems.R" class="external-link"><code>R/stems.R</code></a></small>
       <div class="d-none name"><code>stems.Rd</code></div>
     </div>
 
@@ -265,14 +266,14 @@ the fgeo.analyze package (rOpenSci / ForestGEO).</p>
 <span class="r-in"><span>  status <span class="op">=</span> <span class="st">"A"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">stems_abundance</span><span class="op">(</span><span class="va">stems</span>, .by <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 x 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   species                 n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Pometia_pinnata         3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Intsia_bijuga           2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Pterocarpus_indicus     1</span>
 <span class="r-in"><span><span class="fu">stems_basal_area</span><span class="op">(</span><span class="va">stems</span>, dbh_unit <span class="op">=</span> <span class="st">"mm"</span>, .by <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 x 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   species             basal_area basal_area_unit n_stem</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Pometia_pinnata        <span style="text-decoration: underline;">143</span>327. mm2                  3</span>

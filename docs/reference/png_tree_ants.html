@@ -62,6 +62,7 @@ one nest appear. Each row is one ant species nesting in one tree."><meta propert
 <li class="nav-item"><a class="nav-link" href="../articles/filip-damen.html" aria-label="In memory of Filip Damen"><span class="fa fa-feather"></span> In memory</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul></div>
 
@@ -71,7 +72,7 @@ one nest appear. Each row is one ant species nesting in one tree."><meta propert
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Tree-nesting ants in rainforest plots at three elevations, Papua New Guinea</h1>
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/R/data.R" class="external-link"><code>R/data.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/R/data.R" class="external-link"><code>R/data.R</code></a></small>
       <div class="d-none name"><code>png_tree_ants.Rd</code></div>
     </div>
 
@@ -136,23 +137,23 @@ tropical rainforest canopies. <em>Ecography</em>, 43, 431-442.
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">png_tree_ants</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,750 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,750 x 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    site   elevation subplot tree     tree_family  tree_genus   dbh species nests</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Wanang       200 B       WP4A0960 Euphorbiace… Macaranga      9 ANON_0…     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Wanang       200 B       WP4A0960 Euphorbiace… Macaranga      9 CAMP_0…     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Wanang       200 B       WP4A0962 Euphorbiace… Mallotus       5 POLY_0…     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 CAMP_0…     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 CREM_0…     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 CREM_0…     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 DIAC_0…     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 PARA_0…     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 PHEI_0…     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 PHEI_0…     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,740 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Wanang       200 B       WP4A0960 Euphorbiace~ Macaranga      9 ANON_0~     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Wanang       200 B       WP4A0960 Euphorbiace~ Macaranga      9 CAMP_0~     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Wanang       200 B       WP4A0962 Euphorbiace~ Mallotus       5 POLY_0~     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 CAMP_0~     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 CREM_0~     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 CREM_0~     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 DIAC_0~     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 PARA_0~     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 PHEI_0~     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 PHEI_0~     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 1,740 more rows</span></span>
 <span class="r-in"><span><span class="co"># Nest counts per plot, trees pooled</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="div_estimate.html">div_estimate</a></span><span class="op">(</span><span class="va">png_tree_ants</span>, site <span class="op">=</span> <span class="va">site</span>, abundance <span class="op">=</span> <span class="va">nests</span>, nboot <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9 x 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   site       q observed estimate    se lower upper</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Wanang     0    85       101.     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span>
@@ -166,7 +167,7 @@ tropical rainforest canopies. <em>Ecography</em>, 43, 431-442.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">9</span> Yawan      2     9.89     10.1    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span>
 <span class="r-in"><span><span class="co"># Turnover between trees within each plot</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="beta_pair.html">beta_multi</a></span><span class="op">(</span><span class="va">png_tree_ants</span>, site <span class="op">=</span> <span class="va">tree</span>, .by <span class="op">=</span> <span class="va">site</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 x 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   site   n_sites turnover nestedness total</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Wanang     326    0.991    0.003<span style="text-decoration: underline;">46</span> 0.994</span>

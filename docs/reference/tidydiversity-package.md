@@ -23,6 +23,8 @@ Useful links:
 
 - <https://tidydiversity.in4metrix.dev/>
 
+- <https://github.com/jmozez/tidydiversity>
+
 - <https://gitlab.com/jimmy.moses/tidydiversity>
 
 - Report bugs at <https://github.com/jmozez/tidydiversity/issues>

@@ -31,7 +31,7 @@ mesotopographical gradient. *Arctic, Antarctic, and Alpine Research*,
 ``` r
 aravo <- data_aravo()
 aravo$community
-#> # A tibble: 1,288 × 9
+#> # A tibble: 1,288 x 9
 #>    site  species   cover Aspect Slope Form  PhysD ZoogD  Snow
 #>    <chr> <chr>     <int>  <int> <int> <fct> <int> <fct> <int>
 #>  1 AR26  Agro.rupe     3      5     0 3        20 no      140
@@ -44,9 +44,9 @@ aravo$community
 #>  8 AR61  Agro.rupe     3      8    15 4        10 no      150
 #>  9 AR49  Agro.rupe     2      5     2 1        65 no      150
 #> 10 AR50  Agro.rupe     1      5     0 1        40 no      160
-#> # ℹ 1,278 more rows
+#> # i 1,278 more rows
 aravo$traits
-#> # A tibble: 82 × 9
+#> # A tibble: 82 x 9
 #>    species   Height Spread Angle  Area Thick   SLA N_mass  Seed
 #>    <chr>      <dbl>  <int> <int> <dbl> <dbl> <dbl>  <dbl> <dbl>
 #>  1 Agro.rupe      6     10    80   60   0.12   8.1   219.  0.08
@@ -59,5 +59,5 @@ aravo$traits
 #>  8 Care.parv     25     10    80  520   0.2   13.7   237.  0.61
 #>  9 Care.rupe      9      5    70   75   0.2    8.8   181.  0.64
 #> 10 Care.semp     20     20    50  600   0.2   11.5   183.  0.83
-#> # ℹ 72 more rows
+#> # i 72 more rows
 ```

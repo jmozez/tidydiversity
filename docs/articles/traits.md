@@ -49,7 +49,7 @@ snowmelt date (Julian day), a strong gradient in alpine vegetation.
 ``` r
 aravo <- data_aravo()
 aravo$community
-#> # A tibble: 1,288 × 9
+#> # A tibble: 1,288 x 9
 #>    site  species   cover Aspect Slope Form  PhysD ZoogD  Snow
 #>    <chr> <chr>     <int>  <int> <int> <fct> <int> <fct> <int>
 #>  1 AR26  Agro.rupe     3      5     0 3        20 no      140
@@ -62,9 +62,9 @@ aravo$community
 #>  8 AR61  Agro.rupe     3      8    15 4        10 no      150
 #>  9 AR49  Agro.rupe     2      5     2 1        65 no      150
 #> 10 AR50  Agro.rupe     1      5     0 1        40 no      160
-#> # ℹ 1,278 more rows
+#> # i 1,278 more rows
 aravo$traits
-#> # A tibble: 82 × 9
+#> # A tibble: 82 x 9
 #>    species   Height Spread Angle  Area Thick   SLA N_mass  Seed
 #>    <chr>      <dbl>  <int> <int> <dbl> <dbl> <dbl>  <dbl> <dbl>
 #>  1 Agro.rupe      6     10    80   60   0.12   8.1   219.  0.08
@@ -77,7 +77,7 @@ aravo$traits
 #>  8 Care.parv     25     10    80  520   0.2   13.7   237.  0.61
 #>  9 Care.rupe      9      5    70   75   0.2    8.8   181.  0.64
 #> 10 Care.semp     20     20    50  600   0.2   11.5   183.  0.83
-#> # ℹ 72 more rows
+#> # i 72 more rows
 ```
 
 ## Trait dissimilarity
@@ -96,7 +96,7 @@ d_gawdis <- trait_dist(aravo$traits, method = "gawdis")
 ``` r
 cwm <- trait_cwm(aravo$community, aravo$traits, abundance = cover)
 cwm
-#> # A tibble: 600 × 9
+#> # A tibble: 600 x 9
 #>    site  trait    cwm Aspect Slope Form  PhysD ZoogD  Snow
 #>    <chr> <chr>  <dbl>  <int> <int> <fct> <int> <fct> <int>
 #>  1 AR26  Height  8.80      5     0 3        20 no      140
@@ -109,7 +109,7 @@ cwm
 #>  8 AR61  Height  6.38      8    15 4        10 no      150
 #>  9 AR49  Height  6.90      5     2 1        65 no      150
 #> 10 AR50  Height  6.78      5     0 1        40 no      160
-#> # ℹ 590 more rows
+#> # i 590 more rows
 
 cwm |>
   filter(trait == "SLA") |>
@@ -133,7 +133,7 @@ trait_cwm_test(aravo$community, aravo$traits,
   abundance = cover,
   cols = c(Height, SLA, N_mass, Seed), env_vars = Snow
 )
-#> # A tibble: 4 × 6
+#> # A tibble: 4 x 6
 #>   trait  variable      r p_row p_col p_max
 #>   <chr>  <chr>     <dbl> <dbl> <dbl> <dbl>
 #> 1 Height Snow     -0.737 0.001 0.021 0.021
@@ -158,7 +158,7 @@ fd <- trait_fd_indices(aravo$community, aravo$traits,
 fd |>
   group_by(index) |>
   summarise(mean = mean(value), sd = sd(value))
-#> # A tibble: 5 × 3
+#> # A tibble: 5 x 3
 #>   index    mean      sd
 #>   <chr>   <dbl>   <dbl>
 #> 1 FDis  0.120   0.0193 
@@ -175,7 +175,7 @@ correction (de Bello et al. 2010):
 
 ``` r
 trait_rao(aravo$community, abundance = cover, dist = d_gawdis)
-#> # A tibble: 3 × 4
+#> # A tibble: 3 x 4
 #>   component    rao equivalent beta_prop
 #>   <chr>      <dbl>      <dbl>     <dbl>
 #> 1 alpha      0.313       1.46   NA     
@@ -228,7 +228,7 @@ trait_fourth_corner(aravo$community, aravo$traits,
   abundance = cover,
   cols = c(Height, SLA, N_mass), env_vars = c(Snow, PhysD)
 )
-#> # A tibble: 6 × 5
+#> # A tibble: 6 x 5
 #>   trait  variable statistic p.value  p.adj
 #>   <chr>  <chr>        <dbl>   <dbl>  <dbl>
 #> 1 Height Snow        -0.272   0.007 0.0084
@@ -271,17 +271,6 @@ itv <- trait_itv(grass, indiv,
   cols = c(height, sla), formula = ~position
 )
 itv
-#> # A tibble: 8 × 4
-#>   trait  component         ss   prop
-#>   <chr>  <chr>          <dbl>  <dbl>
-#> 1 height turnover       23.0  0.130 
-#> 2 height intraspecific  71.8  0.408 
-#> 3 height covariation    81.2  0.461 
-#> 4 height total         176.   1     
-#> 5 sla    turnover        3.22 0.0297
-#> 6 sla    intraspecific  74.1  0.685 
-#> 7 sla    covariation    30.9  0.285 
-#> 8 sla    total         108.   1
 
 itv |>
   filter(component != "total") |>
@@ -291,10 +280,6 @@ itv |>
   scale_fill_tidydiversity() +
   theme_tidydiversity()
 ```
-
-![Stacked bars: for SLA, most variation explained by slope position is
-intraspecific; for height, intraspecific and covariation parts
-dominate.](traits_files/figure-html/itv-1.png)
 
 Most of the response of SLA to the slope is intraspecific: the same
 species change their leaves along the gradient. Studies that use a
@@ -316,19 +301,6 @@ tpd |>
   left_join(distinct(grass, quadrat = as.character(quadrat), position),
             by = "quadrat") |>
   arrange(position)
-#> # A tibble: 10 × 6
-#>    quadrat  FRic  FEve  FDiv redundancy position
-#>    <chr>   <dbl> <dbl> <dbl>      <dbl>    <int>
-#>  1 1        3.77 0.546 0.464       1.97        1
-#>  2 5        3.54 0.544 0.586       1.97        5
-#>  3 10       5.83 0.580 0.513       2.31       10
-#>  4 14       4.97 0.613 0.535       2.36       14
-#>  5 18       5.68 0.497 0.462       3.29       18
-#>  6 23       4.55 0.643 0.642       1.36       23
-#>  7 27       4.31 0.578 0.537       1.76       27
-#>  8 31       4.04 0.343 0.448       3.62       31
-#>  9 36       4.21 0.470 0.464       2.95       36
-#> 10 40       4.91 0.557 0.535       2.86       40
 ```
 
 [`trait_tpd_dissim()`](https://tidydiversity.in4metrix.dev/reference/trait_tpd.md)
@@ -342,15 +314,6 @@ trait_tpd_dissim(grass, indiv,
 ) |>
   arrange(desc(dissimilarity)) |>
   head()
-#> # A tibble: 6 × 5
-#>   site_1 site_2 dissimilarity p_shared p_nonshared
-#>   <chr>  <chr>          <dbl>    <dbl>       <dbl>
-#> 1 31     10             0.670    0.991     0.00886
-#> 2 31     23             0.622    0.840     0.160  
-#> 3 14     31             0.602    0.996     0.00362
-#> 4 10     27             0.568    0.764     0.236  
-#> 5 31     1              0.552    0.944     0.0556 
-#> 6 31     5              0.545    0.963     0.0375
 ```
 
 The species densities are estimated with
@@ -376,12 +339,6 @@ lhs$species <- gsub(" ", "_", rownames(lhs))
 
 ``` r
 phylo_signal(lhs, tree, cols = c(log_sla, log_height, log_sm))
-#> # A tibble: 3 × 5
-#>   trait      method n_species statistic p.value
-#>   <chr>      <chr>      <int>     <dbl>   <dbl>
-#> 1 log_sla    K           1641    0.0574   0.001
-#> 2 log_height K           2369    0.0752   0.001
-#> 3 log_sm     K           1959    0.166    0.001
 ```
 
 Blomberg’s K is far below 1 for all three traits: they carry much less

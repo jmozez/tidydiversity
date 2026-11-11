@@ -87,6 +87,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul>
 </div>
@@ -103,7 +104,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Modelling diversity with tidymodels</h1>
             
       
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/vignettes/articles/tidymodels.Rmd" class="external-link"><code>vignettes/articles/tidymodels.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/vignettes/articles/tidymodels.Rmd" class="external-link"><code>vignettes/articles/tidymodels.Rmd</code></a></small>
       <div class="d-none name"><code>tidymodels.Rmd</code></div>
     </div>
 
@@ -143,7 +144,7 @@ seasons x 2 transects.</p>
 <code class="sourceCode R"><span><span class="va">units</span> <span class="op">&lt;-</span> <span class="va">png_ants</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/div_hill.html">div_hill</a></span><span class="op">(</span>q <span class="op">=</span> <span class="fl">1</span>, .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">elevation</span>, <span class="va">season</span>, <span class="va">transect</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">units</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 20 × 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 20 x 7</span></span></span>
 <span><span class="co">#&gt;    elevation season transect site       q     n diversity</span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>       200 dry           1 MW0200     1    20      8.85</span></span>
@@ -173,7 +174,7 @@ would leak information. Use one fold per site instead
 <code class="sourceCode R"><span><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/model_group_folds.html">model_group_folds</a></span><span class="op">(</span><span class="va">units</span>, group <span class="op">=</span> <span class="va">site</span><span class="op">)</span></span>
 <span><span class="va">folds</span></span>
 <span><span class="co">#&gt; # Group 5-fold cross-validation </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 x 2</span></span></span>
 <span><span class="co">#&gt;   splits         id       </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [16/4]&gt;</span> Resample1</span></span>
@@ -194,7 +195,7 @@ would leak information. Use one fold per site instead
 <span>  <span class="op">)</span>,</span>
 <span>  .id <span class="op">=</span> <span class="st">"model"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 x 7</span></span></span>
 <span><span class="co">#&gt;   model              .metric .estimator  mean     n std_err .config        </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> elevation          rmse    standard    3.41     5   0.669 pre0_mod0_post0</span></span>
@@ -206,7 +207,7 @@ because a single held-out site has only one elevation.)</p>
 <p>The fitted coefficients come out tidy:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">wf_both</span>, <span class="va">units</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/generics/man/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 x 5</span></span></span>
 <span><span class="co">#&gt;   term        estimate std.error statistic     p.value</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> (Intercept) 10.4      1.29          8.10 0.000<span style="text-decoration: underline;">000</span>307</span></span>
@@ -226,7 +227,7 @@ Inverse- variance weights give those sites less influence:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/workflows/man/add_case_weights.html" class="external-link">add_case_weights</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/generics/man/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 x 5</span></span></span>
 <span><span class="co">#&gt;   term        estimate std.error statistic  p.value</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> (Intercept) 16.4       2.96        5.55  0.000<span style="text-decoration: underline;">859</span></span></span>
@@ -249,7 +250,7 @@ wide format:</p>
 <span>  <span class="fu"><a href="../reference/step_hill.html">step_hill</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/recipes/man/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span>, q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/recipes/man/prep.html" class="external-link">prep</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/recipes/man/bake.html" class="external-link">bake</a></span><span class="op">(</span>new_data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 20 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 20 x 4</span></span></span>
 <span><span class="co">#&gt;    elevation hill_q0 hill_q1 hill_q2</span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>       200      11    3.16    2.10</span></span>

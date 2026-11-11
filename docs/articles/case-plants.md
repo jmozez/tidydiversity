@@ -43,7 +43,7 @@ trees
 #>  8 ha01  Brosimum.alicastrum             5
 #>  9 ha01  Casearia.arborea                1
 #> 10 ha01  Casearia.sylvestris             2
-#> # ℹ 4,529 more rows
+#> # i 4,529 more rows
 ```
 
 ## Completeness and curves
@@ -95,7 +95,7 @@ fit <- lm(estimate ~ habitat + env_het,
   weights = weight
 )
 broom::tidy(fit, conf.int = TRUE)
-#> # A tibble: 6 × 7
+#> # A tibble: 6 x 7
 #>   term            estimate std.error statistic  p.value conf.low conf.high
 #>   <chr>              <dbl>     <dbl>     <dbl>    <dbl>    <dbl>     <dbl>
 #> 1 (Intercept)        41.2       3.37    12.2   9.72e-16    34.4       48.0

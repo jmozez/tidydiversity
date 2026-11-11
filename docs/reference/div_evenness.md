@@ -94,7 +94,7 @@ diversities among assemblages. Ecological Research, 35, 292-314.
 
 ``` r
 div_evenness(png_ants, q = c(0, 1, 2), .by = season, nboot = 0)
-#> # A tibble: 150 × 9
+#> # A tibble: 150 x 9
 #>    season site   class     q evenness    se lower upper coverage
 #>    <chr>  <chr>  <chr> <dbl>    <dbl> <dbl> <dbl> <dbl>    <dbl>
 #>  1 dry    MW0200 E1        0    1        NA    NA    NA    0.565
@@ -107,5 +107,5 @@ div_evenness(png_ants, q = c(0, 1, 2), .by = season, nboot = 0)
 #>  8 dry    MW0200 E3        1    0.876    NA    NA    NA    0.565
 #>  9 dry    MW0200 E3        2    0.752    NA    NA    NA    0.565
 #> 10 dry    MW0200 E4        0    1        NA    NA    NA    0.565
-#> # ℹ 140 more rows
+#> # i 140 more rows
 ```

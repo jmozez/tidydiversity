@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/jmozez/tidydiversity/blob/main/inst/CITATION)
 
 Moses, J. (2026). tidydiversity: Taxonomic, Phylogenetic and Functional
 Diversity with Tidy Hill Numbers. R package version 0.1.0. Zenodo.

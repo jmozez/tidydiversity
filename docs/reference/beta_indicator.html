@@ -60,6 +60,7 @@ returns a tidy table."><meta property="og:image" content="https://tidydiversity.
 <li class="nav-item"><a class="nav-link" href="../articles/filip-damen.html" aria-label="In memory of Filip Damen"><span class="fa fa-feather"></span> In memory</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul></div>
 
@@ -69,7 +70,7 @@ returns a tidy table."><meta property="og:image" content="https://tidydiversity.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Indicator species analysis</h1>
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/R/community-tests.R" class="external-link"><code>R/community-tests.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/R/community-tests.R" class="external-link"><code>R/community-tests.R</code></a></small>
       <div class="d-none name"><code>beta_indicator.Rd</code></div>
     </div>
 
@@ -181,8 +182,8 @@ indicator species analysis by combining groups of sites. <em>Oikos</em>, 119,
 <span class="r-in"><span>                      zone <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">elevation</span> <span class="op">&lt;=</span> <span class="fl">700</span>, <span class="st">"lowland"</span>, <span class="st">"montane"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">beta_indicator</span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>, group <span class="op">=</span> <span class="va">zone</span>, permutations <span class="op">=</span> <span class="fl">199</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7 variables: species &lt;chr&gt;, group &lt;chr&gt;, stat &lt;dbl&gt;, A &lt;dbl&gt;, B &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 x 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 7 variables: species &lt;chr&gt;, group &lt;chr&gt;, stat &lt;dbl&gt;, A &lt;dbl&gt;, B &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   p.value &lt;dbl&gt;, p.adj &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>

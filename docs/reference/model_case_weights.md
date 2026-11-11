@@ -38,7 +38,7 @@ A `hardhat_importance_weights` vector.
 est <- div_estimate(png_ants, q = 1, .by = season)
 est$w <- model_case_weights(est$se)
 est
-#> # A tibble: 10 × 9
+#> # A tibble: 10 x 9
 #>    season site       q observed estimate     se lower upper          w
 #>    <chr>  <chr>  <dbl>    <dbl>    <dbl>  <dbl> <dbl> <dbl>  <imp_wts>
 #>  1 dry    MW0200     1    12.3     15.2   2.28  12.3  19.6  1.46863740

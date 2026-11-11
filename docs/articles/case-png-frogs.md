@@ -15,27 +15,27 @@ library(dplyr)
 library(ggplot2)
 set.seed(2026)
 png_frogs
-#> # A tibble: 92 × 7
+#> # A tibble: 92 x 7
 #>    site   elevation species scientific_name       family  reproduction abundance
 #>    <chr>      <int> <chr>   <chr>                 <chr>   <chr>            <int>
-#>  1 MW0200       200 FR01    Cornufer papuensis    Cerato… terrestrial        253
-#>  2 MW0200       200 FR23    Copiula sp 1          Microh… terrestrial         29
-#>  3 MW0200       200 FR28    Hylophorbus sp 7      Microh… terrestrial         68
-#>  4 MW0200       200 FR30    Mantophryne lateralis Microh… terrestrial          1
-#>  5 MW0200       200 FR32    Oreophryne hypsiops   Microh… terrestrial         85
-#>  6 MW0200       200 FR37    Xenorhina oxycephala  Microh… terrestrial          8
-#>  7 MW0200       200 FR40    Litoria arfakiana     Pelodr… aquatic              2
-#>  8 MW0200       200 FR46    Litoria mucro         Pelodr… aquatic              4
-#>  9 MW0200       200 FR50    Litoria thesaurensis  Pelodr… aquatic             12
+#>  1 MW0200       200 FR01    Cornufer papuensis    Cerato~ terrestrial        253
+#>  2 MW0200       200 FR23    Copiula sp 1          Microh~ terrestrial         29
+#>  3 MW0200       200 FR28    Hylophorbus sp 7      Microh~ terrestrial         68
+#>  4 MW0200       200 FR30    Mantophryne lateralis Microh~ terrestrial          1
+#>  5 MW0200       200 FR32    Oreophryne hypsiops   Microh~ terrestrial         85
+#>  6 MW0200       200 FR37    Xenorhina oxycephala  Microh~ terrestrial          8
+#>  7 MW0200       200 FR40    Litoria arfakiana     Pelodr~ aquatic              2
+#>  8 MW0200       200 FR46    Litoria mucro         Pelodr~ aquatic              4
+#>  9 MW0200       200 FR50    Litoria thesaurensis  Pelodr~ aquatic             12
 #> 10 MW0200       200 FR51    Papurana arfaki       Ranidae aquatic              9
-#> # ℹ 82 more rows
+#> # i 82 more rows
 ```
 
 ## Sampling completeness
 
 ``` r
 div_coverage(png_frogs)
-#> # A tibble: 8 × 6
+#> # A tibble: 8 x 6
 #>   site       n s_obs    f1    f2 coverage
 #>   <chr>  <int> <int> <int> <int>    <dbl>
 #> 1 MW0200   508    13     1     2    0.998

@@ -62,6 +62,7 @@ is one minus the chosen dissimilarity component. The models are"><meta property=
 <li class="nav-item"><a class="nav-link" href="../articles/filip-damen.html" aria-label="In memory of Filip Damen"><span class="fa fa-feather"></span> In memory</a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul></div>
 
@@ -71,7 +72,7 @@ is one minus the chosen dissimilarity component. The models are"><meta property=
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Fit and test a distance-decay model</h1>
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/R/beta-decay-model.R" class="external-link"><code>R/beta-decay-model.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/R/beta-decay-model.R" class="external-link"><code>R/beta-decay-model.R</code></a></small>
       <div class="d-none name"><code>beta_decay_model.Rd</code></div>
     </div>
 
@@ -156,12 +157,12 @@ major role of dispersal processes. <em>Ecography</em>, 41, 1825-1834.
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">decay</span> <span class="op">&lt;-</span> <span class="fu"><a href="beta_decay.html">beta_decay</a></span><span class="op">(</span><span class="va">png_ants</span>, gradient <span class="op">=</span> <span class="va">elevation</span>, .by <span class="op">=</span> <span class="va">season</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">beta_decay_model</span><span class="op">(</span><span class="va">decay</span>, permutations <span class="op">=</span> <span class="fl">199</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 x 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   season model    component n_pairs     a       b half_distance pseudo_r2    aic</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> dry    exponen… total          10 0.257 7.50<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>          924.     0.143  -<span style="color: #BB0000;">9.21</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> wet    exponen… total          10 0.897 2.36<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>          293.     0.694 -<span style="color: #BB0000;">17.6</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: p.value &lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> dry    exponen~ total          10 0.257 7.50<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span>          924.     0.143  -<span style="color: #BB0000;">9.21</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> wet    exponen~ total          10 0.897 2.36<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>          293.     0.694 -<span style="color: #BB0000;">17.6</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 1 more variable: p.value &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

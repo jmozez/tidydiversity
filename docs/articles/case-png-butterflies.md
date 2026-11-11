@@ -19,7 +19,7 @@ library(dplyr)
 library(ggplot2)
 set.seed(2026)
 wanang_butterflies
-#> # A tibble: 2,020 × 6
+#> # A tibble: 2,020 x 6
 #>    site    day month  year species               abundance
 #>    <chr> <int> <int> <int> <chr>                     <int>
 #>  1 day01     1     1     1 Apaturina erminea             4
@@ -32,7 +32,7 @@ wanang_butterflies
 #>  8 day01     1     1     1 Dicallaneura decorata         2
 #>  9 day01     1     1     1 Elodina hypatia               5
 #> 10 day01     1     1     1 Elymnias cybele               6
-#> # ℹ 2,010 more rows
+#> # i 2,010 more rows
 ```
 
 ## Each year of monitoring
@@ -42,14 +42,14 @@ Pooling the days within each year gives one sample per year:
 ``` r
 years <- mutate(wanang_butterflies, site = paste("Year", year))
 div_coverage(years)
-#> # A tibble: 3 × 6
+#> # A tibble: 3 x 6
 #>   site       n s_obs    f1    f2 coverage
 #>   <chr>  <int> <int> <int> <int>    <dbl>
 #> 1 Year 1  4228   131    27    19    0.994
 #> 2 Year 2  4644   158    36    13    0.992
 #> 3 Year 3  4369   142    35    17    0.992
 div_estimate(years, nboot = 100)
-#> # A tibble: 9 × 7
+#> # A tibble: 9 x 7
 #>   site       q observed estimate     se  lower  upper
 #>   <chr>  <dbl>    <dbl>    <dbl>  <dbl>  <dbl>  <dbl>
 #> 1 Year 1     0   131      150.    9.33  139.   178.  
@@ -78,7 +78,7 @@ year](case-png-butterflies_files/figure-html/curves-1.png)
 
 ``` r
 beta_multi(years)
-#> # A tibble: 1 × 4
+#> # A tibble: 1 x 4
 #>   n_sites turnover nestedness total
 #>     <int>    <dbl>      <dbl> <dbl>
 #> 1       3    0.209     0.0641 0.273
@@ -91,7 +91,7 @@ four sampled months also differ substantially:
 wanang_butterflies |>
   mutate(site = paste("Month", month)) |>
   beta_multi(.by = year)
-#> # A tibble: 3 × 5
+#> # A tibble: 3 x 5
 #>    year n_sites turnover nestedness total
 #>   <int>   <int>    <dbl>      <dbl> <dbl>
 #> 1     1       4    0.273     0.252  0.524

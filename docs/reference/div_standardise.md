@@ -153,8 +153,8 @@ sample size, where richness estimates become unreliable.
 set.seed(1)
 div_standardise(png_ants, coverage = 0.95, .by = season, nboot = 10)
 #> Warning: Extrapolation beyond twice the observed sample size at 7 sites.
-#> ℹ Richness (q = 0) estimates there may be strongly biased (Chao et al. 2014).
-#> # A tibble: 30 × 10
+#> i Richness (q = 0) estimates there may be strongly biased (Chao et al. 2014).
+#> # A tibble: 30 x 10
 #>    season site       q     m method        coverage diversity     se lower upper
 #>    <chr>  <chr>  <dbl> <dbl> <chr>            <dbl>     <dbl>  <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0  63.7 extrapolation    0.950     17.2   0.755 15.8   18.7
@@ -167,10 +167,10 @@ div_standardise(png_ants, coverage = 0.95, .by = season, nboot = 10)
 #>  8 dry    MW0700     1 333.  extrapolation    0.950     37.6  12.0   14.1   61.2
 #>  9 dry    MW0700     2 333.  extrapolation    0.950     12.8   4.20   4.61  21.1
 #> 10 wet    MW0700     0 343.  extrapolation    0.950     67.2  15.6   36.7   97.8
-#> # ℹ 20 more rows
+#> # i 20 more rows
 
 div_standardise(png_ants, size = 20, .by = season, nboot = 0)
-#> # A tibble: 30 × 10
+#> # A tibble: 30 x 10
 #>    season site       q     m method      coverage diversity    se lower upper
 #>    <chr>  <chr>  <dbl> <dbl> <chr>          <dbl>     <dbl> <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0    20 rarefaction    0.708     11.0     NA    NA    NA
@@ -183,5 +183,5 @@ div_standardise(png_ants, size = 20, .by = season, nboot = 0)
 #>  8 dry    MW0700     1    20 rarefaction    0.470     10.8     NA    NA    NA
 #>  9 dry    MW0700     2    20 rarefaction    0.470      8.24    NA    NA    NA
 #> 10 wet    MW0700     0    20 rarefaction    0.506     14.2     NA    NA    NA
-#> # ℹ 20 more rows
+#> # i 20 more rows
 ```

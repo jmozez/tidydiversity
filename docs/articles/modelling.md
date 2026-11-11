@@ -29,7 +29,7 @@ est <- div_standardise(png_ants,
   tidy() |>
   add_site_data(sites)
 est
-#> # A tibble: 30 × 12
+#> # A tibble: 30 x 12
 #>    season site       q     m method        coverage estimate std.error conf.low
 #>    <chr>  <chr>  <dbl> <dbl> <chr>            <dbl>    <dbl>     <dbl>    <dbl>
 #>  1 dry    MW0200     0  11.6 rarefaction      0.565     7.96     0.489     7.00
@@ -42,8 +42,8 @@ est
 #>  8 dry    MW0700     1  46.0 extrapolation    0.565    17.9      5.06      7.95
 #>  9 dry    MW0700     2  46.0 extrapolation    0.565    10.5      4.64      1.42
 #> 10 wet    MW0700     0 116   extrapolation    0.796    42.2      6.21     30.1 
-#> # ℹ 20 more rows
-#> # ℹ 3 more variables: conf.high <dbl>, weight <dbl>, elevation <int>
+#> # i 20 more rows
+#> # i 3 more variables: conf.high <dbl>, weight <dbl>, elevation <int>
 ```
 
 ## Approaches
@@ -62,7 +62,7 @@ fit_lm <- lm(estimate ~ elevation + I(elevation^2) + season,
   data = shannon, weights = weight
 )
 broom::tidy(fit_lm, conf.int = TRUE)
-#> # A tibble: 4 × 7
+#> # A tibble: 4 x 7
 #>   term              estimate  std.error statistic p.value    conf.low  conf.high
 #>   <chr>                <dbl>      <dbl>     <dbl>   <dbl>       <dbl>      <dbl>
 #> 1 (Intercept)     8.61       2.23           3.87  0.00830  3.16          1.41e+1
@@ -133,7 +133,7 @@ broom::tidy(glm(estimate ~ elevation + season,
   data = rich,
   family = Gamma(link = "log"), weights = weight / mean(weight)
 ))
-#> # A tibble: 3 × 5
+#> # A tibble: 3 x 5
 #>   term         estimate std.error statistic p.value
 #>   <chr>           <dbl>     <dbl>     <dbl>   <dbl>
 #> 1 (Intercept)  2.10      0.440         4.78 0.00200
@@ -143,7 +143,7 @@ obs <- div_hill(png_ants, q = 0, .by = season) |> add_site_data(sites)
 broom::tidy(glm(diversity ~ elevation + season + offset(log(n)),
   data = obs, family = poisson
 ))
-#> # A tibble: 3 × 5
+#> # A tibble: 3 x 5
 #>   term          estimate std.error statistic    p.value
 #>   <chr>            <dbl>     <dbl>     <dbl>      <dbl>
 #> 1 (Intercept) -0.874      0.181       -4.81  0.00000148
@@ -166,7 +166,7 @@ draws <- div_boot(png_ants,
 ) |>
   add_site_data(sites)
 draws
-#> # A tibble: 2,000 × 7
+#> # A tibble: 2,000 x 7
 #>    season site       q     m .draw diversity elevation
 #>    <chr>  <chr>  <dbl> <dbl> <int>     <dbl>     <int>
 #>  1 dry    MW0200     1  47.5     1      8.01       200
@@ -179,7 +179,7 @@ draws
 #>  8 dry    MW0200     1  47.5     8     12.4        200
 #>  9 dry    MW0200     1  47.5     9     13.2        200
 #> 10 dry    MW0200     1  47.5    10     12.2        200
-#> # ℹ 1,990 more rows
+#> # i 1,990 more rows
 
 slopes <- draws |>
   group_by(.draw) |>
@@ -215,7 +215,7 @@ gradients. Several columns give Euclidean distance.
 ``` r
 decay <- beta_decay(png_ants, elevation, .by = season)
 broom::tidy(lm(turnover ~ distance + season, data = decay))
-#> # A tibble: 3 × 5
+#> # A tibble: 3 x 5
 #>   term         estimate std.error statistic      p.value
 #>   <chr>           <dbl>     <dbl>     <dbl>        <dbl>
 #> 1 (Intercept)  0.664    0.0723        9.18  0.0000000531

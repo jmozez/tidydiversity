@@ -68,23 +68,23 @@ rainforest canopies. *Ecography*, 43, 431-442.
 
 ``` r
 png_tree_ants
-#> # A tibble: 1,750 × 9
+#> # A tibble: 1,750 x 9
 #>    site   elevation subplot tree     tree_family  tree_genus   dbh species nests
 #>    <chr>      <int> <chr>   <chr>    <chr>        <chr>      <dbl> <chr>   <int>
-#>  1 Wanang       200 B       WP4A0960 Euphorbiace… Macaranga      9 ANON_0…     2
-#>  2 Wanang       200 B       WP4A0960 Euphorbiace… Macaranga      9 CAMP_0…     1
-#>  3 Wanang       200 B       WP4A0962 Euphorbiace… Mallotus       5 POLY_0…     1
-#>  4 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 CAMP_0…     1
-#>  5 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 CREM_0…     2
-#>  6 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 CREM_0…     1
-#>  7 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 DIAC_0…     1
-#>  8 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 PARA_0…     1
-#>  9 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 PHEI_0…     1
-#> 10 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod…    84 PHEI_0…     1
-#> # ℹ 1,740 more rows
+#>  1 Wanang       200 B       WP4A0960 Euphorbiace~ Macaranga      9 ANON_0~     2
+#>  2 Wanang       200 B       WP4A0960 Euphorbiace~ Macaranga      9 CAMP_0~     1
+#>  3 Wanang       200 B       WP4A0962 Euphorbiace~ Mallotus       5 POLY_0~     1
+#>  4 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 CAMP_0~     1
+#>  5 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 CREM_0~     2
+#>  6 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 CREM_0~     1
+#>  7 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 DIAC_0~     1
+#>  8 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 PARA_0~     1
+#>  9 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 PHEI_0~     1
+#> 10 Wanang       200 B       WP4A0963 Rubiaceae    Mastixiod~    84 PHEI_0~     1
+#> # i 1,740 more rows
 # Nest counts per plot, trees pooled
 div_estimate(png_tree_ants, site = site, abundance = nests, nboot = 0)
-#> # A tibble: 9 × 7
+#> # A tibble: 9 x 7
 #>   site       q observed estimate    se lower upper
 #>   <chr>  <dbl>    <dbl>    <dbl> <dbl> <dbl> <dbl>
 #> 1 Wanang     0    85       101.     NA    NA    NA
@@ -98,7 +98,7 @@ div_estimate(png_tree_ants, site = site, abundance = nests, nboot = 0)
 #> 9 Yawan      2     9.89     10.1    NA    NA    NA
 # Turnover between trees within each plot
 beta_multi(png_tree_ants, site = tree, .by = site)
-#> # A tibble: 3 × 5
+#> # A tibble: 3 x 5
 #>   site   n_sites turnover nestedness total
 #>   <chr>    <int>    <dbl>      <dbl> <dbl>
 #> 1 Wanang     326    0.991    0.00346 0.994

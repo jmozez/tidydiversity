@@ -94,7 +94,7 @@ Methods in Ecology and Evolution, 4, 552-557.
 
 ``` r
 beta_pair(png_ants, .by = season)
-#> # A tibble: 20 × 6
+#> # A tibble: 20 x 6
 #>    season site_1 site_2 turnover nestedness total
 #>    <chr>  <chr>  <chr>     <dbl>      <dbl> <dbl>
 #>  1 dry    MW0200 MW0700    0.667    0.0108  0.677
@@ -119,7 +119,7 @@ beta_pair(png_ants, .by = season)
 #> 20 wet    MW1700 MW2200    0.8      0.0667  0.867
 
 beta_multi(png_ants, .by = season, index = "jaccard")
-#> # A tibble: 2 × 5
+#> # A tibble: 2 x 5
 #>   season n_sites turnover nestedness total
 #>   <chr>    <int>    <dbl>      <dbl> <dbl>
 #> 1 dry          5    0.905     0.0296 0.935

@@ -108,7 +108,7 @@ ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect),
                       zone = ifelse(elevation <= 700, "lowland", "montane"))
 set.seed(1)
 beta_indicator(ants, site = unit, group = zone, permutations = 199)
-#> # A tibble: 0 × 7
-#> # ℹ 7 variables: species <chr>, group <chr>, stat <dbl>, A <dbl>, B <dbl>,
+#> # A tibble: 0 x 7
+#> # i 7 variables: species <chr>, group <chr>, stat <dbl>, A <dbl>, B <dbl>,
 #> #   p.value <dbl>, p.adj <dbl>
 ```

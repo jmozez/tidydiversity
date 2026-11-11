@@ -97,7 +97,7 @@ Null models:
 aravo <- data_aravo()
 set.seed(1)
 trait_ses(aravo$community, aravo$traits, abundance = cover, times = 49)
-#> # A tibble: 75 × 8
+#> # A tibble: 75 x 8
 #>    site  index null   observed null_mean null_sd    ses p.value
 #>    <chr> <chr> <chr>     <dbl>     <dbl>   <dbl>  <dbl>   <dbl>
 #>  1 AR26  RaoQ  traits    0.186     0.201  0.0147 -1.00     0.4 
@@ -110,5 +110,5 @@ trait_ses(aravo$community, aravo$traits, abundance = cover, times = 49)
 #>  8 AR61  RaoQ  traits    0.190     0.205  0.0146 -1.02     0.48
 #>  9 AR49  RaoQ  traits    0.207     0.202  0.0177  0.250    0.88
 #> 10 AR50  RaoQ  traits    0.204     0.203  0.0166  0.111    0.92
-#> # ℹ 65 more rows
+#> # i 65 more rows
 ```

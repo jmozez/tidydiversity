@@ -88,9 +88,8 @@ one consistent, tested interface.
   community table, ready for every `div_` and `beta_` verb.
 - **Maps live in tidymapr.** Study-site maps, basemaps, rasters, bioclim
   layers, spatial statistics and species distribution models are in the
-  companion package [tidymapr](https://gitlab.com/jimmy.moses/tidymapr),
-  which takes the same tidy tables and returns the same tibbles and
-  ggplots.
+  companion package [tidymapr](https://tidymapr.in4metrix.dev/), which
+  takes the same tidy tables and returns the same tibbles and ggplots.
 
 ### Fast where it matters
 
@@ -162,13 +161,14 @@ Install the development version from GitLab:
 pak::pak("gitlab::jimmy.moses/tidydiversity")
 ```
 
-The source code lives on GitLab,
+The source code lives on GitHub,
+<https://github.com/jmozez/tidydiversity>, with a mirror on GitLab,
 <https://gitlab.com/jimmy.moses/tidydiversity>.
 
 ## Maps with tidymapr
 
 tidydiversity does no geospatial work. Its companion package
-[tidymapr](https://gitlab.com/jimmy.moses/tidymapr) draws study-site and
+[tidymapr](https://tidymapr.in4metrix.dev/) draws study-site and
 diversity maps, reads and writes vector and raster files, downloads
 climate, elevation and boundary layers, computes spatial statistics and
 fits species distribution models. It takes the tidy tables tidydiversity

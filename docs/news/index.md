@@ -3,8 +3,7 @@
 ## tidydiversity 0.1.0
 
 - All geospatial and mapping code has moved to the companion package
-  [tidymapr](https://gitlab.com/jimmy.moses/tidymapr): the `geo_*()`
-  verbs,
+  [tidymapr](https://tidymapr.in4metrix.dev/): the `geo_*()` verbs,
   [`as_sf()`](https://rdrr.io/pkg/tidymapr/man/geo-map-interop.html),
   [`as_spat_raster()`](https://rdrr.io/pkg/tidymapr/man/geo-map-interop.html),
   [`plot_sites()`](https://rdrr.io/pkg/tidymapr/man/plot_sites.html),

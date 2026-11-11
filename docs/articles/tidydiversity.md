@@ -28,21 +28,21 @@ Biogeography*). Each row is one ant species at one bait.
 
 ``` r
 png_ants
-#> # A tibble: 369 × 12
+#> # A tibble: 369 x 12
 #>    site  elevation season transect bait  baits bait_type species genus subfamily
 #>    <chr>     <int> <chr>     <int> <chr> <int> <chr>     <chr>   <chr> <chr>    
-#>  1 MW02…       200 dry           1 200_…    60 cho       lepm_0… Lept… Dolichod…
-#>  2 MW02…       200 dry           1 200_…    60 cho       mono_0… Mono… Myrmicin…
-#>  3 MW02…       200 dry           1 200_…    60 lipid     phei_0… Phei… Myrmicin…
-#>  4 MW02…       200 dry           1 200_…    60 lipid     tetr_0… Tetr… Myrmicin…
-#>  5 MW02…       200 dry           1 200_…    60 amino_ac… crem_0… Crem… Myrmicin…
-#>  6 MW02…       200 dry           1 200_…    60 cho_amin… crem_0… Crem… Myrmicin…
-#>  7 MW02…       200 dry           1 200_…    60 lipid     crem_0… Crem… Myrmicin…
-#>  8 MW02…       200 dry           1 200_…    60 cho       crem_0… Crem… Myrmicin…
-#>  9 MW02…       200 dry           1 200_…    60 cho_amin… rhyt_0… Rhyt… Ectatomm…
-#> 10 MW02…       200 dry           1 200_…    60 cho       crem_0… Crem… Myrmicin…
-#> # ℹ 359 more rows
-#> # ℹ 2 more variables: guild <chr>, workers <int>
+#>  1 MW02~       200 dry           1 200_~    60 cho       lepm_0~ Lept~ Dolichod~
+#>  2 MW02~       200 dry           1 200_~    60 cho       mono_0~ Mono~ Myrmicin~
+#>  3 MW02~       200 dry           1 200_~    60 lipid     phei_0~ Phei~ Myrmicin~
+#>  4 MW02~       200 dry           1 200_~    60 lipid     tetr_0~ Tetr~ Myrmicin~
+#>  5 MW02~       200 dry           1 200_~    60 amino_ac~ crem_0~ Crem~ Myrmicin~
+#>  6 MW02~       200 dry           1 200_~    60 cho_amin~ crem_0~ Crem~ Myrmicin~
+#>  7 MW02~       200 dry           1 200_~    60 lipid     crem_0~ Crem~ Myrmicin~
+#>  8 MW02~       200 dry           1 200_~    60 cho       crem_0~ Crem~ Myrmicin~
+#>  9 MW02~       200 dry           1 200_~    60 cho_amin~ rhyt_0~ Rhyt~ Ectatomm~
+#> 10 MW02~       200 dry           1 200_~    60 cho       crem_0~ Crem~ Myrmicin~
+#> # i 359 more rows
+#> # i 2 more variables: guild <chr>, workers <int>
 ```
 
 Ants recruit to baits, so worker counts measure activity rather than
@@ -82,7 +82,7 @@ ants
 #>  8 dry    MW0200 odon_001         2
 #>  9 dry    MW0200 para_005         4
 #> 10 dry    MW0200 phei_008         3
-#> # ℹ 129 more rows
+#> # i 129 more rows
 ```
 
 If your data arrive as a site by species matrix,
@@ -94,7 +94,7 @@ goes the other way.
 ``` r
 wide <- community_wide(ants, .by = season)
 wide[, 1:6]
-#> # A tibble: 10 × 6
+#> # A tibble: 10 x 6
 #>    season site   ancy_001 ancy_003 anon_003 anon_008
 #>    <chr>  <chr>     <dbl>    <dbl>    <dbl>    <dbl>
 #>  1 dry    MW0200        0        0        0        0
@@ -119,7 +119,7 @@ png_ants |>
   group_by(season) |>
   div_hill(q = 0) |>
   arrange(desc(diversity))
-#> # A tibble: 10 × 5
+#> # A tibble: 10 x 5
 #>    season site       q     n diversity
 #>    <chr>  <chr>  <dbl> <dbl>     <dbl>
 #>  1 wet    MW0700     0    58        28

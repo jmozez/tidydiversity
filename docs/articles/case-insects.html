@@ -87,6 +87,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jmozez/tidydiversity" aria-label="Source code on GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://gitlab.com/jimmy.moses/tidydiversity" aria-label="Source code on GitLab"><span class="fa fa-gitlab"></span></a></li>
       </ul>
 </div>
@@ -103,7 +104,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Case study: caddisflies at a light trap</h1>
             
       
-      <small class="dont-index">Source: <a href="https://gitlab.com/jimmy.moses/tidydiversity/-/blob/main/vignettes/articles/case-insects.Rmd" class="external-link"><code>vignettes/articles/case-insects.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jmozez/tidydiversity/blob/main/vignettes/articles/case-insects.Rmd" class="external-link"><code>vignettes/articles/case-insects.Rmd</code></a></small>
       <div class="d-none name"><code>case-insects.Rmd</code></div>
     </div>
 
@@ -159,7 +160,7 @@ them back on later.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> night02 All             2</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> night02 Hym             3</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> night02 Psy             8</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 305 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># i 305 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="how-complete-is-each-night">How complete is each night?<a class="anchor" aria-label="anchor" href="#how-complete-is-each-night"></a>
@@ -212,7 +213,7 @@ first.</p>
 <span>  nboot <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">std</span>, <span class="va">coverage</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 34 × 1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 34 x 1</span></span></span>
 <span><span class="co">#&gt;    coverage</span></span>
 <span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>    0.945</span></span>
@@ -225,9 +226,9 @@ first.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>    0.945</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>    0.945</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    0.945</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 24 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># i 24 more rows</span></span></span>
 <span><span class="va">std</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 102 × 9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 102 x 9</span></span></span>
 <span><span class="co">#&gt;    site        q     m method        coverage diversity     se lower upper</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> night01     0  41.5 extrapolation    0.945      7.96 1.57    4.87 11.0 </span></span>
@@ -240,7 +241,7 @@ first.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> night04     1  36.5 rarefaction      0.945      1.43 0.105   1.23  1.64</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> night04     2  36.5 rarefaction      0.945      1.18 0.046<span style="text-decoration: underline;">9</span>  1.09  1.28</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> night05     0  40.3 rarefaction      0.945      4.49 0.681   3.16  5.83</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 92 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># i 92 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="diversity-and-weather">Diversity and weather<a class="anchor" aria-label="anchor" href="#diversity-and-weather"></a>
@@ -259,7 +260,7 @@ weather covariates in.</p>
 <span>  weights <span class="op">=</span> <span class="va">weight</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/generics/man/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">fit</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 x 7</span></span></span>
 <span><span class="co">#&gt;   term         estimate std.error statistic p.value conf.low conf.high</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> (Intercept)    5.87      3.34       1.76   0.089<span style="text-decoration: underline;">4</span>  -<span style="color: #BB0000;">0.959</span>    12.7   </span></span>

@@ -168,14 +168,14 @@ stems <- tibble::tibble(
   status = "A"
 )
 stems_abundance(stems, .by = species)
-#> # A tibble: 3 × 2
+#> # A tibble: 3 x 2
 #>   species                 n
 #>   <chr>               <int>
 #> 1 Pometia_pinnata         3
 #> 2 Intsia_bijuga           2
 #> 3 Pterocarpus_indicus     1
 stems_basal_area(stems, dbh_unit = "mm", .by = species)
-#> # A tibble: 3 × 4
+#> # A tibble: 3 x 4
 #>   species             basal_area basal_area_unit n_stem
 #>   <chr>                    <dbl> <chr>            <int>
 #> 1 Pometia_pinnata        143327. mm2                  3
