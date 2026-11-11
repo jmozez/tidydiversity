@@ -188,11 +188,11 @@ when a function needs them, so `library(tidydiversity)` stays light.
 
 ## Installation
 
-Install the development version from GitLab:
+Install the development version from GitHub:
 
 ```r
 # install.packages("pak")
-pak::pak("gitlab::jimmy.moses/tidydiversity")
+pak::pak("jmozez/tidydiversity")
 ```
 
 The source code lives on GitHub, <https://github.com/jmozez/tidydiversity>, with a mirror on GitLab, <https://gitlab.com/jimmy.moses/tidydiversity>.
@@ -208,7 +208,7 @@ uses and returns tibbles and ggplots, so the two packages share one
 workflow, the way dplyr and ggplot2 do:
 
 ```r
-pak::pak("gitlab::jimmy.moses/tidymapr")
+pak::pak("jmozez/tidymapr")
 library(tidydiversity)
 library(tidymapr)
 
