@@ -1,0 +1,175 @@
+* using log directory ‘/home/user/chk2/tidydiversity.Rcheck’
+* using R version 4.3.3 (2024-02-29)
+* using platform: x86_64-pc-linux-gnu (64-bit)
+* R was compiled by
+    gcc (Ubuntu 13.2.0-23ubuntu3) 13.2.0
+    GNU Fortran (Ubuntu 13.2.0-23ubuntu3) 13.2.0
+* running under: Ubuntu 24.04.5 LTS
+* using session charset: UTF-8
+* using options ‘--no-manual --as-cran’
+* checking for file ‘tidydiversity/DESCRIPTION’ ... OK
+* this is package ‘tidydiversity’ version ‘0.1.0’
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ... [1s/14s] NOTE
+Maintainer: ‘Jimmy Moses <jimmy.moses@pnguot.ac.pg>’
+
+Found the following (possibly) invalid URLs:
+  URL: https://CRAN.R-project.org/package=iNEXT.3D
+    From: man/beta_hill.Rd
+          man/div_estimate.Rd
+          man/div_hill.Rd
+          man/div_rarefy.Rd
+          man/div_standardise.Rd
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://CRAN.R-project.org/package=vegan
+    From: man/ord_fit.Rd
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://creativecommons.org/licenses/by/4.0/
+    From: man/wanang_caterpillars.Rd
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://doi.org/10.1002/ecm.1343
+    From: README.md
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://doi.org/10.1111/btp.12671
+    From: README.md
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://doi.org/10.1111/btp.13283
+    From: README.md
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://doi.org/10.1111/ecog.04730
+    From: README.md
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://doi.org/10.1111/geb.13757
+    From: README.md
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://doi.org/10.1146/annurev-ecolsys-120213-091540
+    From: README.md
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://doi.org/10.15468/7e96ht
+    From: README.md
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://doi.org/10.5281/zenodo.24046912
+    From: README.md
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://github.com/weecology/PortalData
+    From: man/portal_rodents.Rd
+    Status: 403
+    Message: Forbidden
+  URL: https://gitlab.com/jimmy.moses/tidydiversity/-/issues
+    From: DESCRIPTION
+          man/tidydiversity-package.Rd
+    Status: 429
+    Message: Too Many Requests
+  URL: https://jfly.uni-koeln.de/color/
+    From: man/theme_tidydiversity.Rd
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://lifecycle.r-lib.org/articles/stages.html#experimental
+    From: README.md
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://patchwork.data-imaginist.com
+    From: man/plot_panel.Rd
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://recipes.tidymodels.org
+    From: man/step_hill.Rd
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+  URL: https://tidydiversity-033f3f.gitlab.io/cran-check.txt
+    From: README.md
+    Status: Error
+    Message: libcurl error code 56:
+      	CONNECT tunnel failed, response 403
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘tidydiversity’ can be installed ... [10s/10s] OK
+* used C++ compiler: ‘g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking ‘build’ directory ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... [12s/12s] OK
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking contents of ‘data’ directory ... OK
+* checking data for non-ASCII characters ... OK
+* checking LazyData ... OK
+* checking data for ASCII and uncompressed saves ... OK
+* checking line endings in C/C++/Fortran sources/headers ... OK
+* checking pragmas in C/C++ headers and code ... OK
+* checking compilation flags used ... NOTE
+Compilation used the following non-portable flag(s):
+  ‘-mno-omit-leaf-frame-pointer’
+* checking compiled code ... OK
+* checking installed files from ‘inst/doc’ ... OK
+* checking files in ‘vignettes’ ... OK
+* checking examples ... [28s/28s] OK
+* checking examples with --run-donttest ... [31s/31s] OK
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ... [28s/29s] OK
+  Running ‘testthat.R’ [28s/29s]
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes in ‘inst/doc’ ... OK
+* checking re-building of vignette outputs ... [12s/12s] OK
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... OK
+* DONE
+Status: 2 NOTEs
