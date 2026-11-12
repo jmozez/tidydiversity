@@ -196,6 +196,7 @@ Podani's
 Poisson
 Polatera
 PortalData
+Pseudoreplication
 RDA
 RStudio
 RStudio's
@@ -225,6 +226,8 @@ Sauer
 Shen
 Sinica
 Smilauer
+Smouse
+Sokal
 SpadeR
 SpadeR's
 SpatRaster
@@ -303,6 +306,7 @@ dbMEM
 dbh
 dem
 des
+df
 dismo
 div
 doi
@@ -407,6 +411,7 @@ png
 pnguot
 prioritizr
 proj
+pseudoreplication
 qD
 qN
 qquad
@@ -431,7 +436,9 @@ rsample
 résultats
 sd
 sdm
+sim
 smaragdina
+sne
 snowbeds
 snowmelt
 spdep

@@ -114,6 +114,13 @@ td_prepare <- function(data,
   df$.site <- data[[site_col]]
   df$.species <- as.character(data[[species_col]])
   df$.n <- n
+  # Stable, documented site order: factor levels, else natural order
+  # (numbers inside names compared numerically), so outputs never depend
+  # on the order of the input rows.
+  ord <- td_order(df[c(by_cols, ".site")])
+  df <- df[ord, , drop = FALSE]
+  # Keep `data` aligned with `df`: later steps read extra columns from it
+  data <- dplyr::ungroup(data)[ord, , drop = FALSE]
   if (!quo_is_null(unit)) {
     return(td_prepare_incidence(
       df, data, by_cols, site_col, unit, n_units,
@@ -245,4 +252,27 @@ td_check_min_n <- function(prep, min = 2, call = caller_env()) {
 
 td_new <- function(x, class) {
   tibble::new_tibble(x, class = class)
+}
+
+# Rank of each value in natural order: factor levels; numbers; otherwise
+# text with embedded numbers compared numerically ("s200" before "s1200").
+td_natural_rank <- function(x) {
+  if (is.factor(x)) return(as.integer(x))
+  if (is.numeric(x)) return(rank(x, ties.method = "min"))
+  x <- as.character(x)
+  u <- unique(x)
+  num <- suppressWarnings(as.numeric(u))
+  if (!anyNA(num)) return(match(x, u[order(num)]))
+  stem <- gsub("[0-9.]+", "#", u)
+  lead <- suppressWarnings(as.numeric(regmatches(u, regexpr("[0-9]+(\\.[0-9]+)?", u))))
+  lead_full <- rep(NA_real_, length(u))
+  has <- grepl("[0-9]", u)
+  lead_full[has] <- lead
+  match(x, u[order(stem, lead_full, u, na.last = TRUE)])
+}
+
+# Row order for a data frame of key columns.
+td_order <- function(keys) {
+  if (ncol(keys) == 0 || nrow(keys) == 0) return(seq_len(nrow(keys)))
+  do.call(order, unname(lapply(keys, td_natural_rank)))
 }

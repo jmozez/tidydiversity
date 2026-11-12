@@ -65,7 +65,7 @@ test_that("NMDS and passive variables work", {
   nmds <- ord_fit(butterflies(), method = "nmds", formula = ~ month + year)
   expect_true(is.finite(nmds$stress) && nmds$stress < 0.3)
   expect_equal(nmds$vectors$term, "month")
-  expect_named(nmds$envfit, c("term", "type", "r2", "p.value"))
+  expect_named(nmds$envfit, c("term", "type", "r2", "p.value", "axes", "permutations", "exact"))
   expect_true(all(nmds$envfit$p.value > 0 & nmds$envfit$p.value <= 1))
   expect_equal(glance(nmds)$method, "nmds")
   expect_s3_class(tidy(nmds, "envfit"), "tbl_df")

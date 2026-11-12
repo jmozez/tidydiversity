@@ -34,8 +34,7 @@ used when present, otherwise every row counts as one individual.}
 coverage or size as in \code{\link[=div_standardise]{div_standardise()}}.}
 
 \item{coverage}{Target sample coverage between 0 and 1. If both
-\code{coverage} and \code{size} are \code{NULL}, a default coverage is chosen for each
-group.}
+\code{coverage} and \code{size} are \code{NULL}, the target is chosen by \code{level}.}
 
 \item{size}{Target sample size. Supply either \code{coverage} or \code{size}.}
 

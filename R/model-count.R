@@ -64,6 +64,13 @@ model_count <- function(data,
     args$family <- fam
     fit <- do.call(stats::glm, args)
   }
+  # A readable call for print() and summary(), instead of the deparsed
+  # function that do.call() leaves behind
+  fit$call <- if (identical(family, "negbin")) {
+    rlang::call2(quote(MASS::glm.nb), formula = formula, data = quote(data))
+  } else {
+    rlang::call2("glm", formula = formula, family = rlang::sym(family), data = quote(data))
+  }
 
   # Dispersion diagnostic (Pearson chi^2 / df)
   pearson <- sum(stats::residuals(fit, type = "pearson")^2, na.rm = TRUE)

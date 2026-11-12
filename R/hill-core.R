@@ -270,9 +270,10 @@ boot_se <- function(draws, dims) {
 
 # Default coverage level of each site: the lowest coverage that the sites in
 # its group reach at twice their sample size (as iNEXT::estimateD()).
-default_coverage_level <- function(prep) {
+default_coverage_level <- function(prep, rule = "max_extrapolation") {
   c2n <- td_per_site(prep, function(x, i) {
-    tibble::tibble(.c2n = coverage_at_size(x, 2 * smp_n(x)))
+    m <- if (rule == "min_observed") smp_n(x) else 2 * smp_n(x)
+    tibble::tibble(.c2n = coverage_at_size(x, m))
   })
   grp <- if (length(prep$by)) vctrs::vec_group_id(c2n[prep$by]) else rep(1L, nrow(c2n))
   stats::ave(c2n$.c2n, grp, FUN = min)

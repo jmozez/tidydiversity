@@ -140,3 +140,94 @@ decay_nls <- function(y, d, model, start = NULL) {
     aic = stats::AIC(fit)
   )
 }
+
+#' Bootstrap confidence interval for a distance-decay slope
+#'
+#' @description
+#' `beta_decay_boot()` estimates the slope of dissimilarity against
+#' distance (from [beta_decay()]) and its bootstrap confidence interval.
+#' Because pairs of sites share sites and are not independent, sites, not
+#' pairs, are resampled: each replicate draws the sites with replacement
+#' and refits the slope on every pair of distinct drawn sites. Compare the
+#' slopes of two transects (or taxa) by whether their intervals overlap,
+#' or by the interval of their difference (`compare`).
+#'
+#' @param decay A [beta_decay()] result.
+#' @param component Dissimilarity column: `"total"` (default),
+#'   `"turnover"` or `"nestedness"`.
+#' @param nboot Number of bootstrap replicates.
+#' @param conf Confidence level.
+#' @param group Optional column of `decay` identifying transects or taxa;
+#'   slopes are estimated within each, and with exactly two groups their
+#'   difference is added.
+#' @param per Scale the slope to dissimilarity per `per` distance units
+#'   (for example 1000 for per km when distance is in metres).
+#' @param seed Optional random seed.
+#' @return A tibble with `group` (if given), `slope`, `lower`, `upper`,
+#'   `n_sites` and `nboot`; with two groups an extra row `difference`.
+#' @export
+#' @examples
+#' d <- beta_decay(png_frogs, elevation)
+#' beta_decay_boot(d, nboot = 200, per = 1000, seed = 1)
+beta_decay_boot <- function(decay,
+                            component = c("total", "turnover", "nestedness"),
+                            nboot = 999,
+                            conf = 0.95,
+                            group = NULL,
+                            per = 1,
+                            seed = NULL) {
+  component <- rlang::arg_match(component)
+  td_check_number(nboot, "nboot", 10, whole = TRUE)
+  td_check_number(conf, "conf", 0, 1)
+  need <- c("site_1", "site_2", "distance", component)
+  if (!is.data.frame(decay) || !all(need %in% names(decay))) {
+    cli::cli_abort("{.arg decay} must be a {.fn beta_decay} result.")
+  }
+  if (!is.null(seed)) set.seed(seed)
+  g_q <- enquo(group)
+  g <- if (rlang::quo_is_null(g_q)) rep("all", nrow(decay)) else
+    as.character(decay[[td_pick(g_q, decay, "group")]])
+  a <- (1 - conf) / 2
+  parts <- split(seq_len(nrow(decay)), g)
+  draws <- list()
+  res <- lapply(names(parts), function(k) {
+    d <- decay[parts[[k]], ]
+    sites <- sort(unique(c(d$site_1, d$site_2)))
+    key <- function(i, j) paste(pmin(i, j), pmax(i, j), sep = "\r")
+    lut <- stats::setNames(seq_len(nrow(d)), key(d$site_1, d$site_2))
+    fit <- function(rows) {
+      x <- d$distance[rows]
+      y <- d[[component]][rows]
+      if (length(unique(x)) < 2) return(NA_real_)
+      stats::coef(stats::lm(y ~ x))[[2]] * per
+    }
+    est <- fit(seq_len(nrow(d)))
+    b <- vapply(seq_len(nboot), function(r) {
+      s <- sample(sites, length(sites), replace = TRUE)
+      ij <- utils::combn(length(s), 2)
+      keep <- s[ij[1, ]] != s[ij[2, ]]
+      rows <- lut[key(s[ij[1, keep]], s[ij[2, keep]])]
+      fit(rows[!is.na(rows)])
+    }, numeric(1))
+    draws[[k]] <<- b
+    tibble::tibble(
+      group = k, slope = est,
+      lower = stats::quantile(b, a, na.rm = TRUE, names = FALSE),
+      upper = stats::quantile(b, 1 - a, na.rm = TRUE, names = FALSE),
+      n_sites = length(sites), nboot = sum(!is.na(b))
+    )
+  })
+  out <- vctrs::vec_rbind(!!!res)
+  if (length(parts) == 2) {
+    dif <- draws[[2]] - draws[[1]]
+    out <- vctrs::vec_rbind(out, tibble::tibble(
+      group = paste(names(parts)[2], "-", names(parts)[1]),
+      slope = out$slope[2] - out$slope[1],
+      lower = stats::quantile(dif, a, na.rm = TRUE, names = FALSE),
+      upper = stats::quantile(dif, 1 - a, na.rm = TRUE, names = FALSE),
+      n_sites = NA_integer_, nboot = sum(!is.na(dif))
+    ))
+  }
+  if (rlang::quo_is_null(g_q)) out$group <- NULL
+  out
+}

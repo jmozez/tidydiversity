@@ -91,6 +91,8 @@ navbar:
           href: articles/alpha-rarefaction.html
         - text: Beta diversity partitioning
           href: articles/beta-partitioning.html
+        - text: An elevational-gradient workflow
+          href: articles/elevational-gradient.html
         - text: Models of diversity estimates
           href: articles/modelling.html
         - text: "Ordination: biplots and triplots"
@@ -193,6 +195,9 @@ reference:
       - range_partition
       - beta_decay
       - beta_decay_model
+      - beta_decay_boot
+      - beta_mantel
+      - beta_turnover_counts
       - beta_dist
       - beta_permanova
       - beta_welch
@@ -259,6 +264,7 @@ articles:
       - articles/dimensions
       - alpha-rarefaction
       - beta-partitioning
+      - elevational-gradient
       - articles/modelling
       - articles/ordination
       - articles/composition-tests

@@ -42,8 +42,14 @@
 #'   and variables; `"sites"` (scaling 1) preserves the distances between
 #'   sites; `"symmetric"` (scaling 3) is a compromise.
 #' @param k For `"nmds"`, the number of dimensions.
-#' @param permutations Number of permutations for the tests of passive
-#'   variables.
+#' @param permutations Permutations for the tests of passive variables: a
+#'   number, or `"exact"` for complete enumeration of all n! orderings of
+#'   the sites (feasible up to about 9 sites; with 7 sites, 5,040), which
+#'   gives exact p-values.
+#' @param choices Axes on which passive variables are fitted and tested,
+#'   as in [vegan::envfit()]. The default, the first two, matches the
+#'   biplot; the axes used are reported in the `envfit` table.
+#' @param seed Optional random seed for the permutation tests.
 #' @param ... Passed to the vegan function that fits the ordination.
 #' @return A `td_ordination` object: a list with tibbles `sites` (site
 #'   scores joined to the site variables), `species`, `vectors`
@@ -95,8 +101,15 @@ ord_fit <- function(data,
                     scaling = c("species", "sites", "symmetric"),
                     k = 2,
                     permutations = 999,
+                    choices = 1:2,
+                    seed = NULL,
                     ...) {
   rlang::check_installed("vegan", "to fit ordinations.")
+  if (!is.numeric(choices) || length(choices) < 1 || any(choices < 1) ||
+        any(choices != round(choices))) {
+    cli::cli_abort("{.arg choices} must be axis numbers, such as {.code 1:2}.")
+  }
+  if (!is.null(seed)) set.seed(seed)
   method <- rlang::arg_match(method)
   scaling <- rlang::arg_match(scaling)
   constrained <- method %in% c("rda", "cca", "dbrda")
@@ -152,7 +165,9 @@ ord_fit <- function(data,
 
   envfit <- NULL
   if (!constrained && !is.null(formula)) {
-    ef <- ord_envfit(fit, env, formula, permutations, axis_cols, scale_num, method)
+    ef <- ord_envfit(fit, env, formula, permutations, axis_cols, scale_num, method,
+      choices = choices
+    )
     vectors <- ef$vectors
     centroids <- ef$centroids
     envfit <- ef$table
@@ -295,12 +310,16 @@ ord_axes <- function(fit, method, ax_cols) {
 }
 
 ord_envfit <- function(fit, env, formula, permutations, axis_cols, scale_num,
-                       method) {
+                       method, choices = 1:2) {
   vars <- all.vars(formula)
-  ef <- vegan::envfit(fit, as.data.frame(env)[vars],
-    permutations = permutations, choices = seq_along(axis_cols),
+  choices <- choices[choices <= length(axis_cols)]
+  if (length(choices) == 0) choices <- seq_along(axis_cols)
+  perm <- ord_permutations(permutations, nrow(env))
+  ef <- suppressMessages(vegan::envfit(fit, as.data.frame(env)[vars],
+    permutations = perm$how, choices = choices,
     scaling = if (method %in% c("dca", "nmds")) NULL else scale_num
-  )
+  ))
+  axis_cols <- axis_cols[choices]
   vec <- vegan::scores(ef, "vectors")
   vectors <- if (is.null(vec)) {
     tibble::tibble(term = character())
@@ -330,7 +349,36 @@ ord_envfit <- function(fit, env, formula, permutations, axis_cols, scale_num,
       r2 = unname(ef$factors$r), p.value = unname(ef$factors$pvals)
     )
   }
-  list(vectors = vectors, centroids = centroids, table = dplyr::bind_rows(tab))
+  table <- dplyr::bind_rows(tab)
+  if (nrow(table)) {
+    table$axes <- paste(choices, collapse = ", ")
+    table$permutations <- perm$n
+    table$exact <- perm$exact
+  }
+  list(vectors = vectors, centroids = centroids, table = table)
+}
+
+# Permutation design: a number of random permutations, or complete
+# enumeration ("exact") of all n! orderings of n sites.
+ord_permutations <- function(permutations, n, call = caller_env()) {
+  if (identical(permutations, "exact")) {
+    if (n > 9) {
+      cli::cli_abort(
+        "{.code permutations = \"exact\"} needs 9 or fewer sites ({n}! orderings is too many).",
+        call = call
+      )
+    }
+    rlang::check_installed("permute", "for exact permutation tests.")
+    how <- permute::how(complete = TRUE, maxperm = factorial(n) + 1)
+    return(list(how = how, n = factorial(n) - 1, exact = TRUE))
+  }
+  if (!is.numeric(permutations) || length(permutations) != 1 || permutations < 0) {
+    cli::cli_abort(
+      "{.arg permutations} must be a number or {.val exact}.",
+      call = call
+    )
+  }
+  list(how = permutations, n = permutations, exact = FALSE)
 }
 
 # ---- Methods ------------------------------------------------------------------

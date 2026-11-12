@@ -86,8 +86,11 @@ beta_permanova <- function(data,
     transform
   )
   strata_q <- enquo(strata)
-  perm <- permutations
+  perm <- ord_permutations(permutations, nrow(p$env))$how
   if (!rlang::quo_is_null(strata_q)) {
+    if (identical(permutations, "exact")) {
+      cli::cli_abort("Exact permutations cannot be combined with {.arg strata}.")
+    }
     sv <- rlang::as_name(strata_q)
     if (!sv %in% names(p$env)) {
       cli::cli_abort("{.arg strata} must be a site variable.")
@@ -99,10 +102,10 @@ beta_permanova <- function(data,
   y <- p$y
   env_df <- as.data.frame(p$env)
   f <- rhs_formula("y", formula, environment())
-  res <- vegan::adonis2(f,
+  res <- suppressMessages(vegan::adonis2(f,
     data = env_df, method = distance, by = if (by == "model") NULL else by,
     permutations = perm
-  )
+  ))
   tab <- as.data.frame(res)
   tibble::tibble(
     term = rownames(tab),
