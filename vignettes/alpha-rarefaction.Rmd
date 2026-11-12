@@ -143,8 +143,11 @@ units (here baits) each site needs to reach a target coverage, or to
 detect a target fraction of its estimated richness (Chao et al. 2009).
 
 ```{r effort}
-effort <- div_effort(png_ants, unit = bait, n_units = baits, .by = season,
-  coverage = 0.9, fraction = 0.9)
+effort <- div_effort(
+  png_ants,
+  unit = bait, n_units = baits, .by = season,
+  coverage = 0.9, fraction = 0.9
+)
 effort |> select(season, site, coverage_now, s_obs, s_est, target, additional)
 ```
 

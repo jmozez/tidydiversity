@@ -128,8 +128,7 @@ range_mde <- function(data,
   td_check_number(conf, "conf", 0, 1)
   g <- mde_prepare(data, enquo(gradient), enquo(site), enquo(species), enquo(.by))
   a <- (1 - conf) / 2
-  fits <- list()
-  out <- lapply(seq_along(g$groups), function(k) {
+  res_list <- lapply(seq_along(g$groups), function(k) {
     grp <- g$groups[[k]]
     occ <- mde_occupancy(grp)
     mat <- if (interpolate) mde_fill(occ$mat) else occ$mat
@@ -146,7 +145,7 @@ range_mde <- function(data,
     dev_sim <- colSums((sims - expected)^2)
     ss_tot <- sum((obs - mean(obs))^2)
     r2 <- if (ss_tot > 0) 1 - sum((obs - expected)^2) / ss_tot else NA_real_
-    fits[[k]] <<- tibble::tibble(
+    fit_k <- tibble::tibble(
       model = model, n_sites = n, n_species = ncol(mat),
       r2 = r2, p_value = (sum(dev_sim >= dev_obs) + 1) / (nsim + 1)
     )
@@ -157,10 +156,13 @@ range_mde <- function(data,
       expected = expected, sd = apply(sims, 1, stats::sd), lower = lo, upper = hi,
       outside = ifelse(obs > hi, "above", ifelse(obs < lo, "below", "within"))
     )
-    vctrs::vec_cbind(vctrs::vec_slice(grp$key, rep(1, nrow(res))), res)
+    list(
+      rows = vctrs::vec_cbind(vctrs::vec_slice(grp$key, rep(1, nrow(res))), res),
+      fit = fit_k
+    )
   })
-  out <- mde_finish(vctrs::vec_rbind(!!!out), g, NULL, data)
-  fit <- vctrs::vec_rbind(!!!fits)
+  out <- mde_finish(vctrs::vec_rbind(!!!lapply(res_list, `[[`, "rows")), g, NULL, data)
+  fit <- vctrs::vec_rbind(!!!lapply(res_list, `[[`, "fit"))
   if (length(g$by)) fit <- vctrs::vec_cbind(vctrs::vec_rbind(!!!lapply(g$groups, `[[`, "key")), fit)
   out <- td_new(out, "td_mde")
   attr(out, "fit") <- fit

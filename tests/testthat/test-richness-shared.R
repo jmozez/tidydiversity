@@ -79,14 +79,10 @@ test_that("div_richness returns every estimator with intervals", {
 test_that("Fisher's alpha equals vegan::fisher.alpha", {
   skip_if_not_installed("vegan")
   f <- div_fisher_alpha(png_ants, .by = season)
-  w <- tidyr::pivot_wider(
-    dplyr::count(png_ants, season, site, species),
-    names_from = species, values_from = n, values_fill = 0
-  )
-  ref <- vegan::fisher.alpha(as.matrix(w[-(1:2)]))
-  expect_equal(f$alpha, unname(ref[match(paste(f$season, f$site), paste(w$season, w$site))]),
-    tolerance = 1e-6
-  )
+  key <- paste(png_ants$season, png_ants$site)
+  tab <- unclass(table(key, png_ants$species))
+  ref <- vegan::fisher.alpha(tab)
+  expect_equal(f$alpha, unname(ref[paste(f$season, f$site)]), tolerance = 1e-6)
 })
 
 test_that("shared species estimators equal SpadeR", {
