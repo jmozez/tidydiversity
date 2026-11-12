@@ -15,17 +15,16 @@ Useful links:
 \itemize{
   \item \url{https://tidydiversity.in4metrix.dev/}
   \item \url{https://github.com/jmozez/tidydiversity}
-  \item \url{https://gitlab.com/jimmy.moses/tidydiversity}
   \item Report bugs at \url{https://github.com/jmozez/tidydiversity/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Jimmy Moses \email{jimmy.moses@pnguot.ac.pg} [copyright holder]
+\strong{Maintainer}: Jimmy Moses \email{jimmy.moses@pnguot.ac.pg} (\href{https://orcid.org/0000-0003-3342-2384}{ORCID}) [copyright holder]
 
 Authors:
 \itemize{
-  \item Jimmy Moses \email{jimmy.moses@pnguot.ac.pg} [copyright holder]
+  \item Jimmy Moses \email{jimmy.moses@pnguot.ac.pg} (\href{https://orcid.org/0000-0003-3342-2384}{ORCID}) [copyright holder]
 }
 
 }
