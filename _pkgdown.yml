@@ -46,7 +46,7 @@ repo:
 navbar:
   bg: dark
   structure:
-    left: [intro, userguide, tutorials, guides, gallery, reference, news]
+    left: [intro, userguide, tutorials, gallery, reference, news]
     right: [tidymapr, memorial, search, github, gitlab]
   components:
     github:
@@ -83,6 +83,26 @@ navbar:
           href: articles/guide-05-composition.html
         - text: 6. Functional and phylogenetic diversity
           href: articles/guide-06-dimensions.html
+        - text: -------
+        - text: Topics in more depth
+        - text: "TD, PD and FD on one scale"
+          href: articles/dimensions.html
+        - text: Alpha diversity and rarefaction
+          href: articles/alpha-rarefaction.html
+        - text: Beta diversity partitioning
+          href: articles/beta-partitioning.html
+        - text: Models of diversity estimates
+          href: articles/modelling.html
+        - text: "Ordination: biplots and triplots"
+          href: articles/ordination.html
+        - text: Testing community composition
+          href: articles/composition-tests.html
+        - text: Trait-based ecology
+          href: articles/traits.html
+        - text: Modelling with tidymodels
+          href: articles/tidymodels.html
+        - text: Publication figures
+          href: articles/publication.html
     tutorials:
       text: Tutorials
       menu:
@@ -106,34 +126,6 @@ navbar:
           href: articles/case-birds.html
         - text: Plants (Barro Colorado Island trees)
           href: articles/case-plants.html
-    guides:
-      text: Guides
-      menu:
-        - text: Diversity
-        - text: "TD, PD and FD on one scale"
-          href: articles/dimensions.html
-        - text: Alpha diversity and rarefaction
-          href: articles/alpha-rarefaction.html
-        - text: Beta diversity partitioning
-          href: articles/beta-partitioning.html
-        - text: -------
-        - text: Modelling and composition
-        - text: Models of diversity estimates
-          href: articles/modelling.html
-        - text: "Ordination: biplots and triplots"
-          href: articles/ordination.html
-        - text: Testing community composition
-          href: articles/composition-tests.html
-        - text: Trait-based ecology
-          href: articles/traits.html
-        - text: Modelling with tidymodels
-          href: articles/tidymodels.html
-        - text: "Maps: the tidymapr package"
-          href: https://tidymapr.in4metrix.dev/
-        - text: -------
-        - text: Output
-        - text: Publication figures
-          href: articles/publication.html
     gallery:
       text: Gallery
       href: articles/gallery.html
@@ -251,7 +243,7 @@ articles:
     contents:
       - articles/user-guide
       - starts_with("articles/guide-")
-  - title: Guides
+  - title: "User guide: topics in more depth"
     contents:
       - articles/dimensions
       - alpha-rarefaction
