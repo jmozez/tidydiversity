@@ -622,6 +622,27 @@ dplyr::mutate(png_ants, unit = paste(site, season, transect)) |>
   community-weighted mean approach are too optimistic? *Journal of
   Vegetation Science*, 29, 953-966.
 
+## Citation
+
+If you use tidydiversity in published work, please cite it. In R, `citation("tidydiversity")`
+prints the reference:
+
+> Moses, J. (2026). tidydiversity: Taxonomic, Phylogenetic and Functional Diversity with Tidy Hill Numbers. R package version 0.1.0. Zenodo. https://doi.org/10.5281/zenodo.24046912
+
+```bibtex
+@Manual{tidydiversity,
+  title = {tidydiversity: Taxonomic, Phylogenetic and Functional Diversity with Tidy Hill Numbers},
+  author = {Jimmy Moses},
+  year = {2026},
+  note = {R package version 0.1.0},
+  doi = {10.5281/zenodo.24046912},
+  url = {https://github.com/jmozez/tidydiversity},
+}
+```
+
+Please also cite the methods you use: each help page and User guide
+chapter lists the original references.
+
 ## Licence
 
 MIT © Jimmy Moses

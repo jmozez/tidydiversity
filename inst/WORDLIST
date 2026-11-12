@@ -1,5 +1,11 @@
 0D
+1e
+2021b
+2fqz612k6
 2n
+3n5tb2rqf
+4steps
+7e96ht
 Alekseyenko
 Annales
 Aravo
@@ -26,6 +32,7 @@ CGIAR
 CHELSA
 CMD
 CMIP
+CMIP6
 CRS
 CSI
 CTFS
@@ -40,6 +47,7 @@ Carto
 Chaetodipus
 Chao
 Chao1
+Chao2
 Chihuahuan
 Cmd
 Codeberg
@@ -66,6 +74,8 @@ Dufrene
 Dufrêne
 Dungan
 Durka
+E1
+E5
 EPSG
 Earthstar
 Ecography
@@ -181,6 +191,7 @@ Rimandai
 Roxygen
 RoxygenNote
 Rtools
+S4
 SDM
 SDMs
 SES
@@ -225,10 +236,12 @@ Zenodo
 Zizka
 ac
 ade
+ade4
 adespatial
 analyze
 annurev
 aods
+aods3
 aravo
 aut
 autoplot
@@ -241,6 +254,7 @@ betapart
 bioRxiv
 bioclim
 biomod
+biomod2
 btp
 caddisflies
 catchability
@@ -266,6 +280,7 @@ div
 doi
 dplyr
 e01343
+e02876
 e1588
 ecm
 ecog
@@ -291,6 +306,7 @@ geo
 ggmap
 ggord
 ggplot
+ggplot2
 ggplots
 ggrepel
 ggsave
@@ -310,6 +326,7 @@ ht
 iNEXT
 indicspecies
 io
+j35fq7r
 jimmy
 jmoses
 jmozez
@@ -321,6 +338,7 @@ lat
 les
 lm
 lme
+lme4
 lon
 lumineux
 maptiles
@@ -406,6 +424,7 @@ vars
 vctrs
 viridis
 visreg
+visreg2d
 weimea
 worldclim
 zenodo

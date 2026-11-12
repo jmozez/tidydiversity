@@ -151,13 +151,13 @@ instead.
 
 ## Troubleshooting
 
-| Message                                     | Cause                                                     | Fix                                                                           |
-|---------------------------------------------|-----------------------------------------------------------|-------------------------------------------------------------------------------|
-| `Could not find tools necessary to compile` | Build tools missing                                       | Install Rtools (Windows) or `xcode-select --install` (macOS), restart RStudio |
-| `Can't subset columns that don't exist`     | Column name differs from `site`, `species`                | Name them: `div_hill(data, site = plot, species = taxon)`                     |
-| `abundance must be numeric`                 | Counts stored as text (e.g. “12”)                         | `data$n <- as.numeric(data$n)`                                                |
-| Diversity is 1 everywhere                   | Each row is a species total but `abundance` was not given | Add `abundance = n`                                                           |
-| Zero counts treated as present              | Matrix converted without removing zeros                   | `filter(n > 0)` after `pivot_longer()`                                        |
+| Message                                     | Cause                                                                                   | Fix                                                                           |
+|---------------------------------------------|-----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| `Could not find tools necessary to compile` | Build tools missing                                                                     | Install Rtools (Windows) or `xcode-select --install` (macOS), restart RStudio |
+| `Can't subset columns that don't exist`     | Column name differs from `site`, `species`                                              | Name them: `div_hill(data, site = plot, species = taxon)`                     |
+| `abundance must be numeric`                 | Counts stored as text (e.g. “12”)                                                       | `data$n <- as.numeric(data$n)`                                                |
+| Diversity is the same for q = 0, 1 and 2    | Each row is a species total but `abundance` was not given, so every species counts once | Add `abundance = n`                                                           |
+| Zero counts treated as present              | Matrix converted without removing zeros                                                 | `filter(n > 0)` after `pivot_longer()`                                        |
 
 ## Next
 
