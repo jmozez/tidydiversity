@@ -27,3 +27,4 @@
 ^cran-check$
 ^vercel\.json$
 ^\.vercelignore$
+^\.github$
