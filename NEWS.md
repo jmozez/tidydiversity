@@ -1,5 +1,9 @@
 # tidydiversity 0.1.0
 
+* A named `palette` in `autoplot()` methods that misses a category is now an
+  error naming the category; before, ggplot2 drew that category grey without
+  a warning. Fully named palettes always coloured categories by name.
+
 * All geospatial and mapping code has moved to the companion package
   [tidymapr](https://tidymapr.in4metrix.dev/): the `geo_*()` verbs,
   `as_sf()`, `as_spat_raster()`, `plot_sites()`, `plot_geo()`,

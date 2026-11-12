@@ -128,6 +128,7 @@ td_style <- function(p, palette, theme, fill = TRUE) {
   } else if (is.character(palette)) {
     p <- p + ggplot2::scale_colour_manual(values = palette)
     if (fill) p <- p + ggplot2::scale_fill_manual(values = palette)
+    td_check_named_palette(p, palette)
   } else if (!is.null(palette)) {
     cli::cli_abort(
       "{.arg palette} must be {.val okabe_ito}, {.val grey}, a vector of \\
@@ -136,6 +137,41 @@ td_style <- function(p, palette, theme, fill = TRUE) {
   }
   if (!is.null(theme)) p <- p + theme
   td_alt(p)
+}
+
+# A named palette colours each category by its name (ggplot2's manual
+# scales match names). A category without a colour would be drawn in the
+# scale's NA colour without warning, so stop and name it instead.
+td_check_named_palette <- function(p, palette, call = rlang::caller_env()) {
+  if (is.null(names(palette)) || !any(nzchar(names(palette)))) {
+    return(invisible(TRUE))
+  }
+  # Categories actually mapped to colour or fill, read from the data (the
+  # scale's limits default to the palette's names, so they cannot tell)
+  cats <- character()
+  for (ly in c(list(NULL), p$layers)) {
+    mapping <- if (is.null(ly)) p$mapping else ly$mapping
+    d <- if (!is.null(ly) && is.data.frame(ly$data)) ly$data else p$data
+    if (!is.data.frame(d)) next
+    for (a in c("colour", "fill")) {
+      q <- mapping[[a]]
+      if (is.null(q)) next
+      v <- tryCatch(rlang::eval_tidy(q, data = d), error = function(e) NULL)
+      if (is.character(v) || is.factor(v)) cats <- c(cats, as.character(v))
+    }
+  }
+  cats <- unique(cats)
+  missing <- setdiff(stats::na.omit(cats), names(palette))
+  if (length(missing) > 0) {
+    cli::cli_abort(c(
+      paste(
+        "{.arg palette} is named but has no colour for",
+        "{length(missing)} categor{?y/ies}: {.val {missing}}."
+      ),
+      "i" = "Name a colour for every category, or pass an unnamed palette."
+    ), call = call)
+  }
+  invisible(TRUE)
 }
 
 # Default alt text for screen readers (see ggplot2::get_alt_text(), used by
