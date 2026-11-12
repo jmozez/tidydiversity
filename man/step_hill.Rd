@@ -41,7 +41,7 @@ incidence values) with Hill numbers of chosen orders, so community
 diversity can be used as a predictor in tidymodels workflows.
 }
 \examples{
-\dontshow{if (rlang::is_installed("recipes")) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("recipes")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 wide <- data.frame(elev = c(200, 700, 1200),
                    sp1 = c(5, 0, 2), sp2 = c(1, 3, 0), sp3 = c(2, 2, 2))
 recipes::recipe(elev ~ ., data = wide) |>

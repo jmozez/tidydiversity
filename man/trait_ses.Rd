@@ -66,7 +66,7 @@ site and species totals (\code{\link[vegan:nullmodel]{vegan::nullmodel()}}, \cod
 }
 }
 \examples{
-\dontshow{if (rlang::is_installed(c("ade4", "FD"))) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("ade4", "FD"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 aravo <- data_aravo()
 set.seed(1)
 trait_ses(aravo$community, aravo$traits, abundance = cover, times = 49)

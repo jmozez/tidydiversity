@@ -25,7 +25,7 @@ Tests the significance of a constrained ordination (\code{\link[=ord_fit]{ord_fi
 \code{\link[vegan:anova.cca]{vegan::anova.cca()}}, and returns a tidy table.
 }
 \examples{
-\dontshow{if (requireNamespace("vegan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("vegan", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ord <- ord_fit(png_frogs, method = "cca", formula = ~elevation)
 ord_test(ord, permutations = 199)
 \dontshow{\}) # examplesIf}

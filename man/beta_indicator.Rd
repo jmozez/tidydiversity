@@ -67,7 +67,7 @@ Legendre and Legendre (2012), p-values are corrected for multiple
 testing before species are selected.
 }
 \examples{
-\dontshow{if (rlang::is_installed("indicspecies")) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("indicspecies")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect),
                       zone = ifelse(elevation <= 700, "lowland", "montane"))
 set.seed(1)

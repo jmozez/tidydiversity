@@ -47,7 +47,7 @@ entropy, using the equivalent-numbers correction of de Bello et al.
 are weighted equally. Dissimilarities are scaled to a maximum of 1.
 }
 \examples{
-\dontshow{if (rlang::is_installed(c("ade4", "FD"))) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("ade4", "FD"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 aravo <- data_aravo()
 trait_rao(aravo$community, aravo$traits, abundance = cover)
 \dontshow{\}) # examplesIf}

@@ -6,6 +6,7 @@
 3n5tb2rqf
 4steps
 7e96ht
+ACE
 Alekseyenko
 Annales
 Aravo
@@ -16,6 +17,7 @@ Baselga's
 Basemap
 Basemaps
 Basien
+Belle
 Bello
 Binatang
 Bioclim
@@ -49,6 +51,7 @@ Chaetodipus
 Chao
 Chao1
 Chao2
+Chazdon
 Chihuahuan
 Cmd
 Codeberg
@@ -82,6 +85,7 @@ EPSG
 Earthstar
 Ecography
 Esri
+EstimateS
 FD
 FDis
 FDiv
@@ -93,6 +97,7 @@ Fick
 FileGDB
 Filip
 Filip's
+Foissner
 ForestGEO
 Fortin
 GADM
@@ -117,6 +122,7 @@ Hijmans
 Hsieh
 Hu
 Hubbell
+ICE
 Idigel
 IndVal
 Jaccard
@@ -128,6 +134,7 @@ Kleyer
 Klimes
 Kongnoo
 Kubota
+Kuo
 Kusumoto
 Laliberte
 LazyData
@@ -169,6 +176,7 @@ Okabe
 Oksanen
 OpenFileGDB
 Orme
+Overton
 PCNM
 PCoA
 PERMANOVA
@@ -206,10 +214,14 @@ SLA
 SOR
 SRTM
 Sauer
+Shen
+Sinica
 Smilauer
 SpadeR
+SpadeR's
 SpatRaster
 SpatRasters
+Statistica
 Swire
 Sørensen
 TD
@@ -330,6 +342,7 @@ heatmaps
 hillR
 hillshade
 ht
+iChao
 iNEXT
 indicspecies
 io
@@ -388,6 +401,7 @@ qN
 qquad
 quadrat
 quadrats
+quadrupletons
 quasibinomial
 rOpenSci
 rd
@@ -427,6 +441,7 @@ tidyverse
 tmap
 topo
 transect's
+tripletons
 triplot
 triplots
 unmanipulated

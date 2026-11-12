@@ -72,6 +72,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     MASS,
+    SpadeR,
     vegan
 VignetteBuilder: 
     knitr
@@ -82,3 +83,4 @@ Language: en-NZ
 LazyData: true
 Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.1.1
+RoxygenNote: 7.3.1

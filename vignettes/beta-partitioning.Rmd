@@ -113,6 +113,45 @@ because sparse dry-season samples share few species by chance.
 With only five sites per season there are 120 distinct permutations, so
 the smallest attainable p-value is near 0.01 however strong the pattern.
 
+## Shared species and similarity corrected for unseen species
+
+Classic Jaccard and Sørensen indices count only the species seen in both
+samples. A species shared by two sites but rare in one is easily missed,
+so incomplete samples look less similar than they are. Chao et al. (2000,
+2005) estimate what was missed:
+
+```{r shared}
+shared <- beta_shared(png_ants, unit = bait, n_units = baits, .by = season)
+filter(shared, season == "wet")
+```
+
+**How to read it.** `observed` is the number of species seen at both
+sites, `estimate` the estimated number truly shared. 200 m and 700 m share
+8 observed species but an estimated 28: most shared species were found at
+only one bait in one of the two sites. Pairs with no observed shared
+species (all pairs with 2200 m) get no correction, because the estimator
+extrapolates only from shared species that were seen.
+
+```{r chao-sim}
+chao <- beta_chao(png_ants, .by = season)
+filter(chao, season == "wet") |>
+  select(site_1, site_2, jaccard, chao_jaccard, sorensen, chao_sorensen)
+```
+
+**How to read it.** The Chao indices weight species by their abundance
+(or incidence), so they measure the share of *individuals* belonging to
+shared species, corrected for shared species that were missed. Where the
+shared species are common, they are larger than the classic indices,
+which count species only. Between 200 m and 700 m, Sørensen similarity rises from
+`r round(chao$sorensen[chao$season == "wet" & chao$site_1 == "MW0200" & chao$site_2 == "MW0700"], 2)`
+to
+`r round(chao$chao_sorensen[chao$season == "wet" & chao$site_1 == "MW0200" & chao$site_2 == "MW0700"], 2)`:
+the two lowland sites are much more alike than their species lists
+suggest. Where the few shared species are rare at both sites (200 m and
+1700 m), the Chao index is smaller than the classic one. Elevations far
+apart remain dissimilar under both indices, so the turnover along the
+mountain is real, not an artefact of sampling.
+
 ## Hill-number dissimilarity between pairs of sites
 
 Presence-absence indices treat a species with one worker like one with a
@@ -210,6 +249,14 @@ the mountain differs between seasons.
 
 Baselga, A. (2010). Partitioning the turnover and nestedness components
 of beta diversity. *Global Ecology and Biogeography*, 19, 134-143.
+
+Chao, A., Chazdon, R. L., Colwell, R. K. and Shen, T.-J. (2005). A new
+statistical approach for assessing similarity of species composition with
+incidence and abundance data. *Ecology Letters*, 8, 148-159.
+
+Chao, A., Hwang, W.-H., Chen, Y.-C. and Kuo, C.-Y. (2000). Estimating the
+number of shared species in two communities. *Statistica Sinica*, 10,
+227-246.
 
 Chao, A., Chiu, C.-H. and Jost, L. (2014). Unifying species diversity,
 phylogenetic diversity, functional diversity, and related similarity and

@@ -43,7 +43,7 @@ equally to the dissimilarity, an improvement on Gower when trait types
 are mixed (de Bello et al. 2021).
 }
 \examples{
-\dontshow{if (rlang::is_installed(c("ade4", "FD"))) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("ade4", "FD"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 data(aravo, package = "ade4")
 tr <- data.frame(species = rownames(aravo$traits), aravo$traits)
 d <- trait_dist(tr)

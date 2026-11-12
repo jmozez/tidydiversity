@@ -1,5 +1,23 @@
 # tidydiversity 0.1.0
 
+## EstimateS and SpadeR estimators
+
+* New `div_richness()`: the classic non-parametric richness estimators of
+  EstimateS and SpadeR, with bootstrap standard errors and log-normal
+  intervals. Abundance data: Chao1, bias-corrected Chao1, iChao1 (Chiu et
+  al. 2014), ACE, ACE-1 and first- and second-order jackknife. Incidence
+  data: Chao2, bias-corrected Chao2, iChao2, ICE, ICE-1, jackknives and
+  the bootstrap estimator. Point estimates equal SpadeR and vegan.
+* New `div_fisher_alpha()`: Fisher's log-series alpha, equal to
+  `vegan::fisher.alpha()`.
+* New `beta_shared()`: the Chao1- and Chao2-shared estimators of the
+  number of species two sites share, including undetected shared species
+  (Chao et al. 2000), equal to SpadeR.
+* New `beta_chao()`: Chao et al. (2005) abundance- and incidence-based
+  Jaccard and Sørensen similarities corrected for unseen shared species,
+  next to the classic indices; equal to SpadeR and to
+  `vegan::vegdist(method = "chao")`.
+
 * A named `palette` in `autoplot()` methods that misses a category is now an
   error naming the category; before, ggplot2 drew that category grey without
   a warning. Fully named palettes always coloured categories by name.

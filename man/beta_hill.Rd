@@ -49,7 +49,7 @@ All three are Hill numbers of the same order \code{q}, in units of
 effective numbers of species (Chao, Chiu and Jost 2014), and reproduce
 \href{https://CRAN.R-project.org/package=iNEXT.3D}{iNEXT.3D}.}
 
-\item{tree}{For \code{type = "PD"}, a rooted \link[ape:phylo]{ape::phylo} tree with branch
+\item{tree}{For \code{type = "PD"}, a rooted \link[ape:read.tree]{ape::phylo} tree with branch
 lengths whose tip labels include every species.}
 
 \item{reftime}{For \code{type = "PD"}, the reference time (tree depth) at

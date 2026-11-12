@@ -52,7 +52,7 @@ method (Legendre et al. 1997; Dray and Legendre 2008) and the max test
 returns a tidy table.
 }
 \examples{
-\dontshow{if (rlang::is_installed("ade4")) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("ade4")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 aravo <- data_aravo()
 set.seed(1)
 trait_fourth_corner(aravo$community, aravo$traits, abundance = cover,

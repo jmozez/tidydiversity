@@ -31,7 +31,7 @@ A tibble.
 \code{glance()} a one-row summary of the ordination.
 }
 \examples{
-\dontshow{if (requireNamespace("vegan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("vegan", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ord <- ord_fit(png_frogs, method = "ca")
 tidy(ord, "species")
 glance(ord)

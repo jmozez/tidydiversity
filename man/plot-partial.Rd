@@ -70,7 +70,7 @@ as a filled contour (the pattern that paper built by converting
 \code{visreg::visreg2d()} into ggplot by hand). No visreg or plotmo dependency.
 }
 \examples{
-\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ants <- png_ants |>
   dplyr::group_by(site, elevation) |>
   dplyr::summarise(richness = dplyr::n_distinct(species), .groups = "drop")

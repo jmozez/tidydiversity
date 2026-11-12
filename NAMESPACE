@@ -36,6 +36,7 @@ S3method(tidy,td_rarefy)
 S3method(tidy,td_standardise)
 export(add_site_data)
 export(as_community)
+export(beta_chao)
 export(beta_decay)
 export(beta_decay_model)
 export(beta_dispersion)
@@ -46,6 +47,7 @@ export(beta_indicator)
 export(beta_multi)
 export(beta_pair)
 export(beta_permanova)
+export(beta_shared)
 export(beta_welch)
 export(community_long)
 export(community_wide)
@@ -55,8 +57,10 @@ export(div_completeness)
 export(div_coverage)
 export(div_estimate)
 export(div_evenness)
+export(div_fisher_alpha)
 export(div_hill)
 export(div_rarefy)
+export(div_richness)
 export(div_standardise)
 export(div_table)
 export(glance)
@@ -100,17 +104,13 @@ export(trait_ses)
 export(trait_tpd)
 export(trait_tpd_dissim)
 importFrom(Rcpp,sourceCpp)
-importFrom(generics,
-  glance,
-  tidy
-)
+importFrom(generics,glance)
+importFrom(generics,tidy)
 importFrom(pillar,tbl_sum)
-importFrom(rlang,
-  "%||%",
-  ":=",
-  .data,
-  caller_env,
-  enquo,
-  quo_is_null
-)
+importFrom(rlang,"%||%")
+importFrom(rlang,":=")
+importFrom(rlang,.data)
+importFrom(rlang,caller_env)
+importFrom(rlang,enquo)
+importFrom(rlang,quo_is_null)
 useDynLib(tidydiversity, .registration = TRUE)

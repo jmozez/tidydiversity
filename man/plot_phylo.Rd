@@ -42,7 +42,7 @@ that site's Faith's phylogenetic diversity (PD; Faith 1992), the
 quantity behind q = 0 phylogenetic Hill numbers (Chao et al. 2010).
 }
 \examples{
-\dontshow{if (rlang::is_installed(c("ape", "ggplot2"))) withAutoprint(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("ape", "ggplot2"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # A taxonomic tree (family / genus / species) for the Mt Wilhelm frogs
 frogs <- png_frogs
 frogs$genus <- sub(" .*", "", frogs$scientific_name)

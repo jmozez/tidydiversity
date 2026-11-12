@@ -98,6 +98,44 @@ suggest 84 (interval 45-176). Such estimates show that many species are
 missing, but they are too uncertain to rank sites; use standardised
 estimates instead.
 
+## Classic estimators (EstimateS and SpadeR)
+
+Many studies, and many reviewers, still report the estimators of
+EstimateS: ACE and ICE, the jackknives, the bootstrap, and the improved
+Chao estimators. `div_richness()` gives all of them, each with a
+bootstrap standard error and interval, and the values equal SpadeR's.
+Here, for the incidence data (baits as sampling units) at 700 m:
+
+```{r richness}
+set.seed(1)
+rich <- div_richness(png_ants, unit = bait, n_units = baits, .by = season, nboot = 100)
+rich |>
+  filter(site == "MW0700") |>
+  select(season, estimator, observed, estimate, se, lower, upper)
+```
+
+**How to read it.** Every estimator agrees that many species were missed
+at 700 m, but they disagree strongly on how many: in the dry season, from
+`r round(rich$estimate[rich$site == "MW0700" & rich$season == "dry" & rich$estimator == "bootstrap"])`
+(bootstrap) to
+`r round(rich$estimate[rich$site == "MW0700" & rich$season == "dry" & rich$estimator == "ice1"])`
+(ICE-1). That spread is itself the result: with 15 species, most found at
+one bait, the data cannot pin down the true richness. The bootstrap and
+first-order jackknife are known to underestimate when sampling is this
+incomplete, and ACE-1 and ICE-1 to be unstable (note the huge interval).
+Report Chao2 (or iChao2 when rare species dominate) as the lower bound,
+and say that the sample was too incomplete for a precise estimate.
+
+Fisher's alpha, the log-series index common in tropical studies, is less
+sensitive to sample size than richness:
+
+```{r fisher}
+div_fisher_alpha(png_ants, .by = season)
+```
+
+Like the coverage-standardised richness below, it is highest at 700 m
+and lowest at 1700 m and above in both seasons.
+
 ## Rarefaction and extrapolation
 
 `div_rarefy()` interpolates each sample down to smaller sizes and
@@ -180,6 +218,10 @@ in the dry season, where 700 m had the least complete sample.
 > sample coverage of each site in a supplementary table.
 
 ## References
+
+Chiu, C.-H., Wang, Y.-T., Walther, B. A. and Chao, A. (2014). An
+improved nonparametric lower bound of species richness via a modified
+Good-Turing frequency formula. *Biometrics*, 70, 671-682.
 
 Chao, A. and Jost, L. (2012). Coverage-based rarefaction and
 extrapolation: standardizing samples by completeness rather than size.
