@@ -1,5 +1,16 @@
 # tidydiversity 0.1.0
 
+## Mid-domain effect (RangeModel)
+
+* New `range_through()`: range-through interpolation along elevational
+  or latitudinal gradients.
+* New `range_mde()`: mid-domain null models of richness along a gradient,
+  with uniform placement of ranges (Colwell and Hurtt 1994; exact
+  expectation) or the spreading-dye model (equal to rangemodelR), a
+  simulation interval per site, R² and a global test (`glance()`), and an
+  `autoplot()` method. New article "Mid-domain effect and range-through
+  interpolation".
+
 ## EstimateS and SpadeR estimators
 
 * New `div_richness()`: the classic non-parametric richness estimators of

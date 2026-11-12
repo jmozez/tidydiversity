@@ -73,6 +73,7 @@ Suggests:
     testthat (>= 3.0.0),
     MASS,
     SpadeR,
+    rangemodelR,
     vegan
 VignetteBuilder: 
     knitr

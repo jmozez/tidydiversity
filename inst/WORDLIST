@@ -57,6 +57,7 @@ Cmd
 Codeberg
 Color
 Colwell
+Colwell's
 Condit
 Config
 CoordinateCleaner
@@ -114,6 +115,7 @@ Gillet
 GitLab
 Gotelli
 Gro
+Grytnes
 Götzenberger
 HOM
 Hamidi
@@ -122,10 +124,12 @@ Hijmans
 Hsieh
 Hu
 Hubbell
+Hurtt
 ICE
 Idigel
 IndVal
 Jaccard
+Jetz
 Jost
 KML
 KMZ
@@ -164,6 +168,7 @@ NMDS
 Nekola
 NetCDF
 Neto
+Nonbiological
 Novotny
 Novotný
 Numba
@@ -194,8 +199,11 @@ PortalData
 RDA
 RStudio
 RStudio's
+Rahbek
 Ramu
+RangeModel
 RaoQ
+Rapoport
 Rcpp
 Rebins
 Redmond
@@ -238,6 +246,7 @@ UNDP
 USGS
 Usseglio
 Valone
+Vetaas
 VignetteBuilder
 Villeger
 Vojtěch
@@ -364,6 +373,7 @@ lon
 lumineux
 maptiles
 maxnet
+mde
 mem
 mesotopographical
 metR
@@ -404,6 +414,7 @@ quadrats
 quadrupletons
 quasibinomial
 rOpenSci
+rangemodelR
 rd
 rebins
 rgbif

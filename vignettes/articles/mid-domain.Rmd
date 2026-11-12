@@ -1,0 +1,169 @@
+---
+title: "Mid-domain effect and range-through interpolation"
+description: "Is a mid-elevation richness peak more than geometry? Range-through interpolation and RangeModel-style null models with range_through() and range_mde()."
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  dev.args = list(bg = "white"),
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 8, fig.height = 4.5
+)
+```
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+set.seed(2026)
+```
+
+## The concept
+
+Many groups are richest at mid-elevation, not at the bottom of a
+mountain. Before explaining such a peak with climate, area or
+productivity, rule out a simpler cause: **geometry**. A mountain is a
+bounded domain. A species with a large range can only fit if its range
+lies near the middle, so if ranges were placed at random, they would
+overlap most at mid-elevation and richness would peak there with no
+environmental cause at all. This is the **mid-domain effect** (Colwell
+and Hurtt 1994; Colwell and Lees 2000).
+
+A mid-domain null model keeps every species' observed range size and
+shuffles where the range sits. Comparing observed richness with the
+null model answers:
+
+| Observed richness is... | Interpretation |
+|---|---|
+| Inside the null-model interval everywhere | The pattern is consistent with geometry alone |
+| Above it at some elevations | More species there than geometry predicts: look for environmental causes |
+| Below it at some elevations | Fewer species than geometry predicts: an environmental limit |
+
+Two models are offered, as in Colwell's RangeModel and the rangemodelR
+package:
+
+| `model =` | How a range is placed | Effect |
+|---|---|---|
+| `"uniform"` | Equally likely at every position where it fits (Colwell and Hurtt 1994) | Strongest mid-domain peak; expectation computed exactly |
+| `"spread"` | A random seed site, then growth into random neighbouring sites (Jetz and Rahbek 2001) | Weaker peak; more ranges near the ends |
+
+## Step 1: range-through interpolation
+
+A species recorded at 1200 m and 2200 m was almost certainly present at
+1700 m too, even if no individual was caught there. `range_through()`
+adds such records:
+
+```{r rt}
+rt <- range_through(png_frogs, gradient = elevation)
+count(rt, elevation, interpolated) |>
+  tidyr::pivot_wider(names_from = interpolated, values_from = n, values_fill = 0) |>
+  rename(recorded = `FALSE`, interpolated = `TRUE`)
+```
+
+**How to read it.** Frogs along Mt Wilhelm were sampled thoroughly: only
+two records are added, one at 1200 m and one at 3200 m. In less
+complete surveys interpolation can add many species to mid-gradient
+sites, so always report how many records were interpolated.
+
+## Step 2: the null model
+
+```{r mde}
+frogs <- range_mde(png_frogs, gradient = elevation, nsim = 999)
+frogs
+glance(frogs)
+```
+
+```{r mde-plot, fig.alt = "Frog richness along Mt Wilhelm against the mid-domain null model and its 95% interval"}
+autoplot(frogs, xlab = "Elevation (m)")
+```
+
+**How to read it.** `expected` is the richness predicted by geometry
+alone at each elevation and `lower`/`upper` its 95% interval from 999
+randomisations; `outside` flags elevations where the observed richness
+leaves the interval. In `glance()`, `r2` is the share of the variation
+in observed richness that the null model explains, and `p_value` tests
+whether the observed profile as a whole departs from the null model more
+than random placements do.
+
+**Interpretation.** Frog richness does peak at mid-elevation (17-18
+species at 1200-1700 m), and the null model explains about a third of
+the pattern (R² = `r round(glance(frogs)$r2, 2)`). But the profile is
+skewed towards the bottom of the mountain: at 200 m, 13 species against
+about 8 expected (at the top of the interval), while at 3200 m and
+3700 m richness falls *below* the interval: far fewer frogs live near
+the summit than random placement of their ranges would give. The
+global test is borderline (*P* = `r round(glance(frogs)$p_value, 3)`)
+for the uniform model and significant for the spreading-dye model:
+
+```{r mde-spread}
+glance(range_mde(png_frogs, gradient = elevation, model = "spread", nsim = 999))
+```
+
+So geometry contributes to the mid-elevation peak, but something at
+high elevation, most plausibly low temperature, removes frog species
+beyond what geometry explains.
+
+## Ants: geometry does not explain the pattern
+
+```{r ants, fig.alt = "Ant richness against the mid-domain null model in the dry and wet seasons"}
+ants <- range_mde(png_ants, gradient = elevation, nsim = 999, .by = season)
+glance(ants)
+autoplot(ants, xlab = "Elevation (m)")
+```
+
+**Interpretation.** For ants the null model explains little of the
+pattern (R² of `r round(glance(ants)$r2[1], 2)` in the dry and
+`r round(glance(ants)$r2[2], 2)` in the wet season) and the observed profile departs significantly from it in
+both seasons. Richness is *above* the null model in the lowlands (200 m
+in the dry season, 700 m in the wet season) and *below* it at 1700 m
+in both seasons and at 2200 m in the wet season. Ant richness declines with elevation far more steeply than geometry
+predicts; the 700 m peak in the wet season is a real lowland maximum,
+not a mid-domain artefact.
+
+## How to report it
+
+> To test whether the elevational richness pattern could arise from
+> geometric constraints alone, observed ranges were interpolated between
+> their lowest and highest records (range-through; Grytnes and Vetaas
+> 2002) and randomised 999 times within the sampled gradient, keeping
+> each species' range size (mid-domain null model, uniform placement;
+> Colwell and Hurtt 1994), with tidydiversity. The null model explained
+> `r round(100 * glance(frogs)$r2)`% of the variation in frog richness;
+> observed richness at 3200 m and 3700 m fell below the 95% null-model
+> interval.
+
+State the number of interpolated records, the model, the number of
+randomisations, and which elevations fall outside the interval.
+
+## Caveats
+
+* The model treats the sampled sites as evenly spaced positions. With
+  uneven sampling, place sites at even intervals or interpret with care.
+* Range sizes come from the data; species found at one site have ranges
+  of one site, which the model cannot place more freely than observed.
+* A mid-domain fit does not prove geometry is the cause: environmental
+  gradients that peak in the middle produce the same shape. The test is
+  most informative when observed and expected *differ*.
+
+## References
+
+Colwell, R. K. and Hurtt, G. C. (1994). Nonbiological gradients in
+species richness and a spurious Rapoport effect. *American Naturalist*,
+144, 570-595.
+
+Colwell, R. K. and Lees, D. C. (2000). The mid-domain effect: geometric
+constraints on the geography of species richness. *Trends in Ecology &
+Evolution*, 15, 70-76.
+
+Colwell, R. K. (2008). RangeModel: tools for exploring and assessing
+geometric constraints on species richness (the mid-domain effect) along
+transects. *Ecography*, 31, 4-7.
+
+Grytnes, J.-A. and Vetaas, O. R. (2002). Species richness and altitude: a
+comparison between null models and interpolated plant species richness
+along the Himalayan altitudinal gradient, Nepal. *American Naturalist*,
+159, 294-304.
+
+Jetz, W. and Rahbek, C. (2001). Geometric constraints explain much of the
+species richness pattern in African birds. *Proceedings of the National
+Academy of Sciences*, 98, 5661-5666.

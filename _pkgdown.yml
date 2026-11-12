@@ -103,6 +103,8 @@ navbar:
           href: articles/tidymodels.html
         - text: Publication figures
           href: articles/publication.html
+        - text: Mid-domain effect and range-through
+          href: articles/mid-domain.html
     tutorials:
       text: Tutorials
       menu:
@@ -183,6 +185,10 @@ reference:
       - beta_hill
       - beta_hill_pair
       - beta_shared
+  - title: Richness along gradients
+    contents:
+      - range_through
+      - range_mde
       - beta_decay
       - beta_decay_model
       - beta_dist
@@ -257,6 +263,7 @@ articles:
       - articles/traits
       - articles/tidymodels
       - articles/publication
+      - articles/mid-domain
   - title: Papua New Guinea case studies
     contents:
       - articles/case-png-ants
