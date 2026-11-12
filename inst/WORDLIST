@@ -12,6 +12,7 @@ Aravo
 Auda
 Barro
 Baselga
+Baselga's
 Basemap
 Basemaps
 Basien
@@ -169,6 +170,7 @@ Orme
 PCNM
 PCoA
 PERMANOVA
+PERMDISP
 PNAS
 Pagel
 Pagel's
@@ -192,6 +194,7 @@ Rimandai
 Roxygen
 RoxygenNote
 Rtools
+S1
 S4
 SDM
 SDMs
@@ -286,6 +289,7 @@ e1588
 ecm
 ecog
 ecolsys
+edf
 edn
 elevatr
 envfit
@@ -340,6 +344,7 @@ les
 lm
 lme
 lme4
+lmerTest
 lon
 lumineux
 maptiles
@@ -354,6 +359,7 @@ morphospecies
 moses
 multipolygons
 météorologiques
+nboot
 nd
 neotropical
 nestedness

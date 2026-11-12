@@ -25,6 +25,22 @@ dissimilarity has two parts: **turnover**, where species replace each
 other, and **nestedness**, where poorer sites hold a subset of the species
 at richer sites. The examples use `png_ants`, ants at nutrient baits along Mt Wilhelm, Papua New Guinea (Moses et al. 2023).
 
+## The concept
+
+Two communities can differ in two ways:
+
+| Pattern | Example | What it suggests |
+|---|---|---|
+| **Turnover** (replacement) | Lowland species are replaced by different montane species | Environmental filtering, dispersal barriers, history |
+| **Nestedness** (loss) | The montane site holds only a subset of the lowland species | Species lost along a gradient of harshness or habitat area |
+
+The Sørensen dissimilarity (0 = same species, 1 = no species shared)
+mixes both. Baselga's partition splits it into turnover (Simpson
+dissimilarity) and nestedness, which add up to the total, so you can say
+*how* sites differ, not only *how much*. Conservation advice differs:
+with turnover every site is needed to protect the species; with
+nestedness the richest site protects most of them.
+
 ## Pairwise dissimilarity
 
 ```{r}
@@ -41,11 +57,22 @@ pairs |>
   summarise(across(c(turnover, nestedness, total), mean))
 ```
 
+**How to read it.** Sites differ strongly (mean total dissimilarity
+0.86-0.87: on average a pair shares only about 13% of its species), and
+almost all of the difference is turnover (0.82-0.83) rather than
+nestedness (0.04). Ant species are *replaced* along Mt Wilhelm, not
+simply lost. Several high-elevation pairs share no species at all
+(total = 1).
+
 ## Many sites at once
 
 ```{r}
 beta_multi(png_ants, .by = season)
 ```
+
+The multiple-site version measures dissimilarity among all five sites
+at once (Baselga 2010) and tells the same story: turnover dominates in
+both seasons.
 
 ## Distance decay
 
@@ -74,6 +101,15 @@ set.seed(1)
 beta_decay_model(decay, permutations = 999)
 ```
 
+**How to read it.** In the wet season similarity decays steeply with
+elevational distance: it halves every
+`r round(beta_decay_model(decay, permutations = 0)$half_distance[2])` m,
+the curve explains 69% of the variation among pairs (`pseudo_r2`), and
+the permutation test is significant (*P* = 0.017). In the dry season the
+curve is flat and not significant (*P* = 0.35): sites near each other are
+already very dissimilar (`a` = 0.26, the similarity at zero distance),
+because sparse dry-season samples share few species by chance.
+
 With only five sites per season there are 120 distinct permutations, so
 the smallest attainable p-value is near 0.01 however strong the pattern.
 
@@ -92,6 +128,11 @@ hp <- beta_hill_pair(wet, abundance = workers)
 hp
 ```
 
+**How to read it.** `gamma` is the diversity of the two sites pooled,
+`alpha` the mean diversity per site, and `beta` = gamma / alpha the
+effective number of distinct communities: 1 if the two sites are
+identical, 2 if they share nothing. `dis_sorensen` rescales it to 0-1.
+
 ```{r, fig.alt = "Heatmaps of Sorensen-type dissimilarity between sites for q = 0, 1 and 2", fig.height = 3.6, fig.width = 9}
 autoplot(hp)
 ```
@@ -102,6 +143,11 @@ clustering or PERMANOVA:
 ```{r}
 beta_dist(hp, q = 2)
 ```
+
+At q = 2 (Morisita-Horn), 700 m and 1200 m are fairly similar (0.54)
+although they share under half their species: their dominant species are
+the same. Read the three heatmaps together: dissimilarity that grows from
+q = 0 to q = 2 means the sites differ most in their *common* species.
 
 ## Beta diversity at equal sample coverage
 
@@ -115,6 +161,13 @@ completely distinct sites (1 to the number of sites).
 ```{r}
 beta_hill(png_ants, .by = season)
 ```
+
+**How to read it.** At `r round(beta_hill(png_ants, .by = season)$coverage[1], 3)`
+coverage, the five dry-season sites hold the equivalent of 3.1 completely
+distinct communities out of a possible 5 (`beta`), and the wet-season
+sites 2.8. `gamma` is the regional diversity and `alpha` the mean per site.
+Beta rises from q = 0 to q = 2, so the sites differ even more in their
+dominant species than in their species lists.
 
 The four `dis_` columns rescale beta to 0-1. `dis_sorensen` and
 `dis_jaccard` measure non-overlap (for q = 0 they are the classic
@@ -135,6 +188,34 @@ set.seed(1)
 b <- beta_hill(png_ants, q = 0, coverage = 0.9, nboot = 20, .by = season)
 b[c("season", "beta", "beta_lower", "beta_upper")]
 ```
+
+**Interpretation.** At 90% coverage, beta diversity is 3.1 in the dry
+season and 2.7 in the wet season, but the bootstrap intervals overlap
+widely (2.6-3.6 and 2.0-3.5): there is no evidence that turnover along
+the mountain differs between seasons.
+
+## How to report it
+
+> Beta diversity among elevations was partitioned into turnover and
+> nestedness components of Sørensen dissimilarity (Baselga 2010) with
+> tidydiversity. Turnover accounted for 95% of the total dissimilarity
+> (mean pairwise turnover 0.82, nestedness 0.04). In the wet season,
+> similarity decayed exponentially with elevational distance (half
+> distance 293 m, pseudo-R² = 0.69, permutation *P* = 0.017). At equal
+> sample coverage (90%; Chao et al. 2023), the five elevations
+> represented 3.1 (95% CI 2.6-3.6) effectively distinct communities in
+> the dry season and 2.7 (2.0-3.5) in the wet season.
+
+## References
+
+Baselga, A. (2010). Partitioning the turnover and nestedness components
+of beta diversity. *Global Ecology and Biogeography*, 19, 134-143.
+
+Chao, A., Chiu, C.-H. and Jost, L. (2014). Unifying species diversity,
+phylogenetic diversity, functional diversity, and related similarity and
+differentiation measures through Hill numbers. *Annual Review of
+Ecology, Evolution, and Systematics*, 45, 297-324.
+
 
 Chao, A. et al. (2023). Rarefaction and extrapolation with beta diversity
 under a framework of Hill numbers: the iNEXT.beta3D standardization.

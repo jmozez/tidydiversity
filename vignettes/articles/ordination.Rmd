@@ -23,6 +23,25 @@ library(ggplot2)
 set.seed(2026)
 ```
 
+## The concept
+
+A community table has one column per species, so with 189 butterfly
+species every sampling day is a point in 189 dimensions. **Ordination**
+squeezes that into two or three axes that keep as much of the
+differences between samples as possible: samples close together in the
+diagram have similar species composition, samples far apart differ.
+
+There are two families:
+
+| Family | Question | Axes are |
+|---|---|---|
+| **Unconstrained** (PCA, CA, DCA, PCoA, NMDS) | What are the main patterns in composition, whatever causes them? | The strongest gradients in the species data |
+| **Constrained** or canonical (RDA, CCA, db-RDA) | How much of the composition do *my* variables explain, and is it more than chance? | Combinations of the explanatory variables, chosen to explain the most composition |
+
+Use an unconstrained method to explore and a constrained one to test a
+hypothesis. Comparing the two tells you whether your variables capture
+the main pattern or only a small part of it.
+
 ## Choosing a method
 
 | Question | Method | `method =` |
@@ -71,6 +90,22 @@ ord_test(rda)
 ord_test(rda, by = "terms")
 ```
 
+**How to read it.** The printout says the year and month together
+explain `r round(100 * glance(rda)$constrained, 1)`% of the variation in
+butterfly composition (the *constrained* fraction); the rest is variation
+among days that these variables do not account for. A constrained
+fraction of 10-30% is typical for community data: species respond to many
+things at once, and counts of rare species are noisy.
+
+The permutation test shuffles the days many times and refits the model;
+the p-value is the proportion of shuffles that explain as much as the
+real data. Both terms are significant on their own: years differ in
+composition, and composition shifts steadily through the months
+(seasonality), independently of year. Use `by = "terms"` for sequential
+tests (each term after those before it) or `by = "margin"` for the
+unique effect of each term after all others.
+
+
 A triplot shows the days (points), the species with the strongest
 responses (red arrows), the month gradient (blue arrow) and the year
 centroids (triangles). Ellipses cover one standard deviation of the days
@@ -79,6 +114,16 @@ in each year.
 ```{r rda-plot, fig.alt = "RDA triplot of butterfly days coloured by year, with ellipses, species arrows, the month arrow and year centroids."}
 autoplot(rda, colour = year, ellipse = "sd", species = 10)
 ```
+
+**Interpretation.** Days of the same year cluster, and the year
+ellipses overlap only partly: the community changed between years. The
+month arrow points along the direction in which days late in the season
+lie; a species arrow pointing the same way is more abundant late in the
+season, one pointing the opposite way early in the season. The angle
+between two arrows approximates their correlation (small angle =
+positive, right angle = none, opposite = negative). Read species only
+from their arrow direction, not from their nearest site.
+
 
 ## Unconstrained ordination with passive variables
 
@@ -90,6 +135,15 @@ supplementary variables in CANOCO.
 nmds <- ord_fit(butterflies, method = "nmds", formula = ~ month + year)
 tidy(nmds, "envfit")
 ```
+
+**How to read it.** `r2` is the proportion of variation in the NMDS
+configuration explained by each variable, and `p.value` comes from a
+permutation test. Month and year each explain about a fifth of the
+pattern, and both are significant: the main pattern in composition,
+found *without* reference to these variables, still lines up with them.
+That is stronger evidence than a constrained analysis alone, which always
+finds *some* pattern along the variables it is given.
+
 
 ```{r nmds-plot, fig.height = 4.6, fig.alt = "NMDS of butterfly days coloured by month, with convex hulls around years."}
 autoplot(nmds, colour = month, group = year, hull = TRUE, species = 8)
@@ -104,6 +158,16 @@ gradient, so a unimodal method suits them. CCA constrained by elevation:
 cca <- ord_fit(png_frogs, method = "cca", formula = ~elevation)
 ord_test(cca)
 ```
+
+**Interpretation.** Elevation alone explains about a fifth of frog
+composition (model chi-square 0.96 of a total of 4.96), a large share
+for a single variable, and the test is significant even with only eight
+sites. In the triplot the sites are
+ordered along the elevation arrow, and the species crosses mark each
+species' optimum: lowland species at one end, montane species at the
+other, with almost no species shared between the ends. That is complete
+turnover, which is why a unimodal method (CCA) was chosen.
+
 
 ```{r frogs-plot, fig.alt = "CCA triplot of frog communities at eight elevations on Mt Wilhelm, sites coloured by elevation, with the elevation arrow."}
 autoplot(cca, colour = elevation, site_labels = TRUE, species = 12)
@@ -135,6 +199,19 @@ tidy(rda, "sites")
 tidy(rda, "axes")
 glance(rda)
 ```
+
+## How to report it
+
+> Butterfly composition was related to year and month by redundancy
+> analysis (RDA) of Hellinger-transformed counts (Legendre and
+> Gallagher 2001), with tidydiversity and vegan. Year and month together
+> explained `r round(100 * glance(rda)$constrained, 1)`% of the
+> variation (permutation test, 999 permutations, *P* = 0.001); both terms
+> were significant (Table S1). An NMDS with passively fitted variables
+> showed the same pattern (Figure 2).
+
+Report the method and transformation, the explained fraction, the test
+and number of permutations, and give the table of terms as a supplement.
 
 ## References
 

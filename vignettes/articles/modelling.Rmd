@@ -16,6 +16,27 @@ coverage or asymptotic), and their uncertainty should carry through to
 the model. tidydiversity results are tidy tibbles, so this takes a few
 lines.
 
+## The concept
+
+A diversity estimate is not a measurement like temperature: it is itself
+an estimate, with a standard error that depends on how well the site was
+sampled. Two consequences follow when diversity becomes the response in a
+regression:
+
+1. **Compare like with like.** Observed richness grows with sampling
+   effort, so a model of raw counts partly models effort. Use estimates
+   standardised to equal coverage (`div_standardise()`) or asymptotic
+   estimates (Chapter 3 of the [user guide](guide-03-fair-comparisons.html)).
+2. **Carry the uncertainty.** A site with a wide confidence interval
+   should influence the fit less than a precisely estimated one. Either
+   weight each estimate by the inverse of its variance, or refit the
+   model to many bootstrap replicates of the estimates and look at the
+   spread of the coefficients.
+
+With few sites, as here (5 elevations x 2 seasons = 10 estimates), keep
+models simple: every extra term costs a degree of freedom you cannot
+spare.
+
 ```{r setup, message = FALSE}
 library(tidydiversity)
 library(dplyr)
@@ -40,6 +61,13 @@ est <- div_standardise(png_ants,
 est
 ```
 
+**How to read it.** One row per site, season and order `q`.
+`estimate` is the standardised diversity in effective numbers of species,
+`conf.low` and `conf.high` its 95% interval, `method` whether the site
+was interpolated (`rarefaction`) or extrapolated to reach the common
+coverage `coverage`, and `weight` = 1 / standard error². Extrapolated
+estimates have wider intervals and therefore smaller weights.
+
 ## Approaches {.tabset}
 
 ### Weighted lm
@@ -55,6 +83,12 @@ fit_lm <- lm(estimate ~ elevation + I(elevation^2) + season,
 broom::tidy(fit_lm, conf.int = TRUE)
 ```
 
+**Interpretation.** No term is significant: with 10 estimates and four
+parameters, the quadratic model has too little information to separate
+the linear and curved parts of the elevation effect, and their
+confidence intervals are wide. This is a typical small-sample result,
+not evidence of no effect: the simpler models below detect the decline.
+
 ### Mixed model
 
 Each elevation band was sampled in both seasons, so sites are repeated.
@@ -68,6 +102,12 @@ fit_mm <- lme4::lmer(estimate ~ elevation + season + (1 | site),
 summary(fit_mm)$coefficients
 ```
 
+**Interpretation.** Accounting for the pairing of seasons within sites,
+Shannon diversity declines with elevation (t = -2.4): about
+`r round(-100 * lme4::fixef(fit_mm)["elevation"], 2)` effective species
+per 100 m. lme4 gives no p-values by design; use the confidence interval
+(`confint(fit_mm)`) or the **lmerTest** package.
+
 ### GAM
 
 **mgcv** fits a smooth response along the gradient.
@@ -77,6 +117,7 @@ fit_gam <- mgcv::gam(estimate ~ s(elevation, k = 4) + season,
   data = shannon, weights = weight / mean(weight), method = "REML"
 )
 summary(fit_gam)$s.table
+# edf near 1 means the smooth is a straight line
 grid <- tidyr::expand_grid(
   elevation = seq(200, 2200, by = 20),
   season = c("wet", "dry")
@@ -102,6 +143,13 @@ ggplot(grid, aes(elevation, fit, colour = season, fill = season)) +
   theme_tidydiversity()
 ```
 
+**Interpretation.** The effective degrees of freedom of the smooth (edf
+= 1.0) say the GAM chose a straight line: there is no evidence of a
+mid-elevation peak, a pattern often reported for ants. The decline is
+significant (*P* = 0.02). The points with error bars are the estimates
+themselves; the wide bars of the extrapolated sites show why weighting
+matters.
+
 ### Count model for richness
 
 Observed richness is a count, but it depends on sampling effort. Model
@@ -119,6 +167,15 @@ broom::tidy(glm(diversity ~ elevation + season + offset(log(n)),
   data = obs, family = poisson
 ))
 ```
+
+**Interpretation.** Coefficients of a log-link model are on the log
+scale: the Gamma GLM slope of `r signif(coef(glm(estimate ~ elevation + season, data = rich, family = Gamma(link = "log"), weights = weight / mean(weight)))["elevation"], 2)`
+per metre means standardised richness falls by about
+`r round(100 * (1 - exp(100 * coef(glm(estimate ~ elevation + season, data = rich, family = Gamma(link = "log"), weights = weight / mean(weight)))["elevation"])))`%
+per 100 m (exp(100 x slope)), close to significance (*P* = 0.054). The
+Poisson model with an effort offset finds no trend: observed richness
+per record does not change with elevation, a reminder that the two
+models answer different questions.
 
 ## Propagating uncertainty with bootstrap draws
 
@@ -145,6 +202,15 @@ slopes <- draws |>
 quantile(slopes$estimate, c(0.025, 0.5, 0.975))
 ```
 
+**How to read it.** Each of the 200 bootstrap replicates gives one
+slope; their 2.5% and 97.5% quantiles form a 95% interval that includes
+the uncertainty of the diversity estimates as well as the residual
+scatter. Shannon diversity at 90% coverage falls by
+`r round(-100 * median(slopes$estimate), 2)` effective species per 100 m
+(95% interval `r round(-100 * quantile(slopes$estimate, 0.975), 2)` to
+`r round(-100 * quantile(slopes$estimate, 0.025), 2)`), and the interval
+excludes zero.
+
 ```{r boot-plot, fig.height = 3, fig.alt = "Bootstrap distribution of the elevation slope"}
 ggplot(slopes, aes(estimate * 100)) +
   geom_histogram(bins = 30, fill = plot_palette(1)) +
@@ -165,6 +231,12 @@ decay <- beta_decay(png_ants, elevation, .by = season)
 broom::tidy(lm(turnover ~ distance + season, data = decay))
 ```
 
+**How to read it.** Turnover (species replacement) between two sites
+increases by about `r round(100 * coef(lm(turnover ~ distance + season, data = decay))["distance"], 3)`
+per 100 m of elevation difference: communities further apart on the
+mountain share fewer species. The p-values of this lm are too small,
+because each site appears in several pairs.
+
 Pairs are not independent, so test the relationship with a Mantel test
 rather than the lm p-values.
 
@@ -174,6 +246,12 @@ d_beta <- beta_dist(beta_pair(wet), "turnover")
 d_elev <- dist(distinct(wet, site, elevation)$elevation)
 vegan::mantel(d_beta, d_elev, permutations = 999)
 ```
+
+**Interpretation.** The Mantel correlation between turnover and
+elevation difference is strong (r = 0.81). With five sites there are only
+5! = 120 distinct permutations, so the smallest possible p-value is
+1/120 ≈ 0.008; *P* = 0.017 is close to that floor. Few sites limit the
+power of any test of beta diversity, however strong the pattern.
 
 ### PERMANOVA and ordination
 
@@ -189,6 +267,12 @@ vegan::adonis2(bray ~ elevation + season,
 )
 ```
 
+**Interpretation.** Elevation explains 23% of the variation in
+composition between the ten site-season units (*P* = 0.008); season,
+added after elevation, explains 7% and is not significant. The
+[composition tests](composition-tests.html) article shows how
+restricting permutations within sites reveals the season effect.
+
 ```{r nmds, fig.height = 4, fig.alt = "NMDS ordination of sites coloured by elevation"}
 nmds <- vegan::metaMDS(bray, trace = FALSE)
 bind_cols(unit_data, as.data.frame(vegan::scores(nmds))) |>
@@ -199,3 +283,26 @@ bind_cols(unit_data, as.data.frame(vegan::scores(nmds))) |>
   labs(colour = "Elevation (m)", shape = NULL) +
   theme_tidydiversity(legend_position = "right")
 ```
+
+**Interpretation.** Sites are ordered by elevation along the first NMDS
+axis, and the dry- and wet-season samples of each site lie close
+together: elevation, not season, structures the ant communities.
+
+## How to report it
+
+> Shannon diversity (Hill number of order 1) was standardised to 90%
+> sample coverage with tidydiversity (Chao et al. 2014). To propagate
+> estimation uncertainty, a linear model of diversity against elevation
+> and season was refitted to each of 200 bootstrap replicates of the
+> estimates. Diversity declined by
+> `r round(-100 * median(slopes$estimate), 2)` effective species per
+> 100 m (95% bootstrap interval
+> `r round(-100 * quantile(slopes$estimate, 0.975), 2)`-`r round(-100 * quantile(slopes$estimate, 0.025), 2)`).
+> Compositional turnover was correlated with elevation difference
+> (Mantel r = 0.81, *P* = 0.017).
+
+## References
+
+Chao, A. et al. (2014). Rarefaction and extrapolation with Hill numbers:
+a framework for sampling and estimation in species diversity studies.
+*Ecological Monographs*, 84, 45-67.

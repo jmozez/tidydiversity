@@ -21,6 +21,26 @@ library(ggplot2)
 set.seed(42)
 ```
 
+## The concept
+
+**Alpha diversity** is the diversity within one sample or site. Counting
+species is the obvious measure, but the count depends on how hard you
+looked: a second day of sampling always adds species. Two ideas solve
+this:
+
+* **Hill numbers** put richness, Shannon and Simpson diversity on one
+  scale, the *effective number of species*: the number of equally common
+  species that would give the same diversity. The order `q` sets how much
+  rare species count (q = 0 all equally, q = 1 in proportion to their
+  frequency, q = 2 mostly the common ones).
+* **Sample coverage** is the estimated proportion of the community's
+  individuals (or occurrences) that belong to species already in the
+  sample. It is estimated from the singletons (`f1`, species seen once)
+  and doubletons (`f2`): many singletons mean many species still unseen.
+  Comparing sites at **equal coverage** compares them at equal
+  completeness, which is fairer than comparing at equal sample size
+  (Chao and Jost 2012).
+
 The examples use `png_ants`: ants recorded at nutrient baits along the
 Mt Wilhelm elevational gradient in Papua New Guinea, in the dry and wet
 seasons (Moses et al. 2023). Each bait at which a species was found counts
@@ -36,6 +56,13 @@ Hill numbers express diversity as an effective number of species. Order
 div_hill(png_ants, q = c(0, 1, 2), .by = season)
 ```
 
+**How to read it.** `n` is the number of occurrences, `diversity` the
+observed Hill number. Diversity always falls from q = 0 to q = 2; the
+steeper the fall, the more uneven the community (a few species dominate).
+At 200 m in the dry season, 16 species are equivalent to 12.3 equally
+common ones (q = 1) and 9.9 dominant ones (q = 2): a fairly even
+community.
+
 ## Sample coverage
 
 Raw counts depend on sampling effort. Sample coverage estimates how
@@ -44,6 +71,13 @@ complete each sample is.
 ```{r}
 div_coverage(png_ants, .by = season)
 ```
+
+**How to read it.** `s_obs` is the observed richness, `f1` and `f2` the
+singletons and doubletons, and `coverage` the estimated completeness.
+Most samples are 70-95% complete, but the dry-season sample at 700 m
+reaches only 48%: 12 of its 15 species were found once. Its observed
+richness is therefore the least reliable and should not be compared
+directly with the others.
 
 ## Asymptotic estimates
 
@@ -54,6 +88,15 @@ estimator and the unbiased Simpson estimator, with bootstrap intervals.
 div_estimate(png_ants, .by = season, nboot = 50) |>
   filter(q == 0)
 ```
+
+**How to read it.** `estimate` is the estimated true richness (Chao1),
+a lower bound, with a bootstrap interval. Where coverage is high
+(200 m dry, 1700 m dry) it is close to the observed richness. Where it is
+low, the estimate rises far above the observation and the interval
+becomes very wide: at 700 m in the dry season, 15 observed species
+suggest 84 (interval 45-176). Such estimates show that many species are
+missing, but they are too uncertain to rank sites; use standardised
+estimates instead.
 
 ## Rarefaction and extrapolation
 
@@ -71,11 +114,22 @@ curves
 autoplot(curves)
 ```
 
+**How to read it.** Solid lines are interpolated (rarefied) diversity for
+smaller samples, the point marks the actual sample, and dashed lines are
+extrapolated up to twice the sample size. A curve still rising steeply
+at its end has many species left to find; a curve that flattens is
+nearly complete. Curves for q = 1 and 2 flatten much sooner than for
+q = 0, because rare species, which are the last to be found, count little
+in them.
+
 Plotting against coverage shows how complete each sample is:
 
 ```{r, fig.alt = "Diversity plotted against sample coverage"}
 autoplot(curves, x = "coverage")
 ```
+
+Read the curves at the same position on the x-axis to compare sites at
+equal completeness.
 
 ## Fair comparisons
 
@@ -88,6 +142,13 @@ std <- div_standardise(png_ants, .by = season, nboot = 50)
 std
 ```
 
+**How to read it.** All sites of a season are brought to one coverage
+(`r round(min(std$coverage[std$season == "dry"]), 3)` in the dry season
+and `r round(min(std$coverage[std$season == "wet"]), 3)` in the wet
+season): `method` says whether a site was rarefied down or extrapolated
+up to reach it, and `m` the sample size at which this happens. These
+estimates, not the observed counts, are the ones to compare.
+
 ```{r, fig.alt = "Coverage-standardised richness by elevation"}
 std |>
   left_join(distinct(png_ants, site, elevation), by = "site") |>
@@ -99,3 +160,27 @@ std |>
   scale_colour_tidydiversity() +
   theme_tidydiversity()
 ```
+
+**Interpretation.** At equal coverage, ant richness peaks at 700 m in
+both seasons and is lowest above 1700 m. Each site is richer in the wet
+season, when more ants forage at baits. The 700 m estimates were
+extrapolated and have the widest intervals, so the peak is clear but its
+height uncertain. The observed counts alone would have hidden the peak
+in the dry season, where 700 m had the least complete sample.
+
+## How to report it
+
+> Ant richness was compared among elevations at equal sample coverage
+> (Chao and Jost 2012), separately for each season, with tidydiversity.
+> Samples were rarefied or extrapolated to the lowest coverage reached at
+> twice the observed sample size
+> (`r round(min(std$coverage[std$season == "dry"]), 2)` in the dry and
+> `r round(min(std$coverage[std$season == "wet"]), 2)` in the wet
+> season); 95% intervals are from 50 bootstrap replicates. Report the
+> sample coverage of each site in a supplementary table.
+
+## References
+
+Chao, A. and Jost, L. (2012). Coverage-based rarefaction and
+extrapolation: standardizing samples by completeness rather than size.
+*Ecology*, 93, 2533-2547.

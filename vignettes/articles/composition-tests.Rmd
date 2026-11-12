@@ -30,6 +30,24 @@ library(ggplot2)
 set.seed(2026)
 ```
 
+## The concept
+
+Composition is multivariate: a transect is described by the abundance of
+every species at once. Ordinary ANOVA tests one response; the tests here
+work on a **dissimilarity matrix** (by default Bray-Curtis, from 0 =
+identical species and abundances to 1 = no species shared), so they
+compare whole communities.
+
+The logic is the same as ANOVA. The variation in composition is the sum of
+squared dissimilarities among samples; a variable "explains" the part of
+it that lies between its groups or along its gradient. Because
+dissimilarities are not normally distributed, significance comes from
+**permutation**: shuffle the samples among groups many times, recompute
+the statistic, and ask how often chance alone does as well as the real
+data. Permutations must respect the design (for example, shuffle only
+within a site when samples are paired), otherwise the test is too
+liberal.
+
 The units are the 20 transects of the Mt Wilhelm ant survey: 5
 elevations x 2 seasons x 2 transects.
 
@@ -47,6 +65,16 @@ ants <- png_ants |>
 beta_permanova(ants, site = unit, formula = ~ elevation + season)
 ```
 
+**How to read it.** `r2` is the share of the total variation in
+composition explained by each term, `statistic` is the pseudo-F (variation
+between groups relative to within), and `p.value` comes from 999
+permutations. Elevation explains about 17% and is highly significant;
+season explains 7% and, tested this way, is not significant (*P* = 0.10).
+The residual (77%) is variation among transects that neither variable
+explains: normal for ant communities, which also respond to
+microhabitat, nest sites and chance.
+
+
 Each term is tested after the other (`by = "margin"`, the default), so
 the result does not depend on the order of terms in the formula. Here
 the design is balanced, so sequential tests (`by = "terms"`, vegan's
@@ -59,6 +87,13 @@ sites:
 ```{r permanova-strata}
 beta_permanova(ants, site = unit, formula = ~season, strata = site)
 ```
+
+**Interpretation.** The season effect is the same size (r² = 0.067) but
+now significant. Nothing about the data changed, only the test: shuffling
+transects only within each site removes the large between-site
+differences from the comparison, so a small, consistent seasonal shift
+at every site becomes detectable. This is the multivariate equivalent of
+a paired test.
 
 The season effect, hidden by the large differences between elevations,
 becomes clear once each transect is compared only with transects on its
@@ -87,6 +122,11 @@ set.seed(1)
 beta_welch(ants, site = unit, group = season)
 ```
 
+The Welch test does not use the site strata, so it should be compared
+with the unstratified PERMANOVA, which also found no season effect
+(*P* = 0.10). Both agree; the season effect is only visible within
+sites.
+
 ## 3. Forward selection
 
 With many candidate variables, select them by forward selection with the
@@ -100,6 +140,13 @@ sel
 attr(sel, "adj_r2_full")
 ```
 
+**How to read it.** Elevation enters first and alone. Season is not
+selected: adding it would not explain significantly more, and the
+selected model's adjusted R² (`r round(sel$adj_r2[nrow(sel)], 3)`) is
+already close to that of the full model
+(`r round(attr(sel, "adj_r2_full"), 3)`), the ceiling the stopping rule
+will not exceed.
+
 ## 4. Variation partitioning
 
 How much do elevation and season explain on their own and together
@@ -108,6 +155,17 @@ How much do elevation and season explain on their own and together
 ```{r varpart}
 ord_varpart(ants, site = unit, elevation = ~elevation, season = ~season)
 ```
+
+**How to read it.** Fraction `[a]` is explained by elevation alone
+(about 11%), `[b]` by season alone (about 1%, not significant), `[c]` by
+both together, and `[d]` is unexplained. Adjusted R² corrects for the
+number of variables, so fractions are comparable between groups of
+different size. A small negative value, as for `[c]` here, means zero:
+the two variables are independent by design (every elevation was sampled
+in both seasons), so they share no explained variation. Large shared
+fractions are common in observational data, where for example climate
+and space are correlated; then the effect cannot be attributed to
+either.
 
 Up to four groups of variables are allowed, for example climate, soil,
 space (from `elevation` or coordinates) and time.
@@ -137,6 +195,22 @@ beta_indicator(ants, site = unit, group = zone, adjust = "none", alpha = 1) |>
   dplyr::arrange(p.value) |>
   head()
 ```
+
+## How to report it
+
+> Differences in ant composition (Bray-Curtis dissimilarity) between
+> elevations and seasons were tested by PERMANOVA (Anderson 2001) with
+> 999 permutations in tidydiversity. Elevation explained 17% of the
+> variation (pseudo-*F* = 3.75, *P* = 0.001). Season explained 7%; it
+> was significant when permutations were restricted within sites
+> (pseudo-*F* = 1.29, *P* = 0.003), but not otherwise. Multivariate
+> dispersion did not differ between seasons (PERMDISP, *P* = 0.50), so
+> the season effect reflects a shift in composition rather than in
+> spread. Variation partitioning (adjusted R²) attributed 11% of the
+> variation to elevation alone and 1% to season alone.
+
+Always state the dissimilarity, the number of permutations, how they
+were restricted, and the dispersion test.
 
 ## References
 

@@ -23,6 +23,28 @@ confidence intervals throughout. The estimators reproduce
 [iNEXT.3D](https://CRAN.R-project.org/package=iNEXT.3D) and this is checked
 in the package test suite.
 
+## The concept
+
+Counting species treats every species as equally different from every
+other. But a site with ten species of one genus is less diverse, in an
+evolutionary sense, than a site with ten species from ten families; and a
+site where all trees are shade-tolerant and slow-growing is less diverse
+in function than one with a mix of strategies. The three dimensions
+answer different questions:
+
+| Dimension | Question | Unit of the result |
+|---|---|---|
+| **TD** | How many species? | Effective number of species |
+| **PD** | How much evolutionary history? | Effective number of equally distinct lineages (with `pd_unit = "mean"`) |
+| **FD** | How many distinct ecological roles? | Effective number of functionally distinct species |
+
+Because all three are Hill numbers, they share the same orders `q` and
+the same rarefaction and coverage methods, and the patterns can be
+compared directly. **Disagreement between dimensions is the interesting
+result**: a site rich in species but poor in function holds many
+redundant species, which may buffer it against losses (insurance) but
+also means few distinct roles.
+
 ## Data
 
 The example uses the Brazilian rainforest tree data shipped with iNEXT.3D:
@@ -58,6 +80,12 @@ set.seed(1)
 div_estimate(brazil, abundance = n, nboot = 50)
 ```
 
+**How to read it.** `observed` is the sample value and `estimate` the
+asymptotic value (what a complete census would give). The Interior holds
+more species (514 estimated against 445), but at q = 2, which counts
+only dominant species, the Edge is higher (86 against 75): the Interior
+has more rare species, the Edge a more even set of common ones.
+
 ### PD
 
 `reftime` defaults to the age of the root of the tree pruned to the observed
@@ -68,6 +96,12 @@ giving the effective number of lineages.
 div_estimate(brazil, abundance = n, type = "PD", tree = tree, nboot = 50)
 ```
 
+**How to read it.** PD of order 0 is the total branch length divided by
+the reference time (400 million years here), so 80 means the Edge's
+species span as much evolutionary history as 80 lineages each 400 Myr
+long. The Interior has more evolutionary history at every order, in line
+with its higher richness.
+
 ### FD
 
 `tau` defaults to the mean distance between two individuals in the pooled
@@ -76,6 +110,14 @@ data. Species closer than `tau` count as functionally identical.
 ```{r}
 div_estimate(brazil, abundance = n, type = "FD", distance = traits, nboot = 50)
 ```
+
+**How to read it.** FD is small (6-7) compared with TD (hundreds)
+because most tree species are functionally similar: with species closer
+than `tau` = 0.35 counted as one, the hundreds of species collapse into
+about six or seven functional groups. **Here the Edge is more diverse
+than the Interior at every order**, the opposite of richness: edge
+conditions (light, wind, disturbance) favour a wider range of strategies,
+whereas the Interior's extra species are functionally redundant.
 
 ### FD (area under the tau profile)
 
@@ -88,6 +130,9 @@ div_estimate(brazil,
   nboot = 20
 )
 ```
+
+The area under the tau profile gives the same conclusion without having
+to choose a threshold, which makes it the more robust choice to report.
 
 ## Standardised comparison
 
@@ -115,6 +160,19 @@ ggplot(std, aes(q, diversity, colour = site)) +
   labs(y = "Effective number of species", colour = NULL) +
   theme_tidydiversity()
 ```
+
+**Interpretation.** All three curves flatten within the 36 samples of
+each period: the monthly survey was effectively complete for q = 1. The
+two periods overlap in every dimension (for example TD 30.1 and 31.5
+effective species, with overlapping intervals), so fish diversity did
+not change between 2013-2015 and 2016-2018.
+
+
+**Interpretation.** At equal coverage (97%), the profiles show the
+contrast at a glance: in PD the Interior lies above the Edge at every
+q, in TD it does except for the dominant species (q = 2), while in FD the Edge lies above the
+Interior at every q. A forest interior with more species is not
+necessarily the one with the most ecological roles.
 
 ## Incidence data
 
@@ -178,6 +236,24 @@ div_estimate(png_ants,
   unit = bait, n_units = baits, q = 0, .by = season, nboot = 50
 )
 ```
+
+These incidence-based estimates agree closely with the abundance-type
+estimates in [Alpha diversity and rarefaction](alpha-rarefaction.html),
+including the very uncertain value at 700 m in the dry season.
+
+## How to report it
+
+> Taxonomic, phylogenetic and functional diversity (Hill numbers of
+> orders 0-2; Chao et al. 2014, 2019) were estimated with tidydiversity
+> and compared at 97% sample coverage. Functional diversity was computed
+> from Gower trait distances, integrating over all thresholds (area under
+> the tau profile). The Interior had higher taxonomic and phylogenetic
+> diversity, but the Edge had higher functional diversity at every order
+> of q.
+
+Name the tree (and its time unit), the trait distance, the threshold
+`tau` or AUC, and the coverage level.
+
 
 ## References
 

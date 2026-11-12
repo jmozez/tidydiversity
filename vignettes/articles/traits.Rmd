@@ -30,6 +30,23 @@ each method. It covers:
 * phylogenetic signal and distances: `phylo_signal()`,
   `phylo_dist()`, `phylo_combine_dist()`.
 
+## The concept
+
+Species names say *who* lives at a site; **traits** (height, leaf area
+per mass, seed size, body size) say *how* they live. Trait-based ecology
+asks how the environment selects traits and how traits shape ecosystem
+functioning. Two complementary summaries of a community's traits:
+
+| Summary | Question | Typical driver |
+|---|---|---|
+| **Community-weighted mean (CWM)** | What is the average trait of the community? | The environment shifts the optimum trait (e.g. shorter plants in snowbeds) |
+| **Functional diversity (FD)** | How different are the species' traits from each other? | Environmental filtering narrows the range (convergence); competition widens it (divergence) |
+
+Because communities share species, and so traits, statistical tests of
+trait patterns need care: the methods below use permutation tests that
+shuffle both sites and species (max test), and null models that shuffle
+traits, so that patterns are not artefacts of species composition alone.
+
 ```{r setup, message = FALSE}
 library(tidydiversity)
 library(dplyr)
@@ -92,6 +109,12 @@ trait_cwm_test(aravo$community, aravo$traits,
 )
 ```
 
+**How to read it.** `r` is the correlation between the CWM and snowmelt
+date; `p_row` tests it by shuffling sites, `p_col` by shuffling traits
+among species, and `p_max`, the larger of the two, is the one to report.
+For height, `p_row` alone (0.001) would overstate the evidence; the max
+test gives 0.021. All four relationships remain significant.
+
 Sites with late snowmelt have shorter plants with higher SLA and leaf N.
 
 ## Functional diversity indices
@@ -108,6 +131,15 @@ fd |>
   summarise(mean = mean(value), sd = sd(value))
 ```
 
+**How to read it.** Each index captures one facet: **FRic** (functional
+richness) the volume of trait space filled, **FEve** (evenness) how
+regularly abundance is spread in it, **FDiv** (divergence) how much
+abundance lies at the edges of the space, **FDis** (dispersion) the mean
+distance of species to the community's trait centre, and **RaoQ** the
+expected trait difference between two randomly chosen individuals. FRic
+depends strongly on the number of species, so compare it only among
+sites of similar richness or with null models.
+
 ## Alpha, beta and gamma functional diversity
 
 Rao's quadratic entropy partitioned with the equivalent-numbers correction
@@ -116,6 +148,12 @@ Rao's quadratic entropy partitioned with the equivalent-numbers correction
 ```{r rao}
 trait_rao(aravo$community, abundance = cover, dist = d_gawdis)
 ```
+
+**How to read it.** In equivalent numbers, an average site holds 1.46
+functionally distinct "species" and the whole valley 1.57; only 7% of the
+functional diversity (`beta_prop`) lies between sites. Sites differ in
+their mean traits (CWM, above) much more than in the *spread* of traits
+within them.
 
 ## Null models
 
@@ -159,6 +197,13 @@ trait_fourth_corner(aravo$community, aravo$traits,
 )
 ```
 
+**How to read it.** `statistic` is the fourth-corner correlation
+between a trait and an environmental variable across all species and
+sites, and `p.adj` the max-test p-value corrected for multiple testing.
+Late snowmelt favours short plants with high SLA and leaf N; physical
+disturbance (`PhysD`) favours the opposite leaf economics. The
+height-disturbance link is not significant.
+
 ## Intraspecific trait variability
 
 This method needs traits measured in each site. The data are from
@@ -201,6 +246,15 @@ itv |>
   theme_tidydiversity()
 ```
 
+**How to read it.** The variation in community means explained by slope
+position (`total`) is split into **turnover** (different species), the
+**intraspecific** part (the same species with different traits), and
+their **covariation**, which is positive when both act in the same
+direction. For SLA, 69% is intraspecific and only 3% turnover; for
+height, intraspecific variation (41%) and covariation (46%) dominate,
+meaning that species that become more common downslope are also the
+ones that grow taller there.
+
 Most of the response of SLA to the slope is intraspecific: the same
 species change their leaves along the gradient. Studies that use a
 single mean trait value per species would miss most of it.
@@ -223,6 +277,12 @@ tpd |>
   arrange(position)
 ```
 
+**How to read it.** For each quadrat, `FRic` is the size of occupied
+trait space (in the units of the log traits), `FEve` and `FDiv` as above,
+and `redundancy` the average number of species occupying each part of
+that space. Quadrat 31 has the lowest evenness but the highest
+redundancy: many species crowd into a small part of trait space.
+
 `trait_tpd_dissim()` gives the functional dissimilarity between quadrats and
 splits it into the part due to different use of shared trait space and the
 part due to non-shared trait space:
@@ -234,6 +294,12 @@ trait_tpd_dissim(grass, indiv,
   arrange(desc(dissimilarity)) |>
   head()
 ```
+
+**How to read it.** Quadrat 31 is the most distinct, and almost all of
+its dissimilarity (`p_shared` near 1) comes from using the *shared*
+trait space in different proportions, not from occupying trait space the
+others lack. Quadrats differ in which strategies dominate, not in which
+strategies exist.
 
 The species densities are estimated with `TPD::TPDs()` (kernel density
 estimation with a plug-in bandwidth, package ks). Everything after that
@@ -270,6 +336,20 @@ for this tree of 5122 species. The values are identical to those of
 Phylogenetic distances (`phylo_dist()`) can replace trait distances in
 `trait_rao()`, `trait_ses()` or `trait_fd_indices()`, and `phylo_combine_dist()`
 merges trait and phylogenetic distances into one.
+
+## How to report it
+
+> Community-weighted means of height, SLA, leaf N and seed mass were
+> related to snowmelt date, with significance assessed by the max test
+> (Zeleny 2018; 999 permutations). All four traits responded (SLA:
+> r = 0.86, *P* = 0.001; height: r = -0.74, *P* = 0.021). Functional
+> diversity (Rao's Q on gawdis distances) was lower than expected under
+> a null model that shuffled traits among species at most sites, with
+> stronger convergence in late-melting snowbeds, consistent with
+> environmental filtering.
+
+State the traits and their transformation, the distance, the null model
+and its number of randomisations.
 
 ## References
 

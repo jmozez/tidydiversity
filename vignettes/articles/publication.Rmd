@@ -13,6 +13,23 @@ knitr::opts_chunk$set(
 Every `autoplot()` method returns an ordinary ggplot, so anything can be
 changed with `+`. The common changes for a journal figure are built in.
 
+## The concept
+
+A figure in a paper has one job: to let a reader see the result and
+judge its uncertainty without reading the text. For diversity results
+that means three things:
+
+1. **Show the uncertainty.** Diversity values are estimates; a point
+   without its interval invites over-interpretation. Every `autoplot()`
+   draws 95% bootstrap intervals by default.
+2. **Separate what was observed from what was predicted.** Rarefaction
+   (interpolation) is reliable; extrapolation beyond about twice the
+   sample size is not. Solid and dashed lines keep this visible, in
+   colour and in greyscale.
+3. **Make it readable by everyone.** About one man in twelve has a
+   colour-vision deficiency. The default Okabe-Ito palette stays
+   distinguishable for all common types and when printed in grey.
+
 ```{r setup, message = FALSE}
 library(tidydiversity)
 library(dplyr)
@@ -164,3 +181,24 @@ ggsave("figure1.png", p,
 
 Set `base_size` to the font size the journal asks for (often 8 to 10 pt)
 because ggsave does not rescale text when the figure is made smaller.
+
+## Checklist before submission
+
+| Check | Why |
+|---|---|
+| Axis titles name the quantity *and* unit, e.g. "Species richness (effective number of species)" | Hill numbers are in effective species, not raw counts |
+| The caption says how intervals were obtained ("95% bootstrap intervals, 100 replicates") | Readers must know what the ribbons mean |
+| The caption says what dashed lines are ("extrapolated to twice the sample size") | Separates prediction from data |
+| Comparisons are at equal coverage, and the level is stated | Raw diversity depends on sampling effort |
+| Text is at least 7-8 pt at the printed size | Set `base_size`, as above |
+| The figure is legible in greyscale | Many readers print papers |
+| Background is white, not transparent | Transparent PNGs turn black in some viewers |
+
+A complete caption, for example:
+
+> **Figure 1.** Rarefaction (solid) and extrapolation (dashed) of ant
+> diversity at five elevations on Mt Wilhelm in the wet season, for
+> Hill numbers of order q = 0 (richness), 1 (Shannon) and 2 (Simpson).
+> Points mark the observed samples; ribbons are 95% bootstrap intervals
+> (100 replicates).
+
