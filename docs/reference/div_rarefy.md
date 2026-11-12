@@ -158,7 +158,7 @@ to draw the curves.
 ``` r
 curves <- div_rarefy(png_ants, q = 0, .by = season, knots = 20)
 curves
-#> # A tibble: 200 x 9
+#> # A tibble: 200 × 9
 #>    season site       q     m method      diversity coverage lower upper
 #>    <chr>  <chr>  <dbl> <dbl> <chr>           <dbl>    <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0     1 rarefaction      1      0.0814    NA    NA
@@ -171,12 +171,12 @@ curves
 #>  8 dry    MW0200     0    40 rarefaction     15.2    0.864     NA    NA
 #>  9 dry    MW0200     0    46 rarefaction     15.9    0.894     NA    NA
 #> 10 dry    MW0200     0    47 observed        16      0.898     NA    NA
-#> # i 190 more rows
+#> # ℹ 190 more rows
 
 div_rarefy(png_ants, size = c(10, 20, 40), .by = season)
 #> Warning: Extrapolation beyond twice the observed sample size at 3 sites.
-#> i Richness (q = 0) estimates there may be strongly biased (Chao et al. 2014).
-#> # A tibble: 90 x 9
+#> ℹ Richness (q = 0) estimates there may be strongly biased (Chao et al. 2014).
+#> # A tibble: 90 × 9
 #>    season site       q     m method      diversity coverage lower upper
 #>    <chr>  <chr>  <dbl> <dbl> <chr>           <dbl>    <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0    10 rarefaction      7.19    0.521    NA    NA
@@ -189,5 +189,5 @@ div_rarefy(png_ants, size = c(10, 20, 40), .by = season)
 #>  8 dry    MW0200     2    20 rarefaction      7.85    0.708    NA    NA
 #>  9 dry    MW0200     2    40 rarefaction      9.58    0.864    NA    NA
 #> 10 wet    MW0200     0    10 rarefaction      6.31    0.607    NA    NA
-#> # i 80 more rows
+#> # ℹ 80 more rows
 ```

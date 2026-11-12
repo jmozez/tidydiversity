@@ -143,7 +143,7 @@ to functional diversity, functional beta diversity, and related
 
 ``` r
 div_hill(png_ants, .by = season)
-#> # A tibble: 30 x 5
+#> # A tibble: 30 × 5
 #>    season site       q     n diversity
 #>    <chr>  <chr>  <dbl> <dbl>     <dbl>
 #>  1 dry    MW0200     0    47     16   
@@ -156,13 +156,13 @@ div_hill(png_ants, .by = season)
 #>  8 dry    MW0700     1    23     11.8 
 #>  9 dry    MW0700     2    23      8.67
 #> 10 wet    MW0700     0    58     28   
-#> # i 20 more rows
+#> # ℹ 20 more rows
 
 # Grouped data frames work too
 png_ants |>
   dplyr::group_by(season) |>
   div_hill(q = c(0, 0.5, 1, 2))
-#> # A tibble: 40 x 5
+#> # A tibble: 40 × 5
 #>    season site       q     n diversity
 #>    <chr>  <chr>  <dbl> <dbl>     <dbl>
 #>  1 dry    MW0200   0      47     16   
@@ -175,11 +175,11 @@ png_ants |>
 #>  8 wet    MW0200   2      76      6.99
 #>  9 dry    MW0700   0      23     15   
 #> 10 dry    MW0700   0.5    23     13.5 
-#> # i 30 more rows
+#> # ℹ 30 more rows
 
 # Incidence data: each bait is a sampling unit, 60 baits per site
 div_hill(png_ants, unit = bait, n_units = baits, .by = season)
-#> # A tibble: 30 x 5
+#> # A tibble: 30 × 5
 #>    season site       q     n diversity
 #>    <chr>  <chr>  <dbl> <int>     <dbl>
 #>  1 dry    MW0200     0    60     16   
@@ -192,7 +192,7 @@ div_hill(png_ants, unit = bait, n_units = baits, .by = season)
 #>  8 dry    MW0700     1    60     11.8 
 #>  9 dry    MW0700     2    60      8.67
 #> 10 wet    MW0700     0    60     28   
-#> # i 20 more rows
+#> # ℹ 20 more rows
 
 # TD, PD and FD together, here for a functional distance matrix only
 d <- as.matrix(stats::dist(c(s1 = 0, s2 = 0.1, s3 = 0.5, s4 = 1)))
@@ -201,7 +201,7 @@ toy <- data.frame(
   n = c(10, 5, 2, 1, 3, 3, 1, 1)
 )
 div_hill(toy, abundance = n, type = c("TD", "FD"), distance = d)
-#> # A tibble: 12 x 6
+#> # A tibble: 12 × 6
 #>    site      q     n diversity type     tau
 #>    <chr> <dbl> <dbl>     <dbl> <fct>  <dbl>
 #>  1 a         0    18      4    TD    NA    

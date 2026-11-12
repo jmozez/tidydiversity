@@ -25,6 +25,17 @@ with partial RDA."><meta property="og:image" content="https://tidydiversity.in4m
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide"><li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials"><li><a class="dropdown-item" href="../articles/tutorials.html">Overview by taxon</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -161,7 +172,7 @@ data matrices: estimation and comparison of fractions. <em>Ecology</em>, 87,
 <span class="r-in"><span><span class="fu">ord_varpart</span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>,</span></span>
 <span class="r-in"><span>            elevation <span class="op">=</span> <span class="op">~</span><span class="va">elevation</span>, season <span class="op">=</span> <span class="op">~</span><span class="va">season</span>,</span></span>
 <span class="r-in"><span>            permutations <span class="op">=</span> <span class="fl">199</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 x 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   fraction        label                       adj_r2 testable p.value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> [a] = X1|X2     elevation only             0.107   TRUE       0.005</span>

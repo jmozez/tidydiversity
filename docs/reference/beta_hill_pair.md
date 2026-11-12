@@ -101,7 +101,7 @@ components. *Ecology*, 88, 2427-2439.
 
 ``` r
 beta_hill_pair(png_ants, abundance = workers, .by = season)
-#> # A tibble: 60 x 11
+#> # A tibble: 60 × 11
 #>    season site_1 site_2     q gamma alpha  beta dis_sorensen dis_jaccard
 #>    <chr>  <chr>  <chr>  <dbl> <dbl> <dbl> <dbl>        <dbl>       <dbl>
 #>  1 dry    MW0200 MW0700     0    26  15.5  1.68        0.677       0.808
@@ -114,6 +114,6 @@ beta_hill_pair(png_ants, abundance = workers, .by = season)
 #>  8 dry    MW1200 MW1700     0    18   9    2           1           1    
 #>  9 dry    MW1200 MW2200     0    18   9.5  1.89        0.895       0.944
 #> 10 dry    MW1700 MW2200     0    11   5.5  2           1           1    
-#> # i 50 more rows
-#> # i 2 more variables: dis_turnover_sorensen <dbl>, dis_turnover_jaccard <dbl>
+#> # ℹ 50 more rows
+#> # ℹ 2 more variables: dis_turnover_sorensen <dbl>, dis_turnover_jaccard <dbl>
 ```

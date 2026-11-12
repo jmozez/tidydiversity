@@ -71,7 +71,7 @@ to plot it.
 ``` r
 decay <- beta_decay(png_ants, gradient = elevation, .by = season)
 decay
-#> # A tibble: 20 x 9
+#> # A tibble: 20 × 9
 #>    season site_1 site_2 turnover nestedness total gradient_1 gradient_2 distance
 #>    <chr>  <chr>  <chr>     <dbl>      <dbl> <dbl>      <int>      <int>    <dbl>
 #>  1 dry    MW0200 MW0700    0.667    0.0108  0.677        200        700      500

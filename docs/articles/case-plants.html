@@ -40,6 +40,19 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide">
+<li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul>
+</li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
@@ -152,7 +165,7 @@ tidydiversity.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ha01  Brosimum.alicastrum             5</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ha01  Casearia.arborea                1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ha01  Casearia.sylvestris             2</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 4,529 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4,529 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="completeness-and-curves">Completeness and curves<a class="anchor" aria-label="anchor" href="#completeness-and-curves"></a>
@@ -197,7 +210,7 @@ Simpson diversity are much closer to their asymptotes.</p>
 <span>  weights <span class="op">=</span> <span class="va">weight</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/generics/man/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">fit</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 x 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 7</span></span></span>
 <span><span class="co">#&gt;   term            estimate std.error statistic  p.value conf.low conf.high</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> (Intercept)        41.2       3.37    12.2   9.72<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span>    34.4       48.0</span></span>

@@ -89,7 +89,7 @@ measuring functional diversity from multiple traits. *Ecology*, 91,
 aravo <- data_aravo()
 trait_fd_indices(aravo$community, aravo$traits, abundance = cover,
               indices = c("FDis", "RaoQ"))
-#> # A tibble: 150 x 4
+#> # A tibble: 150 × 4
 #>    site   nbsp index value
 #>    <chr> <int> <chr> <dbl>
 #>  1 AR26     26 FDis  0.135
@@ -102,5 +102,5 @@ trait_fd_indices(aravo$community, aravo$traits, abundance = cover,
 #>  8 AR61     20 FDis  0.138
 #>  9 AR49     20 FDis  0.148
 #> 10 AR50     21 FDis  0.146
-#> # i 140 more rows
+#> # ℹ 140 more rows
 ```

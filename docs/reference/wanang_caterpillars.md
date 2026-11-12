@@ -71,22 +71,22 @@ records by `data-raw/wanang_caterpillars.R`.
 
 ``` r
 wanang_caterpillars
-#> # A tibble: 3,504 x 8
+#> # A tibble: 3,504 × 8
 #>    site    plot  host  species scientific_name            rank  family abundance
 #>    <chr>   <chr> <chr> <chr>   <chr>                      <chr> <chr>      <int>
-#>  1 primary WP1   NA    TORT151 Nolidae                    fami~ Nolid~         9
-#>  2 primary WP1   NA    TORT230 Tortricidae                fami~ Tortr~         4
-#>  3 primary WP1   NA    CHOR001 Brenthia Clemens, 1860     genus Chore~         2
-#>  4 primary WP1   NA    TORT051 Homona phanaea Meyrick, 1~ spec~ Tortr~         2
-#>  5 primary WP1   NA    TORT234 Tortricidae                fami~ Tortr~         2
-#>  6 primary WP1   NA    CHOR006 Choreutidae                fami~ Chore~         1
-#>  7 primary WP1   NA    CRAM134 Crambidae                  fami~ Cramb~         1
-#>  8 primary WP1   NA    ELAC001 Elachistidae               fami~ Elach~         1
-#>  9 primary WP1   NA    GELE013 Gelechiidae                fami~ Gelec~         1
-#> 10 primary WP1   NA    GEOM034 Symmacra solidaria ochrea~ subs~ Geome~         1
-#> # i 3,494 more rows
+#>  1 primary WP1   NA    TORT151 Nolidae                    fami… Nolid…         9
+#>  2 primary WP1   NA    TORT230 Tortricidae                fami… Tortr…         4
+#>  3 primary WP1   NA    CHOR001 Brenthia Clemens, 1860     genus Chore…         2
+#>  4 primary WP1   NA    TORT051 Homona phanaea Meyrick, 1… spec… Tortr…         2
+#>  5 primary WP1   NA    TORT234 Tortricidae                fami… Tortr…         2
+#>  6 primary WP1   NA    CHOR006 Choreutidae                fami… Chore…         1
+#>  7 primary WP1   NA    CRAM134 Crambidae                  fami… Cramb…         1
+#>  8 primary WP1   NA    ELAC001 Elachistidae               fami… Elach…         1
+#>  9 primary WP1   NA    GELE013 Gelechiidae                fami… Gelec…         1
+#> 10 primary WP1   NA    GEOM034 Symmacra solidaria ochrea… subs… Geome…         1
+#> # ℹ 3,494 more rows
 div_hill(wanang_caterpillars, site = plot, q = 0:2) |> head()
-#> # A tibble: 6 x 4
+#> # A tibble: 6 × 4
 #>   plot      q     n diversity
 #>   <chr> <int> <int>     <dbl>
 #> 1 WP1       0   810     246  

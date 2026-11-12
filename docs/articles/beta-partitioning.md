@@ -25,7 +25,7 @@ baits along Mt Wilhelm, Papua New Guinea (Moses et al. 2023).
 ``` r
 pairs <- beta_pair(png_ants, .by = season)
 pairs
-#> # A tibble: 20 x 6
+#> # A tibble: 20 × 6
 #>    season site_1 site_2 turnover nestedness total
 #>    <chr>  <chr>  <chr>     <dbl>      <dbl> <dbl>
 #>  1 dry    MW0200 MW0700    0.667    0.0108  0.677
@@ -57,7 +57,7 @@ the Jaccard family. The results match the betapart package.
 pairs |>
   group_by(season) |>
   summarise(across(c(turnover, nestedness, total), mean))
-#> # A tibble: 2 x 4
+#> # A tibble: 2 × 4
 #>   season turnover nestedness total
 #>   <chr>     <dbl>      <dbl> <dbl>
 #> 1 dry       0.832     0.0400 0.872
@@ -68,7 +68,7 @@ pairs |>
 
 ``` r
 beta_multi(png_ants, .by = season)
-#> # A tibble: 2 x 5
+#> # A tibble: 2 × 5
 #>   season n_sites turnover nestedness total
 #>   <chr>    <int>    <dbl>      <dbl> <dbl>
 #> 1 dry          5    0.827     0.0507 0.877
@@ -84,7 +84,7 @@ with elevational distance while nestedness stays low.
 ``` r
 decay <- beta_decay(png_ants, gradient = elevation, .by = season)
 decay
-#> # A tibble: 20 x 9
+#> # A tibble: 20 × 9
 #>    season site_1 site_2 turnover nestedness total gradient_1 gradient_2 distance
 #>    <chr>  <chr>  <chr>     <dbl>      <dbl> <dbl>      <int>      <int>    <dbl>
 #>  1 dry    MW0200 MW0700    0.667    0.0108  0.677        200        700      500
@@ -128,12 +128,12 @@ refitting the model each time.
 ``` r
 set.seed(1)
 beta_decay_model(decay, permutations = 999)
-#> # A tibble: 2 x 10
+#> # A tibble: 2 × 10
 #>   season model    component n_pairs     a       b half_distance pseudo_r2    aic
 #>   <chr>  <chr>    <chr>       <int> <dbl>   <dbl>         <dbl>     <dbl>  <dbl>
-#> 1 dry    exponen~ total          10 0.257 7.50e-4          924.     0.143  -9.21
-#> 2 wet    exponen~ total          10 0.897 2.36e-3          293.     0.694 -17.6 
-#> # i 1 more variable: p.value <dbl>
+#> 1 dry    exponen… total          10 0.257 7.50e-4          924.     0.143  -9.21
+#> 2 wet    exponen… total          10 0.897 2.36e-3          293.     0.694 -17.6 
+#> # ℹ 1 more variable: p.value <dbl>
 ```
 
 With only five sites per season there are 120 distinct permutations, so
@@ -154,7 +154,7 @@ driven by the dominant species.
 wet <- dplyr::filter(png_ants, season == "wet")
 hp <- beta_hill_pair(wet, abundance = workers)
 hp
-#> # A tibble: 30 x 10
+#> # A tibble: 30 × 10
 #>    site_1 site_2     q gamma alpha  beta dis_sorensen dis_jaccard
 #>    <chr>  <chr>  <dbl> <dbl> <dbl> <dbl>        <dbl>       <dbl>
 #>  1 MW0200 MW0700     0    41  24.5  1.67        0.673       0.805
@@ -167,8 +167,8 @@ hp
 #>  8 MW1200 MW1700     0    26  15    1.73        0.733       0.846
 #>  9 MW1200 MW2200     0    25  12.5  2           1           1    
 #> 10 MW1700 MW2200     0    14   7.5  1.87        0.867       0.929
-#> # i 20 more rows
-#> # i 2 more variables: dis_turnover_sorensen <dbl>, dis_turnover_jaccard <dbl>
+#> # ℹ 20 more rows
+#> # ℹ 2 more variables: dis_turnover_sorensen <dbl>, dis_turnover_jaccard <dbl>
 ```
 
 ``` r
@@ -204,7 +204,7 @@ sites (1 to the number of sites).
 
 ``` r
 beta_hill(png_ants, .by = season)
-#> # A tibble: 6 x 13
+#> # A tibble: 6 × 13
 #>   season     q coverage m_gamma m_alpha gamma alpha  beta n_sites dis_sorensen
 #>   <chr>  <dbl>    <dbl>   <dbl>   <dbl> <dbl> <dbl> <dbl>   <int>        <dbl>
 #> 1 dry        0    0.957    238.    371.  50.3 16.2   3.10       5        0.526
@@ -213,7 +213,7 @@ beta_hill(png_ants, .by = season)
 #> 4 wet        0    0.957    480     807.  78.9 27.9   2.83       5        0.457
 #> 5 wet        1    0.957    480     807.  39.4 13.6   2.89       5        0.659
 #> 6 wet        2    0.957    480     807.  22.2  7.29  3.04       5        0.839
-#> # i 3 more variables: dis_jaccard <dbl>, dis_turnover_sorensen <dbl>,
+#> # ℹ 3 more variables: dis_jaccard <dbl>, dis_turnover_sorensen <dbl>,
 #> #   dis_turnover_jaccard <dbl>
 ```
 
@@ -224,14 +224,14 @@ species turnover. Give `coverage` to compare regions at chosen levels:
 
 ``` r
 beta_hill(png_ants, q = 0, coverage = c(0.8, 0.9), .by = season)
-#> # A tibble: 4 x 13
+#> # A tibble: 4 × 13
 #>   season     q coverage m_gamma m_alpha gamma alpha  beta n_sites dis_sorensen
 #>   <chr>  <dbl>    <dbl>   <dbl>   <dbl> <dbl> <dbl> <dbl>   <int>        <dbl>
 #> 1 dry        0      0.8    81.9    140.  34.5  11.5  3.01       5        0.503
 #> 2 dry        0      0.9   150.     244.  44.4  14.5  3.06       5        0.516
 #> 3 wet        0      0.8   112.     216.  43.3  15.9  2.73       5        0.433
 #> 4 wet        0      0.9   260.     481.  64.1  23.5  2.73       5        0.431
-#> # i 3 more variables: dis_jaccard <dbl>, dis_turnover_sorensen <dbl>,
+#> # ℹ 3 more variables: dis_jaccard <dbl>, dis_turnover_sorensen <dbl>,
 #> #   dis_turnover_jaccard <dbl>
 ```
 
@@ -245,7 +245,7 @@ site.
 set.seed(1)
 b <- beta_hill(png_ants, q = 0, coverage = 0.9, nboot = 20, .by = season)
 b[c("season", "beta", "beta_lower", "beta_upper")]
-#> # A tibble: 2 x 4
+#> # A tibble: 2 × 4
 #>   season  beta beta_lower beta_upper
 #>   <chr>  <dbl>      <dbl>      <dbl>
 #> 1 dry     3.06       2.56       3.57

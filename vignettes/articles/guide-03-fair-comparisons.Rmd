@@ -1,0 +1,148 @@
+---
+title: "3. Fair comparisons: rarefaction, extrapolation and standardisation"
+description: "Why observed diversity cannot be compared between samples of different size, and how size- and coverage-based standardisation fix it."
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  dev.args = list(bg = "white"),
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 8, fig.height = 5
+)
+```
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+ants <- filter(png_ants, season == "wet")
+```
+
+## The problem
+
+More sampling finds more species. A site sampled twice as hard will
+usually show more species even if the two communities are identical. In
+the ant data, sample sizes differ several-fold between elevations:
+
+```{r sizes}
+count(ants, site, name = "records")
+```
+
+Comparing observed richness between these sites would partly compare
+sampling effort, not biology. The solution is to compare all sites **at
+the same level of sampling**: by rarefying (subsampling) large samples
+down, or extrapolating small samples up (Chao et al. 2014).
+
+## 1. Rarefaction and extrapolation curves
+
+### The concept
+
+A **rarefaction curve** shows the expected diversity in a random
+subsample of $m$ individuals, for every $m$ up to the observed sample size
+$n$. It is calculated exactly, without random subsampling. **Extrapolation**
+continues the curve beyond $n$ (to about $2n$, beyond which predictions
+become unreliable) using the same frequencies of rare species that drive
+the Chao1 estimator (Chapter 2). The two join smoothly at the observed
+sample, so each site has one continuous curve with a 95 % confidence band.
+
+```{r curves, fig.height = 6, fig.alt = "Rarefaction (solid) and extrapolation (dashed) curves of ant diversity at five elevations, for q = 0, 1 and 2"}
+set.seed(1)
+curves <- div_rarefy(ants, q = 0:2, knots = 30, nboot = 50)
+autoplot(curves)
+```
+
+**How to read it.**
+
+- **Solid lines** are rarefaction (interpolation); **dashed lines** are
+  extrapolation; the **point** marks the observed sample.
+- Where curves level off, more sampling would find few new species.
+  Curves still rising steeply (typically at $q = 0$) mean many species
+  remain undetected.
+- To compare sites, read the curves **at the same x value**, not at their
+  end points. Non-overlapping bands indicate a difference; overlapping
+  bands mean the data cannot separate the sites at that sample size.
+- The $q = 1$ and $q = 2$ panels level off quickly: these orders are
+  robust to sample size, which is why they are often the better basis for
+  comparisons.
+
+## 2. Size-based or coverage-based?
+
+There are two ways to choose the common level of sampling:
+
+| Standardise to | Meaning | Advantage | Drawback |
+|---|---|---|---|
+| **Equal sample size** (same $m$) | Same number of individuals or records per site | Simple to explain | A rich community is less completely sampled at a given $m$ than a poor one, so size-based comparisons understate real differences |
+| **Equal sample coverage** (same $\hat{C}$) | Same *completeness*: each site sampled to the same proportion of its community | Compares communities at the same level of representation; recommended by Chao and Jost (2012) | Coverage is less intuitive to explain |
+
+Coverage-based standardisation is the modern default. tidydiversity
+standardises to a common coverage chosen by the rule of Chao et al.
+(2014): the highest coverage reachable by every site without
+extrapolating more than twice its sample.
+
+```{r standardise}
+set.seed(1)
+std <- div_standardise(ants, q = 0:2, nboot = 100)
+knitr::kable(std, digits = 2,
+  caption = "Diversity at equal coverage; m is the sample size reaching it."
+)
+```
+
+**How to read it.** Every row is at the same coverage
+(`r round(std$coverage[1], 3)`). `m` is the sample size at which each site
+reaches it: sites with large samples are **rarefied** down; poorly sampled
+sites are **extrapolated** up. Now the sites can be compared fairly.
+
+```{r std-plot, fig.alt = "Coverage-standardised diversity along the elevation gradient with 95 percent confidence intervals"}
+std |>
+  left_join(distinct(ants, site, elevation), by = "site") |>
+  ggplot(aes(elevation, diversity, colour = factor(q))) +
+  geom_pointrange(aes(ymin = lower, ymax = upper), position = position_dodge(width = 60)) +
+  geom_line(position = position_dodge(width = 60)) +
+  scale_colour_tidydiversity() +
+  labs(x = "Elevation (m)", y = "Diversity at equal coverage", colour = "Order q") +
+  theme_tidydiversity()
+```
+
+**Interpretation.** At equal coverage, ant diversity peaks at
+`r std$site[std$q == 0][which.max(std$diversity[std$q == 0])]` and is lowest
+at the two highest sites, for all three orders. Because the comparison is
+at equal completeness, this pattern is not an artefact of how many baits
+were occupied at each site. Note the wide interval at the peak: that site
+is reached by extrapolation (`method` column), so its value is the least
+precise.
+
+## 3. Comparing groups: what counts as "different"?
+
+| Evidence | Conclusion |
+|---|---|
+| 95 % confidence intervals do **not** overlap | Strong evidence of a difference |
+| Intervals overlap only slightly (less than half an arm) | A difference at roughly the 5 % level (Cumming and Finch 2005) |
+| Intervals overlap substantially | The data do not show a difference; do **not** conclude the sites are equal |
+
+For formal tests along a gradient or between treatments, model the
+estimates with their standard errors as weights (see the
+[modelling article](modelling.html)).
+
+## How to report it
+
+> Because sampling effort differed among elevations (n = `r min(count(ants, site)$n)`
+> to `r max(count(ants, site)$n)` records), we compared Hill numbers
+> (q = 0, 1, 2) at an equal sample coverage of
+> `r round(std$coverage[1], 3)`, using coverage-based rarefaction and
+> extrapolation (Chao and Jost 2012; Chao et al. 2014) in tidydiversity.
+> 95 % confidence intervals were obtained from 100 bootstrap replicates.
+
+## References
+
+Chao, A. and Jost, L. (2012). Coverage-based rarefaction and
+extrapolation. *Ecology*, 93, 2533-2547.
+
+Chao, A. et al. (2014). Rarefaction and extrapolation with Hill numbers.
+*Ecological Monographs*, 84, 45-67.
+
+Cumming, G. and Finch, S. (2005). Inference by eye: confidence intervals
+and how to read pictures of data. *American Psychologist*, 60, 170-180.
+
+Gotelli, N. J. and Colwell, R. K. (2001). Quantifying biodiversity:
+procedures and pitfalls in the measurement and comparison of species
+richness. *Ecology Letters*, 4, 379-391.

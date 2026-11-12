@@ -5,6 +5,53 @@
 - [Getting started with
   tidydiversity](https://tidydiversity.in4metrix.dev/articles/tidydiversity.md):
 
+### User guide
+
+- [User
+  guide](https://tidydiversity.in4metrix.dev/articles/user-guide.md):
+
+  A complete guide to tidydiversity: installation, data preparation,
+  concepts, code, figures, interpretation and reporting.
+
+- [1. Install, run and prepare your
+  data](https://tidydiversity.in4metrix.dev/articles/guide-01-install.md):
+
+  Set up R, RStudio and tidydiversity, and turn field data
+  (spreadsheets, species-by-site matrices) into the tidy format every
+  function uses.
+
+- [2. Hill numbers, completeness and
+  coverage](https://tidydiversity.in4metrix.dev/articles/guide-02-hill-numbers.md):
+
+  What diversity is, why Hill numbers are the standard, how complete
+  your sampling is, and how to estimate the diversity you did not see.
+
+- [3. Fair comparisons: rarefaction, extrapolation and
+  standardisation](https://tidydiversity.in4metrix.dev/articles/guide-03-fair-comparisons.md):
+
+  Why observed diversity cannot be compared between samples of different
+  size, and how size- and coverage-based standardisation fix it.
+
+- [4. Beta diversity: how different are
+  communities?](https://tidydiversity.in4metrix.dev/articles/guide-04-beta.md):
+
+  Multiplicative partitioning of gamma into alpha and beta, turnover
+  versus nestedness, pairwise dissimilarity and distance decay: theory,
+  interpretation and reporting.
+
+- [5. Community composition: ordination and
+  tests](https://tidydiversity.in4metrix.dev/articles/guide-05-composition.md):
+
+  Which species occur where, and why: ordination diagrams, PERMANOVA,
+  dispersion and indicator species, with how to read and report each.
+
+- [6. Functional and phylogenetic
+  diversity](https://tidydiversity.in4metrix.dev/articles/guide-06-dimensions.md):
+
+  Diversity of traits and of evolutionary history on the same
+  Hill-number scale as species diversity: concepts, thresholds and
+  interpretation.
+
 ### Guides
 
 - [TD, PD and FD on one

@@ -21,6 +21,17 @@ returns a tidy table."><meta property="og:image" content="https://tidydiversity.
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide"><li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials"><li><a class="dropdown-item" href="../articles/tutorials.html">Overview by taxon</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -182,8 +193,8 @@ indicator species analysis by combining groups of sites. <em>Oikos</em>, 119,
 <span class="r-in"><span>                      zone <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">elevation</span> <span class="op">&lt;=</span> <span class="fl">700</span>, <span class="st">"lowland"</span>, <span class="st">"montane"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">beta_indicator</span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>, group <span class="op">=</span> <span class="va">zone</span>, permutations <span class="op">=</span> <span class="fl">199</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 x 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 7 variables: species &lt;chr&gt;, group &lt;chr&gt;, stat &lt;dbl&gt;, A &lt;dbl&gt;, B &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7 variables: species &lt;chr&gt;, group &lt;chr&gt;, stat &lt;dbl&gt;, A &lt;dbl&gt;, B &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   p.value &lt;dbl&gt;, p.adj &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>

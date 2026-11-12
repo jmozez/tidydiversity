@@ -41,6 +41,19 @@
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide">
+<li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul>
+</li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
 <li><a class="dropdown-item" href="../articles/tutorials.html">Overview by taxon</a></li>
@@ -136,21 +149,21 @@ Ecology and Biogeography</em>). Each row is one ant species at one
 bait.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">png_ants</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 369 x 12</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 369 × 12</span></span></span>
 <span><span class="co">#&gt;    site  elevation season transect bait  baits bait_type species genus subfamily</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> MW02~       200 dry           1 200_~    60 cho       lepm_0~ Lept~ Dolichod~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> MW02~       200 dry           1 200_~    60 cho       mono_0~ Mono~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> MW02~       200 dry           1 200_~    60 lipid     phei_0~ Phei~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> MW02~       200 dry           1 200_~    60 lipid     tetr_0~ Tetr~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> MW02~       200 dry           1 200_~    60 amino_ac~ crem_0~ Crem~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> MW02~       200 dry           1 200_~    60 cho_amin~ crem_0~ Crem~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> MW02~       200 dry           1 200_~    60 lipid     crem_0~ Crem~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> MW02~       200 dry           1 200_~    60 cho       crem_0~ Crem~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> MW02~       200 dry           1 200_~    60 cho_amin~ rhyt_0~ Rhyt~ Ectatomm~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> MW02~       200 dry           1 200_~    60 cho       crem_0~ Crem~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 359 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 2 more variables: guild &lt;chr&gt;, workers &lt;int&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> MW02…       200 dry           1 200_…    60 cho       lepm_0… Lept… Dolichod…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> MW02…       200 dry           1 200_…    60 cho       mono_0… Mono… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> MW02…       200 dry           1 200_…    60 lipid     phei_0… Phei… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> MW02…       200 dry           1 200_…    60 lipid     tetr_0… Tetr… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> MW02…       200 dry           1 200_…    60 amino_ac… crem_0… Crem… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> MW02…       200 dry           1 200_…    60 cho_amin… crem_0… Crem… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> MW02…       200 dry           1 200_…    60 lipid     crem_0… Crem… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> MW02…       200 dry           1 200_…    60 cho       crem_0… Crem… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> MW02…       200 dry           1 200_…    60 cho_amin… rhyt_0… Rhyt… Ectatomm…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> MW02…       200 dry           1 200_…    60 cho       crem_0… Crem… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 359 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: guild &lt;chr&gt;, workers &lt;int&gt;</span></span></span></code></pre></div>
 <p>Ants recruit to baits, so worker counts measure activity rather than
 independent individuals. <code>png_ants</code> therefore has no
 <code>abundance</code> column: tidydiversity counts each row once, and
@@ -193,14 +206,14 @@ arguments.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> dry    MW0200 odon_001         2</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> dry    MW0200 para_005         4</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> dry    MW0200 phei_008         3</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 129 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 129 more rows</span></span></span></code></pre></div>
 <p>If your data arrive as a site by species matrix,
 <code><a href="../reference/as_community.html">community_long()</a></code> turns it into long format, and
 <code><a href="../reference/as_community.html">community_wide()</a></code> goes the other way.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">wide</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_community.html">community_wide</a></span><span class="op">(</span><span class="va">ants</span>, .by <span class="op">=</span> <span class="va">season</span><span class="op">)</span></span>
 <span><span class="va">wide</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 x 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 6</span></span></span>
 <span><span class="co">#&gt;    season site   ancy_001 ancy_003 anon_003 anon_008</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> dry    MW0200        0        0        0        0</span></span>
@@ -224,7 +237,7 @@ arguments.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">season</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/div_hill.html">div_hill</a></span><span class="op">(</span>q <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">diversity</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 x 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 5</span></span></span>
 <span><span class="co">#&gt;    season site       q     n diversity</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> wet    MW0700     0    58        28</span></span>

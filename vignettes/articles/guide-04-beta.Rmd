@@ -1,0 +1,164 @@
+---
+title: "4. Beta diversity: how different are communities?"
+description: "Multiplicative partitioning of gamma into alpha and beta, turnover versus nestedness, pairwise dissimilarity and distance decay: theory, interpretation and reporting."
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  dev.args = list(bg = "white"),
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 8, fig.height = 5
+)
+```
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+library(dplyr)
+library(ggplot2)
+ants <- filter(png_ants, season == "wet")
+```
+
+## The concept
+
+Whittaker (1960) described diversity at three scales:
+
+| Scale | Meaning | Example |
+|---|---|---|
+| **Alpha** ($\alpha$) | Diversity within a site | Ant species at one elevation |
+| **Gamma** ($\gamma$) | Diversity of all sites pooled | Ant species on the whole mountain |
+| **Beta** ($\beta$) | How much the sites differ | How much the elevations replace each other's species |
+
+With Hill numbers the three are linked by **multiplicative partitioning**
+(Jost 2007; Chao et al. 2012):
+
+$$
+\gamma = \alpha \times \beta \qquad\Longrightarrow\qquad \beta = \gamma / \alpha
+$$
+
+$\beta$ is then the **effective number of completely distinct
+communities**: it ranges from 1 (all sites identical) to $N$, the number
+of sites (no species shared). Because $\beta$ depends on $N$, it is
+converted to **dissimilarities** between 0 and 1 that can be compared
+across studies:
+
+| Dissimilarity | Weighs | Generalises |
+|---|---|---|
+| Sørensen-type ($1 - C_{qN}$) | Overlap from the point of view of an average site | Sørensen index at q = 0 |
+| Jaccard-type ($1 - U_{qN}$) | Overlap from the point of view of the pooled community | Jaccard index at q = 0 |
+
+As with alpha diversity (Chapter 3), beta diversity depends on sampling
+effort, so tidydiversity computes it at an **equal sample coverage**
+(Chao et al. 2023).
+
+## 1. Gamma, alpha and beta along the mountain
+
+```{r partition}
+bh <- beta_hill(ants, q = 0:2)
+knitr::kable(select(bh, q, coverage, gamma, alpha, beta, dis_sorensen, dis_jaccard),
+  digits = 3,
+  caption = "Multiplicative partitioning at equal coverage across the five elevations."
+)
+```
+
+**Interpretation.** For species richness ($q = 0$), the mountain holds
+`r round(bh$gamma[bh$q == 0], 1)` effective species against
+`r round(bh$alpha[bh$q == 0], 1)` per site, so $\beta$ =
+`r round(bh$beta[bh$q == 0], 2)`: the five elevations behave like almost
+three completely distinct communities. The Sørensen-type dissimilarity of
+`r round(bh$dis_sorensen[bh$q == 0], 2)` means that, on average, a site
+shares only about `r round(100 * (1 - bh$dis_sorensen[bh$q == 0]))` % of
+its species with the other elevations. Dissimilarity is
+**higher** at $q = 1$ and $q = 2$: the *dominant* species differ between
+elevations even more than the species lists do.
+
+## 2. Turnover or nestedness?
+
+### The concept
+
+Two sites can differ in two ways (Baselga 2010):
+
+| Component | What happens | Ecological meaning |
+|---|---|---|
+| **Turnover** (replacement) | Species are replaced by different species | Environmental filtering, dispersal limits, history |
+| **Nestedness** | The poorer site holds a subset of the richer site's species | Species loss, e.g. along a stress gradient or after disturbance |
+
+The Sørensen dissimilarity splits exactly into these two parts:
+$\beta_{SOR} = \beta_{SIM} + \beta_{NES}$.
+
+```{r pairs}
+pairs <- beta_pair(ants)
+knitr::kable(pairs, digits = 3,
+  caption = "Pairwise Sørensen dissimilarity (total) split into turnover and nestedness."
+)
+multi <- beta_multi(ants)
+knitr::kable(multi, digits = 3,
+  caption = "The same partition for all five sites together (Baselga 2010)."
+)
+```
+
+**Interpretation.** Across all sites, turnover
+(`r round(multi$turnover, 2)`) makes up
+`r round(100 * multi$turnover / multi$total)` % of the total dissimilarity
+(`r round(multi$total, 2)`); nestedness is small. So higher elevations do
+not simply hold a subset of the lowland fauna: **different species replace
+each other** up the mountain. This points to elevation-specific
+assemblages (filtered by temperature, for example), not to the loss of
+species from one regional pool.
+
+## 3. Distance decay
+
+### The concept
+
+Communities become less similar as the distance between them grows
+(Nekola and White 1999), in space or along an environmental gradient. The
+rate of decay summarises how fast species composition changes. Here the
+"distance" is the difference in elevation.
+
+```{r decay, fig.alt = "Distance decay of ant community similarity with elevation difference"}
+decay <- beta_decay(ants, gradient = elevation)
+decay
+ggplot(decay, aes(distance, 1 - total)) +
+  geom_point(size = 2.5, colour = "#0072B2") +
+  geom_smooth(method = "lm", formula = y ~ x, colour = "black", se = FALSE) +
+  labs(x = "Difference in elevation (m)", y = "Similarity (1 - Sørensen)") +
+  theme_tidydiversity()
+```
+
+**Interpretation.** Similarity falls steadily with elevation difference:
+sites 500 m apart share far more species than sites 2,000 m apart, which
+share almost none. For a formal test of the slope (pairs are not
+independent, so ordinary regression p-values are wrong), use
+`beta_decay_model()`, which tests by permutation.
+
+## How to report it
+
+> Beta diversity was quantified by multiplicative partitioning of Hill
+> numbers at equal sample coverage (Chao et al. 2023) in tidydiversity.
+> Across the five elevations, gamma richness was
+> `r round(bh$gamma[bh$q == 0], 1)` and mean alpha richness
+> `r round(bh$alpha[bh$q == 0], 1)` (beta = `r round(bh$beta[bh$q == 0], 2)`;
+> Sørensen-type dissimilarity `r round(bh$dis_sorensen[bh$q == 0], 2)`).
+> Partitioning Sørensen dissimilarity (Baselga 2010) showed that
+> turnover accounted for `r round(100 * multi$turnover / multi$total)` % of
+> compositional differences.
+
+## References
+
+Baselga, A. (2010). Partitioning the turnover and nestedness components
+of beta diversity. *Global Ecology and Biogeography*, 19, 134-143.
+
+Chao, A., Chiu, C.-H. and Hsieh, T. C. (2012). Proposing a resolution to
+debates on diversity partitioning. *Ecology*, 93, 2037-2051.
+
+Chao, A. et al. (2023). Rarefaction and extrapolation with beta
+diversity under a framework of Hill numbers: the iNEXT.beta3D
+standardization. *Ecological Monographs*, 93, e1588.
+
+Jost, L. (2007). Partitioning diversity into independent alpha and beta
+components. *Ecology*, 88, 2427-2439.
+
+Nekola, J. C. and White, P. S. (1999). The distance decay of similarity
+in biogeography and ecology. *Journal of Biogeography*, 26, 867-878.
+
+Whittaker, R. H. (1960). Vegetation of the Siskiyou Mountains, Oregon and
+California. *Ecological Monographs*, 30, 279-338.

@@ -30,23 +30,23 @@ at a bait counts as one occurrence (the default when the data have no
 
 ``` r
 png_ants
-#> # A tibble: 369 x 12
+#> # A tibble: 369 × 12
 #>    site  elevation season transect bait  baits bait_type species genus subfamily
 #>    <chr>     <int> <chr>     <int> <chr> <int> <chr>     <chr>   <chr> <chr>    
-#>  1 MW02~       200 dry           1 200_~    60 cho       lepm_0~ Lept~ Dolichod~
-#>  2 MW02~       200 dry           1 200_~    60 cho       mono_0~ Mono~ Myrmicin~
-#>  3 MW02~       200 dry           1 200_~    60 lipid     phei_0~ Phei~ Myrmicin~
-#>  4 MW02~       200 dry           1 200_~    60 lipid     tetr_0~ Tetr~ Myrmicin~
-#>  5 MW02~       200 dry           1 200_~    60 amino_ac~ crem_0~ Crem~ Myrmicin~
-#>  6 MW02~       200 dry           1 200_~    60 cho_amin~ crem_0~ Crem~ Myrmicin~
-#>  7 MW02~       200 dry           1 200_~    60 lipid     crem_0~ Crem~ Myrmicin~
-#>  8 MW02~       200 dry           1 200_~    60 cho       crem_0~ Crem~ Myrmicin~
-#>  9 MW02~       200 dry           1 200_~    60 cho_amin~ rhyt_0~ Rhyt~ Ectatomm~
-#> 10 MW02~       200 dry           1 200_~    60 cho       crem_0~ Crem~ Myrmicin~
-#> # i 359 more rows
-#> # i 2 more variables: guild <chr>, workers <int>
+#>  1 MW02…       200 dry           1 200_…    60 cho       lepm_0… Lept… Dolichod…
+#>  2 MW02…       200 dry           1 200_…    60 cho       mono_0… Mono… Myrmicin…
+#>  3 MW02…       200 dry           1 200_…    60 lipid     phei_0… Phei… Myrmicin…
+#>  4 MW02…       200 dry           1 200_…    60 lipid     tetr_0… Tetr… Myrmicin…
+#>  5 MW02…       200 dry           1 200_…    60 amino_ac… crem_0… Crem… Myrmicin…
+#>  6 MW02…       200 dry           1 200_…    60 cho_amin… crem_0… Crem… Myrmicin…
+#>  7 MW02…       200 dry           1 200_…    60 lipid     crem_0… Crem… Myrmicin…
+#>  8 MW02…       200 dry           1 200_…    60 cho       crem_0… Crem… Myrmicin…
+#>  9 MW02…       200 dry           1 200_…    60 cho_amin… rhyt_0… Rhyt… Ectatomm…
+#> 10 MW02…       200 dry           1 200_…    60 cho       crem_0… Crem… Myrmicin…
+#> # ℹ 359 more rows
+#> # ℹ 2 more variables: guild <chr>, workers <int>
 div_coverage(png_ants, .by = season)
-#> # A tibble: 10 x 7
+#> # A tibble: 10 × 7
 #>    season site       n s_obs    f1    f2 coverage
 #>    <chr>  <chr>  <dbl> <int> <int> <int>    <dbl>
 #>  1 dry    MW0200    47    16     5     5    0.898
@@ -94,7 +94,7 @@ the abundance and pooling trees within each plot:
 ``` r
 est <- div_estimate(png_tree_ants, abundance = nests, nboot = 100)
 est
-#> # A tibble: 9 x 7
+#> # A tibble: 9 × 7
 #>   site       q observed estimate     se  lower upper
 #>   <chr>  <dbl>    <dbl>    <dbl>  <dbl>  <dbl> <dbl>
 #> 1 Wanang     0    85       101.   9.81   90.1  133. 
@@ -124,7 +124,7 @@ turnover rather than nestedness:
 
 ``` r
 beta_multi(png_tree_ants, site = tree, .by = site)
-#> # A tibble: 3 x 5
+#> # A tibble: 3 × 5
 #>   site   n_sites turnover nestedness total
 #>   <chr>    <int>    <dbl>      <dbl> <dbl>
 #> 1 Wanang     326    0.991    0.00346 0.994

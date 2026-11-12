@@ -15,6 +15,12 @@ articles:
   articles/dimensions: dimensions.html
   articles/filip-damen: filip-damen.html
   articles/gallery: gallery.html
+  articles/guide-01-install: guide-01-install.html
+  articles/guide-02-hill-numbers: guide-02-hill-numbers.html
+  articles/guide-03-fair-comparisons: guide-03-fair-comparisons.html
+  articles/guide-04-beta: guide-04-beta.html
+  articles/guide-05-composition: guide-05-composition.html
+  articles/guide-06-dimensions: guide-06-dimensions.html
   articles/modelling: modelling.html
   articles/ordination: ordination.html
   articles/publication: publication.html
@@ -22,7 +28,8 @@ articles:
   articles/tidymodels: tidymodels.html
   articles/traits: traits.html
   articles/tutorials: tutorials.html
-last_built: 2026-11-11T05:52Z
+  articles/user-guide: user-guide.html
+last_built: 2026-11-12T05:40Z
 urls:
   reference: https://tidydiversity.in4metrix.dev/reference
   article: https://tidydiversity.in4metrix.dev/articles

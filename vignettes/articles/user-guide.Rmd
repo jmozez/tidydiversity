@@ -1,0 +1,39 @@
+---
+title: "User guide"
+description: "A complete guide to tidydiversity: installation, data preparation, concepts, code, figures, interpretation and reporting."
+---
+
+This guide explains how to use tidydiversity **and** what its results
+mean. Each chapter follows the same plan:
+
+1. **The concept**: the question, the theory and its key formula, with
+   the original references.
+2. **Code** to copy into RStudio, run on real, openly licensed field data
+   shipped with the package.
+3. **Figures and tables** made by that code.
+4. **How to interpret them**, including what they do not show.
+5. **How to report them**: a model paragraph for a paper, with the numbers
+   filled in from the analysis.
+
+| Chapter | You will learn | Main functions |
+|---|---|---|
+| [1. Install, run and prepare your data](guide-01-install.html) | Set up R and RStudio; the tidy data format; abundance and incidence data; converting spreadsheets | `div_hill()` |
+| [2. Hill numbers, completeness and coverage](guide-02-hill-numbers.html) | What diversity is; orders q = 0, 1, 2; diversity profiles; sample coverage; completeness; Chao1 and asymptotic estimates | `div_hill()`, `div_coverage()`, `div_completeness()`, `div_estimate()` |
+| [3. Fair comparisons](guide-03-fair-comparisons.html) | Rarefaction and extrapolation; size- versus coverage-based standardisation; reading confidence intervals | `div_rarefy()`, `div_standardise()` |
+| [4. Beta diversity](guide-04-beta.html) | Gamma = alpha × beta; dissimilarities; turnover versus nestedness; distance decay | `beta_hill()`, `beta_pair()`, `beta_multi()`, `beta_decay()` |
+| [5. Community composition](guide-05-composition.html) | Ordination and how to read biplots; PERMANOVA; dispersion; indicator species | `ord_fit()`, `beta_permanova()`, `beta_dispersion()`, `beta_indicator()` |
+| [6. Functional and phylogenetic diversity](guide-06-dimensions.html) | TD, PD and FD on one Hill-number scale; functional redundancy; choosing tau | `div_estimate()`, `div_standardise()` with `type` |
+
+**Where to start.** New to R: Chapters 1 and 2. Comparing sites or
+treatments: Chapter 3 is essential. Comparing species lists: Chapters 4
+and 5. Traits or phylogenies: Chapter 6.
+
+**Going further.** The [tutorials](tutorials.html) apply these methods to
+ants, frogs, butterflies, insects, mammals, birds and trees; the
+[Reference](../reference/index.html) lists every function. To put
+diversity on a map, use the companion package
+[tidymapr](https://tidymapr.in4metrix.dev), whose
+[user guide](https://tidymapr.in4metrix.dev/articles/user-guide.html)
+covers mapping and spatial analysis.
+
+**How to cite.** Run `citation("tidydiversity")` in R.

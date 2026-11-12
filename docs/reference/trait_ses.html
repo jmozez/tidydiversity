@@ -25,6 +25,17 @@ al. 2021, ch. 7). SES = (observed - mean null) / sd null."><meta property="og:im
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide"><li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials"><li><a class="dropdown-item" href="../articles/tutorials.html">Overview by taxon</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -169,7 +180,7 @@ site and species totals (<code><a href="https://rdrr.io/pkg/vegan/man/nullmodel.
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">aravo</span> <span class="op">&lt;-</span> <span class="fu"><a href="data_aravo.html">data_aravo</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">trait_ses</span><span class="op">(</span><span class="va">aravo</span><span class="op">$</span><span class="va">community</span>, <span class="va">aravo</span><span class="op">$</span><span class="va">traits</span>, abundance <span class="op">=</span> <span class="va">cover</span>, times <span class="op">=</span> <span class="fl">49</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 75 x 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 75 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    site  index null   observed null_mean null_sd    ses p.value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AR26  RaoQ  traits    0.186     0.201  0.014<span style="text-decoration: underline;">7</span> -<span style="color: #BB0000;">1.00</span>     0.4 </span>
@@ -182,7 +193,7 @@ site and species totals (<code><a href="https://rdrr.io/pkg/vegan/man/nullmodel.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AR61  RaoQ  traits    0.190     0.205  0.014<span style="text-decoration: underline;">6</span> -<span style="color: #BB0000;">1.02</span>     0.48</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AR49  RaoQ  traits    0.207     0.202  0.017<span style="text-decoration: underline;">7</span>  0.250    0.88</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AR50  RaoQ  traits    0.204     0.203  0.016<span style="text-decoration: underline;">6</span>  0.111    0.92</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 65 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 65 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

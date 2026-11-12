@@ -1,3 +1,5 @@
+0D
+2n
 Alekseyenko
 Annales
 Aravo
@@ -37,7 +39,9 @@ Carmona
 Carto
 Chaetodipus
 Chao
+Chao1
 Chihuahuan
+Cmd
 Codeberg
 Color
 Colwell
@@ -55,9 +59,11 @@ Damen
 DataCite
 Dipodomys
 Donoso
+Dornelas
 Drapeau
 Dufour
 Dufrene
+Dufrêne
 Dungan
 Durka
 EPSG
@@ -97,6 +103,7 @@ Hamidi
 Hau
 Hijmans
 Hsieh
+Hu
 Hubbell
 Idigel
 IndVal
@@ -117,9 +124,11 @@ Leps
 Lifecycle
 Limnologie
 LinkingTo
+Longrightarrow
 Luk
 MAUP
 Madang
+Magurran
 Maxar
 Maxent
 McGlinn
@@ -130,6 +139,7 @@ Morisita
 Mottl
 Mouillot
 Mungkaje
+NES
 NMDS
 Nekola
 NetCDF
@@ -159,6 +169,8 @@ Poisson
 Polatera
 PortalData
 RDA
+RStudio
+RStudio's
 Ramu
 RaoQ
 Rcpp
@@ -168,11 +180,13 @@ Rhône
 Rimandai
 Roxygen
 RoxygenNote
+Rtools
 SDM
 SDMs
 SES
 SEs
 SLA
+SOR
 SRTM
 Sauer
 Smilauer
@@ -180,6 +194,7 @@ SpadeR
 SpatRaster
 SpatRasters
 Swire
+Sørensen
 TD
 TPD
 TPDs
@@ -221,6 +236,7 @@ basemap
 basemaps
 bbox
 behavioral
+beta3D
 betapart
 bioRxiv
 bioclim
@@ -249,6 +265,8 @@ dismo
 div
 doi
 dplyr
+e01343
+e1588
 ecm
 ecog
 ecolsys
@@ -263,6 +281,7 @@ fgeo
 flextable
 fq
 fqz
+frac
 gadm
 gam
 gawdis
@@ -321,6 +340,7 @@ neotropical
 nestedness
 netCDF
 nonlinear
+obs
 org
 overfitted
 penicillatus
@@ -336,6 +356,9 @@ png
 pnguot
 prioritizr
 proj
+qD
+qN
+qquad
 quadrat
 quadrats
 quasibinomial
@@ -368,6 +391,7 @@ testthat
 tibble
 tibbles
 tidydiversity
+tidydiversity's
 tidymapr
 tidymodels
 tidyr

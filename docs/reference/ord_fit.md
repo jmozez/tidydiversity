@@ -159,7 +159,7 @@ ord
 ord_test(ord)
 #> 'nperm' >= set of all permutations: complete enumeration.
 #> Set of permutations < 'minperm'. Generating entire set.
-#> # A tibble: 2 x 5
+#> # A tibble: 2 × 5
 #>   term        df variance statistic p.value
 #>   <chr>    <dbl>    <dbl>     <dbl>   <dbl>
 #> 1 Model        1    0.475      5.17  0.0333
@@ -176,7 +176,7 @@ nmds <- ord_fit(ants,
 #> 'nperm' >= set of all permutations: complete enumeration.
 #> Set of permutations < 'minperm'. Generating entire set.
 tidy(nmds)
-#> # A tibble: 5 x 6
+#> # A tibble: 5 × 6
 #>   plot      axis1   axis2 site   elevation subplot
 #>   <chr>     <dbl>   <dbl> <chr>      <int> <chr>  
 #> 1 Wanang B -0.393  0.250  Wanang       200 B      

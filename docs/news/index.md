@@ -2,22 +2,28 @@
 
 ## tidydiversity 0.1.0
 
+- A named `palette` in
+  [`autoplot()`](https://rdrr.io/pkg/ggplot2/man/autoplot.html) methods
+  that misses a category is now an error naming the category; before,
+  ggplot2 drew that category grey without a warning. Fully named
+  palettes always coloured categories by name.
+
 - All geospatial and mapping code has moved to the companion package
   [tidymapr](https://tidymapr.in4metrix.dev/): the `geo_*()` verbs,
-  [`as_sf()`](https://rdrr.io/pkg/tidymapr/man/geo-map-interop.html),
-  [`as_spat_raster()`](https://rdrr.io/pkg/tidymapr/man/geo-map-interop.html),
-  [`plot_sites()`](https://rdrr.io/pkg/tidymapr/man/plot_sites.html),
-  [`plot_geo()`](https://rdrr.io/pkg/tidymapr/man/plot_geo.html),
-  [`plot_topo()`](https://rdrr.io/pkg/tidymapr/man/plot_topo.html),
-  [`geo_save()`](https://rdrr.io/pkg/tidymapr/man/geo_save.html), the
-  `sdm_*()` functions and
-  [`plot_sdm()`](https://rdrr.io/pkg/tidymapr/man/sdm.html), the spatial
-  stem verbs
-  [`stems_quadrat()`](https://rdrr.io/pkg/tidymapr/man/stems_spatial.html),
-  [`stems_habitat()`](https://rdrr.io/pkg/tidymapr/man/stems_spatial.html),
-  [`stems_neighbours()`](https://rdrr.io/pkg/tidymapr/man/stems_spatial.html)
+  [`as_sf()`](https://tidymapr.in4metrix.dev/reference/geo-map-interop.html),
+  [`as_spat_raster()`](https://tidymapr.in4metrix.dev/reference/geo-map-interop.html),
+  [`plot_sites()`](https://tidymapr.in4metrix.dev/reference/plot_sites.html),
+  [`plot_geo()`](https://tidymapr.in4metrix.dev/reference/plot_geo.html),
+  [`plot_topo()`](https://tidymapr.in4metrix.dev/reference/plot_topo.html),
+  [`geo_save()`](https://tidymapr.in4metrix.dev/reference/geo_save.html),
+  the `sdm_*()` functions and
+  [`plot_sdm()`](https://tidymapr.in4metrix.dev/reference/sdm.html), the
+  spatial stem verbs
+  [`stems_quadrat()`](https://tidymapr.in4metrix.dev/reference/stems_spatial.html),
+  [`stems_habitat()`](https://tidymapr.in4metrix.dev/reference/stems_spatial.html),
+  [`stems_neighbours()`](https://tidymapr.in4metrix.dev/reference/stems_spatial.html)
   and
-  [`stems_habitat_test()`](https://rdrr.io/pkg/tidymapr/man/stems_habitat_test.html),
+  [`stems_habitat_test()`](https://tidymapr.in4metrix.dev/reference/stems_habitat_test.html),
   the `geo_example_*()` helpers and the `png_ants_sites` coordinates.
   Load both packages to map diversity results; tidymapr returns the same
   tibbles and ggplots. tidydiversity no longer suggests any spatial
@@ -26,7 +32,7 @@
 - Maps now use real, published records only. New `png_ants_sites` holds
   the published bait GPS of the 16 Mt Wilhelm ant transects (Mottl,
   Moses and Klimes 2023, <doi:10.5281/zenodo.8191946>), and
-  [`geo_example_sites()`](https://rdrr.io/pkg/tidymapr/man/geo_example_sites.html)
+  [`geo_example_sites()`](https://tidymapr.in4metrix.dev/reference/geo_example_sites.html)
   returns their band centroids instead of invented coordinates (the
   `"wanang"` option, which had no published coordinates, is removed).
   The README and the new “Maps (bonus)” section of the website Gallery
@@ -35,16 +41,17 @@
   shipped in `inst/extdata/gbif_oecophylla_png.csv`) and WorldClim 2.1,
   rendered by `data-raw/gallery_maps.R`. The simulated stem map and
   demonstration SDM figures are gone.
-  [`plot_sdm()`](https://rdrr.io/pkg/tidymapr/man/sdm.html) no longer
-  adds a default “demonstration” subtitle.
+  [`plot_sdm()`](https://tidymapr.in4metrix.dev/reference/sdm.html) no
+  longer adds a default “demonstration” subtitle.
 
 - Tile basemaps from maptiles are now projected to the map CRS and drawn
   the right way up, and tile zoom is chosen from the map extent so site
   maps are sharp.
 
 - Map interoperability:
-  [`as_sf()`](https://rdrr.io/pkg/tidymapr/man/geo-map-interop.html) and
-  [`as_spat_raster()`](https://rdrr.io/pkg/tidymapr/man/geo-map-interop.html)
+  [`as_sf()`](https://tidymapr.in4metrix.dev/reference/geo-map-interop.html)
+  and
+  [`as_spat_raster()`](https://tidymapr.in4metrix.dev/reference/geo-map-interop.html)
   return CRS-aware **sf** / **terra** objects for optional use with tmap
   and leaflet (Suggests only; not hard Imports).
 
@@ -59,113 +66,116 @@
   so callers never need visreg, plotmo or aods3.
 
 - Geospatial follow-up: environmental distance in
-  [`geo_distance()`](https://rdrr.io/pkg/tidymapr/man/geo_distance.html)
-  / [`geo_decay()`](https://rdrr.io/pkg/tidymapr/man/geo_decay.html)
+  [`geo_distance()`](https://tidymapr.in4metrix.dev/reference/geo_distance.html)
+  /
+  [`geo_decay()`](https://tidymapr.in4metrix.dev/reference/geo_decay.html)
   (Euclidean or Gower on bioclim columns); Hill-number site maps via
-  [`plot_geo()`](https://rdrr.io/pkg/tidymapr/man/plot_geo.html) with
-  scale bar and north arrow;
-  [`geo_elevation()`](https://rdrr.io/pkg/tidymapr/man/geo_elevation.html)
+  [`plot_geo()`](https://tidymapr.in4metrix.dev/reference/plot_geo.html)
+  with scale bar and north arrow;
+  [`geo_elevation()`](https://tidymapr.in4metrix.dev/reference/geo_elevation.html)
   (SRTM-style DEM with cache / offline path);
-  [`geo_mem()`](https://rdrr.io/pkg/tidymapr/man/geo_mem.html) (dbMEM /
-  PCNM);
-  [`geo_rarefy_spatial()`](https://rdrr.io/pkg/tidymapr/man/geo_rarefy_spatial.html);
-  [`geo_grain()`](https://rdrr.io/pkg/tidymapr/man/geo_grain.html) (MAUP
-  / multi-grain Hill numbers);
-  [`geo_middomain()`](https://rdrr.io/pkg/tidymapr/man/geo_middomain.html);
+  [`geo_mem()`](https://tidymapr.in4metrix.dev/reference/geo_mem.html)
+  (dbMEM / PCNM);
+  [`geo_rarefy_spatial()`](https://tidymapr.in4metrix.dev/reference/geo_rarefy_spatial.html);
+  [`geo_grain()`](https://tidymapr.in4metrix.dev/reference/geo_grain.html)
+  (MAUP / multi-grain Hill numbers);
+  [`geo_middomain()`](https://tidymapr.in4metrix.dev/reference/geo_middomain.html);
   CHELSA-CMIP6 via `geo_chelsa(scenario=, year=)`; ForestGEO
-  [`stems_habitat_test()`](https://rdrr.io/pkg/tidymapr/man/stems_habitat_test.html)
+  [`stems_habitat_test()`](https://tidymapr.in4metrix.dev/reference/stems_habitat_test.html)
   (torus); tidy SDM family
-  [`sdm_fit()`](https://rdrr.io/pkg/tidymapr/man/sdm.html) /
-  [`sdm_predict()`](https://rdrr.io/pkg/tidymapr/man/sdm.html) /
-  [`sdm_evaluate()`](https://rdrr.io/pkg/tidymapr/man/sdm.html) /
-  [`plot_sdm()`](https://rdrr.io/pkg/tidymapr/man/sdm.html) (glm, gam,
-  native maxnet-like; no Java Maxent, no biomod2);
-  [`geo_as_features()`](https://rdrr.io/pkg/tidymapr/man/geo_as_features.html)
+  [`sdm_fit()`](https://tidymapr.in4metrix.dev/reference/sdm.html) /
+  [`sdm_predict()`](https://tidymapr.in4metrix.dev/reference/sdm.html) /
+  [`sdm_evaluate()`](https://tidymapr.in4metrix.dev/reference/sdm.html)
+  / [`plot_sdm()`](https://tidymapr.in4metrix.dev/reference/sdm.html)
+  (glm, gam, native maxnet-like; no Java Maxent, no biomod2);
+  [`geo_as_features()`](https://tidymapr.in4metrix.dev/reference/geo_as_features.html)
   for prioritizr hand-off. Spectral / rgee remain deferred. New Rcpp
   kernels for Euclidean distances, neighbour counts, torus shifts,
   spatial rarefaction and SDM link functions.
 
 - ForestGEO-style census verbs:
   [`stems_as_trees()`](https://tidydiversity.in4metrix.dev/reference/stems.md),
-  [`stems_quadrat()`](https://rdrr.io/pkg/tidymapr/man/stems_spatial.html),
+  [`stems_quadrat()`](https://tidymapr.in4metrix.dev/reference/stems_spatial.html),
   [`stems_abundance()`](https://tidydiversity.in4metrix.dev/reference/stems.md),
   [`stems_basal_area()`](https://tidydiversity.in4metrix.dev/reference/stems.md),
   [`stems_size_class()`](https://tidydiversity.in4metrix.dev/reference/stems.md),
   [`stems_demography()`](https://tidydiversity.in4metrix.dev/reference/stems.md),
-  [`stems_habitat()`](https://rdrr.io/pkg/tidymapr/man/stems_spatial.html),
+  [`stems_habitat()`](https://tidymapr.in4metrix.dev/reference/stems_spatial.html),
   [`stems_as_community()`](https://tidydiversity.in4metrix.dev/reference/stems.md),
-  [`stems_neighbours()`](https://rdrr.io/pkg/tidymapr/man/stems_spatial.html),
+  [`stems_neighbours()`](https://tidymapr.in4metrix.dev/reference/stems_spatial.html),
   plus
-  [`geo_example_censuses()`](https://rdrr.io/pkg/tidymapr/man/geo_example_censuses.html).
+  [`geo_example_censuses()`](https://tidymapr.in4metrix.dev/reference/geo_example_censuses.html).
 
-- [`plot_topo()`](https://rdrr.io/pkg/tidymapr/man/plot_topo.html) maps
-  ForestGEO-style stems (`gx`, `gy`, DBH, species) over contour and
+- [`plot_topo()`](https://tidymapr.in4metrix.dev/reference/plot_topo.html)
+  maps ForestGEO-style stems (`gx`, `gy`, DBH, species) over contour and
   hillshade backdrops.
-  [`geo_example_stems()`](https://rdrr.io/pkg/tidymapr/man/geo_example_stems.html),
-  [`geo_example_dem()`](https://rdrr.io/pkg/tidymapr/man/geo_example_dem.html)
+  [`geo_example_stems()`](https://tidymapr.in4metrix.dev/reference/geo_example_stems.html),
+  [`geo_example_dem()`](https://tidymapr.in4metrix.dev/reference/geo_example_dem.html)
   and
-  [`geo_example_censuses()`](https://rdrr.io/pkg/tidymapr/man/geo_example_censuses.html)
+  [`geo_example_censuses()`](https://tidymapr.in4metrix.dev/reference/geo_example_censuses.html)
   are simulated test data for checking code only; no map in the
   documentation is drawn from them.
 
 - Basemaps for
-  [`plot_sites()`](https://rdrr.io/pkg/tidymapr/man/plot_sites.html) and
-  [`plot_geo()`](https://rdrr.io/pkg/tidymapr/man/plot_geo.html) via
-  `basemap` /
-  [`geo_basemap()`](https://rdrr.io/pkg/tidymapr/man/geo_basemap.html)
+  [`plot_sites()`](https://tidymapr.in4metrix.dev/reference/plot_sites.html)
+  and
+  [`plot_geo()`](https://tidymapr.in4metrix.dev/reference/plot_geo.html)
+  via `basemap` /
+  [`geo_basemap()`](https://tidymapr.in4metrix.dev/reference/geo_basemap.html)
   (`none`, `coast`, OSM / Carto / ESRI tiles with offline coast
   fallback, or a user raster). Vector verbs:
-  [`geo_buffer()`](https://rdrr.io/pkg/tidymapr/man/geo-vector.html),
-  [`geo_crop()`](https://rdrr.io/pkg/tidymapr/man/geo-vector.html),
-  [`geo_intersection()`](https://rdrr.io/pkg/tidymapr/man/geo-vector.html),
-  [`geo_difference()`](https://rdrr.io/pkg/tidymapr/man/geo-vector.html),
-  [`geo_union()`](https://rdrr.io/pkg/tidymapr/man/geo-vector.html),
-  [`geo_area()`](https://rdrr.io/pkg/tidymapr/man/geo-vector.html),
-  [`geo_centroid()`](https://rdrr.io/pkg/tidymapr/man/geo-vector.html),
-  [`geo_bbox()`](https://rdrr.io/pkg/tidymapr/man/geo-vector.html),
-  [`geo_join()`](https://rdrr.io/pkg/tidymapr/man/geo-vector.html),
-  [`geo_distance_to()`](https://rdrr.io/pkg/tidymapr/man/geo-vector.html).
+  [`geo_buffer()`](https://tidymapr.in4metrix.dev/reference/geo-vector.html),
+  [`geo_crop()`](https://tidymapr.in4metrix.dev/reference/geo-vector.html),
+  [`geo_intersection()`](https://tidymapr.in4metrix.dev/reference/geo-vector.html),
+  [`geo_difference()`](https://tidymapr.in4metrix.dev/reference/geo-vector.html),
+  [`geo_union()`](https://tidymapr.in4metrix.dev/reference/geo-vector.html),
+  [`geo_area()`](https://tidymapr.in4metrix.dev/reference/geo-vector.html),
+  [`geo_centroid()`](https://tidymapr.in4metrix.dev/reference/geo-vector.html),
+  [`geo_bbox()`](https://tidymapr.in4metrix.dev/reference/geo-vector.html),
+  [`geo_join()`](https://tidymapr.in4metrix.dev/reference/geo-vector.html),
+  [`geo_distance_to()`](https://tidymapr.in4metrix.dev/reference/geo-vector.html).
   Raster verbs:
-  [`geo_raster_read()`](https://rdrr.io/pkg/tidymapr/man/geo-io.html),
-  [`geo_raster_crop()`](https://rdrr.io/pkg/tidymapr/man/geo-raster.html),
-  [`geo_raster_mask()`](https://rdrr.io/pkg/tidymapr/man/geo-raster.html),
-  [`geo_raster_resample()`](https://rdrr.io/pkg/tidymapr/man/geo-raster.html),
-  [`geo_raster_project()`](https://rdrr.io/pkg/tidymapr/man/geo-raster.html),
-  [`geo_raster_terrain()`](https://rdrr.io/pkg/tidymapr/man/geo-raster.html),
-  [`geo_raster_focal()`](https://rdrr.io/pkg/tidymapr/man/geo-raster.html),
-  [`geo_raster_zonal()`](https://rdrr.io/pkg/tidymapr/man/geo-raster.html).
+  [`geo_raster_read()`](https://tidymapr.in4metrix.dev/reference/geo-io.html),
+  [`geo_raster_crop()`](https://tidymapr.in4metrix.dev/reference/geo-raster.html),
+  [`geo_raster_mask()`](https://tidymapr.in4metrix.dev/reference/geo-raster.html),
+  [`geo_raster_resample()`](https://tidymapr.in4metrix.dev/reference/geo-raster.html),
+  [`geo_raster_project()`](https://tidymapr.in4metrix.dev/reference/geo-raster.html),
+  [`geo_raster_terrain()`](https://tidymapr.in4metrix.dev/reference/geo-raster.html),
+  [`geo_raster_focal()`](https://tidymapr.in4metrix.dev/reference/geo-raster.html),
+  [`geo_raster_zonal()`](https://tidymapr.in4metrix.dev/reference/geo-raster.html).
   Bioclimate:
-  [`geo_bioclim_vars()`](https://rdrr.io/pkg/tidymapr/man/geo-bioclim.html),
-  [`geo_bioclim()`](https://rdrr.io/pkg/tidymapr/man/geo-bioclim.html),
-  [`geo_worldclim()`](https://rdrr.io/pkg/tidymapr/man/geo-bioclim.html),
-  [`geo_chelsa()`](https://rdrr.io/pkg/tidymapr/man/geo-bioclim.html)
+  [`geo_bioclim_vars()`](https://tidymapr.in4metrix.dev/reference/geo-bioclim.html),
+  [`geo_bioclim()`](https://tidymapr.in4metrix.dev/reference/geo-bioclim.html),
+  [`geo_worldclim()`](https://tidymapr.in4metrix.dev/reference/geo-bioclim.html),
+  [`geo_chelsa()`](https://tidymapr.in4metrix.dev/reference/geo-bioclim.html)
   with cache and offline `path` (cite Fick and Hijmans 2017; Karger et
   al. 2017).
 
-- [`plot_sites()`](https://rdrr.io/pkg/tidymapr/man/plot_sites.html)
+- [`plot_sites()`](https://tidymapr.in4metrix.dev/reference/plot_sites.html)
   draws publication-ready study-site maps (grouping, labels, raster or
   coastline backdrop, facets, scale bar and north arrow without
   map-package dependencies).
-  [`geo_example_sites()`](https://rdrr.io/pkg/tidymapr/man/geo_example_sites.html)
+  [`geo_example_sites()`](https://tidymapr.in4metrix.dev/reference/geo_example_sites.html)
   returns the published bait GPS positions for the Mt Wilhelm elevation
   bands. SDM tools such as biomod2 and Maxent remain out of scope until
   rebuilt as tidy verbs.
 
 - Geospatial workflow (native tidyverse-style verbs; **sf** and
   **terra** as Suggests):
-  [`geo_as_sf()`](https://rdrr.io/pkg/tidymapr/man/geo_as_sf.html),
-  [`geo_drop_geometry()`](https://rdrr.io/pkg/tidymapr/man/geo_as_sf.html),
-  [`geo_extract()`](https://rdrr.io/pkg/tidymapr/man/geo_extract.html),
-  [`geo_clean()`](https://rdrr.io/pkg/tidymapr/man/geo_clean.html)
+  [`geo_as_sf()`](https://tidymapr.in4metrix.dev/reference/geo_as_sf.html),
+  [`geo_drop_geometry()`](https://tidymapr.in4metrix.dev/reference/geo_as_sf.html),
+  [`geo_extract()`](https://tidymapr.in4metrix.dev/reference/geo_extract.html),
+  [`geo_clean()`](https://tidymapr.in4metrix.dev/reference/geo_clean.html)
   (occurrence flags rebuilt so callers never need CoordinateCleaner),
-  [`geo_gbif()`](https://rdrr.io/pkg/tidymapr/man/geo_gbif.html),
-  [`geo_distance()`](https://rdrr.io/pkg/tidymapr/man/geo_distance.html),
-  [`geo_decay()`](https://rdrr.io/pkg/tidymapr/man/geo_decay.html)
+  [`geo_gbif()`](https://tidymapr.in4metrix.dev/reference/geo_gbif.html),
+  [`geo_distance()`](https://tidymapr.in4metrix.dev/reference/geo_distance.html),
+  [`geo_decay()`](https://tidymapr.in4metrix.dev/reference/geo_decay.html)
   (feeds
   [`beta_decay_model()`](https://tidydiversity.in4metrix.dev/reference/beta_decay_model.md)
   with great-circle or elevational distance),
-  [`plot_geo()`](https://rdrr.io/pkg/tidymapr/man/plot_geo.html) and
-  [`geo_moran()`](https://rdrr.io/pkg/tidymapr/man/geo_moran.html)
+  [`plot_geo()`](https://tidymapr.in4metrix.dev/reference/plot_geo.html)
+  and
+  [`geo_moran()`](https://tidymapr.in4metrix.dev/reference/geo_moran.html)
   (Moran’s I with a permutation p-value, rebuilt so callers never need
   spdep). Compiled haversine kernels speed large distance tables. New
   article “Geospatial diversity workflows”.

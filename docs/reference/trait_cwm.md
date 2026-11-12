@@ -64,7 +64,7 @@ properties during secondary succession. *Ecology*, 85, 2630-2637.
 ``` r
 aravo <- data_aravo()
 trait_cwm(aravo$community, aravo$traits, abundance = cover)
-#> # A tibble: 600 x 9
+#> # A tibble: 600 × 9
 #>    site  trait    cwm Aspect Slope Form  PhysD ZoogD  Snow
 #>    <chr> <chr>  <dbl>  <int> <int> <fct> <int> <fct> <int>
 #>  1 AR26  Height  8.80      5     0 3        20 no      140
@@ -77,5 +77,5 @@ trait_cwm(aravo$community, aravo$traits, abundance = cover)
 #>  8 AR61  Height  6.38      8    15 4        10 no      150
 #>  9 AR49  Height  6.90      5     2 1        65 no      150
 #> 10 AR50  Height  6.78      5     0 1        40 no      160
-#> # i 590 more rows
+#> # ℹ 590 more rows
 ```

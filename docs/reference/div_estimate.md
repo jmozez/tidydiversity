@@ -175,7 +175,7 @@ data with unequal catchability. Biometrics, 43, 783-791.
 ``` r
 set.seed(1)
 div_estimate(png_ants, .by = season, nboot = 20)
-#> # A tibble: 30 x 8
+#> # A tibble: 30 × 8
 #>    season site       q observed estimate    se lower upper
 #>    <chr>  <chr>  <dbl>    <dbl>    <dbl> <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0    16        18.4  6.36 16.1   56.5
@@ -188,11 +188,11 @@ div_estimate(png_ants, .by = season, nboot = 20)
 #>  8 dry    MW0700     1    11.8      38.5 11.6  15.7   61.2
 #>  9 dry    MW0700     2     8.67     13.3  7.60  8.67  28.2
 #> 10 wet    MW0700     0    28        75.3 32.1  42.2  186. 
-#> # i 20 more rows
+#> # ℹ 20 more rows
 
 # Incidence-based (Chao2) estimates, baits as sampling units
 div_estimate(png_ants, unit = bait, n_units = baits, .by = season, nboot = 20)
-#> # A tibble: 30 x 8
+#> # A tibble: 30 × 8
 #>    season site       q observed estimate     se lower upper
 #>    <chr>  <chr>  <dbl>    <dbl>    <dbl>  <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0    16       18.5  10.4   16.1   87.0
@@ -205,5 +205,5 @@ div_estimate(png_ants, unit = bait, n_units = baits, .by = season, nboot = 20)
 #>  8 dry    MW0700     1    11.8     39.2  18.5   11.8   75.5
 #>  9 dry    MW0700     2     8.67    13.7   5.11   8.67  23.7
 #> 10 wet    MW0700     0    28       75.4  26.0   45.3  158. 
-#> # i 20 more rows
+#> # ℹ 20 more rows
 ```

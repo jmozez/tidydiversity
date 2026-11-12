@@ -73,7 +73,7 @@ object.
 set.seed(1)
 est <- div_estimate(png_ants, .by = season, nboot = 20)
 div_table(est)
-#> # A tibble: 30 x 5
+#> # A tibble: 30 × 5
 #>    season site   `Order q` Observed `Estimate [95% CI]`  
 #>    <chr>  <chr>  <chr>     <chr>    <chr>                
 #>  1 dry    MW0200 0         16.00    18.45 [16.15, 56.45] 
@@ -86,9 +86,9 @@ div_table(est)
 #>  8 dry    MW0700 1         11.76    38.45 [15.67, 61.23] 
 #>  9 dry    MW0700 2         8.67     13.32 [8.67, 28.21]  
 #> 10 wet    MW0700 0         28.00    75.34 [42.19, 185.93]
-#> # i 20 more rows
+#> # ℹ 20 more rows
 div_table(est, wide = TRUE, digits = 1)
-#> # A tibble: 10 x 8
+#> # A tibble: 10 × 8
 #>    season site   `observed (q = 0)` `estimate (q = 0)` `observed (q = 1)`
 #>    <chr>  <chr>  <chr>              <chr>              <chr>             
 #>  1 dry    MW0200 16.0               18.4 [16.1, 56.5]  12.3              
@@ -101,7 +101,7 @@ div_table(est, wide = TRUE, digits = 1)
 #>  8 wet    MW1700 10.0               18.7 [10.9, 98.4]  5.3               
 #>  9 dry    MW2200 6.0                10.2 [6.6, 34.1]   5.0               
 #> 10 wet    MW2200 5.0                6.9 [5.2, 26.9]    3.6               
-#> # i 3 more variables: `estimate (q = 1)` <chr>, `observed (q = 2)` <chr>,
+#> # ℹ 3 more variables: `estimate (q = 1)` <chr>, `observed (q = 2)` <chr>,
 #> #   `estimate (q = 2)` <chr>
 div_table(est, output = "kable", caption = "Asymptotic diversity")
 #> 

@@ -41,6 +41,19 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide">
+<li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul>
+</li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
 <li><a class="dropdown-item" href="../articles/tutorials.html">Overview by taxon</a></li>
@@ -136,7 +149,7 @@ by their frequency and <code>q = 2</code> emphasises the dominant
 species.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/div_hill.html">div_hill</a></span><span class="op">(</span><span class="va">png_ants</span>, q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, .by <span class="op">=</span> <span class="va">season</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 x 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 5</span></span></span>
 <span><span class="co">#&gt;    season site       q     n diversity</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> dry    MW0200     0    47     16   </span></span>
@@ -149,7 +162,7 @@ species.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> dry    MW0700     1    23     11.8 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> dry    MW0700     2    23      8.67</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> wet    MW0700     0    58     28   </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 20 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 20 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="sample-coverage">Sample coverage<a class="anchor" aria-label="anchor" href="#sample-coverage"></a>
@@ -158,7 +171,7 @@ species.</p>
 complete each sample is.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/div_coverage.html">div_coverage</a></span><span class="op">(</span><span class="va">png_ants</span>, .by <span class="op">=</span> <span class="va">season</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 x 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 7</span></span></span>
 <span><span class="co">#&gt;    season site       n s_obs    f1    f2 coverage</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> dry    MW0200    47    16     5     5    0.898</span></span>
@@ -181,7 +194,7 @@ bootstrap intervals.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/div_estimate.html">div_estimate</a></span><span class="op">(</span><span class="va">png_ants</span>, .by <span class="op">=</span> <span class="va">season</span>, nboot <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">q</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 x 8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 8</span></span></span>
 <span><span class="co">#&gt;    season site       q observed estimate    se lower upper</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> dry    MW0200     0       16    18.4   3.55 16.3   35.7</span></span>
@@ -206,7 +219,7 @@ package.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">season</span> <span class="op">==</span> <span class="st">"wet"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/div_rarefy.html">div_rarefy</a></span><span class="op">(</span>q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, nboot <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="va">curves</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 570 x 8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 570 × 8</span></span></span>
 <span><span class="co">#&gt;    site       q     m method      diversity coverage lower upper</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> MW0200     0     1 rarefaction      1       0.132  1     1.00</span></span>
@@ -219,7 +232,7 @@ package.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> MW0200     0    29 rarefaction     12.0     0.754  9.51 14.6 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> MW0200     0    33 rarefaction     13.0     0.766 10.2  15.8 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> MW0200     0    38 rarefaction     14.1     0.780 11.0  17.3 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 560 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 560 more rows</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">curves</span><span class="op">)</span></span></code></pre></div>
 <p><img src="alpha-rarefaction_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="Rarefaction and extrapolation curves for each site" width="672"></p>
@@ -238,7 +251,7 @@ sample size.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">std</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/div_standardise.html">div_standardise</a></span><span class="op">(</span><span class="va">png_ants</span>, .by <span class="op">=</span> <span class="va">season</span>, nboot <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">std</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 x 10</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 10</span></span></span>
 <span><span class="co">#&gt;    season site       q     m method        coverage diversity    se  lower upper</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> dry    MW0200     0  11.6 rarefaction      0.565      7.96 0.444  7.09   8.83</span></span>
@@ -251,7 +264,7 @@ sample size.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> dry    MW0700     1  46.0 extrapolation    0.565     17.9  5.71   6.67  29.0 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> dry    MW0700     2  46.0 extrapolation    0.565     10.5  5.07   0.566 20.4 </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> wet    MW0700     0 116   extrapolation    0.796     42.2  5.97  30.5   53.9 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 20 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 20 more rows</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">std</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">png_ants</span>, <span class="va">site</span>, <span class="va">elevation</span><span class="op">)</span>, by <span class="op">=</span> <span class="st">"site"</span><span class="op">)</span> <span class="op">|&gt;</span></span>

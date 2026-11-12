@@ -76,7 +76,7 @@ A tibble.
 set.seed(1)
 est <- div_estimate(png_ants, q = 0, nboot = 20)
 generics::tidy(est)
-#> # A tibble: 5 x 8
+#> # A tibble: 5 × 8
 #>   site       q observed estimate std.error conf.low conf.high  weight
 #>   <chr>  <dbl>    <dbl>    <dbl>     <dbl>    <dbl>     <dbl>   <dbl>
 #> 1 MW0200     0       30     44.0      9.06    34.4       74.6 0.0122 

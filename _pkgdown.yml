@@ -46,7 +46,7 @@ repo:
 navbar:
   bg: dark
   structure:
-    left: [intro, tutorials, guides, gallery, reference, news]
+    left: [intro, userguide, tutorials, guides, gallery, reference, news]
     right: [tidymapr, memorial, search, github, gitlab]
   components:
     github:
@@ -65,6 +65,24 @@ navbar:
     intro:
       text: Get started
       href: articles/tidydiversity.html
+    userguide:
+      text: User guide
+      menu:
+        - text: Overview
+          href: articles/user-guide.html
+        - text: -------
+        - text: 1. Install, run and prepare data
+          href: articles/guide-01-install.html
+        - text: 2. Hill numbers, completeness and coverage
+          href: articles/guide-02-hill-numbers.html
+        - text: 3. Fair comparisons
+          href: articles/guide-03-fair-comparisons.html
+        - text: 4. Beta diversity
+          href: articles/guide-04-beta.html
+        - text: 5. Community composition
+          href: articles/guide-05-composition.html
+        - text: 6. Functional and phylogenetic diversity
+          href: articles/guide-06-dimensions.html
     tutorials:
       text: Tutorials
       menu:
@@ -229,6 +247,10 @@ articles:
     navbar: ~
     contents:
       - tidydiversity
+  - title: User guide
+    contents:
+      - articles/user-guide
+      - starts_with("articles/guide-")
   - title: Guides
     contents:
       - articles/dimensions

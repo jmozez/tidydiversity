@@ -33,7 +33,7 @@ transects.
 units <- png_ants |>
   div_hill(q = 1, .by = c(elevation, season, transect))
 units
-#> # A tibble: 20 x 7
+#> # A tibble: 20 × 7
 #>    elevation season transect site       q     n diversity
 #>        <int> <chr>     <int> <chr>  <dbl> <dbl>     <dbl>
 #>  1       200 dry           1 MW0200     1    20      8.85
@@ -65,7 +65,7 @@ leak information. Use one fold per site instead (leave-one-site-out):
 folds <- model_group_folds(units, group = site)
 folds
 #> # Group 5-fold cross-validation 
-#> # A tibble: 5 x 2
+#> # A tibble: 5 × 2
 #>   splits         id       
 #>   <list>         <chr>    
 #> 1 <split [16/4]> Resample1
@@ -89,7 +89,7 @@ bind_rows(
   ),
   .id = "model"
 )
-#> # A tibble: 2 x 7
+#> # A tibble: 2 × 7
 #>   model              .metric .estimator  mean     n std_err .config        
 #>   <chr>              <chr>   <chr>      <dbl> <int>   <dbl> <chr>          
 #> 1 elevation          rmse    standard    3.41     5   0.669 pre0_mod0_post0
@@ -105,7 +105,7 @@ The fitted coefficients come out tidy:
 
 ``` r
 fit(wf_both, units) |> tidy()
-#> # A tibble: 3 x 5
+#> # A tibble: 3 × 5
 #>   term        estimate std.error statistic     p.value
 #>   <chr>          <dbl>     <dbl>     <dbl>       <dbl>
 #> 1 (Intercept) 10.4      1.29          8.10 0.000000307
@@ -126,7 +126,7 @@ workflow(estimate ~ elevation + season, linear_reg()) |>
   add_case_weights(w) |>
   fit(est) |>
   tidy()
-#> # A tibble: 3 x 5
+#> # A tibble: 3 × 5
 #>   term        estimate std.error statistic  p.value
 #>   <chr>          <dbl>     <dbl>     <dbl>    <dbl>
 #> 1 (Intercept) 16.4       2.96        5.55  0.000859
@@ -150,7 +150,7 @@ recipe(elevation ~ ., data = select(wide, -season, -transect)) |>
   step_hill(all_predictors(), q = c(0, 1, 2)) |>
   prep() |>
   bake(new_data = NULL)
-#> # A tibble: 20 x 4
+#> # A tibble: 20 × 4
 #>    elevation hill_q0 hill_q1 hill_q2
 #>        <int>   <dbl>   <dbl>   <dbl>
 #>  1       200      11    3.16    2.10

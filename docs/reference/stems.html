@@ -49,6 +49,17 @@ Basal area for one stem is \eqn{\pi/4 \times \mathrm{dbh}^2} (Condit
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide"><li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials"><li><a class="dropdown-item" href="../articles/tutorials.html">Overview by taxon</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -115,8 +126,8 @@ between two censuses with <code>stems_demography()</code>; feed species counts t
 <code><a href="div_hill.html">div_hill()</a></code> via <code>stems_as_community()</code>.</p>
 <p>Spatial stem verbs (quadrats, habitat joins, neighbourhoods, the
 torus-translation habitat test) and stem maps over topography are in
-the companion package tidymapr (<code><a href="https://rdrr.io/pkg/tidymapr/man/stems_spatial.html" class="external-link">tidymapr::stems_quadrat()</a></code>,
-<code><a href="https://rdrr.io/pkg/tidymapr/man/stems_habitat_test.html" class="external-link">tidymapr::stems_habitat_test()</a></code>, <code><a href="https://rdrr.io/pkg/tidymapr/man/plot_topo.html" class="external-link">tidymapr::plot_topo()</a></code>).</p>
+the companion package tidymapr (<code><a href="https://tidymapr.in4metrix.dev/reference/stems_spatial.html" class="external-link">tidymapr::stems_quadrat()</a></code>,
+<code><a href="https://tidymapr.in4metrix.dev/reference/stems_habitat_test.html" class="external-link">tidymapr::stems_habitat_test()</a></code>, <code><a href="https://tidymapr.in4metrix.dev/reference/plot_topo.html" class="external-link">tidymapr::plot_topo()</a></code>).</p>
 <p>Basal area for one stem is <code>\eqn{\pi/4 \times \mathrm{dbh}^2}</code> (Condit
 1998; fgeo.analyze). With <code>dbh_unit = "cm"</code> the result is cm\(^2\); with
 <code>"mm"</code> it is mm\(^2\). Convert afterwards if you need m\(^2\) ha\(^{-1}\).</p>
@@ -234,7 +245,7 @@ preferred).</p></dd>
 
 <dt id="arg-site">site<a class="anchor" aria-label="anchor" href="#arg-site"></a></dt>
 <dd><p>Column to use as the site identifier in the community table
-(default <code>quadrat</code>, as added by <code><a href="https://rdrr.io/pkg/tidymapr/man/stems_spatial.html" class="external-link">tidymapr::stems_quadrat()</a></code>, or
+(default <code>quadrat</code>, as added by <code><a href="https://tidymapr.in4metrix.dev/reference/stems_spatial.html" class="external-link">tidymapr::stems_quadrat()</a></code>, or
 <code>plot</code>).</p></dd>
 
 </dl></div>
@@ -266,14 +277,14 @@ the fgeo.analyze package (rOpenSci / ForestGEO).</p>
 <span class="r-in"><span>  status <span class="op">=</span> <span class="st">"A"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">stems_abundance</span><span class="op">(</span><span class="va">stems</span>, .by <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 x 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   species                 n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Pometia_pinnata         3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Intsia_bijuga           2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Pterocarpus_indicus     1</span>
 <span class="r-in"><span><span class="fu">stems_basal_area</span><span class="op">(</span><span class="va">stems</span>, dbh_unit <span class="op">=</span> <span class="st">"mm"</span>, .by <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 x 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   species             basal_area basal_area_unit n_stem</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Pometia_pinnata        <span style="text-decoration: underline;">143</span>327. mm2                  3</span>

@@ -37,7 +37,7 @@ birds <- tibble::tibble(
   ) |>
   as_community()
 div_coverage(birds)
-#> # A tibble: 2 x 6
+#> # A tibble: 2 × 6
 #>   site      n s_obs    f1    f2 coverage
 #>   <chr> <int> <int> <int> <int>    <dbl>
 #> 1 North   202    27     6     4    0.970
@@ -124,7 +124,7 @@ bbs
 #>  8  1980 AK    1370            1
 #>  9  1980 AK    1390            1
 #> 10  1980 AK    140             1
-#> # i 16,572 more rows
+#> # ℹ 16,572 more rows
 ```
 
 ### Multiple-site partitions
@@ -135,7 +135,7 @@ Sorensen dissimilarity among all 49 states, split into turnover
 ``` r
 multi <- beta_multi(bbs, .by = year)
 multi
-#> # A tibble: 2 x 5
+#> # A tibble: 2 × 5
 #>    year n_sites turnover nestedness total
 #>   <dbl>   <int>    <dbl>      <dbl> <dbl>
 #> 1  1980      49    0.886     0.0325 0.918

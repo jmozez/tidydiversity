@@ -16,9 +16,9 @@ via `stems_as_community()`.
 Spatial stem verbs (quadrats, habitat joins, neighbourhoods, the
 torus-translation habitat test) and stem maps over topography are in the
 companion package tidymapr
-([`tidymapr::stems_quadrat()`](https://rdrr.io/pkg/tidymapr/man/stems_spatial.html),
-[`tidymapr::stems_habitat_test()`](https://rdrr.io/pkg/tidymapr/man/stems_habitat_test.html),
-[`tidymapr::plot_topo()`](https://rdrr.io/pkg/tidymapr/man/plot_topo.html)).
+([`tidymapr::stems_quadrat()`](https://tidymapr.in4metrix.dev/reference/stems_spatial.html),
+[`tidymapr::stems_habitat_test()`](https://tidymapr.in4metrix.dev/reference/stems_habitat_test.html),
+[`tidymapr::plot_topo()`](https://tidymapr.in4metrix.dev/reference/plot_topo.html)).
 
 Basal area for one stem is `\eqn{\pi/4 \times \mathrm{dbh}^2}` (Condit
 1998; fgeo.analyze). With `dbh_unit = "cm"` the result is cm\\^2\\; with
@@ -137,7 +137,7 @@ stems_as_community(
 
   Column to use as the site identifier in the community table (default
   `quadrat`, as added by
-  [`tidymapr::stems_quadrat()`](https://rdrr.io/pkg/tidymapr/man/stems_spatial.html),
+  [`tidymapr::stems_quadrat()`](https://tidymapr.in4metrix.dev/reference/stems_spatial.html),
   or `plot`).
 
 ## References
@@ -168,14 +168,14 @@ stems <- tibble::tibble(
   status = "A"
 )
 stems_abundance(stems, .by = species)
-#> # A tibble: 3 x 2
+#> # A tibble: 3 × 2
 #>   species                 n
 #>   <chr>               <int>
 #> 1 Pometia_pinnata         3
 #> 2 Intsia_bijuga           2
 #> 3 Pterocarpus_indicus     1
 stems_basal_area(stems, dbh_unit = "mm", .by = species)
-#> # A tibble: 3 x 4
+#> # A tibble: 3 × 4
 #>   species             basal_area basal_area_unit n_stem
 #>   <chr>                    <dbl> <chr>            <int>
 #> 1 Pometia_pinnata        143327. mm2                  3

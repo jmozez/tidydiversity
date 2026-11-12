@@ -85,7 +85,7 @@ aravo <- data_aravo()
 set.seed(1)
 trait_cwm_test(aravo$community, aravo$traits, abundance = cover,
             cols = c(Height, SLA), env_vars = Snow, permutations = 199)
-#> # A tibble: 2 x 6
+#> # A tibble: 2 × 6
 #>   trait  variable      r p_row p_col p_max
 #>   <chr>  <chr>     <dbl> <dbl> <dbl> <dbl>
 #> 1 Height Snow     -0.737 0.005 0.025 0.025

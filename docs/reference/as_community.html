@@ -27,6 +27,17 @@ into long format."><meta property="og:image" content="https://tidydiversity.in4m
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide"><li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials"><li><a class="dropdown-item" href="../articles/tutorials.html">Overview by taxon</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -169,11 +180,11 @@ grouping columns followed by <code>site</code>, <code>species</code> and <code>a
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> dry    MW0200 odon_001         2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> dry    MW0200 para_005         4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> dry    MW0200 phei_008         3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 129 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 129 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">wide</span> <span class="op">&lt;-</span> <span class="fu">community_wide</span><span class="op">(</span><span class="va">ants</span>, .by <span class="op">=</span> <span class="va">season</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wide</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 x 81</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 81</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    season site   ancy_001 ancy_003 anon_003 anon_008 anon_009 anon_012 anon_013</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> dry    MW0200        0        0        0        0        0        0        0</span>
@@ -186,13 +197,13 @@ grouping columns followed by <code>site</code>, <code>species</code> and <code>a
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> wet    MW1200        0        1        0        0        1        3        1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> wet    MW1700        0        0        1        0        0        0        1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> wet    MW2200        8        0        0        0        0        0        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 72 more variables: anon_014 &lt;dbl&gt;, anop_001 &lt;dbl&gt;, apha_001 &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 72 more variables: anon_014 &lt;dbl&gt;, anop_001 &lt;dbl&gt;, apha_001 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   camp_001 &lt;dbl&gt;, camp_034 &lt;dbl&gt;, camp_035 &lt;dbl&gt;, care_001 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   care_002 &lt;dbl&gt;, care_003 &lt;dbl&gt;, care_007 &lt;dbl&gt;, crem_001 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   crem_003 &lt;dbl&gt;, crem_010 &lt;dbl&gt;, crem_014 &lt;dbl&gt;, lepm_001 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   lepm_002 &lt;dbl&gt;, mera_001 &lt;dbl&gt;, mera_002 &lt;dbl&gt;, mono_001 &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   mono_002 &lt;dbl&gt;, mono_003 &lt;dbl&gt;, mono_004 &lt;dbl&gt;, odon_001 &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   oeco_001 &lt;dbl&gt;, para_005 &lt;dbl&gt;, para_007 &lt;dbl&gt;, para_010 &lt;dbl&gt;, ...</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   oeco_001 &lt;dbl&gt;, para_005 &lt;dbl&gt;, para_007 &lt;dbl&gt;, para_010 &lt;dbl&gt;, …</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">community_long</span><span class="op">(</span><span class="va">wide</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">season</span>, <span class="va">site</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A community: 5 sites, 79 species, 369 individuals</span></span>
@@ -208,7 +219,7 @@ grouping columns followed by <code>site</code>, <code>species</code> and <code>a
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> dry    MW0200 odon_001         2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> dry    MW0200 para_005         4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> dry    MW0200 phei_008         3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 129 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 129 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

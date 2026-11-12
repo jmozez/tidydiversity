@@ -47,6 +47,19 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide">
+<li><a class="dropdown-item" href="articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul>
+</li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
 <li><a class="dropdown-item" href="articles/tutorials.html">Overview by taxon</a></li>
@@ -386,6 +399,19 @@
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pak/man/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"jmozez/tidydiversity"</span><span class="op">)</span></span></code></pre></div>
 <p>The source code lives on GitHub, <a href="https://github.com/jmozez/tidydiversity" class="external-link uri">https://github.com/jmozez/tidydiversity</a>, with a mirror on GitLab, <a href="https://gitlab.com/jimmy.moses/tidydiversity" class="external-link uri">https://gitlab.com/jimmy.moses/tidydiversity</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="user-guide">User guide<a class="anchor" aria-label="anchor" href="#user-guide"></a>
+</h2>
+<p>New to tidydiversity or to diversity analysis? The <a href="https://tidydiversity.in4metrix.dev/articles/user-guide.html">User guide</a> explains, chapter by chapter, how to install and run tidydiversity in RStudio and what every analysis means: the concept and theory, runnable code on real field data, figures and tables, how to interpret them and how to report them.</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://tidydiversity.in4metrix.dev/articles/guide-01-install.html">Install, run and prepare your data</a></li>
+<li><a href="https://tidydiversity.in4metrix.dev/articles/guide-02-hill-numbers.html">Hill numbers, completeness and coverage</a></li>
+<li><a href="https://tidydiversity.in4metrix.dev/articles/guide-03-fair-comparisons.html">Fair comparisons: rarefaction, extrapolation and standardisation</a></li>
+<li><a href="https://tidydiversity.in4metrix.dev/articles/guide-04-beta.html">Beta diversity</a></li>
+<li><a href="https://tidydiversity.in4metrix.dev/articles/guide-05-composition.html">Community composition: ordination and tests</a></li>
+<li><a href="https://tidydiversity.in4metrix.dev/articles/guide-06-dimensions.html">Functional and phylogenetic diversity</a></li>
+</ol>
 </div>
 <div class="section level2">
 <h2 id="maps-with-tidymapr">Maps with tidymapr<a class="anchor" aria-label="anchor" href="#maps-with-tidymapr"></a>

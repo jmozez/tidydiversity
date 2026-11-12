@@ -59,7 +59,7 @@ plot_save(
 
 ## See also
 
-[`tidymapr::geo_save()`](https://rdrr.io/pkg/tidymapr/man/geo_save.html)
+[`tidymapr::geo_save()`](https://tidymapr.in4metrix.dev/reference/geo_save.html)
 for map-oriented defaults (path, 180x140 mm).
 
 ## Examples

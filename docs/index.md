@@ -1,5 +1,16 @@
 # tidydiversity
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![License:
+MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jmozez/tidydiversity/blob/main/LICENSE.md)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24046912.svg)](https://doi.org/10.5281/zenodo.24046912)
+[![CRAN
+checks](https://img.shields.io/badge/R%20CMD%20check-as--cran-1A9E93)](https://tidydiversity.in4metrix.dev/cran-check.txt)
+[![Website](https://img.shields.io/badge/website-tidydiversity.in4metrix.dev-1A9E93)](https://tidydiversity.in4metrix.dev)
+[![Maps with
+tidymapr](https://img.shields.io/badge/maps%20with-tidymapr-11376B)](https://tidymapr.in4metrix.dev)
+
 **Taxonomic, phylogenetic and functional diversity on one scale, in one
 tidy workflow.**
 
@@ -154,16 +165,38 @@ light.
 
 ## Installation
 
-Install the development version from GitLab:
+Install the development version from GitHub:
 
 ``` r
 # install.packages("pak")
-pak::pak("gitlab::jimmy.moses/tidydiversity")
+pak::pak("jmozez/tidydiversity")
 ```
 
 The source code lives on GitHub,
 <https://github.com/jmozez/tidydiversity>, with a mirror on GitLab,
 <https://gitlab.com/jimmy.moses/tidydiversity>.
+
+## User guide
+
+New to tidydiversity or to diversity analysis? The [User
+guide](https://tidydiversity.in4metrix.dev/articles/user-guide.html)
+explains, chapter by chapter, how to install and run tidydiversity in
+RStudio and what every analysis means: the concept and theory, runnable
+code on real field data, figures and tables, how to interpret them and
+how to report them.
+
+1.  [Install, run and prepare your
+    data](https://tidydiversity.in4metrix.dev/articles/guide-01-install.html)
+2.  [Hill numbers, completeness and
+    coverage](https://tidydiversity.in4metrix.dev/articles/guide-02-hill-numbers.html)
+3.  [Fair comparisons: rarefaction, extrapolation and
+    standardisation](https://tidydiversity.in4metrix.dev/articles/guide-03-fair-comparisons.html)
+4.  [Beta
+    diversity](https://tidydiversity.in4metrix.dev/articles/guide-04-beta.html)
+5.  [Community composition: ordination and
+    tests](https://tidydiversity.in4metrix.dev/articles/guide-05-composition.html)
+6.  [Functional and phylogenetic
+    diversity](https://tidydiversity.in4metrix.dev/articles/guide-06-dimensions.html)
 
 ## Maps with tidymapr
 
@@ -176,7 +209,7 @@ uses and returns tibbles and ggplots, so the two packages share one
 workflow, the way dplyr and ggplot2 do:
 
 ``` r
-pak::pak("gitlab::jimmy.moses/tidymapr")
+pak::pak("jmozez/tidymapr")
 library(tidydiversity)
 library(tidymapr)
 

@@ -98,23 +98,23 @@ and Biogeography*, 32, 2212-2229.
 
 ``` r
 png_ants
-#> # A tibble: 369 x 12
+#> # A tibble: 369 × 12
 #>    site  elevation season transect bait  baits bait_type species genus subfamily
 #>    <chr>     <int> <chr>     <int> <chr> <int> <chr>     <chr>   <chr> <chr>    
-#>  1 MW02~       200 dry           1 200_~    60 cho       lepm_0~ Lept~ Dolichod~
-#>  2 MW02~       200 dry           1 200_~    60 cho       mono_0~ Mono~ Myrmicin~
-#>  3 MW02~       200 dry           1 200_~    60 lipid     phei_0~ Phei~ Myrmicin~
-#>  4 MW02~       200 dry           1 200_~    60 lipid     tetr_0~ Tetr~ Myrmicin~
-#>  5 MW02~       200 dry           1 200_~    60 amino_ac~ crem_0~ Crem~ Myrmicin~
-#>  6 MW02~       200 dry           1 200_~    60 cho_amin~ crem_0~ Crem~ Myrmicin~
-#>  7 MW02~       200 dry           1 200_~    60 lipid     crem_0~ Crem~ Myrmicin~
-#>  8 MW02~       200 dry           1 200_~    60 cho       crem_0~ Crem~ Myrmicin~
-#>  9 MW02~       200 dry           1 200_~    60 cho_amin~ rhyt_0~ Rhyt~ Ectatomm~
-#> 10 MW02~       200 dry           1 200_~    60 cho       crem_0~ Crem~ Myrmicin~
-#> # i 359 more rows
-#> # i 2 more variables: guild <chr>, workers <int>
+#>  1 MW02…       200 dry           1 200_…    60 cho       lepm_0… Lept… Dolichod…
+#>  2 MW02…       200 dry           1 200_…    60 cho       mono_0… Mono… Myrmicin…
+#>  3 MW02…       200 dry           1 200_…    60 lipid     phei_0… Phei… Myrmicin…
+#>  4 MW02…       200 dry           1 200_…    60 lipid     tetr_0… Tetr… Myrmicin…
+#>  5 MW02…       200 dry           1 200_…    60 amino_ac… crem_0… Crem… Myrmicin…
+#>  6 MW02…       200 dry           1 200_…    60 cho_amin… crem_0… Crem… Myrmicin…
+#>  7 MW02…       200 dry           1 200_…    60 lipid     crem_0… Crem… Myrmicin…
+#>  8 MW02…       200 dry           1 200_…    60 cho       crem_0… Crem… Myrmicin…
+#>  9 MW02…       200 dry           1 200_…    60 cho_amin… rhyt_0… Rhyt… Ectatomm…
+#> 10 MW02…       200 dry           1 200_…    60 cho       crem_0… Crem… Myrmicin…
+#> # ℹ 359 more rows
+#> # ℹ 2 more variables: guild <chr>, workers <int>
 div_hill(png_ants, q = 0, .by = season)
-#> # A tibble: 10 x 5
+#> # A tibble: 10 × 5
 #>    season site       q     n diversity
 #>    <chr>  <chr>  <dbl> <dbl>     <dbl>
 #>  1 dry    MW0200     0    47        16
@@ -130,7 +130,7 @@ div_hill(png_ants, q = 0, .by = season)
 
 # Incidence-based: baits as sampling units, including empty baits
 div_estimate(png_ants, unit = bait, n_units = baits, .by = season, nboot = 0)
-#> # A tibble: 30 x 8
+#> # A tibble: 30 × 8
 #>    season site       q observed estimate    se lower upper
 #>    <chr>  <chr>  <dbl>    <dbl>    <dbl> <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0    16       18.5     NA    NA    NA
@@ -143,5 +143,5 @@ div_estimate(png_ants, unit = bait, n_units = baits, .by = season, nboot = 0)
 #>  8 dry    MW0700     1    11.8     39.2     NA    NA    NA
 #>  9 dry    MW0700     2     8.67    13.7     NA    NA    NA
 #> 10 wet    MW0700     0    28       75.4     NA    NA    NA
-#> # i 20 more rows
+#> # ℹ 20 more rows
 ```

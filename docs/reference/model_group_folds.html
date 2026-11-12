@@ -23,6 +23,17 @@ every row of a group together, using rsample::group_vfold_cv()."><meta property=
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide"><li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials"><li><a class="dropdown-item" href="../articles/tutorials.html">Overview by taxon</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -126,7 +137,7 @@ data with temporal, spatial, hierarchical, or phylogenetic structure.
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">units</span> <span class="op">&lt;-</span> <span class="fu"><a href="div_hill.html">div_hill</a></span><span class="op">(</span><span class="va">png_ants</span>, q <span class="op">=</span> <span class="fl">0</span>, .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">season</span>, <span class="va">transect</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">model_group_folds</span><span class="op">(</span><span class="va">units</span>, group <span class="op">=</span> <span class="va">site</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # Group 5-fold cross-validation </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 x 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   splits         id       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [16/4]&gt;</span> Resample1</span>

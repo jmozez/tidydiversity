@@ -41,6 +41,19 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide">
+<li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul>
+</li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
 <li><a class="dropdown-item" href="../articles/tutorials.html">Overview by taxon</a></li>
@@ -143,7 +156,7 @@ elevations x 2 seasons x 2 transects.</p>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/beta_permanova.html">beta_permanova</a></span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>, formula <span class="op">=</span> <span class="op">~</span> <span class="va">elevation</span> <span class="op">+</span> <span class="va">season</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 x 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
 <span><span class="co">#&gt;   term         df sum_sq     r2 statistic p.value</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> elevation     1  1.33  0.169       3.75   0.001</span></span>
@@ -160,7 +173,7 @@ To test season while respecting the paired design, permute only within
 sites:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/beta_permanova.html">beta_permanova</a></span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>, formula <span class="op">=</span> <span class="op">~</span><span class="va">season</span>, strata <span class="op">=</span> <span class="va">site</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 x 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
 <span><span class="co">#&gt;   term        df sum_sq     r2 statistic p.value</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> season       1  0.526 0.066<span style="text-decoration: underline;">9</span>      1.29   0.003</span></span>
@@ -178,7 +191,7 @@ spread rather than in location (Anderson 2006). Check this:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">disp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/beta_permanova.html">beta_dispersion</a></span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>, group <span class="op">=</span> <span class="va">season</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">disp</span>, <span class="st">"test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 x 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
 <span><span class="co">#&gt;   term         df  sum_sq statistic p.value</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Groups        1 0.001<span style="text-decoration: underline;">82</span>     0.466   0.501</span></span>
@@ -193,7 +206,7 @@ unequal spread:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/beta_welch.html">beta_welch</a></span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>, group <span class="op">=</span> <span class="va">season</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 x 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
 <span><span class="co">#&gt;   statistic n_groups n_sites p.value</span></span>
 <span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>      1.29        2      20   0.179</span></span></code></pre></div>
@@ -208,7 +221,7 @@ and an overfitted model:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ord_select.html">ord_select</a></span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>, formula <span class="op">=</span> <span class="op">~</span> <span class="va">elevation</span> <span class="op">+</span> <span class="va">season</span><span class="op">)</span></span>
 <span><span class="va">sel</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 x 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
 <span><span class="co">#&gt;    step term      adj_r2 statistic p.value</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1 elevation  0.101      3.13   0.001</span></span>
@@ -222,7 +235,7 @@ and an overfitted model:</p>
 (adjusted R², Peres-Neto et al. 2006)?</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ord_varpart.html">ord_varpart</a></span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>, elevation <span class="op">=</span> <span class="op">~</span><span class="va">elevation</span>, season <span class="op">=</span> <span class="op">~</span><span class="va">season</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 x 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 5</span></span></span>
 <span><span class="co">#&gt;   fraction        label                       adj_r2 testable p.value</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> [a] = X1|X2     elevation only             0.107   TRUE       0.001</span></span>
@@ -246,8 +259,8 @@ discovery rate.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/beta_indicator.html">beta_indicator</a></span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>, group <span class="op">=</span> <span class="va">zone</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 x 7</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 7 variables: species &lt;chr&gt;, group &lt;chr&gt;, stat &lt;dbl&gt;, A &lt;dbl&gt;, B &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 7 variables: species &lt;chr&gt;, group &lt;chr&gt;, stat &lt;dbl&gt;, A &lt;dbl&gt;, B &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   p.value &lt;dbl&gt;, p.adj &lt;dbl&gt;</span></span></span></code></pre></div>
 <p>No species is a reliable indicator once the p-values are corrected.
 The uncorrected ranking shows why: of the 79 species tested, only a few
@@ -258,7 +271,7 @@ chance alone.</p>
 <span><span class="fu"><a href="../reference/beta_indicator.html">beta_indicator</a></span><span class="op">(</span><span class="va">ants</span>, site <span class="op">=</span> <span class="va">unit</span>, group <span class="op">=</span> <span class="va">zone</span>, adjust <span class="op">=</span> <span class="st">"none"</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 x 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 7</span></span></span>
 <span><span class="co">#&gt;   species  group    stat     A     B p.value p.adj</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> rhyt_001 lowland 0.707 1     0.5     0.014 0.014</span></span>

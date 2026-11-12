@@ -37,7 +37,7 @@ ants <- png_ants |>
 
 ``` r
 beta_permanova(ants, site = unit, formula = ~ elevation + season)
-#> # A tibble: 4 x 6
+#> # A tibble: 4 × 6
 #>   term         df sum_sq     r2 statistic p.value
 #>   <chr>     <dbl>  <dbl>  <dbl>     <dbl>   <dbl>
 #> 1 elevation     1  1.33  0.169       3.75   0.001
@@ -57,7 +57,7 @@ sites:
 
 ``` r
 beta_permanova(ants, site = unit, formula = ~season, strata = site)
-#> # A tibble: 3 x 6
+#> # A tibble: 3 × 6
 #>   term        df sum_sq     r2 statistic p.value
 #>   <chr>    <dbl>  <dbl>  <dbl>     <dbl>   <dbl>
 #> 1 season       1  0.526 0.0669      1.29   0.003
@@ -77,7 +77,7 @@ spread rather than in location (Anderson 2006). Check this:
 ``` r
 disp <- beta_dispersion(ants, site = unit, group = season)
 attr(disp, "test")
-#> # A tibble: 2 x 5
+#> # A tibble: 2 × 5
 #>   term         df  sum_sq statistic p.value
 #>   <chr>     <int>   <dbl>     <dbl>   <dbl>
 #> 1 Groups        1 0.00182     0.466   0.501
@@ -99,7 +99,7 @@ unequal spread:
 ``` r
 set.seed(1)
 beta_welch(ants, site = unit, group = season)
-#> # A tibble: 1 x 4
+#> # A tibble: 1 × 4
 #>   statistic n_groups n_sites p.value
 #>       <dbl>    <int>   <int>   <dbl>
 #> 1      1.29        2      20   0.179
@@ -115,7 +115,7 @@ and an overfitted model:
 ``` r
 sel <- ord_select(ants, site = unit, formula = ~ elevation + season)
 sel
-#> # A tibble: 1 x 5
+#> # A tibble: 1 × 5
 #>    step term      adj_r2 statistic p.value
 #>   <int> <chr>      <dbl>     <dbl>   <dbl>
 #> 1     1 elevation  0.101      3.13   0.001
@@ -130,7 +130,7 @@ How much do elevation and season explain on their own and together
 
 ``` r
 ord_varpart(ants, site = unit, elevation = ~elevation, season = ~season)
-#> # A tibble: 4 x 5
+#> # A tibble: 4 × 5
 #>   fraction        label                       adj_r2 testable p.value
 #>   <chr>           <chr>                        <dbl> <lgl>      <dbl>
 #> 1 [a] = X1|X2     elevation only             0.107   TRUE       0.001
@@ -155,8 +155,8 @@ by default, column `p.adj`) before species are selected; use
 ``` r
 set.seed(1)
 beta_indicator(ants, site = unit, group = zone)
-#> # A tibble: 0 x 7
-#> # i 7 variables: species <chr>, group <chr>, stat <dbl>, A <dbl>, B <dbl>,
+#> # A tibble: 0 × 7
+#> # ℹ 7 variables: species <chr>, group <chr>, stat <dbl>, A <dbl>, B <dbl>,
 #> #   p.value <dbl>, p.adj <dbl>
 ```
 
@@ -169,7 +169,7 @@ set.seed(1)
 beta_indicator(ants, site = unit, group = zone, adjust = "none", alpha = 1) |>
   dplyr::arrange(p.value) |>
   head()
-#> # A tibble: 6 x 7
+#> # A tibble: 6 × 7
 #>   species  group    stat     A     B p.value p.adj
 #>   <chr>    <chr>   <dbl> <dbl> <dbl>   <dbl> <dbl>
 #> 1 rhyt_001 lowland 0.707 1     0.5     0.014 0.014

@@ -195,7 +195,7 @@ iNEXT.beta3D standardization. *Ecological Monographs*, 93, e1588.
 
 ``` r
 beta_hill(png_ants, .by = season, coverage = 0.9)
-#> # A tibble: 6 x 13
+#> # A tibble: 6 × 13
 #>   season     q coverage m_gamma m_alpha gamma alpha  beta n_sites dis_sorensen
 #>   <chr>  <dbl>    <dbl>   <dbl>   <dbl> <dbl> <dbl> <dbl>   <int>        <dbl>
 #> 1 dry        0      0.9    150.    244.  44.4 14.5   3.06       5        0.516
@@ -204,6 +204,6 @@ beta_hill(png_ants, .by = season, coverage = 0.9)
 #> 4 wet        0      0.9    260.    481.  64.1 23.5   2.73       5        0.431
 #> 5 wet        1      0.9    260.    481.  35.4 12.3   2.86       5        0.654
 #> 6 wet        2      0.9    260.    481.  21.4  7.08  3.02       5        0.836
-#> # i 3 more variables: dis_jaccard <dbl>, dis_turnover_sorensen <dbl>,
+#> # ℹ 3 more variables: dis_jaccard <dbl>, dis_turnover_sorensen <dbl>,
 #> #   dis_turnover_jaccard <dbl>
 ```

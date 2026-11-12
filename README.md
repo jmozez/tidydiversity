@@ -192,6 +192,22 @@ pak::pak("jmozez/tidydiversity")
 
 The source code lives on GitHub, <https://github.com/jmozez/tidydiversity>, with a mirror on GitLab, <https://gitlab.com/jimmy.moses/tidydiversity>.
 
+## User guide
+
+New to tidydiversity or to diversity analysis? The
+[User guide](https://tidydiversity.in4metrix.dev/articles/user-guide.html)
+explains, chapter by chapter, how to install and run tidydiversity in
+RStudio and what every analysis means: the concept and theory, runnable
+code on real field data, figures and tables, how to interpret them and how
+to report them.
+
+1. [Install, run and prepare your data](https://tidydiversity.in4metrix.dev/articles/guide-01-install.html)
+2. [Hill numbers, completeness and coverage](https://tidydiversity.in4metrix.dev/articles/guide-02-hill-numbers.html)
+3. [Fair comparisons: rarefaction, extrapolation and standardisation](https://tidydiversity.in4metrix.dev/articles/guide-03-fair-comparisons.html)
+4. [Beta diversity](https://tidydiversity.in4metrix.dev/articles/guide-04-beta.html)
+5. [Community composition: ordination and tests](https://tidydiversity.in4metrix.dev/articles/guide-05-composition.html)
+6. [Functional and phylogenetic diversity](https://tidydiversity.in4metrix.dev/articles/guide-06-dimensions.html)
+
 ## Maps with tidymapr
 
 tidydiversity does no geospatial work. Its companion package

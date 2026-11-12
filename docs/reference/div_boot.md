@@ -90,7 +90,7 @@ A tibble with the grouping columns, the site column, `q`, `.draw`
 set.seed(1)
 draws <- div_boot(png_ants, q = 0, .by = season, nboot = 20)
 draws
-#> # A tibble: 200 x 5
+#> # A tibble: 200 × 5
 #>    season site       q .draw diversity
 #>    <chr>  <chr>  <dbl> <int>     <dbl>
 #>  1 dry    MW0200     0     1      16.6
@@ -103,11 +103,11 @@ draws
 #>  8 dry    MW0200     0     8      20.4
 #>  9 dry    MW0200     0     9      18.1
 #> 10 dry    MW0200     0    10      16.6
-#> # i 190 more rows
+#> # ℹ 190 more rows
 
 # The bootstrap standard error of each site
 dplyr::summarise(draws, se = sd(diversity), .by = c(season, site, q))
-#> # A tibble: 10 x 4
+#> # A tibble: 10 × 4
 #>    season site       q    se
 #>    <chr>  <chr>  <dbl> <dbl>
 #>  1 dry    MW0200     0  6.36

@@ -62,7 +62,7 @@ recipes::recipe(elev ~ ., data = wide) |>
   step_hill(dplyr::starts_with("sp"), q = c(0, 2)) |>
   recipes::prep() |>
   recipes::bake(new_data = NULL)
-#> # A tibble: 3 x 3
+#> # A tibble: 3 × 3
 #>    elev hill_q0 hill_q2
 #>   <dbl>   <dbl>   <dbl>
 #> 1   200       3    2.13

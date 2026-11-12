@@ -73,7 +73,7 @@ Theseus a way out of the labyrinth. *Journal of Vegetation Science*, 21,
 ``` r
 aravo <- data_aravo()
 trait_rao(aravo$community, aravo$traits, abundance = cover)
-#> # A tibble: 3 x 4
+#> # A tibble: 3 × 4
 #>   component    rao equivalent beta_prop
 #>   <chr>      <dbl>      <dbl>     <dbl>
 #> 1 alpha      0.303       1.44   NA     

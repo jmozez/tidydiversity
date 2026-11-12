@@ -45,7 +45,7 @@ A tibble.
 ``` r
 ord <- ord_fit(png_frogs, method = "ca")
 tidy(ord, "species")
-#> # A tibble: 55 x 4
+#> # A tibble: 55 × 4
 #>    species   axis1    axis2   axis3
 #>    <chr>     <dbl>    <dbl>   <dbl>
 #>  1 FR01    -0.983   0.702   -0.467 
@@ -58,9 +58,9 @@ tidy(ord, "species")
 #>  8 FR08    -0.818   0.347    0.0591
 #>  9 FR09     1.22   -0.521   -1.98  
 #> 10 FR10     1.20   -0.536   -1.93  
-#> # i 45 more rows
+#> # ℹ 45 more rows
 glance(ord)
-#> # A tibble: 1 x 8
+#> # A tibble: 1 × 8
 #>   method n_sites n_species transform distance scaling stress constrained
 #>   <chr>    <int>     <int> <chr>     <lgl>    <chr>    <dbl>       <dbl>
 #> 1 ca           8        55 none      NA       species     NA          NA

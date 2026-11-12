@@ -40,6 +40,19 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide">
+<li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul>
+</li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
@@ -125,7 +138,7 @@ included. See <code><a href="../reference/wanang_butterflies.html">?wanang_butte
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span><span class="va">wanang_butterflies</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2,020 x 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2,020 × 6</span></span></span>
 <span><span class="co">#&gt;    site    day month  year species               abundance</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> day01     1     1     1 Apaturina erminea             4</span></span>
@@ -138,7 +151,7 @@ included. See <code><a href="../reference/wanang_butterflies.html">?wanang_butte
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> day01     1     1     1 Dicallaneura decorata         2</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> day01     1     1     1 Elodina hypatia               5</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> day01     1     1     1 Elymnias cybele               6</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 2,010 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2,010 more rows</span></span></span></code></pre></div>
 <div class="section level2">
 <h2 id="each-year-of-monitoring">Each year of monitoring<a class="anchor" aria-label="anchor" href="#each-year-of-monitoring"></a>
 </h2>
@@ -146,14 +159,14 @@ included. See <code><a href="../reference/wanang_butterflies.html">?wanang_butte
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">years</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">wanang_butterflies</span>, site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Year"</span>, <span class="va">year</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/div_coverage.html">div_coverage</a></span><span class="op">(</span><span class="va">years</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 x 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 6</span></span></span>
 <span><span class="co">#&gt;   site       n s_obs    f1    f2 coverage</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Year 1  <span style="text-decoration: underline;">4</span>228   131    27    19    0.994</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Year 2  <span style="text-decoration: underline;">4</span>644   158    36    13    0.992</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Year 3  <span style="text-decoration: underline;">4</span>369   142    35    17    0.992</span></span>
 <span><span class="fu"><a href="../reference/div_estimate.html">div_estimate</a></span><span class="op">(</span><span class="va">years</span>, nboot <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 x 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 7</span></span></span>
 <span><span class="co">#&gt;   site       q observed estimate     se  lower  upper</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Year 1     0   131      150.    9.33  139.   178.  </span></span>
@@ -177,7 +190,7 @@ species: rare species remain undetected after a full year.</p>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/beta_pair.html">beta_multi</a></span><span class="op">(</span><span class="va">years</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 x 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
 <span><span class="co">#&gt;   n_sites turnover nestedness total</span></span>
 <span><span class="co">#&gt;     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>       3    0.209     0.064<span style="text-decoration: underline;">1</span> 0.273</span></span></code></pre></div>
@@ -187,7 +200,7 @@ the four sampled months also differ substantially:</p>
 <code class="sourceCode R"><span><span class="va">wanang_butterflies</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Month"</span>, <span class="va">month</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/beta_pair.html">beta_multi</a></span><span class="op">(</span>.by <span class="op">=</span> <span class="va">year</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 x 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
 <span><span class="co">#&gt;    year n_sites turnover nestedness total</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1       4    0.273     0.252  0.524</span></span>

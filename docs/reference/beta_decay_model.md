@@ -83,10 +83,10 @@ role of dispersal processes. *Ecography*, 41, 1825-1834.
 decay <- beta_decay(png_ants, gradient = elevation, .by = season)
 set.seed(1)
 beta_decay_model(decay, permutations = 199)
-#> # A tibble: 2 x 10
+#> # A tibble: 2 × 10
 #>   season model    component n_pairs     a       b half_distance pseudo_r2    aic
 #>   <chr>  <chr>    <chr>       <int> <dbl>   <dbl>         <dbl>     <dbl>  <dbl>
-#> 1 dry    exponen~ total          10 0.257 7.50e-4          924.     0.143  -9.21
-#> 2 wet    exponen~ total          10 0.897 2.36e-3          293.     0.694 -17.6 
-#> # i 1 more variable: p.value <dbl>
+#> 1 dry    exponen… total          10 0.257 7.50e-4          924.     0.143  -9.21
+#> 2 wet    exponen… total          10 0.897 2.36e-3          293.     0.694 -17.6 
+#> # ℹ 1 more variable: p.value <dbl>
 ```

@@ -28,7 +28,7 @@ Hill numbers express diversity as an effective number of species. Order
 
 ``` r
 div_hill(png_ants, q = c(0, 1, 2), .by = season)
-#> # A tibble: 30 x 5
+#> # A tibble: 30 × 5
 #>    season site       q     n diversity
 #>    <chr>  <chr>  <dbl> <dbl>     <dbl>
 #>  1 dry    MW0200     0    47     16   
@@ -41,7 +41,7 @@ div_hill(png_ants, q = c(0, 1, 2), .by = season)
 #>  8 dry    MW0700     1    23     11.8 
 #>  9 dry    MW0700     2    23      8.67
 #> 10 wet    MW0700     0    58     28   
-#> # i 20 more rows
+#> # ℹ 20 more rows
 ```
 
 ## Sample coverage
@@ -51,7 +51,7 @@ complete each sample is.
 
 ``` r
 div_coverage(png_ants, .by = season)
-#> # A tibble: 10 x 7
+#> # A tibble: 10 × 7
 #>    season site       n s_obs    f1    f2 coverage
 #>    <chr>  <chr>  <dbl> <int> <int> <int>    <dbl>
 #>  1 dry    MW0200    47    16     5     5    0.898
@@ -75,7 +75,7 @@ unbiased Simpson estimator, with bootstrap intervals.
 ``` r
 div_estimate(png_ants, .by = season, nboot = 50) |>
   filter(q == 0)
-#> # A tibble: 10 x 8
+#> # A tibble: 10 × 8
 #>    season site       q observed estimate    se lower upper
 #>    <chr>  <chr>  <dbl>    <dbl>    <dbl> <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0       16    18.4   3.55 16.3   35.7
@@ -101,7 +101,7 @@ curves <- png_ants |>
   filter(season == "wet") |>
   div_rarefy(q = c(0, 1, 2), nboot = 30)
 curves
-#> # A tibble: 570 x 8
+#> # A tibble: 570 × 8
 #>    site       q     m method      diversity coverage lower upper
 #>    <chr>  <dbl> <dbl> <chr>           <dbl>    <dbl> <dbl> <dbl>
 #>  1 MW0200     0     1 rarefaction      1       0.132  1     1.00
@@ -114,7 +114,7 @@ curves
 #>  8 MW0200     0    29 rarefaction     12.0     0.754  9.51 14.6 
 #>  9 MW0200     0    33 rarefaction     13.0     0.766 10.2  15.8 
 #> 10 MW0200     0    38 rarefaction     14.1     0.780 11.0  17.3 
-#> # i 560 more rows
+#> # ℹ 560 more rows
 ```
 
 ``` r
@@ -143,7 +143,7 @@ that its sites reach at twice their sample size.
 ``` r
 std <- div_standardise(png_ants, .by = season, nboot = 50)
 std
-#> # A tibble: 30 x 10
+#> # A tibble: 30 × 10
 #>    season site       q     m method        coverage diversity    se  lower upper
 #>    <chr>  <chr>  <dbl> <dbl> <chr>            <dbl>     <dbl> <dbl>  <dbl> <dbl>
 #>  1 dry    MW0200     0  11.6 rarefaction      0.565      7.96 0.444  7.09   8.83
@@ -156,7 +156,7 @@ std
 #>  8 dry    MW0700     1  46.0 extrapolation    0.565     17.9  5.71   6.67  29.0 
 #>  9 dry    MW0700     2  46.0 extrapolation    0.565     10.5  5.07   0.566 20.4 
 #> 10 wet    MW0700     0 116   extrapolation    0.796     42.2  5.97  30.5   53.9 
-#> # i 20 more rows
+#> # ℹ 20 more rows
 ```
 
 ``` r

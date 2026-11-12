@@ -84,7 +84,7 @@ set.seed(1)
 ord_varpart(ants, site = unit,
             elevation = ~elevation, season = ~season,
             permutations = 199)
-#> # A tibble: 4 x 5
+#> # A tibble: 4 × 5
 #>   fraction        label                       adj_r2 testable p.value
 #>   <chr>           <chr>                        <dbl> <lgl>      <dbl>
 #> 1 [a] = X1|X2     elevation only             0.107   TRUE       0.005

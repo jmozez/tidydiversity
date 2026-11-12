@@ -18,7 +18,7 @@ library(dplyr)
 library(ggplot2)
 set.seed(2026)
 portal_rodents
-#> # A tibble: 491 x 7
+#> # A tibble: 491 × 7
 #>    site      plot  year treatment species scientific_name           abundance
 #>    <chr>    <int> <int> <fct>     <chr>   <chr>                         <int>
 #>  1 P01-2016     1  2016 removal   PM      Peromyscus maniculatus            9
@@ -31,9 +31,9 @@ portal_rodents
 #>  8 P01-2017     1  2017 removal   PL      Peromyscus leucopus               8
 #>  9 P01-2017     1  2017 removal   PE      Peromyscus eremicus               6
 #> 10 P01-2017     1  2017 removal   RM      Reithrodontomys megalotis         5
-#> # i 481 more rows
+#> # ℹ 481 more rows
 count(distinct(portal_rodents, site, treatment), treatment)
-#> # A tibble: 3 x 2
+#> # A tibble: 3 × 2
 #>   treatment          n
 #>   <fct>          <int>
 #> 1 control           40
@@ -101,21 +101,21 @@ shannon <- std |>
   add_site_data(plots) |>
   filter(!is.na(weight))
 shannon
-#> # A tibble: 70 x 13
+#> # A tibble: 70 × 13
 #>    site         q     m method    coverage estimate std.error conf.low conf.high
 #>    <chr>    <dbl> <dbl> <chr>        <dbl>    <dbl>     <dbl>    <dbl>     <dbl>
-#>  1 P02-2016     1  25.8 rarefact~    0.955     3.28     0.328    2.64       3.92
-#>  2 P02-2017     1  48.8 rarefact~    0.955     2.75     0.394    1.97       3.52
-#>  3 P02-2018     1  10.8 rarefact~    0.955     1.93     0.210    1.52       2.34
-#>  4 P02-2019     1  21.7 rarefact~    0.955     2.00     0.244    1.52       2.48
-#>  5 P03-2016     1  33.6 rarefact~    0.955     4.64     0.475    3.71       5.57
-#>  6 P03-2017     1 103.  extrapol~    0.955     2.52     0.505    1.53       3.51
-#>  7 P03-2018     1  10.7 rarefact~    0.964     1.13     0.126    0.879      1.37
-#>  8 P03-2019     1  55.3 extrapol~    0.955     2.22     0.437    1.36       3.07
-#>  9 P04-2016     1  64.4 rarefact~    0.955     3.90     0.359    3.19       4.60
-#> 10 P04-2017     1  35.9 rarefact~    0.955     3.87     0.256    3.37       4.37
-#> # i 60 more rows
-#> # i 4 more variables: weight <dbl>, plot <int>, year <int>, treatment <fct>
+#>  1 P02-2016     1  25.8 rarefact…    0.955     3.28     0.328    2.64       3.92
+#>  2 P02-2017     1  48.8 rarefact…    0.955     2.75     0.394    1.97       3.52
+#>  3 P02-2018     1  10.8 rarefact…    0.955     1.93     0.210    1.52       2.34
+#>  4 P02-2019     1  21.7 rarefact…    0.955     2.00     0.244    1.52       2.48
+#>  5 P03-2016     1  33.6 rarefact…    0.955     4.64     0.475    3.71       5.57
+#>  6 P03-2017     1 103.  extrapol…    0.955     2.52     0.505    1.53       3.51
+#>  7 P03-2018     1  10.7 rarefact…    0.964     1.13     0.126    0.879      1.37
+#>  8 P03-2019     1  55.3 extrapol…    0.955     2.22     0.437    1.36       3.07
+#>  9 P04-2016     1  64.4 rarefact…    0.955     3.90     0.359    3.19       4.60
+#> 10 P04-2017     1  35.9 rarefact…    0.955     3.87     0.256    3.37       4.37
+#> # ℹ 60 more rows
+#> # ℹ 4 more variables: weight <dbl>, plot <int>, year <int>, treatment <fct>
 ```
 
 ``` r
@@ -175,7 +175,7 @@ year, split into turnover and nestedness.
 ``` r
 multi <- beta_multi(rodents, .by = c(treatment, year))
 multi
-#> # A tibble: 8 x 6
+#> # A tibble: 8 × 6
 #>   treatment       year n_sites turnover nestedness total
 #>   <fct>          <int>   <int>    <dbl>      <dbl> <dbl>
 #> 1 krat_exclosure  2016       8    0.6       0.0757 0.676

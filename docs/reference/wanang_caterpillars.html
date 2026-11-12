@@ -39,6 +39,17 @@ comparisons."><meta property="og:image" content="https://tidydiversity.in4metrix
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide"><li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials"><li><a class="dropdown-item" href="../articles/tutorials.html">Overview by taxon</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -157,22 +168,22 @@ when you use the data. Built from all 9,354 GBIF occurrence records by
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">wanang_caterpillars</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3,504 x 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3,504 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    site    plot  host  species scientific_name            rank  family abundance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> primary WP1   <span style="color: #BB0000;">NA</span>    TORT151 Nolidae                    fami~ Nolid~         9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> primary WP1   <span style="color: #BB0000;">NA</span>    TORT230 Tortricidae                fami~ Tortr~         4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> primary WP1   <span style="color: #BB0000;">NA</span>    CHOR001 Brenthia Clemens, 1860     genus Chore~         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> primary WP1   <span style="color: #BB0000;">NA</span>    TORT051 Homona phanaea Meyrick, 1~ spec~ Tortr~         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> primary WP1   <span style="color: #BB0000;">NA</span>    TORT234 Tortricidae                fami~ Tortr~         2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> primary WP1   <span style="color: #BB0000;">NA</span>    CHOR006 Choreutidae                fami~ Chore~         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> primary WP1   <span style="color: #BB0000;">NA</span>    CRAM134 Crambidae                  fami~ Cramb~         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> primary WP1   <span style="color: #BB0000;">NA</span>    ELAC001 Elachistidae               fami~ Elach~         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> primary WP1   <span style="color: #BB0000;">NA</span>    GELE013 Gelechiidae                fami~ Gelec~         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> primary WP1   <span style="color: #BB0000;">NA</span>    GEOM034 Symmacra solidaria ochrea~ subs~ Geome~         1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># i 3,494 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> primary WP1   <span style="color: #BB0000;">NA</span>    TORT151 Nolidae                    fami… Nolid…         9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> primary WP1   <span style="color: #BB0000;">NA</span>    TORT230 Tortricidae                fami… Tortr…         4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> primary WP1   <span style="color: #BB0000;">NA</span>    CHOR001 Brenthia Clemens, 1860     genus Chore…         2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> primary WP1   <span style="color: #BB0000;">NA</span>    TORT051 Homona phanaea Meyrick, 1… spec… Tortr…         2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> primary WP1   <span style="color: #BB0000;">NA</span>    TORT234 Tortricidae                fami… Tortr…         2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> primary WP1   <span style="color: #BB0000;">NA</span>    CHOR006 Choreutidae                fami… Chore…         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> primary WP1   <span style="color: #BB0000;">NA</span>    CRAM134 Crambidae                  fami… Cramb…         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> primary WP1   <span style="color: #BB0000;">NA</span>    ELAC001 Elachistidae               fami… Elach…         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> primary WP1   <span style="color: #BB0000;">NA</span>    GELE013 Gelechiidae                fami… Gelec…         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> primary WP1   <span style="color: #BB0000;">NA</span>    GEOM034 Symmacra solidaria ochrea… subs… Geome…         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3,494 more rows</span></span>
 <span class="r-in"><span><span class="fu"><a href="div_hill.html">div_hill</a></span><span class="op">(</span><span class="va">wanang_caterpillars</span>, site <span class="op">=</span> <span class="va">plot</span>, q <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 x 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   plot      q     n diversity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> WP1       0   810     246  </span>

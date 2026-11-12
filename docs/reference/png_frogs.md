@@ -65,22 +65,22 @@ extensive rainforest elevation gradient in Papua New Guinea.
 
 ``` r
 png_frogs
-#> # A tibble: 92 x 7
+#> # A tibble: 92 × 7
 #>    site   elevation species scientific_name       family  reproduction abundance
 #>    <chr>      <int> <chr>   <chr>                 <chr>   <chr>            <int>
-#>  1 MW0200       200 FR01    Cornufer papuensis    Cerato~ terrestrial        253
-#>  2 MW0200       200 FR23    Copiula sp 1          Microh~ terrestrial         29
-#>  3 MW0200       200 FR28    Hylophorbus sp 7      Microh~ terrestrial         68
-#>  4 MW0200       200 FR30    Mantophryne lateralis Microh~ terrestrial          1
-#>  5 MW0200       200 FR32    Oreophryne hypsiops   Microh~ terrestrial         85
-#>  6 MW0200       200 FR37    Xenorhina oxycephala  Microh~ terrestrial          8
-#>  7 MW0200       200 FR40    Litoria arfakiana     Pelodr~ aquatic              2
-#>  8 MW0200       200 FR46    Litoria mucro         Pelodr~ aquatic              4
-#>  9 MW0200       200 FR50    Litoria thesaurensis  Pelodr~ aquatic             12
+#>  1 MW0200       200 FR01    Cornufer papuensis    Cerato… terrestrial        253
+#>  2 MW0200       200 FR23    Copiula sp 1          Microh… terrestrial         29
+#>  3 MW0200       200 FR28    Hylophorbus sp 7      Microh… terrestrial         68
+#>  4 MW0200       200 FR30    Mantophryne lateralis Microh… terrestrial          1
+#>  5 MW0200       200 FR32    Oreophryne hypsiops   Microh… terrestrial         85
+#>  6 MW0200       200 FR37    Xenorhina oxycephala  Microh… terrestrial          8
+#>  7 MW0200       200 FR40    Litoria arfakiana     Pelodr… aquatic              2
+#>  8 MW0200       200 FR46    Litoria mucro         Pelodr… aquatic              4
+#>  9 MW0200       200 FR50    Litoria thesaurensis  Pelodr… aquatic             12
 #> 10 MW0200       200 FR51    Papurana arfaki       Ranidae aquatic              9
-#> # i 82 more rows
+#> # ℹ 82 more rows
 div_estimate(png_frogs, nboot = 0)
-#> # A tibble: 24 x 7
+#> # A tibble: 24 × 7
 #>    site       q observed estimate    se lower upper
 #>    <chr>  <dbl>    <dbl>    <dbl> <dbl> <dbl> <dbl>
 #>  1 MW0200     0    13       13.2     NA    NA    NA
@@ -93,5 +93,5 @@ div_estimate(png_frogs, nboot = 0)
 #>  8 MW1200     1     9.40     9.54    NA    NA    NA
 #>  9 MW1200     2     7.14     7.22    NA    NA    NA
 #> 10 MW1700     0    18       18       NA    NA    NA
-#> # i 14 more rows
+#> # ℹ 14 more rows
 ```

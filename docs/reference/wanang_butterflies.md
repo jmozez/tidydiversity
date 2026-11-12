@@ -61,7 +61,7 @@ tropical butterfly assemblages. *Biotropica*, 51, 519-528.
 
 ``` r
 wanang_butterflies
-#> # A tibble: 2,020 x 6
+#> # A tibble: 2,020 × 6
 #>    site    day month  year species               abundance
 #>    <chr> <int> <int> <int> <chr>                     <int>
 #>  1 day01     1     1     1 Apaturina erminea             4
@@ -74,9 +74,9 @@ wanang_butterflies
 #>  8 day01     1     1     1 Dicallaneura decorata         2
 #>  9 day01     1     1     1 Elodina hypatia               5
 #> 10 day01     1     1     1 Elymnias cybele               6
-#> # i 2,010 more rows
+#> # ℹ 2,010 more rows
 div_hill(wanang_butterflies, q = 0, .by = year) |> head()
-#> # A tibble: 6 x 5
+#> # A tibble: 6 × 5
 #>    year site      q     n diversity
 #>   <int> <chr> <dbl> <int>     <dbl>
 #> 1     1 day01     0   197        30

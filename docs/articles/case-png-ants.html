@@ -40,6 +40,19 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/tidydiversity.html">Get started</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-user-guide" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">User guide</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-user-guide">
+<li><a class="dropdown-item" href="../articles/user-guide.html">Overview</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/guide-01-install.html">1. Install, run and prepare data</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-02-hill-numbers.html">2. Hill numbers, completeness and coverage</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-03-fair-comparisons.html">3. Fair comparisons</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-04-beta.html">4. Beta diversity</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-05-composition.html">5. Community composition</a></li>
+    <li><a class="dropdown-item" href="../articles/guide-06-dimensions.html">6. Functional and phylogenetic diversity</a></li>
+  </ul>
+</li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
@@ -132,23 +145,23 @@ species at a bait counts as one occurrence (the default when the data
 have no <code>abundance</code> column).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">png_ants</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 369 x 12</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 369 × 12</span></span></span>
 <span><span class="co">#&gt;    site  elevation season transect bait  baits bait_type species genus subfamily</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> MW02~       200 dry           1 200_~    60 cho       lepm_0~ Lept~ Dolichod~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> MW02~       200 dry           1 200_~    60 cho       mono_0~ Mono~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> MW02~       200 dry           1 200_~    60 lipid     phei_0~ Phei~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> MW02~       200 dry           1 200_~    60 lipid     tetr_0~ Tetr~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> MW02~       200 dry           1 200_~    60 amino_ac~ crem_0~ Crem~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> MW02~       200 dry           1 200_~    60 cho_amin~ crem_0~ Crem~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> MW02~       200 dry           1 200_~    60 lipid     crem_0~ Crem~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> MW02~       200 dry           1 200_~    60 cho       crem_0~ Crem~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> MW02~       200 dry           1 200_~    60 cho_amin~ rhyt_0~ Rhyt~ Ectatomm~</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> MW02~       200 dry           1 200_~    60 cho       crem_0~ Crem~ Myrmicin~</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 359 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># i 2 more variables: guild &lt;chr&gt;, workers &lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> MW02…       200 dry           1 200_…    60 cho       lepm_0… Lept… Dolichod…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> MW02…       200 dry           1 200_…    60 cho       mono_0… Mono… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> MW02…       200 dry           1 200_…    60 lipid     phei_0… Phei… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> MW02…       200 dry           1 200_…    60 lipid     tetr_0… Tetr… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> MW02…       200 dry           1 200_…    60 amino_ac… crem_0… Crem… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> MW02…       200 dry           1 200_…    60 cho_amin… crem_0… Crem… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> MW02…       200 dry           1 200_…    60 lipid     crem_0… Crem… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> MW02…       200 dry           1 200_…    60 cho       crem_0… Crem… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> MW02…       200 dry           1 200_…    60 cho_amin… rhyt_0… Rhyt… Ectatomm…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> MW02…       200 dry           1 200_…    60 cho       crem_0… Crem… Myrmicin…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 359 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: guild &lt;chr&gt;, workers &lt;int&gt;</span></span></span>
 <span><span class="fu"><a href="../reference/div_coverage.html">div_coverage</a></span><span class="op">(</span><span class="va">png_ants</span>, .by <span class="op">=</span> <span class="va">season</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 x 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 7</span></span></span>
 <span><span class="co">#&gt;    season site       n s_obs    f1    f2 coverage</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> dry    MW0200    47    16     5     5    0.898</span></span>
@@ -189,7 +202,7 @@ number of nests as the abundance and pooling trees within each plot:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/div_estimate.html">div_estimate</a></span><span class="op">(</span><span class="va">png_tree_ants</span>, abundance <span class="op">=</span> <span class="va">nests</span>, nboot <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">est</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 x 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 7</span></span></span>
 <span><span class="co">#&gt;   site       q observed estimate     se  lower upper</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Wanang     0    85       101.   9.81   90.1  133. </span></span>
@@ -211,7 +224,7 @@ because many species there were found only once.</p>
 is turnover rather than nestedness:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/beta_pair.html">beta_multi</a></span><span class="op">(</span><span class="va">png_tree_ants</span>, site <span class="op">=</span> <span class="va">tree</span>, .by <span class="op">=</span> <span class="va">site</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 x 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 5</span></span></span>
 <span><span class="co">#&gt;   site   n_sites turnover nestedness total</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Wanang     326    0.991    0.003<span style="text-decoration: underline;">46</span> 0.994</span></span>

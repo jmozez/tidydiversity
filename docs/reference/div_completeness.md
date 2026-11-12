@@ -78,7 +78,7 @@ assemblages. Ecological Research, 35, 292-314.
 
 ``` r
 div_completeness(png_ants, q = c(0, 1, 2), .by = season, nboot = 0)
-#> # A tibble: 30 x 7
+#> # A tibble: 30 × 7
 #>    season site       q completeness    se lower upper
 #>    <chr>  <chr>  <dbl>        <dbl> <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0        0.867    NA    NA    NA
@@ -91,5 +91,5 @@ div_completeness(png_ants, q = c(0, 1, 2), .by = season, nboot = 0)
 #>  8 dry    MW0700     1        0.482    NA    NA    NA
 #>  9 dry    MW0700     2        0.948    NA    NA    NA
 #> 10 wet    MW0700     0        0.372    NA    NA    NA
-#> # i 20 more rows
+#> # ℹ 20 more rows
 ```

@@ -54,7 +54,7 @@ traits <- as.matrix(Brazil_rainforest_distance_matrix)
 ``` r
 set.seed(1)
 div_estimate(brazil, abundance = n, nboot = 50)
-#> # A tibble: 6 x 7
+#> # A tibble: 6 × 7
 #>   site         q observed estimate    se lower upper
 #>   <chr>    <dbl>    <dbl>    <dbl> <dbl> <dbl> <dbl>
 #> 1 Edge         0    319      445.  21.3  410.  494. 
@@ -71,7 +71,7 @@ observed species. With `pd_unit = "mean"` (the default) PD is divided by
 
 ``` r
 div_estimate(brazil, abundance = n, type = "PD", tree = tree, nboot = 50)
-#> # A tibble: 6 x 9
+#> # A tibble: 6 × 9
 #>   site         q observed estimate     se lower upper type  reftime
 #>   <chr>    <dbl>    <dbl>    <dbl>  <dbl> <dbl> <dbl> <chr>   <dbl>
 #> 1 Edge         0    61.3     80.0  4.50   73.1  91.1  PD        400
@@ -87,7 +87,7 @@ pooled data. Species closer than `tau` count as functionally identical.
 
 ``` r
 div_estimate(brazil, abundance = n, type = "FD", distance = traits, nboot = 50)
-#> # A tibble: 6 x 9
+#> # A tibble: 6 × 9
 #>   site         q observed estimate     se lower upper type    tau
 #>   <chr>    <dbl>    <dbl>    <dbl>  <dbl> <dbl> <dbl> <chr> <dbl>
 #> 1 Edge         0     6.86     6.86 0.125   6.86  7.45 FD    0.353
@@ -106,7 +106,7 @@ div_estimate(brazil,
   abundance = n, type = "FD", distance = traits, tau = "auc",
   nboot = 20
 )
-#> # A tibble: 6 x 9
+#> # A tibble: 6 × 9
 #>   site         q observed estimate    se lower upper type    tau
 #>   <chr>    <dbl>    <dbl>    <dbl> <dbl> <dbl> <dbl> <chr> <dbl>
 #> 1 Edge         0    17.9     19.0  5.49  17.9  55.5  FD       NA
@@ -132,7 +132,7 @@ std <- div_standardise(brazil,
   coverage = 0.97, nboot = 0
 )
 std |> select(type, site, q, m, coverage, diversity)
-#> # A tibble: 18 x 6
+#> # A tibble: 18 × 6
 #>    type  site         q     m coverage diversity
 #>    <fct> <chr>    <dbl> <dbl>    <dbl>     <dbl>
 #>  1 TD    Edge         0 3262.    0.970    383.  
@@ -196,7 +196,7 @@ fish <- bind_rows(lapply(names(Fish_incidence_data), function(period) {
   )
 }))
 fish
-#> # A tibble: 1,054 x 4
+#> # A tibble: 1,054 × 4
 #>    site      species                sample     n_samples
 #>    <chr>     <chr>                  <chr>          <int>
 #>  1 2013-2015 Ciliata_mustela        17/01/2013        36
@@ -209,7 +209,7 @@ fish
 #>  8 2013-2015 Merlangius_merlangus   17/01/2013        36
 #>  9 2013-2015 Platichthys_flesus     17/01/2013        36
 #> 10 2013-2015 Pomatoschistus_minutus 17/01/2013        36
-#> # i 1,044 more rows
+#> # ℹ 1,044 more rows
 ```
 
 ``` r
@@ -247,7 +247,7 @@ set.seed(1)
 div_estimate(png_ants,
   unit = bait, n_units = baits, q = 0, .by = season, nboot = 50
 )
-#> # A tibble: 10 x 8
+#> # A tibble: 10 × 8
 #>    season site       q observed estimate    se lower upper
 #>    <chr>  <chr>  <dbl>    <dbl>    <dbl> <dbl> <dbl> <dbl>
 #>  1 dry    MW0200     0       16    18.5   7.75 16.1   66.9

@@ -100,7 +100,7 @@ Alekseyenko, A. V. (2016). Multivariate Welch t-test on distances.
 ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect))
 set.seed(1)
 beta_welch(ants, site = unit, group = season, permutations = 199)
-#> # A tibble: 1 x 4
+#> # A tibble: 1 × 4
 #>   statistic n_groups n_sites p.value
 #>       <dbl>    <int>   <int>   <dbl>
 #> 1      1.29        2      20   0.165
