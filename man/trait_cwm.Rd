@@ -41,7 +41,7 @@ missing trait value are left out of that trait's mean, and the weights
 of the remaining species are rescaled.
 }
 \examples{
-\dontshow{if (rlang::is_installed("ade4")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("ade4")) withAutoprint(\{ # examplesIf}
 aravo <- data_aravo()
 trait_cwm(aravo$community, aravo$traits, abundance = cover)
 \dontshow{\}) # examplesIf}

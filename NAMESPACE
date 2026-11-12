@@ -104,13 +104,17 @@ export(trait_ses)
 export(trait_tpd)
 export(trait_tpd_dissim)
 importFrom(Rcpp,sourceCpp)
-importFrom(generics,glance)
-importFrom(generics,tidy)
+importFrom(generics,
+  glance,
+  tidy
+)
 importFrom(pillar,tbl_sum)
-importFrom(rlang,"%||%")
-importFrom(rlang,":=")
-importFrom(rlang,.data)
-importFrom(rlang,caller_env)
-importFrom(rlang,enquo)
-importFrom(rlang,quo_is_null)
+importFrom(rlang,
+  "%||%",
+  ":=",
+  .data,
+  caller_env,
+  enquo,
+  quo_is_null
+)
 useDynLib(tidydiversity, .registration = TRUE)

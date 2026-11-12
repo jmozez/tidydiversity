@@ -39,7 +39,7 @@ their share of all species. Circles are used for two and three groups
 and ellipses for four, so that every combination has its own region.
 }
 \examples{
-\dontshow{if (rlang::is_installed("ggplot2")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("ggplot2")) withAutoprint(\{ # examplesIf}
 plot_venn(png_tree_ants, group = site)
 plot_venn(wanang_caterpillars, group = site)
 \dontshow{\}) # examplesIf}

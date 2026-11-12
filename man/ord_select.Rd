@@ -60,10 +60,10 @@ of the full model as attribute \code{"adj_r2_full"}.
 Selects site variables for RDA (or CCA, db-RDA) by forward selection
 with the double stopping criterion of Blanchet et al. (2008): a variable
 enters only if it is significant \emph{and} the adjusted \eqn{R^2} of the model stays
-below that of the full model. Uses \code{\link[vegan:ordistep]{vegan::ordiR2step()}}.
+below that of the full model. Uses \code{\link[vegan:ordiR2step]{vegan::ordiR2step()}}.
 }
 \examples{
-\dontshow{if (rlang::is_installed("vegan")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("vegan")) withAutoprint(\{ # examplesIf}
 ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect))
 set.seed(1)
 ord_select(ants, site = unit, formula = ~ elevation + season,

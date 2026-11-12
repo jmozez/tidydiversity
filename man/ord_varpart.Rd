@@ -49,7 +49,7 @@ testable (the unique fraction of each group) are tested by permutation
 with partial RDA.
 }
 \examples{
-\dontshow{if (rlang::is_installed("vegan")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("vegan")) withAutoprint(\{ # examplesIf}
 ants <- dplyr::mutate(png_ants, unit = paste(site, season, transect))
 set.seed(1)
 ord_varpart(ants, site = unit,

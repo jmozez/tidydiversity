@@ -51,7 +51,7 @@ two-dimensional functional richness, and its community-weighted mean
 position (CWM).
 }
 \examples{
-\dontshow{if (rlang::is_installed(c("ade4", "FD", "ggplot2"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("ade4", "FD", "ggplot2"))) withAutoprint(\{ # examplesIf}
 aravo <- data_aravo()
 plot_trait_space(aravo$traits, aravo$community, group = ZoogD, abundance = cover)
 \dontshow{\}) # examplesIf}
