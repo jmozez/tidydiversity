@@ -12,6 +12,7 @@ div_standardise(
   q = c(0, 1, 2),
   coverage = NULL,
   size = NULL,
+  level = c("max_extrapolation", "min_observed"),
   conf = 0.95,
   nboot = 50,
   type = c("TD", "PD", "FD"),
@@ -38,10 +39,12 @@ used when present, otherwise every row counts as one individual.}
 \item{q}{Orders of diversity: any of 0, 1 and 2.}
 
 \item{coverage}{Target sample coverage between 0 and 1. If both
-\code{coverage} and \code{size} are \code{NULL}, a default coverage is chosen for each
-group.}
+\code{coverage} and \code{size} are \code{NULL}, the target is chosen by \code{level}.}
 
 \item{size}{Target sample size. Supply either \code{coverage} or \code{size}.}
+
+\item{level}{Rule for the default target coverage: \code{"max_extrapolation"}
+or \code{"min_observed"}; see Details.}
 
 \item{conf}{Confidence level of the intervals.}
 
@@ -96,16 +99,34 @@ columns, kept in the output. Grouped data frames are also respected.}
 }
 \value{
 A \code{td_standardise} tibble with the grouping columns, the site
-column, \code{q}, \code{m}, \code{method}, \code{coverage}, \code{diversity}, \code{se}, \code{lower} and
-\code{upper}. A warning is given when a site has to be extrapolated beyond
+column, \code{q}, \code{m}, \code{method}, \code{target} (the target coverage, or \code{NA} for
+a target size), \code{coverage} (coverage reached), \code{diversity}, \code{se},
+\code{lower} and \code{upper}. A warning is given when a site has to be extrapolated beyond
 twice its sample size, where richness estimates become unreliable.
 }
 \description{
 Compares sites at equal sample completeness (coverage) or equal sample
 size, by rarefying or extrapolating each site to that level (Chao and
-Jost 2012). By default sites are standardised to the lowest coverage
-that every site in a group reaches at twice its sample size, as in
-\code{\link[iNEXT:estimateD]{iNEXT::estimateD()}}.
+Jost 2012).
+}
+\details{
+When neither \code{coverage} nor \code{size} is given, the target coverage of each
+group is set by \code{level}:
+\itemize{
+\item \code{"max_extrapolation"} (default, the rule of \code{\link[iNEXT:estimateD]{iNEXT::estimateD()}}): the
+lowest coverage that every site reaches at twice its sample size, the
+largest extrapolation that is still reliable for richness.
+\item \code{"min_observed"}: the lowest observed coverage of any site, so the
+least complete site is used as observed and the others are rarefied
+(the most conservative choice; Chao and Jost 2012).
+}
+
+The target is reported in the \code{target} column. A site whose coverage
+curve cannot reach the target (for example one with a single
+singleton and no doubletons) is returned at its highest attainable
+coverage with a warning, so check \code{coverage} against \code{target}.
+iNEXT rounds the target coverage it prints, so results can differ from
+iNEXT in the second decimal when a rounded level is passed back to it.
 }
 \examples{
 set.seed(1)

@@ -116,18 +116,35 @@ size_method <- function(m, n) {
 #'
 #' Compares sites at equal sample completeness (coverage) or equal sample
 #' size, by rarefying or extrapolating each site to that level (Chao and
-#' Jost 2012). By default sites are standardised to the lowest coverage
-#' that every site in a group reaches at twice its sample size, as in
-#' [iNEXT::estimateD()].
+#' Jost 2012).
+#'
+#' When neither `coverage` nor `size` is given, the target coverage of each
+#' group is set by `level`:
+#'
+#' * `"max_extrapolation"` (default, the rule of [iNEXT::estimateD()]): the
+#'   lowest coverage that every site reaches at twice its sample size, the
+#'   largest extrapolation that is still reliable for richness.
+#' * `"min_observed"`: the lowest observed coverage of any site, so the
+#'   least complete site is used as observed and the others are rarefied
+#'   (the most conservative choice; Chao and Jost 2012).
+#'
+#' The target is reported in the `target` column. A site whose coverage
+#' curve cannot reach the target (for example one with a single
+#' singleton and no doubletons) is returned at its highest attainable
+#' coverage with a warning, so check `coverage` against `target`.
+#' iNEXT rounds the target coverage it prints, so results can differ from
+#' iNEXT in the second decimal when a rounded level is passed back to it.
 #'
 #' @inheritParams div_estimate
 #' @param coverage Target sample coverage between 0 and 1. If both
-#'   `coverage` and `size` are `NULL`, a default coverage is chosen for each
-#'   group.
+#'   `coverage` and `size` are `NULL`, the target is chosen by `level`.
+#' @param level Rule for the default target coverage: `"max_extrapolation"`
+#'   or `"min_observed"`; see Details.
 #' @param size Target sample size. Supply either `coverage` or `size`.
 #' @return A `td_standardise` tibble with the grouping columns, the site
-#'   column, `q`, `m`, `method`, `coverage`, `diversity`, `se`, `lower` and
-#'   `upper`. A warning is given when a site has to be extrapolated beyond
+#'   column, `q`, `m`, `method`, `target` (the target coverage, or `NA` for
+#'   a target size), `coverage` (coverage reached), `diversity`, `se`,
+#'   `lower` and `upper`. A warning is given when a site has to be extrapolated beyond
 #'   twice its sample size, where richness estimates become unreliable.
 #' @export
 #' @examples
@@ -142,6 +159,7 @@ div_standardise <- function(data,
                             q = c(0, 1, 2),
                             coverage = NULL,
                             size = NULL,
+                            level = c("max_extrapolation", "min_observed"),
                             conf = 0.95,
                             nboot = 50,
                             type = c("TD", "PD", "FD"),
@@ -171,11 +189,13 @@ div_standardise <- function(data,
   td_check_number(nboot, "nboot", 0, whole = TRUE)
   z <- stats::qnorm(1 - (1 - conf) / 2)
 
+  level <- rlang::arg_match(level)
   if (is.null(coverage) && is.null(size)) {
-    level <- default_coverage_level(prep)
+    level <- default_coverage_level(prep, level)
   }
 
   far <- 0
+  short <- character()
   dim <- td_dimension(
     rlang::arg_match(type), prep, tree, reftime, rlang::arg_match(pd_unit),
     distance, tau
@@ -189,6 +209,11 @@ div_standardise <- function(data,
       m <- size_for_coverage(x, target)
     }
     if (m > 2 * n * (1 + 1e-6) && 0 %in% q) far <<- far + 1
+    target <- if (!is.null(size)) NA_real_ else coverage %||% level[i]
+    reached <- coverage_at_size(x, m)
+    if (!is.na(target) && reached < target - 1e-6) {
+      short <<- c(short, as.character(prep$site_labels[i] %||% i))
+    }
     d <- as.vector(dim_at_size(x, m, q, dim))
     draws <- boot_draws(x, nboot, function(xb, d) {
       as.vector(dim_at_size(xb, m, q, d))
@@ -198,7 +223,8 @@ div_standardise <- function(data,
       q = q,
       m = m,
       method = size_method(m, n),
-      coverage = coverage_at_size(x, m),
+      target = target,
+      coverage = reached,
       diversity = d,
       se = se,
       lower = pmax(d - z * se, 0),
@@ -206,6 +232,16 @@ div_standardise <- function(data,
     )
   })
   warn_far(far)
+  if (length(short)) {
+    sc <- out[[prep$site]][out$coverage < out$target - 1e-6]
+    cli::cli_warn(c(
+      "{length(unique(sc))} site{?s} cannot reach the target coverage: \
+      {.val {as.character(unique(sc))}}.",
+      "i" = "They are returned at their highest attainable coverage; \
+      compare {.field coverage} with {.field target}, or use \
+      {.code level = \"min_observed\"}."
+    ))
+  }
   td_new(add_dim_cols(out, dim), "td_standardise")
 }
 

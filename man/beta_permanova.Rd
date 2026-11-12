@@ -69,8 +69,10 @@ together). Note that \code{\link[vegan:adonis2]{vegan::adonis2()}} defaults to \
 \item{strata}{Optional site variable (unquoted) within which to restrict
 permutations, for example a block or transect.}
 
-\item{permutations}{Number of permutations for the tests of passive
-variables.}
+\item{permutations}{Permutations for the tests of passive variables: a
+number, or \code{"exact"} for complete enumeration of all n! orderings of
+the sites (feasible up to about 9 sites; with 7 sites, 5,040), which
+gives exact p-values.}
 
 \item{group}{Site variable (unquoted) defining the groups.}
 

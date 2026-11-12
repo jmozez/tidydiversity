@@ -46,8 +46,10 @@ error rate), \code{"fdr"} (false discovery rate) or \code{"none"}.}
 \item{alpha}{Return only species with adjusted \code{p.adj <= alpha}; \code{1} for
 all.}
 
-\item{permutations}{Number of permutations for the tests of passive
-variables.}
+\item{permutations}{Permutations for the tests of passive variables: a
+number, or \code{"exact"} for complete enumeration of all n! orderings of
+the sites (feasible up to about 9 sites; with 7 sites, 5,040), which
+gives exact p-values.}
 }
 \value{
 A tibble with \code{species}, \code{group} (the group or combination the

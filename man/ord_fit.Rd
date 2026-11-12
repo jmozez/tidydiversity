@@ -17,6 +17,8 @@ ord_fit(
   scaling = c("species", "sites", "symmetric"),
   k = 2,
   permutations = 999,
+  choices = 1:2,
+  seed = NULL,
   ...
 )
 }
@@ -58,8 +60,16 @@ sites; \code{"symmetric"} (scaling 3) is a compromise.}
 
 \item{k}{For \code{"nmds"}, the number of dimensions.}
 
-\item{permutations}{Number of permutations for the tests of passive
-variables.}
+\item{permutations}{Permutations for the tests of passive variables: a
+number, or \code{"exact"} for complete enumeration of all n! orderings of
+the sites (feasible up to about 9 sites; with 7 sites, 5,040), which
+gives exact p-values.}
+
+\item{choices}{Axes on which passive variables are fitted and tested,
+as in \code{\link[vegan:envfit]{vegan::envfit()}}. The default, the first two, matches the
+biplot; the axes used are reported in the \code{envfit} table.}
+
+\item{seed}{Optional random seed for the permutation tests.}
 
 \item{...}{Passed to the vegan function that fits the ordination.}
 }

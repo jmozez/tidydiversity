@@ -1,3 +1,50 @@
+# tidydiversity 0.2.0
+
+## Bug fixes
+
+* Site order is now stable and documented: outputs of `div_hill()`,
+  `div_coverage()`, `ord_fit()` and every other function follow the factor
+  levels of the site column, or else natural order (numbers inside names
+  compared numerically, so "200m" comes before "1200m"), whatever the order
+  of the input rows. Before, sites came in order of first appearance, and
+  joining site data by position gave silently wrong results. Joins inside
+  the package are by site name.
+* `ord_fit()` fitted passive environmental variables on all retained axes
+  (up to three) while the biplot showed two, so their p-values did not
+  describe the plot. New `choices` (default `1:2`, as in
+  `vegan::envfit()`) sets the axes for both the test and the arrows, and
+  the `envfit` table reports the axes, the number of permutations and
+  whether the test was exact. New `permutations = "exact"` enumerates every
+  ordering of the sites (n!; 5,040 for 7 sites), and `seed` makes random
+  permutation tests reproducible. `beta_permanova()` also accepts
+  `permutations = "exact"`.
+* `div_standardise()`: the default target coverage is now documented and
+  chosen by `level`: `"max_extrapolation"` (default, the rule of
+  `iNEXT::estimateD()`: the lowest coverage reached at twice each sample
+  size) or `"min_observed"` (the lowest observed coverage). The target is
+  returned in a new `target` column, and a site that cannot reach it (for
+  example one singleton and no doubletons) now gives a warning instead of
+  being returned silently at a lower coverage.
+* `model_count()` printed the whole deparsed `glm()` function as the call;
+  it now prints a readable call such as
+  `glm(formula = richness ~ poly(elevation, 2), family = poisson, data = data)`.
+
+## New features
+
+* `beta_mantel()`: Mantel and partial Mantel tests (Spearman by default)
+  on `beta_dist()` results, distance matrices or site values, with exact
+  permutations and a choice of tail, returned as a one-row tibble. Equal to
+  `vegan::mantel()` and `vegan::mantel.partial()`.
+* `beta_turnover_counts()`: species shared, lost and gained between
+  adjacent (or all, or chosen) pairs of sites, with Sørensen and Jaccard
+  dissimilarity split into turnover and nestedness, and Bray-Curtis into
+  balanced variation and abundance gradient; equal to betapart. Sites with
+  no species are kept with a warning, and undefined indices are `NA`.
+* `beta_decay_boot()`: distance-decay slopes with bootstrap confidence
+  intervals that resample sites, and the difference between two transects
+  or taxa.
+* New vignette "An elevational-gradient workflow".
+
 # tidydiversity 0.1.0
 
 ## Sampling effort and drivers of richness gradients
