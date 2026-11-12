@@ -136,6 +136,31 @@ div_fisher_alpha(png_ants, .by = season)
 Like the coverage-standardised richness below, it is highest at 700 m
 and lowest at 1700 m and above in both seasons.
 
+## How much more sampling is needed?
+
+`div_effort()` turns the estimates into a plan: how many more sampling
+units (here baits) each site needs to reach a target coverage, or to
+detect a target fraction of its estimated richness (Chao et al. 2009).
+
+```{r effort}
+effort <- div_effort(png_ants, unit = bait, n_units = baits, .by = season,
+  coverage = 0.9, fraction = 0.9)
+effort |> select(season, site, coverage_now, s_obs, s_est, target, additional)
+```
+
+**How to read it.** `coverage_now` is the completeness of the 60 baits
+already set, `s_est` the estimated richness (Chao2), and `additional`
+the further baits needed for each target. For 90% coverage, most sites
+need fewer than 75 more baits, and two are already there or nearly so.
+The exception is 700 m, the richest elevation: it needs
+`r effort$additional[effort$season == "wet" & effort$site == "MW0700" & effort$target == "coverage"]`
+more baits in the wet season and
+`r effort$additional[effort$season == "dry" & effort$site == "MW0700" & effort$target == "coverage"]`
+in the dry season, where 12 of its 15 species were found at one bait. A
+far larger effort, or a different method, would be needed there. Answers far beyond two to
+three times the current effort are order-of-magnitude guides, because
+extrapolation that far is uncertain.
+
 ## Rarefaction and extrapolation
 
 `div_rarefy()` interpolates each sample down to smaller sizes and
@@ -222,6 +247,10 @@ in the dry season, where 700 m had the least complete sample.
 Chiu, C.-H., Wang, Y.-T., Walther, B. A. and Chao, A. (2014). An
 improved nonparametric lower bound of species richness via a modified
 Good-Turing frequency formula. *Biometrics*, 70, 671-682.
+
+Chao, A., Colwell, R. K., Lin, C.-W. and Gotelli, N. J. (2009).
+Sufficient sampling for asymptotic minimum species richness estimators.
+*Ecology*, 90, 1125-1133.
 
 Chao, A. and Jost, L. (2012). Coverage-based rarefaction and
 extrapolation: standardizing samples by completeness rather than size.

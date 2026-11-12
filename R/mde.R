@@ -317,3 +317,95 @@ autoplot.td_mde <- function(object,
   if (length(facet)) p <- p + ggplot2::facet_wrap(facet)
   td_style(p, palette, theme)
 }
+
+#' Geometry or environment? Partitioning richness along a gradient
+#'
+#' @description
+#' `range_partition()` splits the variation in observed richness along a
+#' gradient into the part explained by the mid-domain null model
+#' (geometry), the part explained by environmental variables, the part
+#' they share, and the unexplained rest. It is variation partitioning
+#' (Borcard et al. 1992; Peres-Neto et al. 2006) with adjusted R², applied
+#' to the debate on whether geometric constraints or the environment
+#' drive richness gradients (Colwell et al. 2004; Dunn et al. 2007).
+#'
+#' Unique fractions are tested with an F test of the nested linear models.
+#' With few sites (as on most single-mountain transects) tests have little
+#' power and adjusted fractions can be negative (read negative values as
+#' zero); report them as descriptive. Sites along a gradient are also
+#' spatially autocorrelated, which makes the p-values too small.
+#'
+#' @param mde A [range_mde()] result.
+#' @param env A formula of environmental predictors, e.g. `~ temperature`,
+#'   evaluated in `mde` joined with `data`.
+#' @param data Optional site-level data frame with the environmental
+#'   variables and the site (and grouping) columns of `mde`.
+#' @return A tibble with the grouping columns and, for each fraction
+#'   (`geometry only`, `environment only`, `shared`, `residual`), `adj_r2`
+#'   and, for the unique fractions, `p_value`.
+#' @references
+#' Borcard, D., Legendre, P. and Drapeau, P. (1992). Partialling out the
+#' spatial component of ecological variation. Ecology, 73, 1045-1055.
+#'
+#' Colwell, R. K., Rahbek, C. and Gotelli, N. J. (2004). The mid-domain
+#' effect and species richness patterns: what have we learned so far?
+#' American Naturalist, 163, E1-E23. \doi{10.1086/382056}
+#'
+#' Dunn, R. R., McCain, C. M. and Sanders, N. J. (2007). When does
+#' diversity fit null model predictions? Scale and range size mediate the
+#' mid-domain effect. Global Ecology and Biogeography, 16, 305-312.
+#' @export
+#' @examples
+#' set.seed(1)
+#' mde <- range_mde(png_frogs, gradient = elevation, nsim = 199)
+#' range_partition(mde, ~elevation)
+range_partition <- function(mde, env, data = NULL) {
+  if (!inherits(mde, "td_mde")) {
+    cli::cli_abort("{.arg mde} must be a {.fn range_mde} result.")
+  }
+  if (!rlang::is_formula(env)) {
+    cli::cli_abort("{.arg env} must be a formula such as {.code ~ temperature}.")
+  }
+  d <- tibble::as_tibble(unclass(mde))
+  fit <- attr(mde, "fit")
+  by <- setdiff(names(fit), c("model", "n_sites", "n_species", "r2", "p_value"))
+  if (!is.null(data)) {
+    common <- intersect(names(data), names(d))
+    d <- dplyr::left_join(d, data[unique(c(common, all.vars(env)))], by = common)
+  }
+  missing <- setdiff(all.vars(env), names(d))
+  if (length(missing)) {
+    cli::cli_abort("Variable{?s} {.field {missing}} not found in {.arg mde} or {.arg data}.")
+  }
+  groups <- if (length(by)) vctrs::vec_split(d, d[by]) else list(key = list(NULL), val = list(d))
+  out <- lapply(seq_along(groups$val), function(k) {
+    g <- groups$val[[k]]
+    x_env <- stats::model.matrix(env, g)[, -1, drop = FALSE]
+    y <- g$observed
+    n <- length(y)
+    if (n <= ncol(x_env) + 2) {
+      cli::cli_abort(
+        "Too few sites ({n}) for {ncol(x_env)} environmental variable{?s} plus geometry."
+      )
+    }
+    m_geo <- stats::lm(y ~ g$expected)
+    m_env <- stats::lm(y ~ x_env)
+    m_all <- stats::lm(y ~ g$expected + x_env)
+    adj <- function(m) summary(m)$adj.r.squared
+    a <- adj(m_all) - adj(m_env)
+    c_ <- adj(m_all) - adj(m_geo)
+    b <- adj(m_all) - a - c_
+    p_geo <- stats::anova(m_env, m_all)$`Pr(>F)`[2]
+    p_env <- stats::anova(m_geo, m_all)$`Pr(>F)`[2]
+    res <- tibble::tibble(
+      fraction = c("geometry only", "environment only", "shared", "residual"),
+      adj_r2 = c(a, c_, b, 1 - adj(m_all)),
+      p_value = c(p_geo, p_env, NA, NA)
+    )
+    if (length(by)) {
+      res <- vctrs::vec_cbind(vctrs::vec_slice(groups$key, rep(k, nrow(res))), res)
+    }
+    res
+  })
+  td_new(vctrs::vec_rbind(!!!out), "td_range_partition")
+}

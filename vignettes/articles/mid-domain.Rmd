@@ -120,6 +120,37 @@ in both seasons and at 2200 m in the wet season. Ant richness declines with elev
 predicts; the 700 m peak in the wet season is a real lowland maximum,
 not a mid-domain artefact.
 
+## Geometry or environment?
+
+The null model gives one predictor of richness (geometry); the
+environment gives others. `range_partition()` splits the variation in
+observed richness between them, with adjusted R² as in variation
+partitioning (Peres-Neto et al. 2006). Here elevation stands in for the
+environment (temperature falls by about 0.6 °C per 100 m):
+
+```{r partition}
+range_partition(frogs, ~elevation)
+```
+
+**How to read it.** `geometry only` is the variation explained by the
+null model beyond elevation, `environment only` the variation explained
+by elevation beyond geometry, `shared` the part they explain together,
+and `residual` the rest; `p_value` tests the two unique fractions. For
+frogs both are substantial and significant: the hump of the null model
+captures the mid-elevation peak, and the linear decline with elevation
+captures the loss of species towards the summit; together they explain
+over 80% of the pattern. The shared fraction is negative: each
+predictor explains more once the other is in the model, because the
+symmetric hump and the straight decline are nearly independent along
+an evenly sampled gradient and each removes noise that hides the other.
+Read a negative shared fraction as zero.
+
+With only five sites per season for ants, the same analysis has too few
+degrees of freedom to be meaningful (adjusted fractions can exceed 1 or
+fall below 0); use it with eight or more sites, and treat the p-values
+as approximate, because sites along a gradient are spatially
+autocorrelated.
+
 ## How to report it
 
 > To test whether the elevational richness pattern could arise from
@@ -158,6 +189,10 @@ Evolution*, 15, 70-76.
 Colwell, R. K. (2008). RangeModel: tools for exploring and assessing
 geometric constraints on species richness (the mid-domain effect) along
 transects. *Ecography*, 31, 4-7.
+
+Peres-Neto, P. R., Legendre, P., Dray, S. and Borcard, D. (2006).
+Variation partitioning of species data matrices: estimation and
+comparison of fractions. *Ecology*, 87, 2614-2625.
 
 Grytnes, J.-A. and Vetaas, O. R. (2002). Species richness and altitude: a
 comparison between null models and interpolated plant species richness

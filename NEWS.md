@@ -1,5 +1,16 @@
 # tidydiversity 0.1.0
 
+## Sampling effort and drivers of richness gradients
+
+* New `div_effort()`: the additional individuals or sampling units needed
+  to reach a target sample coverage (Chao and Jost 2012) or a target
+  fraction of the estimated richness (Chao et al. 2009), solved exactly
+  so the answers agree with the extrapolated curves of `div_rarefy()`.
+* New `range_partition()`: splits the variation in richness along a
+  gradient into parts explained by the mid-domain null model (geometry),
+  by environmental variables, by both, and neither (adjusted R², equal to
+  `vegan::varpart()`), with F tests of the unique fractions.
+
 ## Mid-domain effect (RangeModel)
 
 * New `range_through()`: range-through interpolation along elevational

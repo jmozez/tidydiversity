@@ -169,6 +169,7 @@ reference:
       - div_estimate
       - div_richness
       - div_fisher_alpha
+      - div_effort
       - div_coverage
   - title: Completeness and evenness
     contents:
@@ -189,6 +190,7 @@ reference:
     contents:
       - range_through
       - range_mde
+      - range_partition
       - beta_decay
       - beta_decay_model
       - beta_dist
