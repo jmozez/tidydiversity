@@ -228,4 +228,4 @@ Moses, J., Peters, M. K., Tiede, Y., Mottl, O., Donoso, D. A., Farwig,
 N., Fayle, T. M., Novotny, V., Sanders, N. J. and Klimes, P. (2023).
 Nutrient use by tropical ant communities varies among three extensive
 elevational gradients: a cross-continental comparison. Data: Mottl, O.,
-Moses, J. and Klimes, P. (2023), Zenodo, doi:10.5281/zenodo.8191946.
+Moses, J. and Klimes, P. (2023), Zenodo, <https://doi.org/10.5281/zenodo.8191946>.
