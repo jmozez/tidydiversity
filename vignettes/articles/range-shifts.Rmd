@@ -84,7 +84,7 @@ Tracking is the observed over the predicted mean shift: 1 means the
 birds kept pace with the warming.
 
 ```{r hindcast-fig, echo = FALSE}
-knitr::include_graphics("figure/range-hindcast.png")
+knitr::include_graphics("img/range-hindcast.png")
 ```
 
 With the regional warming estimate (0.39 degrees C) the birds seemed to
