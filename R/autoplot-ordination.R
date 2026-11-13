@@ -36,6 +36,9 @@
 #'   class per value, and otherwise is cut into up to 6 classes at pretty
 #'   breaks; each class has its own colour and symbol. Discrete variables
 #'   also define the groups for ellipses, hulls and spiders.
+#' @param style Look of every element, from [ord_style()]: colours,
+#'   symbols, sizes, line widths and fonts. The result is a ggplot, so any
+#'   scale or theme can also be added afterwards.
 #' @param surface A numeric site variable to draw as a fitted surface:
 #'   contour lines from a thin-plate GAM of the variable on the two axes
 #'   (as in `vegan::ordisurf()`), or a linear trend surface (a plane, as
@@ -101,8 +104,10 @@ autoplot.td_ordination <- function(object,
                                    theme = theme_tidydiversity(grid = "none"),
                                    surface = NULL,
                                    size = NULL,
+                                   style = ord_style(),
                                    ...) {
   rlang::check_installed("ggplot2")
+  st <- style
   ellipse <- rlang::arg_match(ellipse)
   n_ax <- nrow(object$axes)
   if (length(axes) != 2 || any(!axes %in% seq_len(n_ax))) {
@@ -145,8 +150,12 @@ autoplot.td_ordination <- function(object,
   }
 
   p <- ggplot2::ggplot() +
-    ggplot2::geom_hline(yintercept = 0, linetype = "dashed", colour = "grey60", linewidth = 0.3) +
-    ggplot2::geom_vline(xintercept = 0, linetype = "dashed", colour = "grey60", linewidth = 0.3)
+    ggplot2::geom_hline(
+      yintercept = 0, colour = st$origin_colour, linewidth = st$origin_linewidth
+    ) +
+    ggplot2::geom_vline(
+      xintercept = 0, colour = st$origin_colour, linewidth = st$origin_linewidth
+    )
 
   # Groups: hulls, ellipses and spiders sit under the points. They share
   # the colour scale only when the groups are the (discrete) colour.
@@ -214,18 +223,19 @@ autoplot.td_ordination <- function(object,
       spp$.y <- spp$.y * mul
       p <- p + ggplot2::geom_segment(
         ggplot2::aes(0, 0, xend = .data$.x, yend = .data$.y),
-        data = spp, colour = "#B2182B", linewidth = 0.35,
+        data = spp, colour = st$species_colour, linewidth = st$species_linewidth,
         arrow = ggplot2::arrow(length = ggplot2::unit(0.15, "cm"), type = "closed")
       )
-      add_elem("Species", "arrow", "#B2182B")
+      add_elem("Species", "arrow", st$species_colour)
     } else {
-      add_elem("Species", "point", "#B2182B", 3)
+      add_elem("Species", "point", st$species_colour, st$species_shape)
       p <- p + ggplot2::geom_point(
         ggplot2::aes(.data$.x, .data$.y),
-        data = spp, colour = "#B2182B", shape = 3, size = 1.8
+        data = spp, colour = st$species_colour, shape = st$species_shape,
+        size = st$species_size, stroke = 0.6
       )
     }
-    labs <- ord_add_labels(labs, spp, "#B2182B", "italic", 3)
+    labs <- ord_add_labels(labs, spp, st$species_label_colour, st$species_fontface, st$label_size)
   }
 
   # A continuous site variable as a fitted surface: contour lines
@@ -235,12 +245,12 @@ autoplot.td_ordination <- function(object,
     if (nrow(srf$lines)) {
       p <- p + ggplot2::geom_path(
         ggplot2::aes(.data$x, .data$y, group = .data$piece),
-        data = srf$lines, colour = "#1B7837", linewidth = 0.45
+        data = srf$lines, colour = st$contour_colour, linewidth = st$contour_linewidth
       )
-      add_elem(paste(srf_var, "(contours)"), "line", "#1B7837")
+      add_elem(paste(srf_var, "(contours)"), "line", st$contour_colour)
       p <- p + ggplot2::geom_label(
         ggplot2::aes(.data$x, .data$y, label = .data$level),
-        data = srf$labels, colour = "#1B7837", size = 2.6, label.size = 0,
+        data = srf$labels, colour = st$contour_colour, size = 0.93 * st$label_size, label.size = 0,
         label.padding = ggplot2::unit(0.08, "lines"), fill = "white"
       )
     }
@@ -253,19 +263,24 @@ autoplot.td_ordination <- function(object,
   # Sites
   if (sites) {
     aes_pt <- ggplot2::aes(.data$.x, .data$.y)
-    if (!is.null(col_var)) aes_pt$colour <- rlang::quo(.data[[col_var]])
+    # Filled symbols with a thin dark outline: legible in colour and grey
+    if (!is.null(col_var)) aes_pt$fill <- rlang::quo(.data[[col_var]])
     if (!is.null(shp_var)) aes_pt$shape <- rlang::quo(.data[[shp_var]])
-    if (is.null(col_var) && is.null(shp_var)) add_elem("Sites", "point", "grey15", 16)
+    if (is.null(col_var) && is.null(shp_var)) add_elem("Sites", "point", st$site_outline, 21)
+    pt_fixed <- list(colour = st$site_outline, stroke = st$site_stroke, alpha = st$site_alpha)
+    if (is.null(shp_var)) pt_fixed$shape <- 21
+    if (is.null(col_var)) pt_fixed$fill <- st$site_fill
     if (!is.null(siz_var)) {
       site_df$.size <- raw[[siz_var]]
       aes_pt$size <- rlang::quo(.data$.size)
-      p <- p + ggplot2::geom_point(aes_pt, data = site_df, alpha = 0.9) +
+      p <- p + do.call(ggplot2::geom_point, c(list(aes_pt, data = site_df), pt_fixed)) +
         ggplot2::scale_size_area(name = siz_var, max_size = 7)
     } else {
-      p <- p + ggplot2::geom_point(aes_pt, data = site_df, size = 2.4, alpha = 0.9)
+      pt_args <- c(list(aes_pt, data = site_df, size = st$site_size), pt_fixed)
+      p <- p + do.call(ggplot2::geom_point, pt_args)
     }
     if (site_labels) {
-      labs <- ord_add_labels(labs, site_df, "grey20", "plain", 2.8)
+      labs <- ord_add_labels(labs, site_df, st$site_label_colour, "plain", st$label_size)
     }
   }
 
@@ -281,11 +296,11 @@ autoplot.td_ordination <- function(object,
       vec$.label <- vec$term
       p <- p + ggplot2::geom_segment(
         ggplot2::aes(0, 0, xend = .data$.x, yend = .data$.y),
-        data = vec, colour = "#0E2A47", linewidth = 0.6,
+        data = vec, colour = st$env_colour, linewidth = st$env_linewidth,
         arrow = ggplot2::arrow(length = ggplot2::unit(0.2, "cm"), type = "closed")
       )
-      add_elem("Environmental variables (continuous)", "arrow", "#0E2A47")
-      labs <- ord_add_labels(labs, vec, "#0E2A47", "bold", 3.3)
+      add_elem("Environmental variables (continuous)", "arrow", st$env_colour)
+      labs <- ord_add_labels(labs, vec, st$env_colour, st$env_fontface, 1.15 * st$label_size)
     }
     cen <- object$centroids
     if (nrow(cen) && all(ax %in% names(cen))) {
@@ -294,10 +309,10 @@ autoplot.td_ordination <- function(object,
       cen$.label <- cen$level %||% cen$term
       p <- p + ggplot2::geom_point(
         ggplot2::aes(.data$.x, .data$.y),
-        data = cen, shape = 17, size = 3, colour = "#0E2A47"
+        data = cen, shape = st$centroid_shape, size = st$centroid_size, colour = st$env_colour
       )
-      add_elem("Factor levels (centroids)", "point", "#0E2A47", 17)
-      labs <- ord_add_labels(labs, cen, "#0E2A47", "bold", 3)
+      add_elem("Factor levels (centroids)", "point", st$env_colour, st$centroid_shape)
+      labs <- ord_add_labels(labs, cen, st$env_colour, st$env_fontface, 1.05 * st$label_size)
     }
   }
 
@@ -312,7 +327,7 @@ autoplot.td_ordination <- function(object,
   p <- p + ggplot2::coord_equal() +
     ggplot2::labs(
       x = lab[1], y = lab[2],
-      colour = col_var, shape = shp_var,
+      fill = col_var, colour = col_var, shape = shp_var,
       caption = paste(c(
         if (object$method == "nmds") {
           paste0("Stress = ", format(round(object$stress, 3), nsmall = 3))
@@ -322,11 +337,11 @@ autoplot.td_ordination <- function(object,
     )
   if (!is.null(shp_var)) {
     n_shp <- nlevels(site_df[[shp_var]])
-    shapes <- rep(c(16, 17, 15, 18, 1, 2, 0, 5), length.out = n_shp)
+    shapes <- rep(st$site_shapes, length.out = n_shp)
     p <- p + ggplot2::scale_shape_manual(name = shp_var, values = shapes)
   }
   p <- td_white(td_style(p, palette, theme))
-  ord_element_legend(p, el_env$elems, site_df)
+  ord_element_legend(p, el_env$elems, site_df, st)
 }
 
 # A legend keying every kind of element in the diagram (sites, species,
@@ -334,7 +349,7 @@ autoplot.td_ordination <- function(object,
 # lines for gradients, points for objects and factor levels. It uses the
 # linetype scale, so it never disturbs the colour and shape legends of the
 # sites.
-ord_element_legend <- function(p, elems, site_df) {
+ord_element_legend <- function(p, elems, site_df, st) {
   if (!length(elems)) {
     return(p)
   }
@@ -367,6 +382,7 @@ ord_element_legend <- function(p, elems, site_df) {
         override.aes = list(
           alpha = 1, colour = e$colour, linewidth = ifelse(is_line, 0.7, 0.5),
           shape = ifelse(is_line, NA, e$shape), size = ifelse(is_line, 0.7, 2.6),
+          fill = ifelse(e$shape %in% 21:25, st$site_fill, e$colour),
           label_glyph = e$glyph
         )
       )
@@ -542,4 +558,73 @@ ord_in_polygon <- function(px, py, vx, vy) {
     j <- i
   }
   inside
+}
+
+#' Style of ordination diagrams
+#'
+#' `ord_style()` sets the look of every element of an ordination diagram
+#' drawn with `autoplot()`. The defaults follow the conventions of CANOCO 5
+#' and vegan, tuned for print: filled site symbols with a thin outline
+#' (legible in colour and in grey), small crosses for species with italic
+#' names, heavier arrows for continuous environmental variables with bold
+#' names, triangles for factor centroids and hairlines through the origin.
+#' Change any argument; colours of site groups come from `palette` in
+#' `autoplot()`, and further changes can be made by adding ggplot2 scales
+#' and themes to the result.
+#'
+#' @param site_size,site_stroke,site_alpha Size, outline width and opacity
+#'   of site symbols.
+#' @param site_outline,site_fill Outline colour of site symbols, and their
+#'   fill when sites are not grouped.
+#' @param site_shapes Filled symbols (21 to 25) used for site classes.
+#' @param site_label_colour Colour of site labels.
+#' @param species_colour,species_label_colour Colour of species symbols
+#'   (or arrows) and of their names.
+#' @param species_shape,species_size Symbol and size of species points.
+#' @param species_linewidth Line width of species arrows (`species_arrows =
+#'   TRUE`).
+#' @param species_fontface Font face of species names (`"italic"` for
+#'   binomials).
+#' @param env_colour,env_linewidth,env_fontface Colour, arrow width and
+#'   font face of environmental variables and centroids.
+#' @param centroid_shape,centroid_size Symbol and size of factor centroids.
+#' @param contour_colour,contour_linewidth Colour and width of contours.
+#' @param origin_colour,origin_linewidth Lines through the origin.
+#' @param label_size Base size of labels (mm); variable labels are a little
+#'   larger.
+#' @return A list for the `style` argument of `autoplot()`.
+#' @export
+#' @examples
+#' o <- ord_fit(png_frogs, abundance = abundance, method = "pca", transform = "hellinger")
+#' ggplot2::autoplot(o,
+#'   colour = elevation,
+#'   style = ord_style(site_size = 3.5, species_colour = "grey20", label_size = 3.2)
+#' )
+ord_style <- function(site_size = 2.8,
+                      site_stroke = 0.35,
+                      site_alpha = 1,
+                      site_outline = "grey15",
+                      site_fill = "grey55",
+                      site_shapes = c(21, 24, 22, 23, 25),
+                      site_label_colour = "grey20",
+                      species_colour = "#B2182B",
+                      species_label_colour = "#8E1B22",
+                      species_shape = 3,
+                      species_size = 1.6,
+                      species_linewidth = 0.35,
+                      species_fontface = "italic",
+                      env_colour = "#0E2A47",
+                      env_linewidth = 0.7,
+                      env_fontface = "bold",
+                      centroid_shape = 17,
+                      centroid_size = 3,
+                      contour_colour = "#1B7837",
+                      contour_linewidth = 0.45,
+                      origin_colour = "grey60",
+                      origin_linewidth = 0.25,
+                      label_size = 2.8) {
+  if (!all(site_shapes %in% 21:25)) {
+    cli::cli_abort("{.arg site_shapes} must be filled symbols, 21 to 25.")
+  }
+  as.list(environment())
 }

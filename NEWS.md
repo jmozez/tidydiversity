@@ -14,6 +14,11 @@
   in every method, as `vegan::plot.rda()` does; `species_arrows = TRUE`
   gives a PCA/RDA biplot with species arrows. Arrows are otherwise kept
   for continuous environmental variables.
+* New `ord_style()` and `autoplot(style = )`: every colour, symbol, size,
+  line width and font of an ordination diagram can be set. The default
+  look follows CANOCO 5, tuned for print: filled site symbols with a thin
+  outline, hairlines through the origin, crosses for species, heavier
+  arrows for environmental variables.
 * Ordination diagrams now have a key for every kind of element: sites,
   species (arrows or crosses), continuous variables (arrows), factor
   centroids and contours, each with its own symbol.

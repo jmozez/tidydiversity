@@ -151,5 +151,6 @@ test_that("continuous site variables are drawn as lines or sizes, not colour bar
   # Numeric colour becomes classes (one per elevation)
   q <- ggplot2::autoplot(o, colour = elevation, species = 0)
   b <- ggplot2::ggplot_build(q)
-  expect_equal(length(unique(b$data[[length(b$data)]]$colour)) >= 2, TRUE)
+  fills <- unlist(lapply(b$data, function(d) if ("fill" %in% names(d)) unique(d$fill)))
+  expect_gte(length(unique(fills)), 8)
 })

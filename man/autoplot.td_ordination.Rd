@@ -13,6 +13,7 @@
   sites = TRUE,
   site_labels = FALSE,
   species = 10,
+  species_arrows = FALSE,
   arrows = TRUE,
   ellipse = c("none", "sd", "ci", "se"),
   level = 0.95,
@@ -22,6 +23,7 @@
   theme = theme_tidydiversity(grid = "none"),
   surface = NULL,
   size = NULL,
+  style = ord_style(),
   ...
 )
 }
@@ -49,6 +51,12 @@ spiders, if different from \code{colour}.}
 represented in the plotted plane (longest scores). Use \code{Inf} for all
 and \code{0} for none.}
 
+\item{species_arrows}{Draw species as arrows (a PCA/RDA biplot, as
+\code{vegan::biplot.rda()}), only for linear methods. By default species
+are taxa and are drawn as points (crosses) with italic labels, as in
+\code{vegan::plot.rda()}; arrows are kept for continuous explanatory
+variables.}
+
 \item{arrows}{Draw environmental arrows and factor centroids.}
 
 \item{ellipse}{\code{"none"} (the default), \code{"sd"}, \code{"ci"} or \code{"se"}.}
@@ -74,6 +82,10 @@ colouring the points.}
 
 \item{size}{A numeric site variable shown by symbol size (a bubble or
 attribute plot, as in CANOCO).}
+
+\item{style}{Look of every element, from \code{\link[=ord_style]{ord_style()}}: colours,
+symbols, sizes, line widths and fonts. The result is a ggplot, so any
+scale or theme can also be added afterwards.}
 
 \item{...}{Not used.}
 }
