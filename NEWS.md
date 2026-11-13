@@ -1,5 +1,11 @@
 # tidydiversity 0.3.0
 
+* `autoplot()` of an ordination gains `type = "vandobben"` (CANOCO's t-value
+  biplot with Van Dobben circles; species coloured by exact t-tests) and
+  `type = "stability"` (95% ellipses of bootstrap ordinations, rotated onto the
+  original by Procrustes analysis), and an `inset` option that adds a scree or
+  Shepard diagram in a corner of the biplot.
+
 * `autoplot()` for ordinations gains `type =` for the main diagram types
   of multivariate analysis, all styled with `ord_style()`:
   `"gradient"` (the axis meaning written at its ends, sites joined along a

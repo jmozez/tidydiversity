@@ -58,7 +58,18 @@
 #'     regression of each (transformed) species on all site variables.
 #'     Van Dobben circles are not drawn, as they only approximate these
 #'     tests under one scaling.
-#' @param variable,axis,model,layout,n_axes Options of `type` (see above).
+#'   * `"vandobben"`: CANOCO's t-value biplot with Van Dobben circles for
+#'     one numeric site variable (`variable`): species and variables placed
+#'     by a rank-2 approximation of the matrix of t-values of regression
+#'     coefficients; the dashed circles mark, approximately, species with a
+#'     significant positive (red) or negative (blue) coefficient, and the
+#'     colours give the exact t-tests;
+#'   * `"stability"`: how robust each site's position is: 95% ellipses of
+#'     `nboot` bootstrap ordinations (species resampled), rotated onto the
+#'     original by Procrustes analysis (unconstrained methods).
+#' @param variable,axis,model,layout,n_axes,nboot Options of `type` (see above).
+#' @param inset For the biplot, a small diagnostic panel in a corner:
+#'   `"scree"` (variance per axis) or `"shepard"` (NMDS fit).
 #' @param style Look of every element, from [ord_style()]: colours,
 #'   symbols, sizes, line widths and fonts. The result is a ggplot, so any
 #'   scale or theme can also be added afterwards.
@@ -134,13 +145,15 @@ autoplot.td_ordination <- function(object,
                                    style = ord_style(),
                                    type = c(
                                      "biplot", "gradient", "response", "scree",
-                                     "shepard", "tvalue"
+                                     "shepard", "tvalue", "vandobben", "stability"
                                    ),
                                    variable = NULL,
                                    axis = 1,
                                    model = c("glm", "gam"),
                                    layout = c("facet", "overlay"),
                                    n_axes = 10,
+                                   nboot = 199,
+                                   inset = c("none", "scree", "shepard"),
                                    ...) {
   rlang::check_installed("ggplot2")
   st <- style
@@ -151,7 +164,7 @@ autoplot.td_ordination <- function(object,
       species = if (missing(species)) NULL else species, axes = axes,
       axis = axis, variable = variable, model = rlang::arg_match(model),
       layout = rlang::arg_match(layout), level = level, palette = palette,
-      n_axes = n_axes
+      n_axes = n_axes, nboot = nboot
     )))
   }
   ellipse <- rlang::arg_match(ellipse)
@@ -440,7 +453,22 @@ autoplot.td_ordination <- function(object,
       shape = ggplot2::guide_legend(order = 1)
     ) +
     ggplot2::theme(text = ggplot2::element_text(family = st$font))
-  ord_element_legend(p, el_env$elems, site_df, st)
+  p <- ord_element_legend(p, el_env$elems, site_df, st)
+  inset <- rlang::arg_match(inset)
+  if (inset != "none") {
+    rlang::check_installed("patchwork")
+    small <- ord_plot_dispatch(object, inset, st, list(n_axes = 6))
+    small$layers <- Filter(function(l) !inherits(l$geom, c("GeomText", "GeomLabel")), small$layers)
+    small <- small +
+      ggplot2::labs(title = NULL, caption = NULL) +
+      ggplot2::theme(
+        text = ggplot2::element_text(size = 7, family = st$font),
+        plot.background = ggplot2::element_rect(fill = "white", colour = "grey60", linewidth = 0.3),
+        plot.margin = ggplot2::margin(3, 3, 3, 3)
+      )
+    p <- p + patchwork::inset_element(small, left = 0.70, bottom = 0.70, right = 0.99, top = 0.99)
+  }
+  p
 }
 
 # A legend keying every kind of element in the diagram (sites, species,

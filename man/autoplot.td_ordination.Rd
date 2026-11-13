@@ -25,12 +25,15 @@
   size = NULL,
   path = NULL,
   style = ord_style(),
-  type = c("biplot", "gradient", "response", "scree", "shepard", "tvalue"),
+  type = c("biplot", "gradient", "response", "scree", "shepard", "tvalue", "vandobben",
+    "stability"),
   variable = NULL,
   axis = 1,
   model = c("glm", "gam"),
   layout = c("facet", "overlay"),
   n_axes = 10,
+  nboot = 199,
+  inset = c("none", "scree", "shepard"),
   ...
 )
 }
@@ -121,9 +124,21 @@ species arrows coloured by an exact t-test of their coefficient in a
 regression of each (transformed) species on all site variables.
 Van Dobben circles are not drawn, as they only approximate these
 tests under one scaling.
+\item \code{"vandobben"}: CANOCO's t-value biplot with Van Dobben circles for
+one numeric site variable (\code{variable}): species and variables placed
+by a rank-2 approximation of the matrix of t-values of regression
+coefficients; the dashed circles mark, approximately, species with a
+significant positive (red) or negative (blue) coefficient, and the
+colours give the exact t-tests;
+\item \code{"stability"}: how robust each site's position is: 95\% ellipses of
+\code{nboot} bootstrap ordinations (species resampled), rotated onto the
+original by Procrustes analysis (unconstrained methods).
 }}
 
-\item{variable, axis, model, layout, n_axes}{Options of \code{type} (see above).}
+\item{variable, axis, model, layout, n_axes, nboot}{Options of \code{type} (see above).}
+
+\item{inset}{For the biplot, a small diagnostic panel in a corner:
+\code{"scree"} (variance per axis) or \code{"shepard"} (NMDS fit).}
 
 \item{...}{Not used.}
 }

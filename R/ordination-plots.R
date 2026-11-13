@@ -14,6 +14,12 @@ ord_plot_dispatch <- function(object, type, st, args) {
     ),
     scree = ord_plot_scree(object, st, n = args$n_axes %||% 10),
     shepard = ord_plot_shepard(object, st),
+    vandobben = ord_plot_vandobben(object, st,
+      variable = args$variable, species = args$species %||% 25
+    ),
+    stability = ord_plot_stability(object, st,
+      nboot = args$nboot %||% 199, level = args$level %||% 0.95, axes = args$axes %||% c(1, 2)
+    ),
     tvalue = ord_plot_tvalue(object, st,
       variable = args$variable, species = args$species %||% 20, axes = args$axes %||% c(1, 2)
     )
@@ -432,8 +438,8 @@ ord_plot_tvalue <- function(object, st, variable = NULL, species = 20, axes = c(
   mul <- sqrt(v$.x^2 + v$.y^2) / max(sqrt(spp$.x^2 + spp$.y^2))
   spp$.x <- spp$.x * mul
   spp$.y <- spp$.y * mul
-  pos <- paste("Increases with", tolower(ord_pretty(variable)))
-  neg <- paste("Decreases with", tolower(ord_pretty(variable)))
+  pos <- paste("Increases with", ord_pretty(variable))
+  neg <- paste("Decreases with", ord_pretty(variable))
   spp$class <- ifelse(is.na(spp$p) | spp$p >= 0.05, "No significant relation",
     ifelse(spp$t > 0, pos, neg)
   )
@@ -482,4 +488,239 @@ ord_plot_tvalue <- function(object, st, variable = NULL, species = 20, axes = c(
       )
     ) +
     ord_theme(st)
+}
+
+# ---- Van Dobben circles (t-value biplot) -----------------------------------
+
+# CANOCO's t-value biplot: species and the site variables are placed by a
+# rank-2 approximation (singular value decomposition) of the matrix of
+# t-values of the regression coefficients of each (transformed) species on
+# all numeric site variables. Two Van Dobben circles with a diameter along
+# the chosen variable mark, approximately, the species with a t-value above
+# the critical value (red) or below its negative (blue). The circles are an
+# approximation; species are coloured by the exact t-test.
+ord_plot_vandobben <- function(object, st, variable = NULL, species = 25) {
+  if (is.null(object$formula) || is.null(object$env)) {
+    cli::cli_abort("Van Dobben circles need site variables: fit with a {.arg formula}.")
+  }
+  vars <- all.vars(object$formula)
+  sd <- object$sites
+  env <- as.data.frame(sd[vars])
+  # Every coefficient of the regression (numeric variables and factor
+  # contrasts) is one variable of the t-value biplot
+  mm <- stats::model.matrix(stats::reformulate(vars), env)[, -1, drop = FALSE]
+  num <- colnames(mm)
+  variable <- variable %||% vars[vapply(vars, function(v) is.numeric(sd[[v]]), logical(1))][1]
+  if (is.na(variable) || !variable %in% num) {
+    cli::cli_abort("{.arg variable} must be one of {.val {num}}.")
+  }
+  y <- ord_transform(
+    object$community[as.character(sd[[object$site_col]]), , drop = FALSE], object$transform
+  )
+  y <- y[, colSums(y > 0) >= 2, drop = FALSE]
+  X <- as.data.frame(mm)
+  names(X) <- make.names(num)
+  vk_name <- make.names(variable)
+  tm <- t(vapply(colnames(y), function(s) {
+    m <- tryCatch(stats::lm(y[, s] ~ ., data = X), error = function(e) NULL)
+    out <- stats::setNames(rep(NA_real_, length(num) + 1), c(names(X), ".p"))
+    if (is.null(m)) {
+      return(out)
+    }
+    cf <- summary(m)$coefficients
+    hit <- intersect(names(X), rownames(cf))
+    out[hit] <- cf[hit, "t value"]
+    if (vk_name %in% rownames(cf)) out[".p"] <- cf[vk_name, "Pr(>|t|)"]
+    out
+  }, numeric(length(num) + 1)))
+  colnames(tm) <- c(num, ".p")
+  pv <- tm[, ".p"]
+  tm <- tm[, num, drop = FALSE]
+  ok <- stats::complete.cases(tm)
+  tm <- tm[ok, , drop = FALSE]
+  pv <- pv[ok]
+  # Rank-2 biplot of the t-values: t[j, k] ~ species[j, ] . variable[k, ]
+  sv <- svd(tm, nu = 2, nv = 2)
+  dd <- sv$d[seq_len(min(2, length(sv$d)))]
+  bsp <- sv$u[, seq_along(dd), drop = FALSE] %*% diag(sqrt(dd), length(dd))
+  bvr <- sv$v[, seq_along(dd), drop = FALSE] %*% diag(sqrt(dd), length(dd))
+  if (ncol(bsp) < 2) {
+    bsp <- cbind(bsp, 0)
+    bvr <- cbind(bvr, 0)
+  }
+  spp <- data.frame(
+    species = rownames(tm), .x = bsp[, 1], .y = bsp[, 2], t = tm[, variable], p = pv
+  )
+  spp <- spp[order(-abs(spp$t)), ][seq_len(min(species, nrow(spp))), ]
+  vk <- bvr[match(variable, num), ]
+  tcrit <- stats::qt(0.975, max(1, nrow(env) - length(num) - 1))
+  # Circle: species b with b . v >= tcrit lie beyond the line at distance
+  # tcrit / |v| along v; the circle of that diameter, through the origin,
+  # marks them (approximately)
+  u <- vk / sqrt(sum(vk^2))
+  dia <- 2 * tcrit / sqrt(sum(vk^2))
+  tip <- u * dia
+  th <- seq(0, 2 * pi, length.out = 200)
+  circ <- rbind(
+    data.frame(x = tip[1] / 2 + dia / 2 * cos(th), y = tip[2] / 2 + dia / 2 * sin(th), side = "+"),
+    data.frame(x = -tip[1] / 2 + dia / 2 * cos(th), y = -tip[2] / 2 + dia / 2 * sin(th), side = "-")
+  )
+  pos <- paste("Increases with", ord_pretty(variable))
+  neg <- paste("Decreases with", ord_pretty(variable))
+  spp$class <- ifelse(is.na(spp$p) | spp$p >= 0.05, "No significant relation",
+    ifelse(spp$t > 0, pos, neg)
+  )
+  cols <- stats::setNames(c("#B2182B", "#2166AC", "grey60"), c(pos, neg, "No significant relation"))
+  circ$colour <- ifelse(circ$side == "+", cols[[pos]], cols[[neg]])
+  v <- data.frame(.x = tip[1], .y = tip[2])
+  ov <- data.frame(name = num, .x = bvr[, 1], .y = bvr[, 2])
+  ov <- ov[ov$name != variable, , drop = FALSE]
+  sc <- max(abs(c(spp$.x, spp$.y))) / max(abs(c(ov$.x, ov$.y, 1e-9)))
+  ov$.x <- ov$.x * sc
+  ov$.y <- ov$.y * sc
+  ggplot2::ggplot() +
+    ggplot2::geom_hline(
+      yintercept = 0, colour = st$origin_colour, linewidth = st$origin_linewidth
+    ) +
+    ggplot2::geom_vline(
+      xintercept = 0, colour = st$origin_colour, linewidth = st$origin_linewidth
+    ) +
+    ggplot2::geom_path(ggplot2::aes(.data$x, .data$y, group = .data$side, colour = I(.data$colour)),
+      data = circ, linewidth = 0.5, linetype = "22"
+    ) +
+    ggplot2::geom_segment(
+      ggplot2::aes(0, 0, xend = .data$.x, yend = .data$.y, colour = .data$class),
+      data = spp, linewidth = 0.45,
+      arrow = ggplot2::arrow(length = ggplot2::unit(1.6, "mm"), type = "closed")
+    ) +
+    ggplot2::geom_segment(ggplot2::aes(0, 0, xend = .data$.x, yend = .data$.y),
+      data = v, colour = st$env_colour, linewidth = st$env_linewidth,
+      arrow = ggplot2::arrow(length = ggplot2::unit(2.4, "mm"), type = "closed")
+    ) +
+    ggplot2::geom_segment(ggplot2::aes(0, 0, xend = .data$.x, yend = .data$.y),
+      data = ov, colour = st$env_colour, alpha = 0.45, linewidth = 0.4, linetype = "42"
+    ) +
+    ord_text(
+      vctrs::vec_rbind(
+        tibble::tibble(
+          .x = ov$.x, .y = ov$.y,
+          .label = sub(paste0("^(", paste(vars, collapse = "|"), ")(.+)$"), "\\1: \\2", ov$name),
+          .col = st$env_colour,
+          .face = "plain", .size = 0.9 * st$label_size
+        ),
+        tibble::tibble(
+          .x = spp$.x, .y = spp$.y, .label = spp$species, .col = unname(cols[spp$class]),
+          .face = st$species_fontface, .size = st$label_size
+        ),
+        tibble::tibble(
+          .x = v$.x, .y = v$.y, .label = ord_pretty(variable), .col = st$env_colour,
+          .face = "bold", .size = 1.15 * st$label_size
+        )
+      ),
+      spp[c(".x", ".y")], st$font
+    ) +
+    ggplot2::scale_colour_manual(values = cols, name = NULL, breaks = names(cols)) +
+    ggplot2::coord_equal(clip = "off") +
+    ggplot2::labs(
+      x = "t-value biplot, axis 1", y = "t-value biplot, axis 2",
+      caption = paste0(
+        "Van Dobben circles (dashed) approximate |t| > ", sprintf("%.2f", tcrit),
+        " for ", ord_pretty(variable), "; colours are exact t-tests (p < 0.05)\n",
+        "of each species' coefficient in a regression on ", paste(vars, collapse = " + ")
+      )
+    ) +
+    ord_theme(st)
+}
+
+# ---- Stability of site positions --------------------------------------------
+
+# Bootstrap the species (columns), refit, rotate each fit onto the original
+# by Procrustes, and draw a 95% ellipse of each site's positions: sites with
+# small ellipses are placed robustly.
+ord_plot_stability <- function(object, st, nboot = 199, level = 0.95, axes = c(1, 2)) {
+  if (object$constrained) {
+    cli::cli_abort("Stability ellipses are for unconstrained ordinations.")
+  }
+  ax <- paste0("axis", axes)
+  y <- ord_transform(object$community, object$transform)
+  ref <- as.matrix(object$sites[ax])
+  rownames(ref) <- object$sites[[object$site_col]]
+  y <- y[rownames(ref), , drop = FALSE]
+  sc_num <- c(sites = 1L, species = 2L, symmetric = 3L)[[object$scaling]]
+  boots <- lapply(seq_len(nboot), function(b) {
+    cols <- sample.int(ncol(y), ncol(y), replace = TRUE)
+    yb <- y[, cols, drop = FALSE]
+    yb <- yb[, colSums(yb) > 0, drop = FALSE]
+    f <- tryCatch(suppressWarnings(utils::capture.output(
+      fit <- ord_vegan(object$method, yb, NULL, NULL, object$distance %|% "bray", 2)
+    )), error = function(e) NULL)
+    if (is.null(f)) {
+      return(NULL)
+    }
+    s <- vegan::scores(fit,
+      display = "sites", choices = axes,
+      scaling = if (object$method %in% c("dca", "nmds")) NULL else sc_num
+    )
+    pr <- vegan::procrustes(ref, s, symmetric = FALSE)
+    data.frame(site = rownames(ref), x = pr$Yrot[, 1], y = pr$Yrot[, 2])
+  })
+  bt <- do.call(rbind, boots)
+  ell <- do.call(rbind, lapply(split(bt, bt$site), function(d) {
+    if (nrow(d) < 3) {
+      return(NULL)
+    }
+    e <- ord_ellipse(d$x, d$y, level)
+    e$site <- d$site[1]
+    e
+  }))
+  sd <- data.frame(site = rownames(ref), .x = ref[, 1], .y = ref[, 2])
+  lab <- ord_axis_labels(object, axes)
+  ggplot2::ggplot() +
+    ggplot2::geom_hline(
+      yintercept = 0, colour = st$origin_colour, linewidth = st$origin_linewidth
+    ) +
+    ggplot2::geom_vline(
+      xintercept = 0, colour = st$origin_colour, linewidth = st$origin_linewidth
+    ) +
+    ggplot2::geom_polygon(ggplot2::aes(.data$x, .data$y, group = .data$site),
+      data = ell, fill = st$env_colour, alpha = 0.06, colour = st$env_colour, linewidth = 0.3
+    ) +
+    ggplot2::geom_point(ggplot2::aes(.data$.x, .data$.y),
+      data = sd, shape = 21, fill = st$site_fill, colour = st$site_outline,
+      size = st$site_size, stroke = st$site_stroke
+    ) +
+    ord_text(
+      tibble::tibble(
+        .x = sd$.x, .y = sd$.y, .label = sd$site, .col = st$site_label_colour,
+        .face = st$site_fontface, .size = st$label_size
+      ),
+      sd[c(".x", ".y")], st$font
+    ) +
+    ggplot2::coord_equal(clip = "off") +
+    ggplot2::labs(
+      x = lab[1], y = lab[2],
+      caption = sprintf(
+        paste(
+          "%d%% ellipses of %d bootstrap ordinations (species resampled),",
+          "Procrustes-rotated to the original"
+        ),
+        round(100 * level), nboot
+      )
+    ) +
+    ord_theme(st)
+}
+
+`%|%` <- function(a, b) if (length(a) == 1 && is.na(a)) b else a
+
+# Normal-theory ellipse of points
+ord_ellipse <- function(x, y, level = 0.95, n = 60) {
+  cv <- stats::cov(cbind(x, y))
+  if (any(!is.finite(cv)) || det(cv) <= 0) {
+    return(NULL)
+  }
+  r <- sqrt(stats::qchisq(level, 2))
+  th <- seq(0, 2 * pi, length.out = n)
+  ch <- chol(cv)
+  pts <- cbind(cos(th), sin(th)) %*% ch * r
+  data.frame(x = mean(x) + pts[, 1], y = mean(y) + pts[, 2])
 }

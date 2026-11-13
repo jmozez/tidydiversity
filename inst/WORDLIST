@@ -19,6 +19,7 @@ Basemaps
 Basien
 Belle
 Bello
+Bertin
 Binatang
 Bioclim
 Biometrika
@@ -27,10 +28,12 @@ Blanchet
 Bonebrake
 Borcard
 Braak
+Braak's
 Brehm
 BugReports
 Butterill
 CANOCO
+CANOCO's
 CC0
 CGIAR
 CHELSA
@@ -49,6 +52,7 @@ Canoco
 Cardelús
 Carmona
 Carto
+Catford
 Chaetodipus
 Chao
 Chao1
@@ -74,6 +78,7 @@ DaPhnE
 Damen
 DataCite
 Dipodomys
+Dobben
 Donoso
 Dornelas
 Drapeau
@@ -108,6 +113,7 @@ GBIF
 GDAL
 GDB
 GML
+Gauthier
 GeoJSON
 GeoPackage
 GeoTIFF
@@ -137,6 +143,7 @@ Jost
 KML
 KMZ
 Karger
+Karimui
 Kleyer
 Klimes
 Kongnoo
@@ -201,7 +208,9 @@ Podani's
 Poisson
 Polatera
 PortalData
+Procrustes
 Pseudoreplication
+Pysek
 RDA
 RStudio
 RStudio's
@@ -228,6 +237,7 @@ SLA
 SOR
 SRTM
 Sauer
+Semiologie
 Shen
 Sinica
 Smilauer
@@ -254,8 +264,10 @@ UNDP
 USGS
 Usseglio
 Valone
+Vesk
 Vetaas
 VignetteBuilder
+Villars
 Villeger
 Vojtěch
 WKT
@@ -354,6 +366,7 @@ gitlab
 glm
 glmmTMB
 grDevices
+graphique
 gt
 hardhat
 haversine
@@ -366,6 +379,7 @@ ht
 iChao
 iNEXT
 indicspecies
+invasible
 io
 j35fq7r
 jimmy
@@ -404,6 +418,7 @@ netCDF
 nonlinear
 obs
 org
+overfit
 overfitted
 penicillatus
 persp
@@ -481,17 +496,3 @@ weimea
 worldclim
 zenodo
 zoogenic
-Karimui
-Catford
-invasible
-Pysek
-Vesk
-Bertin
-graphique
-overfit
-Semiologie
-Gauthier
-Villars
-Braak's
-CANOCO's
-Dobben
