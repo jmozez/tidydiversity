@@ -138,7 +138,7 @@ test_that("continuous site variables are drawn as lines or sizes, not colour bar
   # A linear trend surface of an exact plane is recovered exactly
   x <- o$sites$axis1
   y <- o$sites$axis2
-  srf <- ord_surface(x, y, 2 * x + 3 * y)
+  srf <- suppressWarnings(ord_surface(x, y, 2 * x + 3 * y))
   expect_equal(srf$model, "linear trend surface")
   expect_equal(srf$dev_expl, 1)
   expect_gt(nrow(srf$lines), 0)

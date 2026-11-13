@@ -248,10 +248,13 @@ autoplot.td_ordination <- function(object,
         data = srf$lines, colour = st$contour_colour, linewidth = st$contour_linewidth
       )
       add_elem(paste(srf_var, "(contours)"), "line", st$contour_colour)
-      p <- p + ggplot2::geom_label(
+      # Contour values on a white background, without a border
+      p <- p + ggplot2::geom_text(
         ggplot2::aes(.data$x, .data$y, label = .data$level),
-        data = srf$labels, colour = st$contour_colour, size = 0.93 * st$label_size, label.size = 0,
-        label.padding = ggplot2::unit(0.08, "lines"), fill = "white"
+        data = srf$labels, colour = "white", size = 0.93 * st$label_size, fontface = "bold"
+      ) + ggplot2::geom_text(
+        ggplot2::aes(.data$x, .data$y, label = .data$level),
+        data = srf$labels, colour = st$contour_colour, size = 0.93 * st$label_size
       )
     }
     srf_cap <- sprintf(
