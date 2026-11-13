@@ -23,6 +23,7 @@
   theme = theme_tidydiversity(grid = "none"),
   surface = NULL,
   size = NULL,
+  path = NULL,
   style = ord_style(),
   ...
 )
@@ -82,6 +83,10 @@ colouring the points.}
 
 \item{size}{A numeric site variable shown by symbol size (a bubble or
 attribute plot, as in CANOCO).}
+
+\item{path}{A numeric site variable, such as elevation or time: joins
+the sites in its order with a thin line and small arrowheads, so the
+reader sees at once how composition changes along the gradient.}
 
 \item{style}{Look of every element, from \code{\link[=ord_style]{ord_style()}}: colours,
 symbols, sizes, line widths and fonts. The result is a ggplot, so any

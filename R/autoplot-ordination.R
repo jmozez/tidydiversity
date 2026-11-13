@@ -39,6 +39,9 @@
 #' @param style Look of every element, from [ord_style()]: colours,
 #'   symbols, sizes, line widths and fonts. The result is a ggplot, so any
 #'   scale or theme can also be added afterwards.
+#' @param path A numeric site variable, such as elevation or time: joins
+#'   the sites in its order with a thin line and small arrowheads, so the
+#'   reader sees at once how composition changes along the gradient.
 #' @param surface A numeric site variable to draw as a fitted surface:
 #'   contour lines from a thin-plate GAM of the variable on the two axes
 #'   (as in `vegan::ordisurf()`), or a linear trend surface (a plane, as
@@ -104,6 +107,7 @@ autoplot.td_ordination <- function(object,
                                    theme = theme_tidydiversity(grid = "none"),
                                    surface = NULL,
                                    size = NULL,
+                                   path = NULL,
                                    style = ord_style(),
                                    ...) {
   rlang::check_installed("ggplot2")
@@ -123,7 +127,8 @@ autoplot.td_ordination <- function(object,
   shp_var <- ord_var(rlang::enquo(shape), site_df, "shape")
   srf_var <- ord_var(rlang::enquo(surface), site_df, "surface")
   siz_var <- ord_var(rlang::enquo(size), site_df, "size")
-  for (v in c(srf_var, siz_var)) {
+  pth_var <- ord_var(rlang::enquo(path), site_df, "path")
+  for (v in c(srf_var, siz_var, pth_var)) {
     if (!is.numeric(site_df[[v]])) {
       cli::cli_abort(
         "{.arg surface} and {.arg size} need a numeric site variable; got {.field {v}}."
@@ -263,6 +268,27 @@ autoplot.td_ordination <- function(object,
     )
   }
 
+  # Sites in gradient order: a path with arrowheads half-way along
+  if (!is.null(pth_var)) {
+    o_ <- order(raw[[pth_var]])
+    px <- site_df$.x[o_]
+    py <- site_df$.y[o_]
+    tr <- data.frame(
+      x = utils::head(px, -1), y = utils::head(py, -1), xend = px[-1], yend = py[-1]
+    )
+    p <- p + ggplot2::geom_segment(
+      ggplot2::aes(.data$x, .data$y, xend = .data$xend, yend = .data$yend),
+      data = tr, colour = st$path_colour, linewidth = st$path_linewidth
+    ) + ggplot2::geom_segment(
+      ggplot2::aes(.data$x, .data$y,
+        xend = (.data$x + .data$xend) / 2, yend = (.data$y + .data$yend) / 2
+      ),
+      data = tr, colour = st$path_colour, linewidth = st$path_linewidth,
+      arrow = ggplot2::arrow(length = ggplot2::unit(1.6, "mm"), type = "closed")
+    )
+    add_elem(paste("Sites in order of", pth_var), "arrow", st$path_colour)
+  }
+
   # Sites
   if (sites) {
     aes_pt <- ggplot2::aes(.data$.x, .data$.y)
@@ -283,7 +309,9 @@ autoplot.td_ordination <- function(object,
       p <- p + do.call(ggplot2::geom_point, pt_args)
     }
     if (site_labels) {
-      labs <- ord_add_labels(labs, site_df, st$site_label_colour, "plain", st$label_size)
+      labs <- ord_add_labels(
+        labs, site_df, st$site_label_colour, st$site_fontface, 1.1 * st$label_size
+      )
     }
   }
 
@@ -296,14 +324,33 @@ autoplot.td_ordination <- function(object,
       mul <- ord_arrow_mul(site_df, vec)
       vec$.x <- vec$.x * mul
       vec$.y <- vec$.y * mul
-      vec$.label <- vec$term
+      vec$.label <- ord_pretty(vec$term)
       p <- p + ggplot2::geom_segment(
         ggplot2::aes(0, 0, xend = .data$.x, yend = .data$.y),
         data = vec, colour = st$env_colour, linewidth = st$env_linewidth,
         arrow = ggplot2::arrow(length = ggplot2::unit(0.2, "cm"), type = "closed")
       )
-      add_elem("Environmental variables (continuous)", "arrow", st$env_colour)
-      labs <- ord_add_labels(labs, vec, st$env_colour, st$env_fontface, 1.15 * st$label_size)
+      add_elem("Site variables (fitted)", "arrow", st$env_colour)
+      ef <- object$envfit
+      if (isTRUE(st$env_stats) && !is.null(ef) && nrow(ef)) {
+        m <- match(vec$term, ef$term)
+        vec$.label <- ifelse(is.na(m), vec$term, sprintf(
+          "%s  r\u00b2 = %.2f, p = %s", ord_pretty(vec$term), ef$r2[m],
+          formatC(ef$p.value[m], format = "g", digits = 2)
+        ))
+      }
+      p <- p + ggplot2::geom_label(
+        ggplot2::aes(.data$.x, .data$.y,
+          label = .data$.label,
+          # Inside the plot: ending at the arrowhead (right-pointing),
+          # starting at it (left-pointing), centred (vertical arrows)
+          hjust = ifelse(abs(.data$.x) < 0.3 * abs(.data$.y), 0.5, ifelse(.data$.x > 0, 1, 0)),
+          vjust = ifelse(.data$.y >= 0, -0.45, 1.45)
+        ),
+        data = vec, colour = st$env_colour, fill = "white", family = st$font,
+        fontface = st$env_fontface, size = st$label_size,
+        label.r = ggplot2::unit(0.12, "lines"), show.legend = FALSE
+      )
     }
     cen <- object$centroids
     if (nrow(cen) && all(ax %in% names(cen))) {
@@ -324,10 +371,12 @@ autoplot.td_ordination <- function(object,
   if (length(labs)) {
     lab_df <- vctrs::vec_rbind(!!!labs)
     pts <- vctrs::vec_rbind(site_df[c(".x", ".y")], lab_df[c(".x", ".y")])
-    p <- p + ord_text(lab_df, pts)
+    p <- p + ord_text(lab_df, pts, st$font)
   }
   lab <- ord_axis_labels(object, axes)
-  p <- p + ggplot2::coord_equal() +
+  p <- p + ggplot2::coord_equal(clip = "off") +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = 0.06)) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.06, 0.1))) +
     ggplot2::labs(
       x = lab[1], y = lab[2],
       fill = col_var, colour = col_var, shape = shp_var,
@@ -343,7 +392,12 @@ autoplot.td_ordination <- function(object,
     shapes <- rep(st$site_shapes, length.out = n_shp)
     p <- p + ggplot2::scale_shape_manual(name = shp_var, values = shapes)
   }
-  p <- td_white(td_style(p, palette, theme))
+  p <- td_white(td_style(p, palette, theme)) +
+    ggplot2::guides(
+      fill = ggplot2::guide_legend(order = 1), colour = ggplot2::guide_legend(order = 1),
+      shape = ggplot2::guide_legend(order = 1)
+    ) +
+    ggplot2::theme(text = ggplot2::element_text(family = st$font))
   ord_element_legend(p, el_env$elems, site_df, st)
 }
 
@@ -358,6 +412,8 @@ ord_element_legend <- function(p, elems, site_df, st) {
   }
   e <- vctrs::vec_rbind(!!!elems)
   e <- e[!duplicated(e$name), , drop = FALSE]
+  # Lines and arrows first, then symbols
+  e <- e[order(e$glyph == "point"), , drop = FALSE]
   e$name <- factor(e$name, levels = e$name)
   proxy <- data.frame(name = e$name, x = site_df$.x[1], y = site_df$.y[1])
   is_line <- e$glyph != "point"
@@ -381,7 +437,7 @@ ord_element_legend <- function(p, elems, site_df, st) {
     ggplot2::scale_linetype_manual(
       name = NULL, values = stats::setNames(rep("solid", nrow(e)), e$name),
       guide = ggplot2::guide_legend(
-        order = 99, ncol = 1,
+        order = 99, nrow = if (nrow(e) > 3) 2 else 1, byrow = TRUE,
         override.aes = list(
           alpha = 1, colour = e$colour, linewidth = ifelse(is_line, 0.7, 0.5),
           shape = ifelse(is_line, NA, e$shape), size = ifelse(is_line, 0.7, 2.6),
@@ -390,7 +446,10 @@ ord_element_legend <- function(p, elems, site_df, st) {
         )
       )
     ) +
-    ggplot2::theme(legend.position = "right", legend.box = "vertical")
+    ggplot2::theme(
+      legend.position = "bottom", legend.box = "vertical",
+      legend.spacing.y = ggplot2::unit(0, "mm"), legend.key.width = ggplot2::unit(9, "mm")
+    )
 }
 
 # ---- Plot helpers -------------------------------------------------------------
@@ -428,14 +487,14 @@ ord_add_labels <- function(labs, df, colour, face, size) {
 # an empty label so that text is pushed off it. A label pushed away from its
 # point gets a faint dotted leader line, drawn so that it cannot be mistaken
 # for a species or variable arrow.
-ord_text <- function(lab, pts) {
+ord_text <- function(lab, pts, family = "") {
   if (!requireNamespace("ggrepel", quietly = TRUE)) {
     return(ggplot2::geom_text(
       ggplot2::aes(.data$.x, .data$.y,
         label = .data$.label, colour = I(.data$.col),
         fontface = .data$.face, size = I(.data$.size)
       ),
-      data = lab, vjust = -0.7, check_overlap = TRUE, show.legend = FALSE
+      data = lab, vjust = -0.7, check_overlap = TRUE, show.legend = FALSE, family = family
     ))
   }
   obst <- tibble::tibble(
@@ -448,11 +507,11 @@ ord_text <- function(lab, pts) {
       label = .data$.label, colour = I(.data$.col),
       fontface = .data$.face, size = I(.data$.size)
     ),
-    data = df, seed = 1, max.overlaps = Inf, box.padding = 0.35,
-    point.padding = 0.45, min.segment.length = 0.4, show.legend = FALSE,
-    segment.colour = "grey70", segment.size = 0.25, segment.linetype = "dotted",
-    force = 2, force_pull = 2,
-    max.time = 2, max.iter = 20000
+    data = df, seed = 3, max.overlaps = Inf, box.padding = 0.5,
+    point.padding = 0.35, min.segment.length = 0.2, show.legend = FALSE,
+    segment.colour = "grey65", segment.size = 0.3, family = family,
+    force = 4, force_pull = 0.5,
+    max.time = 5, max.iter = 1e5
   )
 }
 
@@ -575,6 +634,12 @@ ord_in_polygon <- function(px, py, vx, vy) {
 #' `autoplot()`, and further changes can be made by adding ggplot2 scales
 #' and themes to the result.
 #'
+#' @param font Font family of all text (`"serif"`, `"sans"` or any
+#'   installed family).
+#' @param site_fontface Font face of site labels.
+#' @param env_stats Add the fit of each environmental variable (r squared
+#'   and p from `envfit`) to its label.
+#' @param path_colour,path_linewidth Colour and width of the `path` line.
 #' @param site_size,site_stroke,site_alpha Size, outline width and opacity
 #'   of site symbols.
 #' @param site_outline,site_fill Outline colour of site symbols, and their
@@ -603,22 +668,27 @@ ord_in_polygon <- function(px, py, vx, vy) {
 #'   colour = elevation,
 #'   style = ord_style(site_size = 3.5, species_colour = "grey20", label_size = 3.2)
 #' )
-ord_style <- function(site_size = 2.8,
-                      site_stroke = 0.35,
+ord_style <- function(font = "serif",
+                      site_size = 3.4,
+                      site_stroke = 0.8,
                       site_alpha = 1,
                       site_outline = "grey15",
-                      site_fill = "grey55",
+                      site_fill = "white",
                       site_shapes = c(21, 24, 22, 23, 25),
-                      site_label_colour = "grey20",
-                      species_colour = "#B2182B",
-                      species_label_colour = "#8E1B22",
+                      site_label_colour = "grey10",
+                      site_fontface = "bold",
+                      species_colour = "grey45",
+                      species_label_colour = "grey40",
                       species_shape = 3,
-                      species_size = 1.6,
+                      species_size = 1.9,
                       species_linewidth = 0.35,
                       species_fontface = "italic",
-                      env_colour = "#0E2A47",
-                      env_linewidth = 0.7,
-                      env_fontface = "bold",
+                      env_colour = "#1F78B4",
+                      env_linewidth = 0.9,
+                      env_fontface = "plain",
+                      env_stats = TRUE,
+                      path_colour = "grey60",
+                      path_linewidth = 0.35,
                       centroid_shape = 17,
                       centroid_size = 3,
                       contour_colour = "#1B7837",
@@ -630,4 +700,10 @@ ord_style <- function(site_size = 2.8,
     cli::cli_abort("{.arg site_shapes} must be filled symbols, 21 to 25.")
   }
   as.list(environment())
+}
+
+# Variable names for labels: "soil_moisture" -> "Soil moisture"
+ord_pretty <- function(x) {
+  x <- gsub("[_.]+", " ", x)
+  paste0(toupper(substr(x, 1, 1)), substring(x, 2))
 }

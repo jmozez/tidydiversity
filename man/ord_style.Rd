@@ -5,22 +5,27 @@
 \title{Style of ordination diagrams}
 \usage{
 ord_style(
-  site_size = 2.8,
-  site_stroke = 0.35,
+  font = "serif",
+  site_size = 3.4,
+  site_stroke = 0.8,
   site_alpha = 1,
   site_outline = "grey15",
-  site_fill = "grey55",
+  site_fill = "white",
   site_shapes = c(21, 24, 22, 23, 25),
-  site_label_colour = "grey20",
-  species_colour = "#B2182B",
-  species_label_colour = "#8E1B22",
+  site_label_colour = "grey10",
+  site_fontface = "bold",
+  species_colour = "grey45",
+  species_label_colour = "grey40",
   species_shape = 3,
-  species_size = 1.6,
+  species_size = 1.9,
   species_linewidth = 0.35,
   species_fontface = "italic",
-  env_colour = "#0E2A47",
-  env_linewidth = 0.7,
-  env_fontface = "bold",
+  env_colour = "#1F78B4",
+  env_linewidth = 0.9,
+  env_fontface = "plain",
+  env_stats = TRUE,
+  path_colour = "grey60",
+  path_linewidth = 0.35,
   centroid_shape = 17,
   centroid_size = 3,
   contour_colour = "#1B7837",
@@ -31,6 +36,9 @@ ord_style(
 )
 }
 \arguments{
+\item{font}{Font family of all text (\code{"serif"}, \code{"sans"} or any
+installed family).}
+
 \item{site_size, site_stroke, site_alpha}{Size, outline width and opacity
 of site symbols.}
 
@@ -40,6 +48,8 @@ fill when sites are not grouped.}
 \item{site_shapes}{Filled symbols (21 to 25) used for site classes.}
 
 \item{site_label_colour}{Colour of site labels.}
+
+\item{site_fontface}{Font face of site labels.}
 
 \item{species_colour, species_label_colour}{Colour of species symbols
 (or arrows) and of their names.}
@@ -53,6 +63,11 @@ binomials).}
 
 \item{env_colour, env_linewidth, env_fontface}{Colour, arrow width and
 font face of environmental variables and centroids.}
+
+\item{env_stats}{Add the fit of each environmental variable (r squared
+and p from \code{envfit}) to its label.}
+
+\item{path_colour, path_linewidth}{Colour and width of the \code{path} line.}
 
 \item{centroid_shape, centroid_size}{Symbol and size of factor centroids.}
 
