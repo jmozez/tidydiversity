@@ -775,5 +775,7 @@ ord_style <- function(font = "serif",
 # Variable names for labels: "soil_moisture" -> "Soil moisture"
 ord_pretty <- function(x) {
   x <- gsub("[_.]+", " ", x)
-  paste0(toupper(substr(x, 1, 1)), substring(x, 2))
+  # Keep names with their own capitals (pH, NO3, WatrCont) as written
+  keep <- grepl("[A-Z]", substring(x, 2))
+  ifelse(keep, x, paste0(toupper(substr(x, 1, 1)), substring(x, 2)))
 }

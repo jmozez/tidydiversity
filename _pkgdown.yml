@@ -97,6 +97,8 @@ navbar:
           href: articles/modelling.html
         - text: "Ordination: biplots and triplots"
           href: articles/ordination.html
+        - text: A gallery of ordination diagrams
+          href: articles/ordination-gallery.html
         - text: Testing community composition
           href: articles/composition-tests.html
         - text: Trait-based ecology
@@ -211,6 +213,7 @@ reference:
       - beta_indicator
   - title: Ordination
     contents:
+      - ord_advise
       - ord_fit
       - ord_style
       - ord_prc
@@ -276,6 +279,7 @@ articles:
       - elevational-gradient
       - articles/modelling
       - articles/ordination
+      - articles/ordination-gallery
       - articles/composition-tests
       - articles/traits
       - articles/tidymodels

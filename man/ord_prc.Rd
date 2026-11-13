@@ -20,6 +20,7 @@ ord_prc(
 \method{autoplot}{td_prc}(
   object,
   weights = 0.5,
+  n_species = 20,
   palette = "okabe_ito",
   style = ord_style(),
   ...
@@ -51,6 +52,9 @@ axis; permutations are restricted within times.}
 
 \item{weights}{Species weights to show: those with an absolute weight of
 at least this.}
+
+\item{n_species}{At most this many species (the largest absolute
+weights) are labelled.}
 
 \item{palette}{Colours of the treatments.}
 

@@ -113,6 +113,7 @@ GBIF
 GDAL
 GDB
 GML
+Gallagher
 Gauthier
 GeoJSON
 GeoPackage
@@ -139,6 +140,7 @@ Idigel
 IndVal
 Jaccard
 Jetz
+Jongman
 Jost
 KML
 KMZ
@@ -189,9 +191,11 @@ ORCID
 OSM
 Oecologia
 Oecophylla
+Ohtonen
 Okabe
 Oksanen
 OpenFileGDB
+Oribatid
 Orme
 Overton
 PCNM
@@ -204,6 +208,7 @@ Pagel's
 Partialling
 Patuxent
 Peres
+Pinus
 Podani's
 Poisson
 Polatera
@@ -243,6 +248,7 @@ Sinica
 Smilauer
 Smouse
 Sokal
+Sorensen
 SpadeR
 SpadeR's
 SpatRaster
@@ -256,6 +262,7 @@ TPDs
 TSS
 Théâtre
 Tiede
+Tongeren
 Traitbase
 Trichoptera
 Trophic
@@ -270,6 +277,7 @@ VignetteBuilder
 Villars
 Villeger
 Vojtěch
+Väre
 WKT
 Wanang
 Weecology
@@ -309,6 +317,7 @@ catchability
 cati
 ch
 chelsa
+chlorpyrifos
 choropleth
 chull
 cli
@@ -321,6 +330,7 @@ cre
 db
 dbMEM
 dbh
+decorana
 dem
 des
 df
@@ -418,6 +428,7 @@ netCDF
 nonlinear
 obs
 org
+oribatid
 overfit
 overfitted
 penicillatus
@@ -434,6 +445,7 @@ pnguot
 prioritizr
 proj
 pseudoreplication
+pyrifos
 qD
 qN
 qquad
@@ -465,6 +477,7 @@ snowbeds
 snowmelt
 spdep
 sur
+sylvestris
 tabset
 tb
 ter
@@ -485,8 +498,11 @@ transect's
 tripletons
 triplot
 triplots
+understorey
 unmanipulated
 upslope
+varechem
+varespec
 vars
 vctrs
 viridis
@@ -496,3 +512,4 @@ weimea
 worldclim
 zenodo
 zoogenic
+Šmilauer

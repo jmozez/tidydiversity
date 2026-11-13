@@ -1,5 +1,12 @@
 # tidydiversity 0.3.0
 
+* New `ord_advise()` recommends an ordination and its test from the question
+  and the data: unconstrained or constrained, linear or unimodal (from the
+  DCA gradient length), with checks for zeros, presence-absence data, rare
+  species, too many or collinear site variables, and the code to run.
+* New article, "A gallery of ordination diagrams", shows every diagram type
+  on the classic vegan data sets (`dune`, `varespec`, `mite`, `pyrifos`).
+
 * `autoplot()` of an ordination gains `type = "vandobben"` (CANOCO's t-value
   biplot with Van Dobben circles; species coloured by exact t-tests) and
   `type = "stability"` (95% ellipses of bootstrap ordinations, rotated onto the

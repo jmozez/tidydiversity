@@ -115,13 +115,15 @@ print.td_prc <- function(x, ...) {
 #' @param object An `ord_prc()` result.
 #' @param weights Species weights to show: those with an absolute weight of
 #'   at least this.
+#' @param n_species At most this many species (the largest absolute
+#'   weights) are labelled.
 #' @param palette Colours of the treatments.
 #' @param style Look of the diagram, from [ord_style()].
 #' @param ... Not used.
 #' @exportS3Method ggplot2::autoplot
-autoplot.td_prc <- function(object, weights = 0.5, palette = "okabe_ito",
+autoplot.td_prc <- function(object, weights = 0.5, n_species = 20, palette = "okabe_ito",
                             style = ord_style(), ...) {
-  rlang::check_installed(c("ggplot2", "patchwork"))
+  rlang::check_installed(c("ggplot2", "patchwork", "ggrepel"))
   st <- style
   cu <- object$curves
   main <- ggplot2::ggplot(cu, ggplot2::aes(.data$time, .data$coefficient,
@@ -146,6 +148,7 @@ autoplot.td_prc <- function(object, weights = 0.5, palette = "okabe_ito",
     ord_theme(st)
   main <- td_style(main, palette, NULL)
   sp <- object$species[abs(object$species$weight) >= weights, ]
+  sp <- sp[order(-abs(sp$weight)), ][seq_len(min(n_species, nrow(sp))), ]
   yr <- range(c(object$species$weight, 0))
   w <- ggplot2::ggplot(sp, ggplot2::aes(0, .data$weight)) +
     ggplot2::geom_hline(
@@ -154,8 +157,10 @@ autoplot.td_prc <- function(object, weights = 0.5, palette = "okabe_ito",
     ggplot2::geom_segment(ggplot2::aes(x = -0.15, xend = 0, yend = .data$weight),
       colour = "grey40", linewidth = 0.4
     ) +
-    ggplot2::geom_text(ggplot2::aes(x = 0.05, label = .data$species),
-      hjust = 0,
+    ggrepel::geom_text_repel(ggplot2::aes(x = 0.05, label = .data$species),
+      hjust = 0, direction = "y", nudge_x = 0.15, xlim = c(0.1, 1.2),
+      segment.colour = "grey70", segment.size = 0.25, min.segment.length = 0,
+      box.padding = 0.1, max.overlaps = Inf, seed = 1,
       family = st$font, fontface = st$species_fontface, size = st$label_size,
       colour = st$species_label_colour
     ) +
