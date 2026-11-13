@@ -30,8 +30,12 @@
 #' @param object A `td_ordination` from [ord_fit()].
 #' @param axes The two axes to plot.
 #' @param colour,shape Site variables (unquoted column names) to map to
-#'   point colour and shape, such as `colour = elevation`. Discrete
-#'   variables also define the groups for ellipses, hulls and spiders.
+#'   point colour and shape, such as `colour = elevation`. Sites are points,
+#'   so they are drawn as categories (as in CANOCO), never on a continuous
+#'   colour bar: a numeric variable with up to 8 distinct values gets one
+#'   class per value, and otherwise is cut into up to 6 classes at pretty
+#'   breaks; each class has its own colour and symbol. Discrete variables
+#'   also define the groups for ellipses, hulls and spiders.
 #' @param group A site variable defining groups for ellipses, hulls and
 #'   spiders, if different from `colour`.
 #' @param sites Draw the sites.
@@ -95,8 +99,15 @@ autoplot.td_ordination <- function(object,
 
   col_var <- ord_var(rlang::enquo(colour), site_df, "colour")
   shp_var <- ord_var(rlang::enquo(shape), site_df, "shape")
-  grp_var <- ord_var(rlang::enquo(group), site_df, "group") %||%
-    (if (!is.null(col_var) && !is.numeric(site_df[[col_var]])) col_var)
+  # Points are classes, not a continuous gradient: numeric -> ordered classes
+  if (!is.null(col_var) && is.numeric(site_df[[col_var]])) {
+    site_df[[col_var]] <- td_point_classes(site_df[[col_var]])
+    if (is.null(shp_var)) shp_var <- col_var
+  }
+  if (!is.null(shp_var) && is.numeric(site_df[[shp_var]])) {
+    site_df[[shp_var]] <- td_point_classes(site_df[[shp_var]])
+  }
+  grp_var <- ord_var(rlang::enquo(group), site_df, "group") %||% col_var
   if (!is.null(shp_var)) site_df[[shp_var]] <- as.factor(site_df[[shp_var]])
   if (!is.null(grp_var)) site_df$.group <- as.factor(site_df[[grp_var]])
   if ((ellipse != "none" || hull || spider) && is.null(grp_var)) {
@@ -236,15 +247,12 @@ autoplot.td_ordination <- function(object,
         paste0("Stress = ", format(round(object$stress, 3), nsmall = 3))
       }
     )
-  if (!is.null(col_var) && is.numeric(site_df[[col_var]])) {
-    # Continuous colour: viridis for the sites, the palette for group fills
-    p <- p + ggplot2::scale_colour_viridis_c(option = "D", end = 0.9)
-    if (!is.null(grp_var)) p <- p + scale_fill_tidydiversity(palette)
-    if (!is.null(theme)) p <- p + theme
-    td_white(p)
-  } else {
-    td_white(td_style(p, palette, theme))
+  if (!is.null(shp_var)) {
+    n_shp <- nlevels(site_df[[shp_var]])
+    shapes <- rep(c(16, 17, 15, 18, 1, 2, 0, 5), length.out = n_shp)
+    p <- p + ggplot2::scale_shape_manual(values = shapes)
   }
+  td_white(td_style(p, palette, theme))
 }
 
 # ---- Plot helpers -------------------------------------------------------------
@@ -341,4 +349,17 @@ ord_ellipses <- function(df, kind, level) {
     tibble::tibble(.x = e[, 1], .y = e[, 2], .group = d$.group[1])
   })
   vctrs::vec_rbind(!!!out)
+}
+
+# Numeric site variables as ordered classes for point symbols: one class per
+# value when there are few values, else up to 6 classes at pretty breaks.
+td_point_classes <- function(x, max_values = 8, n_classes = 6) {
+  u <- sort(unique(x[!is.na(x)]))
+  fmt <- function(v) format(v, big.mark = ",", trim = TRUE, scientific = FALSE)
+  if (length(u) <= max_values) {
+    return(factor(fmt(x), levels = fmt(u)))
+  }
+  br <- pretty(range(u), n = n_classes)
+  lab <- paste0(fmt(utils::head(br, -1)), " to ", fmt(br[-1]))
+  cut(x, br, labels = lab, include.lowest = TRUE)
 }

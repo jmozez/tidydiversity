@@ -276,9 +276,10 @@ restricting permutations within sites reveals the season effect.
 ```{r nmds, fig.height = 4, fig.alt = "NMDS ordination of sites coloured by elevation"}
 nmds <- vegan::metaMDS(bray, trace = FALSE)
 bind_cols(unit_data, as.data.frame(vegan::scores(nmds))) |>
+  mutate(elevation = factor(elevation)) |>
   ggplot(aes(NMDS1, NMDS2, colour = elevation, shape = season)) +
   geom_point(size = 3) +
-  scale_colour_viridis_c() +
+  scale_colour_tidydiversity() +
   coord_equal() +
   labs(colour = "Elevation (m)", shape = NULL) +
   theme_tidydiversity(legend_position = "right")
