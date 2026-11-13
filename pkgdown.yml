@@ -1,0 +1,39 @@
+pandoc: 3.8.3
+pkgdown: 2.2.1
+pkgdown_sha: ~
+articles:
+  alpha-rarefaction: alpha-rarefaction.html
+  beta-partitioning: beta-partitioning.html
+  articles/case-birds: case-birds.html
+  articles/case-insects: case-insects.html
+  articles/case-mammals: case-mammals.html
+  articles/case-plants: case-plants.html
+  articles/case-png-ants: case-png-ants.html
+  articles/case-png-butterflies: case-png-butterflies.html
+  articles/case-png-frogs: case-png-frogs.html
+  articles/composition-tests: composition-tests.html
+  articles/dimensions: dimensions.html
+  elevational-gradient: elevational-gradient.html
+  articles/filip-damen: filip-damen.html
+  articles/gallery: gallery.html
+  articles/guide-01-install: guide-01-install.html
+  articles/guide-02-hill-numbers: guide-02-hill-numbers.html
+  articles/guide-03-fair-comparisons: guide-03-fair-comparisons.html
+  articles/guide-04-beta: guide-04-beta.html
+  articles/guide-05-composition: guide-05-composition.html
+  articles/guide-06-dimensions: guide-06-dimensions.html
+  articles/mid-domain: mid-domain.html
+  articles/modelling: modelling.html
+  articles/ordination-gallery: ordination-gallery.html
+  articles/ordination: ordination.html
+  articles/publication: publication.html
+  articles/range-shifts: range-shifts.html
+  tidydiversity: tidydiversity.html
+  articles/tidymodels: tidymodels.html
+  articles/traits: traits.html
+  articles/tutorials: tutorials.html
+  articles/user-guide: user-guide.html
+last_built: 2026-11-13T17:51Z
+urls:
+  reference: https://tidydiversity.in4metrix.dev/reference
+  article: https://tidydiversity.in4metrix.dev/articles
