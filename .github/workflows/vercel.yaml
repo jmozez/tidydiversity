@@ -20,13 +20,13 @@ jobs:
       VERCEL_ORG_ID: team_sQKBoVytwZq7ergPfB5Er8ZR
       VERCEL_PROJECT_ID: prj_oh6i7sODWN8ZtDENmYsqeX8VAtgC
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           sparse-checkout: |
             vercel.json
             .vercelignore
           sparse-checkout-cone-mode: false
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: gh-pages
           path: docs
