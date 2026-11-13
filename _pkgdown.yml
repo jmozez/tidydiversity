@@ -212,6 +212,7 @@ reference:
   - title: Ordination
     contents:
       - ord_fit
+      - ord_style
       - ord_test
       - ord_select
       - ord_varpart
