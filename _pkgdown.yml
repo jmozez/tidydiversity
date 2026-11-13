@@ -211,10 +211,13 @@ reference:
       - beta_permanova
       - beta_welch
       - beta_indicator
-  - title: Ordination
+  - title: tidyvisor (advice and interpretation)
     contents:
+      - tidyvisor
       - ord_advise
       - ord_interpret
+  - title: Ordination
+    contents:
       - ord_fit
       - ord_style
       - ord_prc

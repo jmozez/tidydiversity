@@ -1,5 +1,7 @@
 # tidydiversity 0.3.0
 
+* New **tidyvisor**, the package's adviser: `tidyvisor()` advises on the
+  analysis when given data and interprets the results when given a fit.
 * New `ord_advise()` recommends an ordination and its test from the question
   and the data: unconstrained or constrained, linear or unimodal (from the
   DCA gradient length), with checks for zeros, presence-absence data, rare

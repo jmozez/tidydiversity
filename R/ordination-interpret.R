@@ -316,7 +316,7 @@ ord_interpret.td_varpart <- function(x, ...) {
 
 #' @export
 print.td_ord_interpretation <- function(x, ...) {
-  cli::cli_h1("Interpretation")
+  cli::cli_h1("tidyvisor: what the results show")
   for (s in names(x$sections)) {
     cli::cli_h2(s)
     for (line in x$sections[[s]]) cli::cli_bullets(c("*" = gsub("([{}])", "\\1\\1", line)))

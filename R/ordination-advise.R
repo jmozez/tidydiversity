@@ -329,7 +329,7 @@ ord_advise <- function(data,
 
 #' @export
 print.td_ord_advice <- function(x, ...) {
-  cli::cli_h1("Ordination advice")
+  cli::cli_h1("tidyvisor: which analysis?")
   cli::cli_text("Question: {.strong {x$question}}")
   cli::cli_h2("What the data show")
   for (i in seq_len(nrow(x$checks))) {

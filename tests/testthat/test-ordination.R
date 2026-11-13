@@ -291,3 +291,13 @@ test_that("ord_interpret() explains ordinations, PRC and variation partitioning"
   expect_match(ord_interpret(n, permutations = 99)$sections$Variation, "stress")
   expect_output(print(i), NA)
 })
+
+test_that("tidyvisor() advises on data and interprets results", {
+  skip_if_not_installed("vegan")
+  data("dune", package = "vegan", envir = environment())
+  d <- community_long(cbind(site = rownames(dune), dune), cols = dplyr::all_of(names(dune)))
+  expect_s3_class(tidyvisor(d, abundance = abundance), "td_ord_advice")
+  o <- ord_fit(d, abundance = abundance, method = "pca", transform = "hellinger")
+  expect_s3_class(tidyvisor(o), "td_ord_interpretation")
+  expect_error(tidyvisor(1:3), "community data")
+})
