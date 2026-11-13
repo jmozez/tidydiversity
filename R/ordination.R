@@ -470,8 +470,13 @@ glance.td_ordination <- function(x, ...) {
 #'   CCA), `statistic` (pseudo-F) and `p.value`.
 #' @export
 #' @examplesIf requireNamespace("vegan", quietly = TRUE)
-#' ord <- ord_fit(png_frogs, method = "cca", formula = ~elevation)
+#' data("dune", "dune.env", package = "vegan")
+#' d <- community_long(cbind(site = rownames(dune), dune.env, dune),
+#'   cols = dplyr::all_of(names(dune))
+#' )
+#' ord <- ord_fit(d, abundance = abundance, method = "cca", formula = ~ A1 + Management)
 #' ord_test(ord, permutations = 199)
+#' ord_test(ord, by = "margin", permutations = 199)
 ord_test <- function(x, by = c("model", "axis", "terms", "margin"),
                      permutations = 999) {
   if (!inherits(x, "td_ordination") || !x$constrained) {

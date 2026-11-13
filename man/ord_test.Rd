@@ -26,7 +26,12 @@ Tests the significance of a constrained ordination (\code{\link[=ord_fit]{ord_fi
 }
 \examples{
 \dontshow{if (requireNamespace("vegan", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-ord <- ord_fit(png_frogs, method = "cca", formula = ~elevation)
+data("dune", "dune.env", package = "vegan")
+d <- community_long(cbind(site = rownames(dune), dune.env, dune),
+  cols = dplyr::all_of(names(dune))
+)
+ord <- ord_fit(d, abundance = abundance, method = "cca", formula = ~ A1 + Management)
 ord_test(ord, permutations = 199)
+ord_test(ord, by = "margin", permutations = 199)
 \dontshow{\}) # examplesIf}
 }

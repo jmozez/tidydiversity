@@ -93,9 +93,13 @@ Change any argument; colours of site groups come from \code{palette} in
 and themes to the result.
 }
 \examples{
-o <- ord_fit(png_frogs, abundance = abundance, method = "pca", transform = "hellinger")
+data("dune", "dune.env", package = "vegan")
+d <- community_long(cbind(site = rownames(dune), dune.env, dune),
+  cols = dplyr::all_of(names(dune))
+)
+o <- ord_fit(d, abundance = abundance, method = "pca", transform = "hellinger")
 ggplot2::autoplot(o,
-  colour = elevation,
+  colour = Management,
   style = ord_style(site_size = 3.5, species_colour = "grey20", label_size = 3.2)
 )
 }

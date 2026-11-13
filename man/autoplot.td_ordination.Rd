@@ -179,16 +179,25 @@ can be changed further with \code{+}.
 \examples{
 \dontshow{if (rlang::is_installed(c("vegan", "ggplot2"))) withAutoprint(\{ # examplesIf}
 library(ggplot2)
-butterflies <- wanang_butterflies
-butterflies$year <- factor(paste("Year", butterflies$year))
+data("dune", "dune.env", package = "vegan")
+d <- community_long(cbind(site = rownames(dune), dune.env, dune),
+  cols = dplyr::all_of(names(dune))
+)
 
-# RDA triplot: days coloured by year, one-SD ellipses
-ord <- ord_fit(butterflies, method = "rda", formula = ~ year + month)
-autoplot(ord, colour = year, ellipse = "sd")
+# RDA triplot of the dune meadows: A1 horizon as an arrow, management
+# types as centroids with one-SD ellipses
+ord <- ord_fit(d,
+  abundance = abundance, method = "rda", transform = "hellinger",
+  formula = ~ A1 + Management
+)
+autoplot(ord, colour = Management, ellipse = "sd")
 
-# NMDS of frogs along Mt Wilhelm, elevation as colour
-nmds <- ord_fit(png_frogs, method = "nmds", formula = ~elevation)
-autoplot(nmds, colour = elevation, site_labels = TRUE, species = 10)
+# Which species respond to the A1 horizon? Van Dobben circles
+autoplot(ord, type = "vandobben", variable = "A1")
+
+# NMDS with the A1 horizon as contours and a Shepard inset
+nmds <- ord_fit(d, abundance = abundance, method = "nmds", formula = ~A1)
+autoplot(nmds, surface = A1, inset = "shepard")
 \dontshow{\}) # examplesIf}
 }
 \references{
