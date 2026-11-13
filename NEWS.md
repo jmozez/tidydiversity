@@ -13,7 +13,9 @@
   groups, the species at each end of the axes, NMDS stress, and how to read
   the diagram.
 * New article, "A gallery of ordination diagrams", shows every diagram type
-  on the classic vegan data sets (`dune`, `varespec`, `mite`, `pyrifos`).
+  on the classic vegan data sets (`dune`, `varespec`, `mite`, `pyrifos`);
+  the help examples of `autoplot()`, `ord_style()`, `ord_prc()` and
+  `ord_test()` use them too.
 
 * `autoplot()` of an ordination gains `type = "vandobben"` (CANOCO's t-value
   biplot with Van Dobben circles; species coloured by exact t-tests) and

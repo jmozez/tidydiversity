@@ -82,12 +82,20 @@ species weights on a scale beside them.
 }
 \examples{
 \dontshow{if (rlang::is_installed("vegan")) withAutoprint(\{ # examplesIf}
-p <- ord_prc(portal_rodents,
-  treatment = treatment, time = year,
-  abundance = abundance, permutations = 99
+# Chlorpyrifos in experimental ditches (van den Brink and ter Braak 1999):
+# 12 ditches, 11 sampling weeks, five doses; abundances already log-transformed
+data("pyrifos", package = "vegan")
+ditch <- gl(12, 1, length = 132)
+week <- gl(11, 12, labels = c(-4, -1, 0.1, 1, 2, 4, 8, 12, 15, 19, 24))
+dose <- factor(rep(c(0.1, 0, 0, 0.9, 0, 44, 6, 0.1, 44, 0.9, 0, 6), 11))
+pyr <- data.frame(site = paste(ditch, week, sep = "_"), dose, week, pyrifos)
+pyr <- community_long(pyr, cols = dplyr::all_of(names(pyrifos)))
+p <- ord_prc(pyr,
+  treatment = dose, time = week, abundance = abundance,
+  transform = "none", permutations = 99
 )
 p
-ggplot2::autoplot(p)
+ggplot2::autoplot(p, weights = 1)
 \dontshow{\}) # examplesIf}
 }
 \references{
