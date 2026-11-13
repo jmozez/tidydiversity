@@ -89,8 +89,8 @@ knitr::include_graphics("figure/range-hindcast.png")
 
 With the regional warming estimate (0.39 degrees C) the birds seemed to
 outpace the climate by half again. With the warming measured on the
-mountain itself (0.76 degrees C) their upper limits tracked it, and every
-interval includes 1. The models predict the community's mean shift well
+mountain itself (0.76 degrees C) their upper limits tracked it: all
+four intervals based on local warming include 1. The models predict the community's mean shift well
 but each species' shift only weakly.
 
 The code pattern, for your own resurvey:
