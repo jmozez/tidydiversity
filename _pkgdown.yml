@@ -214,6 +214,7 @@ reference:
   - title: Ordination
     contents:
       - ord_advise
+      - ord_interpret
       - ord_fit
       - ord_style
       - ord_prc

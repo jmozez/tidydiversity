@@ -264,3 +264,30 @@ test_that("ord_advise() follows the question and the gradient length", {
   expect_true(any(grepl("beta_permanova", g$advice$code)))
   expect_output(print(e), NA)
 })
+
+test_that("ord_interpret() explains ordinations, PRC and variation partitioning", {
+  skip_if_not_installed("vegan")
+  data("dune", package = "vegan", envir = environment())
+  data("dune.env", package = "vegan", envir = environment())
+  d <- community_long(cbind(site = rownames(dune), dune.env, dune),
+    cols = dplyr::all_of(names(dune))
+  )
+  o <- ord_fit(d,
+    abundance = abundance, method = "rda", transform = "hellinger",
+    formula = ~ A1 + Management
+  )
+  set.seed(1)
+  i <- ord_interpret(o, permutations = 99)
+  expect_s3_class(i, "td_ord_interpretation")
+  expect_true(all(
+    c("Variation", "Tests", "Species", "Reading the diagram") %in% names(i$sections)
+  ))
+  # the explained share matches vegan
+  share <- sprintf("%.1f%%", 100 * o$fit$CCA$tot.chi / o$fit$tot.chi)
+  expect_match(i$sections$Variation[1], share, fixed = TRUE)
+  expect_equal(ord_direction(1, 0), "the right")
+  expect_equal(ord_direction(-1, -1), "the lower left")
+  n <- ord_fit(d, abundance = abundance, method = "nmds", formula = ~A1)
+  expect_match(ord_interpret(n, permutations = 99)$sections$Variation, "stress")
+  expect_output(print(i), NA)
+})

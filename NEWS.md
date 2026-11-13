@@ -3,7 +3,13 @@
 * New `ord_advise()` recommends an ordination and its test from the question
   and the data: unconstrained or constrained, linear or unimodal (from the
   DCA gradient length), with checks for zeros, presence-absence data, rare
-  species, too many or collinear site variables, and the code to run.
+  species, too many or collinear site variables, the plots that suit the
+  question, and the code to run.
+* New `ord_interpret()` explains an ordination, principal response curves or
+  variation partitioning in plain sentences: variation explained (against the
+  broken stick), permutation tests, the direction of each site variable,
+  groups, the species at each end of the axes, NMDS stress, and how to read
+  the diagram.
 * New article, "A gallery of ordination diagrams", shows every diagram type
   on the classic vegan data sets (`dune`, `varespec`, `mite`, `pyrifos`).
 

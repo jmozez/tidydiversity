@@ -62,6 +62,19 @@ PERMANOVA; with a treatment and a time, principal response curves.
 | How do treatments depart from a control over time? | partial constrained | PRC | | | permutation within times |
 | How much do sets of variables explain, alone and together? | partial constrained | variation partitioning | | | adjusted R²; unique fractions tested |
 
+Once fitted, `ord_interpret()` explains the results in sentences that can be
+checked against the tables and the diagram: how much the axes hold, what
+the tests say, which way each variable runs, where the groups lie, which
+species define each end of the axes, and how to read the plot.
+
+```{r interpret}
+rda_dune <- ord_fit(dune_l,
+  abundance = abundance, method = "rda", transform = "hellinger",
+  formula = ~ A1 + Moisture + Management
+)
+ord_interpret(rda_dune, permutations = 199)
+```
+
 ## 1. Which geometry for which kind of variable
 
 Before the gallery, the rule every diagram follows (Bertin 1983; ter Braak

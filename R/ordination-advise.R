@@ -203,6 +203,11 @@ ord_advise <- function(data,
         "Plots", "Biplot with numeric variables as contours or symbol size, factors as centroids; scree or Shepard inset; stability ellipses",
         "Contours show non-linear change that an arrow hides; the inset shows how faithful the diagram is; ellipses show which sites are placed firmly.",
         "autoplot(ord, surface = <numeric>, colour = <factor>, inset = \"scree\")   # \"shepard\" for NMDS\nautoplot(ord, type = \"gradient\", path = <numeric>)\nautoplot(ord, type = \"stability\")"
+      ),
+      step(
+        "Interpret", "Plain-language explanation of the tables and the diagram",
+        "Variation explained, tests, directions of variables, groups, species at each end of the axes, and how to read the plot.",
+        "ord_interpret(ord)"
       )
     ),
     explain = vctrs::vec_rbind(
@@ -231,6 +236,11 @@ ord_advise <- function(data,
         "Plots", "Triplot; species response curves along the main variable; t-value biplot or Van Dobben circles",
         "The triplot shows sites, species and variables together; response curves show each species' optimum and tolerance with confidence bands; Van Dobben circles single out the species that respond significantly.",
         "autoplot(ord)\nautoplot(ord, type = \"response\", variable = \"<numeric>\")\nautoplot(ord, type = \"vandobben\", variable = \"<numeric>\")"
+      ),
+      step(
+        "Interpret", "Plain-language explanation of the tables and the diagram",
+        "Variation explained, tests, directions of variables, groups, species at each end of the axes, and how to read the plot.",
+        "ord_interpret(ord)"
       )
     ),
     groups = vctrs::vec_rbind(
@@ -258,6 +268,11 @@ ord_advise <- function(data,
         "Plots", "Sites filled by group with SD ellipses (or hulls, spiders) and group centroids",
         "Ellipses show both the location and the spread that PERMANOVA and the dispersion test compare.",
         "autoplot(ord, colour = <factor>, ellipse = \"sd\")   # or hull = TRUE, spider = TRUE"
+      ),
+      step(
+        "Interpret", "Plain-language explanation of the tables and the diagram",
+        "Variation explained, tests, directions of variables, groups, species at each end of the axes, and how to read the plot.",
+        "ord_interpret(ord)"
       )
     ),
     time = vctrs::vec_rbind(
@@ -277,6 +292,11 @@ ord_advise <- function(data,
         "Plots", "Principal response curves with the species weights beside them",
         "Each treatment's departure from the control over time, and which species drive it.",
         "autoplot(pr, weights = 0.5)"
+      ),
+      step(
+        "Interpret", "Plain-language explanation of the tables and the diagram",
+        "Variation explained, tests, directions of variables, groups, species at each end of the axes, and how to read the plot.",
+        "ord_interpret(pr)"
       )
     ),
     partition = vctrs::vec_rbind(
@@ -293,6 +313,11 @@ ord_advise <- function(data,
         "Plots", "Venn diagram of the fractions (bars for four sets)",
         "Areas labelled with adjusted R2 show unique and shared contributions at a glance.",
         "autoplot(vp)"
+      ),
+      step(
+        "Interpret", "Plain-language explanation of the tables and the diagram",
+        "Variation explained, tests, directions of variables, groups, species at each end of the axes, and how to read the plot.",
+        "ord_interpret(vp)"
       )
     )
   )
