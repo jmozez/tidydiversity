@@ -28,3 +28,4 @@
 ^vercel\.json$
 ^\.vercelignore$
 ^\.github$
+^\.zenodo\.json$
