@@ -10,6 +10,9 @@
   sites), and `size`, which scales the site symbols to a numeric variable
   (a CANOCO attribute plot). Continuous variables are lines (arrows or
   contours), factors are centroids, sites and species are points.
+* Ordination diagrams now have a key for every kind of element: sites,
+  species (arrows or crosses), continuous variables (arrows), factor
+  centroids and contours, each with its own symbol.
 * New `div_invasion()`: native and alien richness, the alien share of
   species and of individuals per site (levels of invasion).
 * New `div_homogenisation()`: biotic homogenisation between two surveys,

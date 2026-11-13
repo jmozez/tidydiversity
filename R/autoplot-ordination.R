@@ -119,6 +119,8 @@ autoplot.td_ordination <- function(object,
       )
     }
   }
+  # Keep the numeric values for surfaces and sizes before any classing
+  raw <- site_df
   # Points are classes, not a continuous gradient: numeric -> ordered classes
   if (!is.null(col_var) && is.numeric(site_df[[col_var]])) {
     site_df[[col_var]] <- td_point_classes(site_df[[col_var]])
@@ -182,6 +184,14 @@ autoplot.td_ordination <- function(object,
   }
 
   labs <- list()
+  # Element types drawn, for the key legend: name, glyph, colour, shape
+  el_env <- new.env(parent = emptyenv())
+  el_env$elems <- list()
+  add_elem <- function(name, glyph, colour, shape = NA) {
+    el_env$elems[[length(el_env$elems) + 1]] <- data.frame(
+      name = name, glyph = glyph, colour = colour, shape = shape
+    )
+  }
 
   # Species
   linear <- object$method %in% c("pca", "rda", "pcoa", "dbrda")
@@ -201,7 +211,9 @@ autoplot.td_ordination <- function(object,
         data = spp, colour = "#B2182B", linewidth = 0.35,
         arrow = ggplot2::arrow(length = ggplot2::unit(0.15, "cm"), type = "closed")
       )
+      add_elem("Species", "arrow", "#B2182B")
     } else {
+      add_elem("Species", "point", "#B2182B", 3)
       p <- p + ggplot2::geom_point(
         ggplot2::aes(.data$.x, .data$.y),
         data = spp, colour = "#B2182B", shape = 3, size = 1.8
@@ -213,12 +225,14 @@ autoplot.td_ordination <- function(object,
   # A continuous site variable as a fitted surface: contour lines
   srf_cap <- NULL
   if (!is.null(srf_var)) {
-    srf <- ord_surface(site_df$.x, site_df$.y, site_df[[srf_var]])
+    srf <- ord_surface(site_df$.x, site_df$.y, raw[[srf_var]])
     if (nrow(srf$lines)) {
       p <- p + ggplot2::geom_path(
         ggplot2::aes(.data$x, .data$y, group = .data$piece),
         data = srf$lines, colour = "#1B7837", linewidth = 0.45
-      ) + ggplot2::geom_label(
+      )
+      add_elem(paste(srf_var, "(contours)"), "line", "#1B7837")
+      p <- p + ggplot2::geom_label(
         ggplot2::aes(.data$x, .data$y, label = .data$level),
         data = srf$labels, colour = "#1B7837", size = 2.6, label.size = 0,
         label.padding = ggplot2::unit(0.08, "lines"), fill = "white"
@@ -235,8 +249,10 @@ autoplot.td_ordination <- function(object,
     aes_pt <- ggplot2::aes(.data$.x, .data$.y)
     if (!is.null(col_var)) aes_pt$colour <- rlang::quo(.data[[col_var]])
     if (!is.null(shp_var)) aes_pt$shape <- rlang::quo(.data[[shp_var]])
+    if (is.null(col_var) && is.null(shp_var)) add_elem("Sites", "point", "grey15", 16)
     if (!is.null(siz_var)) {
-      aes_pt$size <- rlang::quo(.data[[siz_var]])
+      site_df$.size <- raw[[siz_var]]
+      aes_pt$size <- rlang::quo(.data$.size)
       p <- p + ggplot2::geom_point(aes_pt, data = site_df, alpha = 0.9) +
         ggplot2::scale_size_area(name = siz_var, max_size = 7)
     } else {
@@ -262,6 +278,7 @@ autoplot.td_ordination <- function(object,
         data = vec, colour = "#0E2A47", linewidth = 0.6,
         arrow = ggplot2::arrow(length = ggplot2::unit(0.2, "cm"), type = "closed")
       )
+      add_elem("Continuous variables (gradients)", "arrow", "#0E2A47")
       labs <- ord_add_labels(labs, vec, "#0E2A47", "bold", 3.3)
     }
     cen <- object$centroids
@@ -273,6 +290,7 @@ autoplot.td_ordination <- function(object,
         ggplot2::aes(.data$.x, .data$.y),
         data = cen, shape = 17, size = 3, colour = "#0E2A47"
       )
+      add_elem("Factor levels (centroids)", "point", "#0E2A47", 17)
       labs <- ord_add_labels(labs, cen, "#0E2A47", "bold", 3)
     }
   }
@@ -299,9 +317,55 @@ autoplot.td_ordination <- function(object,
   if (!is.null(shp_var)) {
     n_shp <- nlevels(site_df[[shp_var]])
     shapes <- rep(c(16, 17, 15, 18, 1, 2, 0, 5), length.out = n_shp)
-    p <- p + ggplot2::scale_shape_manual(values = shapes)
+    p <- p + ggplot2::scale_shape_manual(name = shp_var, values = shapes)
   }
-  td_white(td_style(p, palette, theme))
+  p <- td_white(td_style(p, palette, theme))
+  ord_element_legend(p, el_env$elems, site_df)
+}
+
+# A legend keying every kind of element in the diagram (sites, species,
+# environmental arrows, centroids, contours), each with its own symbol:
+# lines for gradients, points for objects and factor levels. It uses the
+# linetype scale, so it never disturbs the colour and shape legends of the
+# sites.
+ord_element_legend <- function(p, elems, site_df) {
+  if (!length(elems)) {
+    return(p)
+  }
+  e <- vctrs::vec_rbind(!!!elems)
+  e <- e[!duplicated(e$name), , drop = FALSE]
+  e$name <- factor(e$name, levels = e$name)
+  proxy <- data.frame(name = e$name, x = site_df$.x[1], y = site_df$.y[1])
+  is_line <- e$glyph != "point"
+  key <- function(data, params, size) {
+    if (!is.na(data$shape)) {
+      return(ggplot2::draw_key_point(transform(data, linetype = 1, stroke = 0.6), params, size))
+    }
+    g <- if (identical(data$label_glyph, "arrow")) {
+      grid::arrow(length = grid::unit(0.12, "inches"), type = "closed")
+    }
+    grid::segmentsGrob(0.1, 0.5, 0.9, 0.5,
+      arrow = g,
+      gp = grid::gpar(col = data$colour, fill = data$colour, lwd = 1.6, lineend = "butt")
+    )
+  }
+  p +
+    ggplot2::geom_segment(
+      ggplot2::aes(.data$x, .data$y, xend = .data$x, yend = .data$y, linetype = .data$name),
+      data = proxy, alpha = 0, inherit.aes = FALSE, key_glyph = key
+    ) +
+    ggplot2::scale_linetype_manual(
+      name = NULL, values = stats::setNames(rep("solid", nrow(e)), e$name),
+      guide = ggplot2::guide_legend(
+        order = 99, ncol = 1,
+        override.aes = list(
+          alpha = 1, colour = e$colour, linewidth = ifelse(is_line, 0.7, 0.5),
+          shape = ifelse(is_line, NA, e$shape), size = ifelse(is_line, 0.7, 2.6),
+          label_glyph = e$glyph
+        )
+      )
+    ) +
+    ggplot2::theme(legend.position = "right", legend.box = "vertical")
 }
 
 # ---- Plot helpers -------------------------------------------------------------
