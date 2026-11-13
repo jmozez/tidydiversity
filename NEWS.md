@@ -1,3 +1,12 @@
+# tidydiversity (development version)
+
+* New `div_invasion()`: native and alien richness, the alien share of
+  species and of individuals per site (levels of invasion).
+* New `div_homogenisation()`: biotic homogenisation between two surveys,
+  the change in mean pairwise Jaccard or Sorensen similarity among the
+  same sites, with a site-bootstrap interval and the part due to alien
+  species. Similarities match `vegan::vegdist()`.
+
 # tidydiversity 0.3.0
 
 * New `range_edges()`: the lower and upper edges, midpoint, breadth and
