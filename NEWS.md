@@ -10,6 +10,13 @@
   expectation), `"shepard"` (NMDS, with stress and R squared) and
   `"tvalue"` (species that increase or decrease with a site variable,
   from exact t-tests). `ord_fit()` keeps the community matrix for these.
+* New `ord_prc()`: principal response curves (van den Brink and ter Braak
+  1999) of treatments against a control over time, with a permutation
+  test restricted within times, and the classic PRC diagram from
+  `autoplot()`.
+* `ord_varpart()` results now have an `autoplot()` method: a Venn-style
+  diagram of the adjusted R squared of each fraction (two or three sets),
+  or a bar chart (four sets).
 * `autoplot()` for ordinations no longer colours sites on a continuous
   colour bar. As in CANOCO, sites are drawn as categories: a numeric
   `colour` variable becomes ordered classes, each with its own colour and

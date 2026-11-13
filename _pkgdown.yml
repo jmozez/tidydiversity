@@ -213,6 +213,7 @@ reference:
     contents:
       - ord_fit
       - ord_style
+      - ord_prc
       - ord_test
       - ord_select
       - ord_varpart

@@ -190,3 +190,30 @@ test_that("response curves come from the GLM on the link scale", {
   nd <- data.frame(z = (cur$x - mean(x)) / stats::sd(x))
   expect_equal(cur$y, unname(stats::predict(g, nd, type = "response")), tolerance = 1e-6)
 })
+
+test_that("principal response curves match vegan and draw", {
+  skip_if_not_installed("vegan")
+  set.seed(1)
+  p <- ord_prc(portal_rodents,
+    treatment = treatment, time = year, abundance = abundance, permutations = 49
+  )
+  expect_s3_class(p, "td_prc")
+  expect_true(all(p$curves$coefficient[p$curves$treatment == "control"] == 0))
+  expect_equal(nrow(p$curves), 3 * 4)
+  ref <- summary(p$fit)$coefficients
+  got <- p$curves[p$curves$treatment == "removal", ]
+  expect_equal(unname(got$coefficient), unname(ref["removal", ]))
+  expect_s3_class(ggplot2::autoplot(p), "patchwork")
+})
+
+test_that("variation partitioning has a diagram", {
+  skip_if_not_installed("vegan")
+  a <- dplyr::mutate(png_ants, unit = paste(site, season, transect))
+  v <- suppressWarnings(ord_varpart(a,
+    site = unit, abundance = workers,
+    Elevation = ~elevation, Season = ~season, permutations = 49
+  ))
+  expect_s3_class(v, "td_varpart")
+  expect_equal(attr(v, "sets"), c("Elevation", "Season"))
+  expect_s3_class(ggplot2::autoplot(v), "ggplot")
+})
