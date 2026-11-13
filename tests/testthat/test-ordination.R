@@ -154,3 +154,39 @@ test_that("continuous site variables are drawn as lines or sizes, not colour bar
   fills <- unlist(lapply(b$data, function(d) if ("fill" %in% names(d)) unique(d$fill)))
   expect_gte(length(unique(fills)), 8)
 })
+
+test_that("every ordination plot type draws", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
+  d <- png_frogs
+  rich <- tapply(d$species[d$abundance > 0], d$site[d$abundance > 0], function(x) length(unique(x)))
+  d$richness <- as.numeric(rich[d$site])
+  o <- ord_fit(d, abundance = abundance, method = "pca", formula = ~ elevation + richness, seed = 1)
+  expect_s3_class(ggplot2::autoplot(o, type = "gradient", path = elevation), "patchwork")
+  r <- ggplot2::autoplot(o, type = "response", variable = "elevation", species = 4)
+  expect_s3_class(r, "ggplot")
+  b <- ggplot2::ggplot_build(r)
+  rib <- b$data[[1]]
+  expect_true(all(rib$ymin <= rib$ymax))
+  expect_true(all(rib$ymin >= 0))
+  expect_s3_class(ggplot2::autoplot(o, type = "response", axis = 1, layout = "overlay"), "ggplot")
+  expect_s3_class(ggplot2::autoplot(o, type = "scree"), "ggplot")
+  expect_s3_class(ggplot2::autoplot(o, type = "tvalue", variable = "elevation"), "ggplot")
+  n <- ord_fit(d, abundance = abundance, method = "nmds", seed = 1)
+  expect_s3_class(ggplot2::autoplot(n, type = "shepard"), "ggplot")
+  expect_error(ggplot2::autoplot(n, type = "scree"), "eigenvalues")
+  expect_error(ggplot2::autoplot(o, type = "shepard"), "NMDS")
+})
+
+test_that("response curves come from the GLM on the link scale", {
+  o <- ord_fit(png_frogs, abundance = abundance, method = "pca")
+  p <- ggplot2::autoplot(o, type = "response", axis = 1, species = 1)
+  cur <- ggplot2::ggplot_build(p)$data[[2]]
+  sp <- levels(p$data$species)[1]
+  x <- o$sites$axis1
+  y <- o$community[as.character(o$sites$site), sp]
+  z <- (x - mean(x)) / stats::sd(x)
+  g <- stats::glm(y ~ z + I(z^2), family = stats::poisson())
+  nd <- data.frame(z = (cur$x - mean(x)) / stats::sd(x))
+  expect_equal(cur$y, unname(stats::predict(g, nd, type = "response")), tolerance = 1e-6)
+})

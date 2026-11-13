@@ -25,6 +25,12 @@
   size = NULL,
   path = NULL,
   style = ord_style(),
+  type = c("biplot", "gradient", "response", "scree", "shepard", "tvalue"),
+  variable = NULL,
+  axis = 1,
+  model = c("glm", "gam"),
+  layout = c("facet", "overlay"),
+  n_axes = 10,
   ...
 )
 }
@@ -91,6 +97,33 @@ reader sees at once how composition changes along the gradient.}
 \item{style}{Look of every element, from \code{\link[=ord_style]{ord_style()}}: colours,
 symbols, sizes, line widths and fonts. The result is a ggplot, so any
 scale or theme can also be added afterwards.}
+
+\item{type}{The kind of diagram:
+\itemize{
+\item \code{"biplot"} (default): sites, species, fitted variables and groups;
+\item \code{"gradient"}: the ordination read as a gradient: sites (optionally
+joined in the order of \code{path}), fitted variables whose arrow width
+follows their r squared (non-significant ones thin, dashed and
+grey), the meaning of the first axis written at its ends, and the
+species sorted along the first axis in a panel below;
+\item \code{"response"}: species response curves: each species' abundance
+against an axis (\code{axis}) or a site variable (\code{variable}), fitted by
+a quadratic Poisson GLM (ter Braak's Gaussian response) or a GAM
+(\code{model}), with a confidence band from the model on the link scale,
+for the \code{species} best-fitted species, as panels or overlaid
+(\code{layout});
+\item \code{"scree"}: variation explained by each axis, with the broken-stick
+expectation (\code{n_axes} axes);
+\item \code{"shepard"}: Shepard diagram of an NMDS with stress and R squared;
+\item \code{"tvalue"}: which species increase or decrease with one site
+variable (\code{variable}), the question of CANOCO's t-value biplot:
+species arrows coloured by an exact t-test of their coefficient in a
+regression of each (transformed) species on all site variables.
+Van Dobben circles are not drawn, as they only approximate these
+tests under one scaling.
+}}
+
+\item{variable, axis, model, layout, n_axes}{Options of \code{type} (see above).}
 
 \item{...}{Not used.}
 }

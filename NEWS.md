@@ -1,5 +1,15 @@
 # tidydiversity 0.3.0
 
+* `autoplot()` for ordinations gains `type =` for the main diagram types
+  of multivariate analysis, all styled with `ord_style()`:
+  `"gradient"` (the axis meaning written at its ends, sites joined along a
+  gradient, arrow width following r squared, species sorted along the
+  first axis in a panel below), `"response"` (species response curves
+  from a quadratic Poisson GLM or a GAM, with confidence bands from the
+  model on the link scale), `"scree"` (with the broken-stick
+  expectation), `"shepard"` (NMDS, with stress and R squared) and
+  `"tvalue"` (species that increase or decrease with a site variable,
+  from exact t-tests). `ord_fit()` keeps the community matrix for these.
 * `autoplot()` for ordinations no longer colours sites on a continuous
   colour bar. As in CANOCO, sites are drawn as categories: a numeric
   `colour` variable becomes ordered classes, each with its own colour and

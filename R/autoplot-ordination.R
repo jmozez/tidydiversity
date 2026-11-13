@@ -36,6 +36,29 @@
 #'   class per value, and otherwise is cut into up to 6 classes at pretty
 #'   breaks; each class has its own colour and symbol. Discrete variables
 #'   also define the groups for ellipses, hulls and spiders.
+#' @param type The kind of diagram:
+#'   * `"biplot"` (default): sites, species, fitted variables and groups;
+#'   * `"gradient"`: the ordination read as a gradient: sites (optionally
+#'     joined in the order of `path`), fitted variables whose arrow width
+#'     follows their r squared (non-significant ones thin, dashed and
+#'     grey), the meaning of the first axis written at its ends, and the
+#'     species sorted along the first axis in a panel below;
+#'   * `"response"`: species response curves: each species' abundance
+#'     against an axis (`axis`) or a site variable (`variable`), fitted by
+#'     a quadratic Poisson GLM (ter Braak's Gaussian response) or a GAM
+#'     (`model`), with a confidence band from the model on the link scale,
+#'     for the `species` best-fitted species, as panels or overlaid
+#'     (`layout`);
+#'   * `"scree"`: variation explained by each axis, with the broken-stick
+#'     expectation (`n_axes` axes);
+#'   * `"shepard"`: Shepard diagram of an NMDS with stress and R squared;
+#'   * `"tvalue"`: which species increase or decrease with one site
+#'     variable (`variable`), the question of CANOCO's t-value biplot:
+#'     species arrows coloured by an exact t-test of their coefficient in a
+#'     regression of each (transformed) species on all site variables.
+#'     Van Dobben circles are not drawn, as they only approximate these
+#'     tests under one scaling.
+#' @param variable,axis,model,layout,n_axes Options of `type` (see above).
 #' @param style Look of every element, from [ord_style()]: colours,
 #'   symbols, sizes, line widths and fonts. The result is a ggplot, so any
 #'   scale or theme can also be added afterwards.
@@ -109,9 +132,28 @@ autoplot.td_ordination <- function(object,
                                    size = NULL,
                                    path = NULL,
                                    style = ord_style(),
+                                   type = c(
+                                     "biplot", "gradient", "response", "scree",
+                                     "shepard", "tvalue"
+                                   ),
+                                   variable = NULL,
+                                   axis = 1,
+                                   model = c("glm", "gam"),
+                                   layout = c("facet", "overlay"),
+                                   n_axes = 10,
                                    ...) {
   rlang::check_installed("ggplot2")
   st <- style
+  type <- rlang::arg_match(type)
+  if (type != "biplot") {
+    return(ord_plot_dispatch(object, type, st, list(
+      path = ord_var(rlang::enquo(path), object$sites, "path"),
+      species = if (missing(species)) NULL else species, axes = axes,
+      axis = axis, variable = variable, model = rlang::arg_match(model),
+      layout = rlang::arg_match(layout), level = level, palette = palette,
+      n_axes = n_axes
+    )))
+  }
   ellipse <- rlang::arg_match(ellipse)
   n_ax <- nrow(object$axes)
   if (length(axes) != 2 || any(!axes %in% seq_len(n_ax))) {
