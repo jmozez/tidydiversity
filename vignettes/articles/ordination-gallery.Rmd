@@ -267,7 +267,7 @@ Jongman, R. H. G., ter Braak, C. J. F. and van Tongeren, O. F. R. (1995).
 *Data Analysis in Community and Landscape Ecology*. Cambridge University
 Press.
 
-Legendre, P. and Legendre, L. (2012). *Numerical Ecology*, 3rd ed.
+Legendre, P. and Legendre, L. (2012). *Numerical Ecology*, third edition.
 Elsevier.
 
 ter Braak, C. J. F. and Šmilauer, P. (2012). *Canoco Reference Manual and

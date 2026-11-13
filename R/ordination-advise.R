@@ -53,7 +53,7 @@
 #' Legendre, P. and Gallagher, E. D. (2001). Ecologically meaningful
 #' transformations for ordination of species data. Oecologia, 129, 271-280.
 #'
-#' Legendre, P. and Legendre, L. (2012). Numerical Ecology, 3rd ed.
+#' Legendre, P. and Legendre, L. (2012). Numerical Ecology, third edition.
 #' Elsevier.
 #' @export
 #' @examplesIf rlang::is_installed("vegan")
