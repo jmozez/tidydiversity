@@ -1,4 +1,4 @@
-# tidydiversity (development version)
+# tidydiversity 0.3.0
 
 * New `range_edges()`: the lower and upper edges, midpoint, breadth and
   abundance-weighted optimum of each species along a gradient, with flags
