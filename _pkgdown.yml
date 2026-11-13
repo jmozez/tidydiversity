@@ -198,6 +198,8 @@ reference:
       - beta_decay_boot
       - beta_mantel
       - beta_turnover_counts
+      - range_edges
+      - range_shift_resurvey
       - beta_dist
       - beta_permanova
       - beta_welch

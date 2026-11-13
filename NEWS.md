@@ -1,3 +1,12 @@
+# tidydiversity (development version)
+
+* New `range_edges()`: the lower and upper edges, midpoint, breadth and
+  abundance-weighted optimum of each species along a gradient, with flags
+  for edges truncated at the ends of the transect.
+* New `range_shift_resurvey()` and `range_shift_test()`: shifts of edges,
+  midpoints and optima between a historical survey and a resurvey, with
+  bootstrap intervals and an exact sign test across species.
+
 # tidydiversity 0.2.0
 
 ## Bug fixes
