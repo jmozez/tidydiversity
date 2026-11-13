@@ -49,6 +49,11 @@
 #'   spiders, if different from `colour`.
 #' @param sites Draw the sites.
 #' @param site_labels Label the sites.
+#' @param species_arrows Draw species as arrows (a PCA/RDA biplot, as
+#'   `vegan::biplot.rda()`), only for linear methods. By default species
+#'   are taxa and are drawn as points (crosses) with italic labels, as in
+#'   `vegan::plot.rda()`; arrows are kept for continuous explanatory
+#'   variables.
 #' @param species Number of species to draw and label, those best
 #'   represented in the plotted plane (longest scores). Use `Inf` for all
 #'   and `0` for none.
@@ -86,6 +91,7 @@ autoplot.td_ordination <- function(object,
                                    sites = TRUE,
                                    site_labels = FALSE,
                                    species = 10,
+                                   species_arrows = FALSE,
                                    arrows = TRUE,
                                    ellipse = c("none", "sd", "ci", "se"),
                                    level = 0.95,
@@ -194,7 +200,7 @@ autoplot.td_ordination <- function(object,
   }
 
   # Species
-  linear <- object$method %in% c("pca", "rda", "pcoa", "dbrda")
+  linear <- isTRUE(species_arrows) && object$method %in% c("pca", "rda", "pcoa", "dbrda")
   spp <- object$species
   if (species > 0 && nrow(spp)) {
     spp$.x <- spp[[ax[1]]]
@@ -278,7 +284,7 @@ autoplot.td_ordination <- function(object,
         data = vec, colour = "#0E2A47", linewidth = 0.6,
         arrow = ggplot2::arrow(length = ggplot2::unit(0.2, "cm"), type = "closed")
       )
-      add_elem("Continuous variables (gradients)", "arrow", "#0E2A47")
+      add_elem("Environmental variables (continuous)", "arrow", "#0E2A47")
       labs <- ord_add_labels(labs, vec, "#0E2A47", "bold", 3.3)
     }
     cen <- object$centroids

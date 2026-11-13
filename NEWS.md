@@ -10,6 +10,10 @@
   sites), and `size`, which scales the site symbols to a numeric variable
   (a CANOCO attribute plot). Continuous variables are lines (arrows or
   contours), factors are centroids, sites and species are points.
+* Ordination diagrams draw species as points (crosses with italic labels)
+  in every method, as `vegan::plot.rda()` does; `species_arrows = TRUE`
+  gives a PCA/RDA biplot with species arrows. Arrows are otherwise kept
+  for continuous environmental variables.
 * Ordination diagrams now have a key for every kind of element: sites,
   species (arrows or crosses), continuous variables (arrows), factor
   centroids and contours, each with its own symbol.
