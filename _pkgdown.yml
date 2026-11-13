@@ -200,6 +200,7 @@ reference:
       - beta_turnover_counts
       - range_edges
       - range_shift_resurvey
+      - range_shift_validate
       - beta_dist
       - beta_permanova
       - beta_welch

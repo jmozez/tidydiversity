@@ -6,6 +6,10 @@
 * New `range_shift_resurvey()` and `range_shift_test()`: shifts of edges,
   midpoints and optima between a historical survey and a resurvey, with
   bootstrap intervals and an exact sign test across species.
+* New `range_shift_validate()` and `range_shift_expected()`: hindcast
+  validation of projected range shifts against resurveys (bias, error,
+  correlation, calibration slope, direction and the share of the expected
+  shift that species realised, with a bootstrap interval).
 
 # tidydiversity 0.2.0
 
