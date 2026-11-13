@@ -277,13 +277,16 @@ ord_varpart <- function(data,
     rd <- vegan::rda(p$y, mats[[i]], others)
     pvals[i] <- vegan::anova.cca(rd, permutations = permutations)$`Pr(>F)`[1]
   }
-  tibble::tibble(
+  out <- tibble::tibble(
     fraction = rownames(ind),
     label = labs,
     adj_r2 = ind$Adj.R.square,
     testable = ind$Testable,
     p.value = pvals
   )
+  out <- td_new(out, "td_varpart")
+  attr(out, "sets") <- nm
+  out
 }
 
 varpart_labels <- function(nm, n) {

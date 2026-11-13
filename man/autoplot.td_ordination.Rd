@@ -13,6 +13,7 @@
   sites = TRUE,
   site_labels = FALSE,
   species = 10,
+  species_arrows = FALSE,
   arrows = TRUE,
   ellipse = c("none", "sd", "ci", "se"),
   level = 0.95,
@@ -20,6 +21,19 @@
   spider = FALSE,
   palette = "okabe_ito",
   theme = theme_tidydiversity(grid = "none"),
+  surface = NULL,
+  size = NULL,
+  path = NULL,
+  style = ord_style(),
+  type = c("biplot", "gradient", "response", "scree", "shepard", "tvalue", "vandobben",
+    "stability"),
+  variable = NULL,
+  axis = 1,
+  model = c("glm", "gam"),
+  layout = c("facet", "overlay"),
+  n_axes = 10,
+  nboot = 199,
+  inset = c("none", "scree", "shepard"),
   ...
 )
 }
@@ -29,8 +43,12 @@
 \item{axes}{The two axes to plot.}
 
 \item{colour, shape}{Site variables (unquoted column names) to map to
-point colour and shape, such as \code{colour = elevation}. Discrete
-variables also define the groups for ellipses, hulls and spiders.}
+point colour and shape, such as \code{colour = elevation}. Sites are points,
+so they are drawn as categories (as in CANOCO), never on a continuous
+colour bar: a numeric variable with up to 8 distinct values gets one
+class per value, and otherwise is cut into up to 6 classes at pretty
+breaks; each class has its own colour and symbol. Discrete variables
+also define the groups for ellipses, hulls and spiders.}
 
 \item{group}{A site variable defining groups for ellipses, hulls and
 spiders, if different from \code{colour}.}
@@ -42,6 +60,12 @@ spiders, if different from \code{colour}.}
 \item{species}{Number of species to draw and label, those best
 represented in the plotted plane (longest scores). Use \code{Inf} for all
 and \code{0} for none.}
+
+\item{species_arrows}{Draw species as arrows (a PCA/RDA biplot, as
+\code{vegan::biplot.rda()}), only for linear methods. By default species
+are taxa and are drawn as points (crosses) with italic labels, as in
+\code{vegan::plot.rda()}; arrows are kept for continuous explanatory
+variables.}
 
 \item{arrows}{Draw environmental arrows and factor centroids.}
 
@@ -57,6 +81,64 @@ and \code{0} for none.}
 variables use the viridis scale.}
 
 \item{theme}{A ggplot2 theme, by default \code{\link[=theme_tidydiversity]{theme_tidydiversity()}}.}
+
+\item{surface}{A numeric site variable to draw as a fitted surface:
+contour lines from a thin-plate GAM of the variable on the two axes
+(as in \code{vegan::ordisurf()}), or a linear trend surface (a plane, as
+\code{vegan::envfit()} assumes) with fewer than 15 sites, where a smooth
+surface would overfit. A continuous variable is a gradient, so it is drawn
+with lines (contours, or the arrows of the fitted \code{formula}), not by
+colouring the points.}
+
+\item{size}{A numeric site variable shown by symbol size (a bubble or
+attribute plot, as in CANOCO).}
+
+\item{path}{A numeric site variable, such as elevation or time: joins
+the sites in its order with a thin line and small arrowheads, so the
+reader sees at once how composition changes along the gradient.}
+
+\item{style}{Look of every element, from \code{\link[=ord_style]{ord_style()}}: colours,
+symbols, sizes, line widths and fonts. The result is a ggplot, so any
+scale or theme can also be added afterwards.}
+
+\item{type}{The kind of diagram:
+\itemize{
+\item \code{"biplot"} (default): sites, species, fitted variables and groups;
+\item \code{"gradient"}: the ordination read as a gradient: sites (optionally
+joined in the order of \code{path}), fitted variables whose arrow width
+follows their r squared (non-significant ones thin, dashed and
+grey), the meaning of the first axis written at its ends, and the
+species sorted along the first axis in a panel below;
+\item \code{"response"}: species response curves: each species' abundance
+against an axis (\code{axis}) or a site variable (\code{variable}), fitted by
+a quadratic Poisson GLM (ter Braak's Gaussian response) or a GAM
+(\code{model}), with a confidence band from the model on the link scale,
+for the \code{species} best-fitted species, as panels or overlaid
+(\code{layout});
+\item \code{"scree"}: variation explained by each axis, with the broken-stick
+expectation (\code{n_axes} axes);
+\item \code{"shepard"}: Shepard diagram of an NMDS with stress and R squared;
+\item \code{"tvalue"}: which species increase or decrease with one site
+variable (\code{variable}), the question of CANOCO's t-value biplot:
+species arrows coloured by an exact t-test of their coefficient in a
+regression of each (transformed) species on all site variables.
+Van Dobben circles are not drawn, as they only approximate these
+tests under one scaling.
+\item \code{"vandobben"}: CANOCO's t-value biplot with Van Dobben circles for
+one numeric site variable (\code{variable}): species and variables placed
+by a rank-2 approximation of the matrix of t-values of regression
+coefficients; the dashed circles mark, approximately, species with a
+significant positive (red) or negative (blue) coefficient, and the
+colours give the exact t-tests;
+\item \code{"stability"}: how robust each site's position is: 95\% ellipses of
+\code{nboot} bootstrap ordinations (species resampled), rotated onto the
+original by Procrustes analysis (unconstrained methods).
+}}
+
+\item{variable, axis, model, layout, n_axes, nboot}{Options of \code{type} (see above).}
+
+\item{inset}{For the biplot, a small diagnostic panel in a corner:
+\code{"scree"} (variance per axis) or \code{"shepard"} (NMDS fit).}
 
 \item{...}{Not used.}
 }

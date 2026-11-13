@@ -131,3 +131,173 @@ test_that("groups too small for ellipses or hulls are skipped", {
   )
   expect_no_warning(ggplot2::ggplotGrob(p))
 })
+
+test_that("continuous site variables are drawn as lines or sizes, not colour bars", {
+  skip_if_not_installed("ggplot2")
+  o <- ord_fit(png_frogs, abundance = abundance, method = "pca", transform = "hellinger")
+  # A linear trend surface of an exact plane is recovered exactly
+  x <- o$sites$axis1
+  y <- o$sites$axis2
+  srf <- suppressWarnings(ord_surface(x, y, 2 * x + 3 * y))
+  expect_equal(srf$model, "linear trend surface")
+  expect_equal(srf$dev_expl, 1)
+  expect_gt(nrow(srf$lines), 0)
+  p <- ggplot2::autoplot(o, surface = elevation, size = elevation, species = 0)
+  expect_s3_class(p, "ggplot")
+  expect_match(p$labels$caption, "linear trend surface")
+  scales <- vapply(p$scales$scales, function(s) class(s)[1], character(1))
+  expect_false(any(grepl("ScaleContinuous", scales) & grepl("colour", scales)))
+  expect_error(ggplot2::autoplot(o, surface = site), "numeric")
+  # Numeric colour becomes classes (one per elevation)
+  q <- ggplot2::autoplot(o, colour = elevation, species = 0)
+  b <- ggplot2::ggplot_build(q)
+  fills <- unlist(lapply(b$data, function(d) if ("fill" %in% names(d)) unique(d$fill)))
+  expect_gte(length(unique(fills)), 8)
+})
+
+test_that("every ordination plot type draws", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
+  d <- png_frogs
+  rich <- tapply(d$species[d$abundance > 0], d$site[d$abundance > 0], function(x) length(unique(x)))
+  d$richness <- as.numeric(rich[d$site])
+  o <- ord_fit(d, abundance = abundance, method = "pca", formula = ~ elevation + richness, seed = 1)
+  expect_s3_class(ggplot2::autoplot(o, type = "gradient", path = elevation), "patchwork")
+  r <- ggplot2::autoplot(o, type = "response", variable = "elevation", species = 4)
+  expect_s3_class(r, "ggplot")
+  b <- ggplot2::ggplot_build(r)
+  rib <- b$data[[1]]
+  expect_true(all(rib$ymin <= rib$ymax))
+  expect_true(all(rib$ymin >= 0))
+  expect_s3_class(ggplot2::autoplot(o, type = "response", axis = 1, layout = "overlay"), "ggplot")
+  expect_s3_class(ggplot2::autoplot(o, type = "scree"), "ggplot")
+  expect_s3_class(ggplot2::autoplot(o, type = "tvalue", variable = "elevation"), "ggplot")
+  n <- ord_fit(d, abundance = abundance, method = "nmds", seed = 1)
+  expect_s3_class(ggplot2::autoplot(n, type = "shepard"), "ggplot")
+  expect_error(ggplot2::autoplot(n, type = "scree"), "eigenvalues")
+  expect_error(ggplot2::autoplot(o, type = "shepard"), "NMDS")
+})
+
+test_that("response curves come from the GLM on the link scale", {
+  o <- ord_fit(png_frogs, abundance = abundance, method = "pca")
+  p <- ggplot2::autoplot(o, type = "response", axis = 1, species = 1)
+  cur <- ggplot2::ggplot_build(p)$data[[2]]
+  sp <- levels(p$data$species)[1]
+  x <- o$sites$axis1
+  y <- o$community[as.character(o$sites$site), sp]
+  z <- (x - mean(x)) / stats::sd(x)
+  g <- stats::glm(y ~ z + I(z^2), family = stats::poisson())
+  nd <- data.frame(z = (cur$x - mean(x)) / stats::sd(x))
+  expect_equal(cur$y, unname(stats::predict(g, nd, type = "response")), tolerance = 1e-6)
+})
+
+test_that("principal response curves match vegan and draw", {
+  skip_if_not_installed("vegan")
+  set.seed(1)
+  p <- ord_prc(portal_rodents,
+    treatment = treatment, time = year, abundance = abundance, permutations = 49
+  )
+  expect_s3_class(p, "td_prc")
+  expect_true(all(p$curves$coefficient[p$curves$treatment == "control"] == 0))
+  expect_equal(nrow(p$curves), 3 * 4)
+  ref <- summary(p$fit)$coefficients
+  got <- p$curves[p$curves$treatment == "removal", ]
+  expect_equal(unname(got$coefficient), unname(ref["removal", ]))
+  expect_s3_class(ggplot2::autoplot(p), "patchwork")
+})
+
+test_that("variation partitioning has a diagram", {
+  skip_if_not_installed("vegan")
+  a <- dplyr::mutate(png_ants, unit = paste(site, season, transect))
+  v <- suppressWarnings(ord_varpart(a,
+    site = unit, abundance = workers,
+    Elevation = ~elevation, Season = ~season, permutations = 49
+  ))
+  expect_s3_class(v, "td_varpart")
+  expect_equal(attr(v, "sets"), c("Elevation", "Season"))
+  expect_s3_class(ggplot2::autoplot(v), "ggplot")
+})
+
+test_that("Van Dobben, stability and inset diagrams build on the dune data", {
+  skip_if_not_installed("vegan")
+  skip_if_not_installed("patchwork")
+  data("dune", package = "vegan", envir = environment())
+  data("dune.env", package = "vegan", envir = environment())
+  d <- community_long(cbind(site = rownames(dune), dune.env, dune),
+    cols = dplyr::all_of(names(dune))
+  )
+  o <- ord_fit(d, abundance = abundance, method = "rda", formula = ~ A1 + Moisture + Management)
+  p <- ggplot2::autoplot(o, type = "vandobben", variable = "A1")
+  expect_s3_class(p, "ggplot")
+  b <- ggplot2::ggplot_build(p)
+  expect_true(any(grepl("Comapalu", unlist(lapply(b$data, function(x) x$label)))))
+  expect_error(ggplot2::autoplot(o, type = "vandobben", variable = "nope"), "variable")
+  u <- ord_fit(d, abundance = abundance, method = "pca")
+  set.seed(1)
+  s <- ggplot2::autoplot(u, type = "stability", nboot = 19)
+  expect_s3_class(s, "ggplot")
+  expect_error(ggplot2::autoplot(o, type = "stability", nboot = 5), "unconstrained")
+  n <- ord_fit(d, abundance = abundance, method = "nmds")
+  expect_s3_class(ggplot2::autoplot(n, inset = "shepard"), "patchwork")
+})
+
+test_that("ord_advise() follows the question and the gradient length", {
+  skip_if_not_installed("vegan")
+  data("dune", package = "vegan", envir = environment())
+  data("dune.env", package = "vegan", envir = environment())
+  d <- community_long(cbind(site = rownames(dune), dune.env, dune),
+    cols = dplyr::all_of(names(dune))
+  )
+  a <- ord_advise(d, abundance = abundance)
+  expect_s3_class(a, "td_ord_advice")
+  expect_identical(a$question, "explore")
+  expect_match(a$advice$recommendation[1], "Unconstrained")
+  # gradient length equals vegan's DCA axis 1 on log(x + 1)
+  y <- as.matrix(dune)
+  ref <- diff(range(vegan::scores(vegan::decorana(log1p(y)), display = "sites", choices = 1)))
+  expect_equal(a$gradient_length, unname(ref), tolerance = 1e-6)
+  e <- ord_advise(d, abundance = abundance, formula = ~ A1 + Management)
+  expect_identical(e$question, "explain")
+  expect_match(e$advice$recommendation[1], "Constrained")
+  g <- ord_advise(d, abundance = abundance, formula = ~Management)
+  expect_identical(g$question, "groups")
+  expect_true(any(grepl("beta_permanova", g$advice$code)))
+  expect_output(print(e), NA)
+})
+
+test_that("ord_interpret() explains ordinations, PRC and variation partitioning", {
+  skip_if_not_installed("vegan")
+  data("dune", package = "vegan", envir = environment())
+  data("dune.env", package = "vegan", envir = environment())
+  d <- community_long(cbind(site = rownames(dune), dune.env, dune),
+    cols = dplyr::all_of(names(dune))
+  )
+  o <- ord_fit(d,
+    abundance = abundance, method = "rda", transform = "hellinger",
+    formula = ~ A1 + Management
+  )
+  set.seed(1)
+  i <- ord_interpret(o, permutations = 99)
+  expect_s3_class(i, "td_ord_interpretation")
+  expect_true(all(
+    c("Variation", "Tests", "Species", "Reading the diagram") %in% names(i$sections)
+  ))
+  # the explained share matches vegan
+  share <- sprintf("%.1f%%", 100 * o$fit$CCA$tot.chi / o$fit$tot.chi)
+  expect_match(i$sections$Variation[1], share, fixed = TRUE)
+  expect_equal(ord_direction(1, 0), "the right")
+  expect_equal(ord_direction(-1, -1), "the lower left")
+  n <- ord_fit(d, abundance = abundance, method = "nmds", formula = ~A1)
+  expect_match(ord_interpret(n, permutations = 99)$sections$Variation, "stress")
+  expect_output(print(i), NA)
+})
+
+test_that("tidyvisor() advises on data and interprets results", {
+  skip_if_not_installed("vegan")
+  data("dune", package = "vegan", envir = environment())
+  d <- community_long(cbind(site = rownames(dune), dune), cols = dplyr::all_of(names(dune)))
+  expect_s3_class(tidyvisor(d, abundance = abundance), "td_ord_advice")
+  o <- ord_fit(d, abundance = abundance, method = "pca", transform = "hellinger")
+  expect_s3_class(tidyvisor(o), "td_ord_interpretation")
+  expect_error(tidyvisor(1:3), "community data")
+})

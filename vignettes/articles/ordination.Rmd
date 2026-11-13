@@ -173,6 +173,45 @@ turnover, which is why a unimodal method (CCA) was chosen.
 autoplot(cca, colour = elevation, site_labels = TRUE, species = 12)
 ```
 
+## Which geometry for which kind of variable
+
+An ordination diagram follows the same rules as any map or chart: the
+geometry and the visual variable depend on the type of data (Bertin
+1967; ter Braak and Smilauer 2012; Oksanen et al.):
+
+| What | Data type | Drawn as | In `autoplot()` |
+|---|---|---|---|
+| Sites, species | objects | points (or labels) | always |
+| Groups of sites (habitat, season, elevation band) | factor | symbols and colours per class; centroids, ellipses, hulls, spiders | `colour`, `shape`, `group`, `ellipse`, `hull`, `spider` |
+| Explanatory variable, linear | continuous | arrow: direction of steepest increase, length proportional to the correlation (`vegan::envfit()`) | `formula` in `ord_fit()` |
+| Explanatory variable, non-linear | continuous | contour lines of a fitted surface (`vegan::ordisurf()`) | `surface` |
+| A quantity at each site | continuous | symbol size (attribute plot, CANOCO) | `size` |
+
+A continuous variable is a gradient, so it is drawn with lines (an arrow
+or contours) or by symbol size, never by colouring the points on a
+continuous colour bar. The same variable can be either kind, depending on
+the question. Elevation, for example, is continuous when you ask how
+composition changes along the gradient, and categorical when the sites
+are a few elevation bands or when elevation simply identifies each site.
+`autoplot()` treats a numeric `colour` or `shape` as classes (one per
+value up to eight, otherwise up to six classes), so give it a factor when
+you mean categories, and use `formula`, `surface` or `size` when you mean
+a gradient.
+
+```{r geometry, fig.height = 4.5, fig.alt = "Two PCA diagrams of frogs on Mt Wilhelm: elevation as classes, and as a fitted vector with contours"}
+frog_pca <- ord_fit(png_frogs,
+  abundance = abundance, method = "pca",
+  transform = "hellinger", formula = ~elevation
+)
+# Elevation as categories: one symbol and colour per site elevation
+p1 <- autoplot(frog_pca, colour = elevation, species = 0, arrows = FALSE) +
+  ggplot2::labs(title = "Elevation as categories")
+# Elevation as a gradient: fitted arrow and contours of a trend surface
+p2 <- autoplot(frog_pca, surface = elevation, species = 0) +
+  ggplot2::labs(title = "Elevation as a gradient")
+plot_panel(p1, p2)
+```
+
 ## Customising the plot
 
 Every option is an argument, and the result is an ordinary ggplot:
@@ -214,6 +253,10 @@ Report the method and transformation, the explained fraction, the test
 and number of permutations, and give the table of terms as a supplement.
 
 ## References
+
+Bertin, J. (1967). *Semiologie graphique*. Gauthier-Villars, Paris.
+English translation (1983): *Semiology of Graphics*. University of
+Wisconsin Press.
 
 Legendre, P. and Gallagher, E. D. (2001). Ecologically meaningful
 transformations for ordination of species data. *Oecologia*, 129, 271-280.

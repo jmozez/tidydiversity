@@ -131,6 +131,7 @@ ord_fit <- function(data,
     data, enquo(site), enquo(species), enquo(abundance), rlang::quo(NULL)
   )
   y <- ord_matrix(prep$data)
+  y_raw <- y
   site_col <- prep$site
   env <- ord_env(data, env, site_col, rownames(y), formula)
   y <- ord_transform(y, transform)
@@ -182,7 +183,8 @@ ord_fit <- function(data,
       transform = transform,
       distance = if (method %in% c("pcoa", "nmds", "dbrda")) distance else NA,
       stress = if (method == "nmds") fit$stress else NA_real_,
-      envfit = envfit, site_col = site_col, fit = fit
+      envfit = envfit, site_col = site_col, fit = fit,
+      community = y_raw, env = env, formula = formula
     ),
     class = "td_ordination"
   )

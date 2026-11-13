@@ -1,5 +1,65 @@
 # tidydiversity 0.3.0
 
+* New **tidyvisor**, the package's adviser: `tidyvisor()` advises on the
+  analysis when given data and interprets the results when given a fit.
+* New `ord_advise()` recommends an ordination and its test from the question
+  and the data: unconstrained or constrained, linear or unimodal (from the
+  DCA gradient length), with checks for zeros, presence-absence data, rare
+  species, too many or collinear site variables, the plots that suit the
+  question, and the code to run.
+* New `ord_interpret()` explains an ordination, principal response curves or
+  variation partitioning in plain sentences: variation explained (against the
+  broken stick), permutation tests, the direction of each site variable,
+  groups, the species at each end of the axes, NMDS stress, and how to read
+  the diagram.
+* New article, "A gallery of ordination diagrams", shows every diagram type
+  on the classic vegan data sets (`dune`, `varespec`, `mite`, `pyrifos`).
+
+* `autoplot()` of an ordination gains `type = "vandobben"` (CANOCO's t-value
+  biplot with Van Dobben circles; species coloured by exact t-tests) and
+  `type = "stability"` (95% ellipses of bootstrap ordinations, rotated onto the
+  original by Procrustes analysis), and an `inset` option that adds a scree or
+  Shepard diagram in a corner of the biplot.
+
+* `autoplot()` for ordinations gains `type =` for the main diagram types
+  of multivariate analysis, all styled with `ord_style()`:
+  `"gradient"` (the axis meaning written at its ends, sites joined along a
+  gradient, arrow width following r squared, species sorted along the
+  first axis in a panel below), `"response"` (species response curves
+  from a quadratic Poisson GLM or a GAM, with confidence bands from the
+  model on the link scale), `"scree"` (with the broken-stick
+  expectation), `"shepard"` (NMDS, with stress and R squared) and
+  `"tvalue"` (species that increase or decrease with a site variable,
+  from exact t-tests). `ord_fit()` keeps the community matrix for these.
+* New `ord_prc()`: principal response curves (van den Brink and ter Braak
+  1999) of treatments against a control over time, with a permutation
+  test restricted within times, and the classic PRC diagram from
+  `autoplot()`.
+* `ord_varpart()` results now have an `autoplot()` method: a Venn-style
+  diagram of the adjusted R squared of each fraction (two or three sets),
+  or a bar chart (four sets).
+* `autoplot()` for ordinations no longer colours sites on a continuous
+  colour bar. As in CANOCO, sites are drawn as categories: a numeric
+  `colour` variable becomes ordered classes, each with its own colour and
+  symbol.
+* `autoplot()` for ordinations gains `surface`, which draws a continuous
+  site variable as fitted contour lines (a thin-plate GAM as in
+  `vegan::ordisurf()`, or a linear trend surface with fewer than 15
+  sites), and `size`, which scales the site symbols to a numeric variable
+  (a CANOCO attribute plot). Continuous variables are lines (arrows or
+  contours), factors are centroids, sites and species are points.
+* Ordination diagrams draw species as points (crosses with italic labels)
+  in every method, as `vegan::plot.rda()` does; `species_arrows = TRUE`
+  gives a PCA/RDA biplot with species arrows. Arrows are otherwise kept
+  for continuous environmental variables.
+* New `ord_style()` and `autoplot(style = )`: every colour, symbol, size,
+  line width and font of an ordination diagram can be set. The default
+  look follows CANOCO 5, tuned for print: filled site symbols with a thin
+  outline, hairlines through the origin, crosses for species, heavier
+  arrows for environmental variables.
+* Ordination diagrams now have a key for every kind of element: sites,
+  species (arrows or crosses), continuous variables (arrows), factor
+  centroids and contours, each with its own symbol.
 * New `div_invasion()`: native and alien richness, the alien share of
   species and of individuals per site (levels of invasion).
 * New `div_homogenisation()`: biotic homogenisation between two surveys,
