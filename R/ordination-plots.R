@@ -518,17 +518,17 @@ ord_plot_vandobben <- function(object, st, variable = NULL, species = 25) {
     object$community[as.character(sd[[object$site_col]]), , drop = FALSE], object$transform
   )
   y <- y[, colSums(y > 0) >= 2, drop = FALSE]
-  X <- as.data.frame(mm)
-  names(X) <- make.names(num)
+  xmat <- as.data.frame(mm)
+  names(xmat) <- make.names(num)
   vk_name <- make.names(variable)
   tm <- t(vapply(colnames(y), function(s) {
-    m <- tryCatch(stats::lm(y[, s] ~ ., data = X), error = function(e) NULL)
-    out <- stats::setNames(rep(NA_real_, length(num) + 1), c(names(X), ".p"))
+    m <- tryCatch(stats::lm(y[, s] ~ ., data = xmat), error = function(e) NULL)
+    out <- stats::setNames(rep(NA_real_, length(num) + 1), c(names(xmat), ".p"))
     if (is.null(m)) {
       return(out)
     }
     cf <- summary(m)$coefficients
-    hit <- intersect(names(X), rownames(cf))
+    hit <- intersect(names(xmat), rownames(cf))
     out[hit] <- cf[hit, "t value"]
     if (vk_name %in% rownames(cf)) out[".p"] <- cf[vk_name, "Pr(>|t|)"]
     out
