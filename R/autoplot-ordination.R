@@ -449,7 +449,10 @@ ord_surface <- function(x, y, z, n_grid = 41) {
   if (is.null(lines)) {
     lines <- data.frame(x = numeric(0), y = numeric(0), piece = integer(0), level = numeric(0))
   }
-  labels <- do.call(rbind, lapply(split(lines, lines$piece), function(l) {
+  # One label per level, at the middle of its longest piece
+  labels <- do.call(rbind, lapply(split(lines, lines$level), function(l) {
+    longest <- names(which.max(table(l$piece)))
+    l <- l[l$piece == as.integer(longest), ]
     l[ceiling(nrow(l) / 2), c("x", "y", "level")]
   }))
   if (is.null(labels)) labels <- data.frame(x = numeric(0), y = numeric(0), level = numeric(0))
