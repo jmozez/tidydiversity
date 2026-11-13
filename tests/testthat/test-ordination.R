@@ -131,3 +131,25 @@ test_that("groups too small for ellipses or hulls are skipped", {
   )
   expect_no_warning(ggplot2::ggplotGrob(p))
 })
+
+test_that("continuous site variables are drawn as lines or sizes, not colour bars", {
+  skip_if_not_installed("ggplot2")
+  o <- ord_fit(png_frogs, abundance = abundance, method = "pca", transform = "hellinger")
+  # A linear trend surface of an exact plane is recovered exactly
+  x <- o$sites$axis1
+  y <- o$sites$axis2
+  srf <- ord_surface(x, y, 2 * x + 3 * y)
+  expect_equal(srf$model, "linear trend surface")
+  expect_equal(srf$dev_expl, 1)
+  expect_gt(nrow(srf$lines), 0)
+  p <- ggplot2::autoplot(o, surface = elevation, size = elevation, species = 0)
+  expect_s3_class(p, "ggplot")
+  expect_match(p$labels$caption, "linear trend surface")
+  scales <- vapply(p$scales$scales, function(s) class(s)[1], character(1))
+  expect_false(any(grepl("ScaleContinuous", scales) & grepl("colour", scales)))
+  expect_error(ggplot2::autoplot(o, surface = site), "numeric")
+  # Numeric colour becomes classes (one per elevation)
+  q <- ggplot2::autoplot(o, colour = elevation, species = 0)
+  b <- ggplot2::ggplot_build(q)
+  expect_equal(length(unique(b$data[[length(b$data)]]$colour)) >= 2, TRUE)
+})

@@ -36,6 +36,15 @@
 #'   class per value, and otherwise is cut into up to 6 classes at pretty
 #'   breaks; each class has its own colour and symbol. Discrete variables
 #'   also define the groups for ellipses, hulls and spiders.
+#' @param surface A numeric site variable to draw as a fitted surface:
+#'   contour lines from a thin-plate GAM of the variable on the two axes
+#'   (as in `vegan::ordisurf()`), or a linear trend surface (a plane, as
+#'   `vegan::envfit()` assumes) with fewer than 15 sites, where a smooth
+#'   surface would overfit. A continuous variable is a gradient, so it is drawn
+#'   with lines (contours, or the arrows of the fitted `formula`), not by
+#'   colouring the points.
+#' @param size A numeric site variable shown by symbol size (a bubble or
+#'   attribute plot, as in CANOCO).
 #' @param group A site variable defining groups for ellipses, hulls and
 #'   spiders, if different from `colour`.
 #' @param sites Draw the sites.
@@ -84,6 +93,8 @@ autoplot.td_ordination <- function(object,
                                    spider = FALSE,
                                    palette = "okabe_ito",
                                    theme = theme_tidydiversity(grid = "none"),
+                                   surface = NULL,
+                                   size = NULL,
                                    ...) {
   rlang::check_installed("ggplot2")
   ellipse <- rlang::arg_match(ellipse)
@@ -99,6 +110,15 @@ autoplot.td_ordination <- function(object,
 
   col_var <- ord_var(rlang::enquo(colour), site_df, "colour")
   shp_var <- ord_var(rlang::enquo(shape), site_df, "shape")
+  srf_var <- ord_var(rlang::enquo(surface), site_df, "surface")
+  siz_var <- ord_var(rlang::enquo(size), site_df, "size")
+  for (v in c(srf_var, siz_var)) {
+    if (!is.numeric(site_df[[v]])) {
+      cli::cli_abort(
+        "{.arg surface} and {.arg size} need a numeric site variable; got {.field {v}}."
+      )
+    }
+  }
   # Points are classes, not a continuous gradient: numeric -> ordered classes
   if (!is.null(col_var) && is.numeric(site_df[[col_var]])) {
     site_df[[col_var]] <- td_point_classes(site_df[[col_var]])
@@ -190,12 +210,38 @@ autoplot.td_ordination <- function(object,
     labs <- ord_add_labels(labs, spp, "#B2182B", "italic", 3)
   }
 
+  # A continuous site variable as a fitted surface: contour lines
+  srf_cap <- NULL
+  if (!is.null(srf_var)) {
+    srf <- ord_surface(site_df$.x, site_df$.y, site_df[[srf_var]])
+    if (nrow(srf$lines)) {
+      p <- p + ggplot2::geom_path(
+        ggplot2::aes(.data$x, .data$y, group = .data$piece),
+        data = srf$lines, colour = "#1B7837", linewidth = 0.45
+      ) + ggplot2::geom_label(
+        ggplot2::aes(.data$x, .data$y, label = .data$level),
+        data = srf$labels, colour = "#1B7837", size = 2.6, label.size = 0,
+        label.padding = ggplot2::unit(0.08, "lines"), fill = "white"
+      )
+    }
+    srf_cap <- sprintf(
+      "Contours: %s fitted by a %s (deviance explained %.0f%%)",
+      srf_var, srf$model, 100 * srf$dev_expl
+    )
+  }
+
   # Sites
   if (sites) {
     aes_pt <- ggplot2::aes(.data$.x, .data$.y)
     if (!is.null(col_var)) aes_pt$colour <- rlang::quo(.data[[col_var]])
     if (!is.null(shp_var)) aes_pt$shape <- rlang::quo(.data[[shp_var]])
-    p <- p + ggplot2::geom_point(aes_pt, data = site_df, size = 2.4, alpha = 0.9)
+    if (!is.null(siz_var)) {
+      aes_pt$size <- rlang::quo(.data[[siz_var]])
+      p <- p + ggplot2::geom_point(aes_pt, data = site_df, alpha = 0.9) +
+        ggplot2::scale_size_area(name = siz_var, max_size = 7)
+    } else {
+      p <- p + ggplot2::geom_point(aes_pt, data = site_df, size = 2.4, alpha = 0.9)
+    }
     if (site_labels) {
       labs <- ord_add_labels(labs, site_df, "grey20", "plain", 2.8)
     }
@@ -243,9 +289,12 @@ autoplot.td_ordination <- function(object,
     ggplot2::labs(
       x = lab[1], y = lab[2],
       colour = col_var, shape = shp_var,
-      caption = if (object$method == "nmds") {
-        paste0("Stress = ", format(round(object$stress, 3), nsmall = 3))
-      }
+      caption = paste(c(
+        if (object$method == "nmds") {
+          paste0("Stress = ", format(round(object$stress, 3), nsmall = 3))
+        },
+        srf_cap
+      ), collapse = "\n")
     )
   if (!is.null(shp_var)) {
     n_shp <- nlevels(site_df[[shp_var]])
@@ -362,4 +411,62 @@ td_point_classes <- function(x, max_values = 8, n_classes = 6) {
   br <- pretty(range(u), n = n_classes)
   lab <- paste0(fmt(utils::head(br, -1)), " to ", fmt(br[-1]))
   cut(x, br, labels = lab, include.lowest = TRUE)
+}
+
+# Smooth (or planar) surface of a site variable on two ordination axes, as
+# in vegan::ordisurf(): GAM with a thin-plate spline (REML, with shrinkage),
+# predicted on a grid and kept within the convex hull of the sites.
+ord_surface <- function(x, y, z, n_grid = 41) {
+  ok <- is.finite(x) & is.finite(y) & is.finite(z)
+  x <- x[ok]
+  y <- y[ok]
+  z <- z[ok]
+  d <- data.frame(x = x, y = y, z = z)
+  if (length(z) >= 15) {
+    rlang::check_installed("mgcv")
+    k <- min(10, length(z) %/% 3)
+    fit <- mgcv::gam(z ~ s(x, y, k = k, bs = "tp"), data = d, method = "REML", select = TRUE)
+    model <- "thin-plate GAM"
+    dev <- summary(fit)$dev.expl
+  } else {
+    fit <- stats::lm(z ~ x + y, data = d)
+    model <- "linear trend surface"
+    dev <- summary(fit)$r.squared
+  }
+  gx <- seq(min(x), max(x), length.out = n_grid)
+  gy <- seq(min(y), max(y), length.out = n_grid)
+  grid <- expand.grid(x = gx, y = gy)
+  zz <- as.numeric(stats::predict(fit, newdata = grid))
+  h <- grDevices::chull(x, y)
+  inside <- ord_in_polygon(grid$x, grid$y, x[h], y[h])
+  zz[!inside] <- NA
+  m <- matrix(zz, n_grid, n_grid)
+  lev <- pretty(range(zz, na.rm = TRUE), 6)
+  cl <- grDevices::contourLines(gx, gy, m, levels = lev)
+  lines <- do.call(rbind, lapply(seq_along(cl), function(i) {
+    data.frame(x = cl[[i]]$x, y = cl[[i]]$y, piece = i, level = cl[[i]]$level)
+  }))
+  if (is.null(lines)) {
+    lines <- data.frame(x = numeric(0), y = numeric(0), piece = integer(0), level = numeric(0))
+  }
+  labels <- do.call(rbind, lapply(split(lines, lines$piece), function(l) {
+    l[ceiling(nrow(l) / 2), c("x", "y", "level")]
+  }))
+  if (is.null(labels)) labels <- data.frame(x = numeric(0), y = numeric(0), level = numeric(0))
+  labels$level <- format(labels$level, big.mark = ",", trim = TRUE)
+  list(lines = lines, labels = labels, model = model, dev_expl = dev)
+}
+
+# Points inside a polygon (ray casting)
+ord_in_polygon <- function(px, py, vx, vy) {
+  n <- length(vx)
+  inside <- logical(length(px))
+  j <- n
+  for (i in seq_len(n)) {
+    cross <- ((vy[i] > py) != (vy[j] > py)) &
+      (px < (vx[j] - vx[i]) * (py - vy[i]) / (vy[j] - vy[i] + 1e-300) + vx[i])
+    inside <- xor(inside, cross)
+    j <- i
+  }
+  inside
 }

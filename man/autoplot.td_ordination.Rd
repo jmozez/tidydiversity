@@ -20,6 +20,8 @@
   spider = FALSE,
   palette = "okabe_ito",
   theme = theme_tidydiversity(grid = "none"),
+  surface = NULL,
+  size = NULL,
   ...
 )
 }
@@ -29,8 +31,12 @@
 \item{axes}{The two axes to plot.}
 
 \item{colour, shape}{Site variables (unquoted column names) to map to
-point colour and shape, such as \code{colour = elevation}. Discrete
-variables also define the groups for ellipses, hulls and spiders.}
+point colour and shape, such as \code{colour = elevation}. Sites are points,
+so they are drawn as categories (as in CANOCO), never on a continuous
+colour bar: a numeric variable with up to 8 distinct values gets one
+class per value, and otherwise is cut into up to 6 classes at pretty
+breaks; each class has its own colour and symbol. Discrete variables
+also define the groups for ellipses, hulls and spiders.}
 
 \item{group}{A site variable defining groups for ellipses, hulls and
 spiders, if different from \code{colour}.}
@@ -57,6 +63,17 @@ and \code{0} for none.}
 variables use the viridis scale.}
 
 \item{theme}{A ggplot2 theme, by default \code{\link[=theme_tidydiversity]{theme_tidydiversity()}}.}
+
+\item{surface}{A numeric site variable to draw as a fitted surface:
+contour lines from a thin-plate GAM of the variable on the two axes
+(as in \code{vegan::ordisurf()}), or a linear trend surface (a plane, as
+\code{vegan::envfit()} assumes) with fewer than 15 sites, where a smooth
+surface would overfit. A continuous variable is a gradient, so it is drawn
+with lines (contours, or the arrows of the fitted \code{formula}), not by
+colouring the points.}
+
+\item{size}{A numeric site variable shown by symbol size (a bubble or
+attribute plot, as in CANOCO).}
 
 \item{...}{Not used.}
 }

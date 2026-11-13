@@ -4,6 +4,12 @@
   colour bar. As in CANOCO, sites are drawn as categories: a numeric
   `colour` variable becomes ordered classes, each with its own colour and
   symbol.
+* `autoplot()` for ordinations gains `surface`, which draws a continuous
+  site variable as fitted contour lines (a thin-plate GAM as in
+  `vegan::ordisurf()`, or a linear trend surface with fewer than 15
+  sites), and `size`, which scales the site symbols to a numeric variable
+  (a CANOCO attribute plot). Continuous variables are lines (arrows or
+  contours), factors are centroids, sites and species are points.
 * New `div_invasion()`: native and alien richness, the alien share of
   species and of individuals per site (levels of invasion).
 * New `div_homogenisation()`: biotic homogenisation between two surveys,
