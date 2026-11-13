@@ -12,7 +12,7 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![License:
 MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jmozez/tidydiversity/blob/main/LICENSE.md)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24046912.svg)](https://doi.org/10.5281/zenodo.24046912)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24182679.svg)](https://doi.org/10.5281/zenodo.24182679)
 [![CRAN checks](https://img.shields.io/badge/R%20CMD%20check-as--cran-1A9E93)](https://tidydiversity.in4metrix.dev/cran-check.txt)
 [![Website](https://img.shields.io/badge/website-tidydiversity.in4metrix.dev-1A9E93)](https://tidydiversity.in4metrix.dev)
 [![Maps with tidymapr](https://img.shields.io/badge/maps%20with-tidymapr-11376B)](https://tidymapr.in4metrix.dev)
@@ -685,7 +685,7 @@ Welch-type PERMANOVA (W\*d), robust to unequal dispersion: the
 If you use tidydiversity in published work, please cite it. In R, `citation("tidydiversity")`
 prints the reference:
 
-> Moses, J. (2026). tidydiversity: Taxonomic, Phylogenetic and Functional Diversity with Tidy Hill Numbers. R package version 0.1.0. Zenodo. https://doi.org/10.5281/zenodo.24046912
+> Moses, J. (2026). tidydiversity: Taxonomic, Phylogenetic and Functional Diversity with Tidy Hill Numbers. R package version 0.2.0. Zenodo. https://doi.org/10.5281/zenodo.24182679
 
 ```bibtex
 @Manual{tidydiversity,
@@ -693,7 +693,7 @@ prints the reference:
   author = {Jimmy Moses},
   year = {2026},
   note = {R package version 0.1.0},
-  doi = {10.5281/zenodo.24046912},
+  doi = {10.5281/zenodo.24182679},
   url = {https://github.com/jmozez/tidydiversity},
 }
 ```
