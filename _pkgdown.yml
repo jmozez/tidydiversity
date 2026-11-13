@@ -107,6 +107,8 @@ navbar:
           href: articles/publication.html
         - text: Mid-domain effect and range-through
           href: articles/mid-domain.html
+        - text: Elevational ranges and range shifts
+          href: articles/range-shifts.html
     tutorials:
       text: Tutorials
       menu:
@@ -275,6 +277,7 @@ articles:
       - articles/tidymodels
       - articles/publication
       - articles/mid-domain
+      - articles/range-shifts
   - title: Papua New Guinea case studies
     contents:
       - articles/case-png-ants
