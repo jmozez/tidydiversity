@@ -47,3 +47,15 @@ test_that("beta errors are informative", {
     beta_decay(toy(), gradient = abundance)
   })
 })
+
+test_that("index.family is accepted as betapart's name for index", {
+  a <- beta_multi(png_frogs, abundance = abundance, index = "sorensen")
+  b <- beta_multi(png_frogs, abundance = abundance, index.family = "sorensen")
+  expect_equal(a, b)
+  expect_equal(
+    beta_pair(png_frogs, index = "jaccard"),
+    beta_pair(png_frogs, index.family = "jaccard")
+  )
+  expect_error(beta_multi(png_frogs, index = "jaccard", index.family = "sorensen"), "not both")
+  expect_error(beta_multi(png_frogs, index.family = "sorenson"), "index.family")
+})

@@ -11,7 +11,8 @@ beta_decay(
   species = species,
   abundance = NULL,
   index = c("sorensen", "jaccard", "bray"),
-  .by = NULL
+  .by = NULL,
+  index.family = NULL
 )
 }
 \arguments{
@@ -34,6 +35,10 @@ used when present, otherwise every row counts as one individual.}
 
 \item{.by}{<\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}> Optional grouping
 columns, kept in the output. Grouped data frames are also respected.}
+
+\item{index.family}{Alias of \code{index}, the name used by the betapart
+package (\code{index.family = "sorensen"}), so code written for betapart
+works unchanged.}
 }
 \value{
 A \code{td_beta_decay} tibble like the output of \code{\link[=beta_pair]{beta_pair()}}, with
