@@ -21,7 +21,7 @@ identifiers:
   - type: doi
     value: "10.5281/zenodo.24046912"
     description: "Version 0.1.0 (earlier separate record)"
-date-released: "2026-11-13"
+date-released: "2026-11-16"
 license: MIT
 repository-code: "https://github.com/jmozez/tidydiversity"
 url: "https://tidydiversity.in4metrix.dev"
