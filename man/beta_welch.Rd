@@ -13,7 +13,8 @@ beta_welch(
   env = NULL,
   distance = "bray",
   transform = "none",
-  permutations = 999
+  permutations = 999,
+  method = NULL
 )
 }
 \arguments{
@@ -43,6 +44,9 @@ otherwise overweight abundant species; Legendre and Gallagher 2001),
 (presence-absence) or \code{"none"} (the default for the other methods).}
 
 \item{permutations}{Number of permutations.}
+
+\item{method}{Alias of \code{distance}, the name used by \code{\link[vegan:vegdist]{vegan::vegdist()}},
+\code{\link[vegan:adonis2]{vegan::adonis2()}} and \code{\link[vegan:betadisper]{vegan::betadisper()}} (\code{method = "bray"}).}
 }
 \value{
 A one-row tibble with \code{statistic} (W*d), \code{n_groups}, \code{n_sites}

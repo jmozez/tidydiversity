@@ -40,7 +40,8 @@
 #'   scores to scale (ter Braak and Smilauer 2012): `"species"` (the
 #'   default, vegan scaling 2) preserves the correlations between species
 #'   and variables; `"sites"` (scaling 1) preserves the distances between
-#'   sites; `"symmetric"` (scaling 3) is a compromise.
+#'   sites; `"symmetric"` (scaling 3) is a compromise. vegan's numbers
+#'   `1`, `2` and `3` are accepted too.
 #' @param k For `"nmds"`, the number of dimensions.
 #' @param permutations Permutations for the tests of passive variables: a
 #'   number, or `"exact"` for complete enumeration of all n! orderings of
@@ -111,7 +112,8 @@ ord_fit <- function(data,
   }
   if (!is.null(seed)) set.seed(seed)
   method <- rlang::arg_match(method)
-  scaling <- rlang::arg_match(scaling)
+  scaling <- td_scaling(scaling)
+  scaling <- rlang::arg_match(scaling, c("species", "sites", "symmetric"))
   constrained <- method %in% c("rda", "cca", "dbrda")
   if (constrained && is.null(formula)) {
     cli::cli_abort(c(
@@ -464,7 +466,8 @@ glance.td_ordination <- function(x, ...) {
 #' @param x A `td_ordination` from a constrained method.
 #' @param by `"model"` (the whole model, the default), `"axis"` (each
 #'   constrained axis), `"terms"` (each term, added sequentially) or
-#'   `"margin"` (each term given the others).
+#'   `"margin"` (each term given the others). `by = NULL`, as in
+#'   [vegan::anova.cca()], means `"model"`.
 #' @param permutations Number of permutations.
 #' @return A tibble with `term`, `df`, `variance` (or `chi_square` for
 #'   CCA), `statistic` (pseudo-F) and `p.value`.
@@ -482,6 +485,7 @@ ord_test <- function(x, by = c("model", "axis", "terms", "margin"),
   if (!inherits(x, "td_ordination") || !x$constrained) {
     cli::cli_abort("{.arg x} must be a constrained ordination (rda, cca or dbrda).")
   }
+  if (is.null(by)) by <- "model" # as in vegan::anova.cca(by = NULL)
   by <- rlang::arg_match(by)
   a <- vegan::anova.cca(x$fit,
     by = if (by == "model") NULL else by,

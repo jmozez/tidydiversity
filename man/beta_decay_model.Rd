@@ -8,7 +8,8 @@ beta_decay_model(
   x,
   model = c("exponential", "power"),
   component = c("total", "turnover", "nestedness"),
-  permutations = 999
+  permutations = 999,
+  model.type = NULL
 )
 }
 \arguments{
@@ -21,6 +22,9 @@ kept and fitted separately.}
 \code{"total"}, \code{"turnover"} or \code{"nestedness"}.}
 
 \item{permutations}{Number of permutations for the test; \code{0} skips it.}
+
+\item{model.type}{Alias of \code{model}, the name used by
+\code{\link[betapart:decay.model]{betapart::decay.model()}} (\code{model.type = "exponential"}).}
 }
 \value{
 A tibble with one row per group: \code{model}, \code{component},

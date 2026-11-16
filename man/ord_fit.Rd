@@ -56,7 +56,8 @@ passed to \code{\link[vegan:vegdist]{vegan::vegdist()}}, such as \code{"bray"} (
 scores to scale (ter Braak and Smilauer 2012): \code{"species"} (the
 default, vegan scaling 2) preserves the correlations between species
 and variables; \code{"sites"} (scaling 1) preserves the distances between
-sites; \code{"symmetric"} (scaling 3) is a compromise.}
+sites; \code{"symmetric"} (scaling 3) is a compromise. vegan's numbers
+\code{1}, \code{2} and \code{3} are accepted too.}
 
 \item{k}{For \code{"nmds"}, the number of dimensions.}
 

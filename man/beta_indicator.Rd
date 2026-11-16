@@ -15,7 +15,8 @@ beta_indicator(
   combinations = FALSE,
   adjust = "holm",
   alpha = 0.05,
-  permutations = 999
+  permutations = 999,
+  duleg = NULL
 )
 }
 \arguments{
@@ -50,6 +51,9 @@ all.}
 number, or \code{"exact"} for complete enumeration of all n! orderings of
 the sites (feasible up to about 9 sites; with 7 sites, 5,040), which
 gives exact p-values.}
+
+\item{duleg}{Alias from \code{\link[indicspecies:multipatt]{indicspecies::multipatt()}}: \code{duleg = TRUE} is
+\code{combinations = FALSE}.}
 }
 \value{
 A tibble with \code{species}, \code{group} (the group or combination the
