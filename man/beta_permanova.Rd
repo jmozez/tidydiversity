@@ -16,7 +16,8 @@ beta_permanova(
   transform = "none",
   by = c("margin", "terms", "model"),
   strata = NULL,
-  permutations = 999
+  permutations = 999,
+  method = NULL
 )
 
 beta_dispersion(
@@ -29,7 +30,8 @@ beta_dispersion(
   distance = "bray",
   transform = "none",
   type = c("median", "centroid"),
-  permutations = 999
+  permutations = 999,
+  method = NULL
 )
 }
 \arguments{
@@ -73,6 +75,9 @@ permutations, for example a block or transect.}
 number, or \code{"exact"} for complete enumeration of all n! orderings of
 the sites (feasible up to about 9 sites; with 7 sites, 5,040), which
 gives exact p-values.}
+
+\item{method}{Alias of \code{distance}, the name used by \code{\link[vegan:vegdist]{vegan::vegdist()}},
+\code{\link[vegan:adonis2]{vegan::adonis2()}} and \code{\link[vegan:betadisper]{vegan::betadisper()}} (\code{method = "bray"}).}
 
 \item{group}{Site variable (unquoted) defining the groups.}
 

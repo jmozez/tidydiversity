@@ -25,6 +25,8 @@
 #' @param x A `td_beta_decay` tibble from [beta_decay()]. Its groups are
 #'   kept and fitted separately.
 #' @param model `"exponential"` or `"power"`.
+#' @param model.type Alias of `model`, the name used by
+#'   [betapart::decay.model()] (`model.type = "exponential"`).
 #' @param component Dissimilarity component turned into similarity:
 #'   `"total"`, `"turnover"` or `"nestedness"`.
 #' @param permutations Number of permutations for the test; `0` skips it.
@@ -49,8 +51,16 @@
 beta_decay_model <- function(x,
                              model = c("exponential", "power"),
                              component = c("total", "turnover", "nestedness"),
-                             permutations = 999) {
-  model <- rlang::arg_match(model)
+                             permutations = 999,
+                             model.type = NULL) { # nolint: object_name_linter.
+  model_type <- model.type
+  if (!is.null(model_type)) {
+    # betapart accepts abbreviations such as "exp" and "pow"
+    hit <- pmatch(model_type, c("exponential", "power"))
+    if (!is.na(hit)) model_type <- c("exponential", "power")[hit]
+  }
+  model <- td_alias(model, model_type, !missing(model), "model", "model.type")
+  model <- rlang::arg_match(model, c("exponential", "power"))
   component <- rlang::arg_match(component)
   if (!inherits(x, "td_beta_decay")) {
     cli::cli_abort("{.arg x} must be the output of {.fn beta_decay}.")

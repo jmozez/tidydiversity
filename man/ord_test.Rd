@@ -11,7 +11,8 @@ ord_test(x, by = c("model", "axis", "terms", "margin"), permutations = 999)
 
 \item{by}{\code{"model"} (the whole model, the default), \code{"axis"} (each
 constrained axis), \code{"terms"} (each term, added sequentially) or
-\code{"margin"} (each term given the others).}
+\code{"margin"} (each term given the others). \code{by = NULL}, as in
+\code{\link[vegan:anova.cca]{vegan::anova.cca()}}, means \code{"model"}.}
 
 \item{permutations}{Number of permutations.}
 }

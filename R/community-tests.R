@@ -48,6 +48,8 @@ check_one_sided <- function(formula, arg = "formula", call = caller_env()) {
 #'   `by = "terms"` to reproduce its default output.
 #' @param strata Optional site variable (unquoted) within which to restrict
 #'   permutations, for example a block or transect.
+#' @param method Alias of `distance`, the name used by [vegan::vegdist()],
+#'   [vegan::adonis2()] and [vegan::betadisper()] (`method = "bray"`).
 #' @return A tibble: one row per term, with `df`, `sum_sq`, `r2`,
 #'   `statistic` (pseudo-F) and `p.value`.
 #' @references Anderson, M. J. (2001). A new method for non-parametric
@@ -74,7 +76,9 @@ beta_permanova <- function(data,
                            transform = "none",
                            by = c("margin", "terms", "model"),
                            strata = NULL,
-                           permutations = 999) {
+                           permutations = 999,
+                           method = NULL) {
+  distance <- td_alias(distance, method, !missing(distance), "distance", "method")
   rlang::check_installed("vegan", "for PERMANOVA.")
   check_one_sided(formula)
   by <- rlang::arg_match(by)
@@ -134,7 +138,9 @@ beta_dispersion <- function(data,
                             distance = "bray",
                             transform = "none",
                             type = c("median", "centroid"),
-                            permutations = 999) {
+                            permutations = 999,
+                            method = NULL) {
+  distance <- td_alias(distance, method, !missing(distance), "distance", "method")
   rlang::check_installed("vegan", "for dispersion tests.")
   type <- rlang::arg_match(type)
   g <- rlang::as_name(enquo(group))
@@ -399,6 +405,8 @@ ord_select <- function(data,
 #' @param func `"IndVal.g"` (group-equalised indicator value, the default),
 #'   `"IndVal"`, `"r.g"` or `"r"` (point-biserial correlation).
 #' @param combinations Allow species to indicate combinations of groups?
+#' @param duleg Alias from [indicspecies::multipatt()]: `duleg = TRUE` is
+#'   `combinations = FALSE`.
 #' @param adjust Correction for testing many species at once, passed to
 #'   [stats::p.adjust()]: `"holm"` (the default, controls the family-wise
 #'   error rate), `"fdr"` (false discovery rate) or `"none"`.
@@ -436,7 +444,12 @@ beta_indicator <- function(data,
                            combinations = FALSE,
                            adjust = "holm",
                            alpha = 0.05,
-                           permutations = 999) {
+                           permutations = 999,
+                           duleg = NULL) {
+  combinations <- td_alias(
+    combinations, if (is.null(duleg)) NULL else !duleg, !missing(combinations),
+    "combinations", "duleg"
+  )
   rlang::check_installed("indicspecies", "for indicator species analysis.")
   func <- rlang::arg_match(func)
   adjust <- rlang::arg_match0(adjust, stats::p.adjust.methods, "adjust")
@@ -508,7 +521,9 @@ beta_welch <- function(data,
                        env = NULL,
                        distance = "bray",
                        transform = "none",
-                       permutations = 999) {
+                       permutations = 999,
+                       method = NULL) {
+  distance <- td_alias(distance, method, !missing(distance), "distance", "method")
   rlang::check_installed("vegan", "for community distances.")
   g <- rlang::as_name(enquo(group))
   transform <- rlang::arg_match0(

@@ -1,5 +1,11 @@
 # tidydiversity 0.3.0
 
+* Argument names from vegan, betapart and indicspecies are accepted as
+  aliases: `method` for `distance` in `beta_permanova()`, `beta_dispersion()`
+  and `beta_welch()`; vegan's numeric `scaling = 1, 2, 3` in `ord_fit()`;
+  `by = NULL` in `ord_test()`; `model.type` (also `"exp"`, `"pow"`) in
+  `beta_decay_model()`; and `duleg` in `beta_indicator()`.
+
 * `beta_pair()`, `beta_multi()` and `beta_decay()` accept `index.family` as an
   alias of `index`, the name used by betapart, so
   `beta_multi(x, index.family = "sorensen")` works as it does there.
