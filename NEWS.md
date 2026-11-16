@@ -1,5 +1,9 @@
 # tidydiversity 0.3.0
 
+* `beta_pair()`, `beta_multi()` and `beta_decay()` accept `index.family` as an
+  alias of `index`, the name used by betapart, so
+  `beta_multi(x, index.family = "sorensen")` works as it does there.
+
 * New **tidyvisor**, the package's adviser: `tidyvisor()` advises on the
   analysis when given data and interprets the results when given a fit.
 * New `ord_advise()` recommends an ordination and its test from the question

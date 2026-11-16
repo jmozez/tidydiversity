@@ -18,6 +18,9 @@
 #' @inheritParams div_hill
 #' @param index Family of dissimilarity: `"sorensen"` or `"jaccard"`
 #'   (presence and absence) or `"bray"` (abundance-based Bray-Curtis).
+#' @param index.family Alias of `index`, the name used by the betapart
+#'   package (`index.family = "sorensen"`), so code written for betapart
+#'   works unchanged.
 #' @return `beta_pair()` returns a tibble with the grouping columns,
 #'   `site_1`, `site_2`, `turnover`, `nestedness` and `total`.
 #'   `beta_multi()` returns one row per group with `n_sites`, `turnover`,
@@ -44,8 +47,9 @@ beta_pair <- function(data,
                       species = species,
                       abundance = NULL,
                       index = c("sorensen", "jaccard", "bray"),
-                      .by = NULL) {
-  index <- rlang::arg_match(index)
+                      .by = NULL,
+                      index.family = NULL) { # nolint: object_name_linter.
+  index <- td_beta_index(index, index.family)
   call <- rlang::current_env()
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by)
@@ -61,8 +65,9 @@ beta_multi <- function(data,
                        species = species,
                        abundance = NULL,
                        index = c("sorensen", "jaccard", "bray"),
-                       .by = NULL) {
-  index <- rlang::arg_match(index)
+                       .by = NULL,
+                       index.family = NULL) { # nolint: object_name_linter.
+  index <- td_beta_index(index, index.family)
   call <- rlang::current_env()
   prep <- td_prepare(
     data, enquo(site), enquo(species), enquo(abundance), enquo(.by)
@@ -96,8 +101,9 @@ beta_decay <- function(data,
                        species = species,
                        abundance = NULL,
                        index = c("sorensen", "jaccard", "bray"),
-                       .by = NULL) {
-  index <- rlang::arg_match(index)
+                       .by = NULL,
+                       index.family = NULL) { # nolint: object_name_linter.
+  index <- td_beta_index(index, index.family)
   call <- rlang::current_env()
   td_check_data(data)
   gcols <- names(tidyselect::eval_select(enquo(gradient), data))
@@ -296,4 +302,20 @@ beta_dist <- function(x, component = NULL, q = NULL) {
   m[cbind(i, j)] <- x[[component]]
   m[cbind(j, i)] <- x[[component]]
   stats::as.dist(m)
+}
+
+# `index.family` is betapart's name for `index`; accept either
+td_beta_index <- function(index, index_family, call = rlang::caller_env()) {
+  choices <- c("sorensen", "jaccard", "bray")
+  if (!is.null(index_family)) {
+    index_family <- rlang::arg_match0(index_family, choices, "index.family", call)
+    if (length(index) == 1 && index != index_family) {
+      cli::cli_abort(
+        "Give {.arg index} or {.arg index.family}, not both with different values.",
+        call = call
+      )
+    }
+    return(index_family)
+  }
+  rlang::arg_match0(index[1], choices, "index", call)
 }
