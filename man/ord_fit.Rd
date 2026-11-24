@@ -144,7 +144,8 @@ Oksanen, J. et al. vegan: Community Ecology Package.
 \url{https://CRAN.R-project.org/package=vegan}
 }
 \seealso{
-The article \href{https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html}{Which multivariate method?}
-explains how ordination relates to the other multivariate methods and
-how to choose among them.
+The article "Which multivariate method?" explains how
+ordination relates to the other multivariate methods and how to choose
+among them:
+\url{https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html}
 }

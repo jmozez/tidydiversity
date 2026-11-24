@@ -95,7 +95,7 @@ ord_advise(d, abundance = abundance, formula = ~ A1 + Management, env = dune_env
 
 ## Further reading
 
-Legendre, P. and Legendre, L. (2012). *Numerical Ecology*, 3rd ed.
+Legendre, P. and Legendre, L. (2012). *Numerical Ecology*, third edition.
 Elsevier.
 
 Leps, J. and Smilauer, P. (2003). *Multivariate Analysis of Ecological

@@ -63,9 +63,10 @@
 #'
 #' Legendre, P. and Legendre, L. (2012). Numerical Ecology, third edition.
 #' Elsevier.
-#' @seealso The article [Which multivariate method?](https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html)
-#'   explains how ordination relates to the other multivariate methods and
-#'   how to choose among them.
+#' @seealso The article "Which multivariate method?" explains how
+#'   ordination relates to the other multivariate methods and how to choose
+#'   among them:
+#'   <https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html>
 #' @export
 #' @examplesIf rlang::is_installed("vegan")
 #' data("dune", "dune.env", package = "vegan")
@@ -196,7 +197,7 @@ ord_advise <- function(data,
     explore = vctrs::vec_rbind(
       step(
         "Approach", "Unconstrained (indirect) ordination",
-        "You want to describe the main patterns of composition, not test their causes.", ""
+        "Branch: ordination (a picture, no test). You want to describe the main patterns of composition, not test their causes.", ""
       ),
       step(
         "Method", if (unimodal) "CA, or NMDS" else "PCA on Hellinger-transformed data, or NMDS",
@@ -230,7 +231,7 @@ ord_advise <- function(data,
     explain = vctrs::vec_rbind(
       step(
         "Approach", "Constrained (direct, canonical) ordination",
-        "You have a hypothesis that measured site variables explain composition.", ""
+        "Branch: ordination and multivariate test (a picture with a permutation test). You have a hypothesis that measured site variables explain composition.", ""
       ),
       step(
         "Method", if (unimodal) "CCA (or db-RDA)" else "RDA on Hellinger-transformed data (or db-RDA)",
@@ -263,7 +264,7 @@ ord_advise <- function(data,
     groups = vctrs::vec_rbind(
       step(
         "Approach", "Compare groups of sites: PERMANOVA, shown by a constrained ordination",
-        "Your site variables are factors (groups).", ""
+        "Branch: multivariate test (PERMANOVA gives the p-value; the ordination shows it). Your site variables are factors (groups).", ""
       ),
       step(
         "Test", "PERMANOVA, with a test of the dispersion within groups",
@@ -295,7 +296,7 @@ ord_advise <- function(data,
     time = vctrs::vec_rbind(
       step(
         "Approach", "Principal response curves (PRC)",
-        "Treatments followed over time: the question is how each departs from the control.", ""
+        "Branch: constrained ordination of a designed experiment, tested by permutation. Treatments followed over time: the question is how each departs from the control.", ""
       ),
       step(
         "Test", "Permutation test of the first PRC axis, permuting within times",
@@ -319,7 +320,7 @@ ord_advise <- function(data,
     partition = vctrs::vec_rbind(
       step(
         "Approach", "Variation partitioning",
-        "You want the separate and shared contributions of sets of variables (e.g. environment and space).", ""
+        "Branch: constrained ordination, partitioned (adjusted R2 for each set). You want the separate and shared contributions of sets of variables (e.g. environment and space).", ""
       ),
       step(
         "Test", "Adjusted R2 of each fraction; permutation tests of the testable fractions",
