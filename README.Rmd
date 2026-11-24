@@ -191,14 +191,26 @@ when a function needs them, so `library(tidydiversity)` stays light.
 
 ## Installation
 
+Install tidydiversity first, then its two companion packages:
+
 ```r
 # install.packages("remotes")
-remotes::install_github("jmozez/tidyvisor")
 
-# and the packages it advises on
+# 1. tidydiversity: community ecology (taxonomic, phylogenetic and
+#    functional diversity, beta diversity, ordination and multivariate tests)
 remotes::install_github("jmozez/tidydiversity")
+
+# 2. tidymapr: spatial ecology (maps, species distributions, the spread
+#    of invasions and epidemics, range shifts, spatial autocorrelation)
 remotes::install_github("jmozez/tidymapr")
+
+# 3. tidyvisor: the statistical advisor for both (study design, power,
+#    assumption checks, which analysis, and plain-language interpretation)
+remotes::install_github("jmozez/tidyvisor")
 ```
+
+tidydiversity works on its own; tidymapr adds the maps and spatial
+analyses, and tidyvisor the advice and interpretation.
 
 The packages are built from source, which needs Rtools on Windows or the
 Xcode command-line tools on macOS (`xcode-select --install`).

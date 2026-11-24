@@ -1,5 +1,9 @@
 # tidydiversity (development version)
 
+* README and website: installation lists tidydiversity first, then tidymapr and
+  tidyvisor, saying what each does; the navigation bar links to the
+  tidyvisor website.
+
 * Components of CANOCO that were missing:
   - `ord_design()`: restricted permutation designs (blocks, split-plot
     with whole plots, time series and transects, rectangular grids, with
