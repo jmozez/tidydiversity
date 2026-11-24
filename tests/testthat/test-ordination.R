@@ -299,7 +299,7 @@ test_that("tidyvisor() advises on data and interprets results", {
   expect_s3_class(tidyvisor(d, abundance = abundance), "td_ord_advice")
   o <- ord_fit(d, abundance = abundance, method = "pca", transform = "hellinger")
   expect_s3_class(tidyvisor(o), "td_ord_interpretation")
-  expect_error(tidyvisor(1:3), "No adviser")
+  expect_error(tidyvisor(1:3), "No advis[eo]r")
 })
 
 test_that("tidyvisor() hands tidymapr's work to tidymapr", {

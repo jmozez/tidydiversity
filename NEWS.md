@@ -1,7 +1,7 @@
 # tidydiversity (development version)
 
 * tidyvisor is now a package of its own, shared with tidymapr.
-  tidydiversity imports it, registers its adviser (`ord_advise()` and
+  tidydiversity imports it, registers its advisor (`ord_advise()` and
   `ord_interpret()`) when loaded, and re-exports `tidyvisor()`, so one
   `tidyvisor()` serves both packages, whichever is loaded.
 
@@ -17,7 +17,7 @@
   alias of `index`, the name used by betapart, so
   `beta_multi(x, index.family = "sorensen")` works as it does there.
 
-* New **tidyvisor**, the package's adviser: `tidyvisor()` advises on the
+* New **tidyvisor**, the package's advisor: `tidyvisor()` advises on the
   analysis when given data and interprets the results when given a fit.
 * New `ord_advise()` recommends an ordination and its test from the question
   and the data: unconstrained or constrained, linear or unimodal (from the

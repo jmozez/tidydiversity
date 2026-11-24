@@ -1,5 +1,5 @@
 .onLoad <- function(libname, pkgname) {
-  # Register tidydiversity's adviser with tidyvisor, replacing tidyvisor's
+  # Register tidydiversity's advisor with tidyvisor, replacing tidyvisor's
   # built-in one, so tidyvisor() uses the functions of this version.
   tidyvisor::register_advisor(
     package = pkgname,
