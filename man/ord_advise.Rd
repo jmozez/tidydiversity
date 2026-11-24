@@ -12,7 +12,8 @@ ord_advise(
   formula = NULL,
   question = c("auto", "explore", "explain", "groups", "time", "partition"),
   treatment = NULL,
-  time = NULL
+  time = NULL,
+  env = NULL
 )
 }
 \arguments{
@@ -35,6 +36,10 @@ followed over time) or \code{"partition"} (separate the effects of sets of
 variables).}
 
 \item{treatment, time}{Optional columns for a treatment followed over time.}
+
+\item{env}{A data frame of site variables with a column named like the
+site column, as in \code{\link[=ord_fit]{ord_fit()}}: the environment table of a
+species-environment pair. Its columns are added to \code{data} by site.}
 }
 \value{
 A list of class \code{td_ord_advice}: \code{checks} (a tibble of what was

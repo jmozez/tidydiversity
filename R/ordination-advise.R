@@ -48,6 +48,9 @@
 #'   measured in the data, its value and what it means), `advice` (a tibble
 #'   of steps: `step`, `recommendation`, `reason` and `code`) and
 #'   `gradient_length`. Printing it shows the advice.
+#' @param env A data frame of site variables with a column named like the
+#'   site column, as in [ord_fit()]: the environment table of a
+#'   species-environment pair. Its columns are added to `data` by site.
 #' @references
 #' Leps, J. and Smilauer, P. (2003). Multivariate Analysis of Ecological Data
 #' using CANOCO. Cambridge University Press.
@@ -77,11 +80,15 @@ ord_advise <- function(data,
                        formula = NULL,
                        question = c("auto", "explore", "explain", "groups", "time", "partition"),
                        treatment = NULL,
-                       time = NULL) {
+                       time = NULL,
+                       env = NULL) {
   rlang::check_installed("vegan", "to measure the gradient length.")
   td_check_data(data)
   question <- rlang::arg_match(question)
   site_col <- td_pick(enquo(site), data, "site")
+  if (!is.null(env)) {
+    data <- td_join_env(data, env, site_col)
+  }
   ab_q <- enquo(abundance)
   trt_q <- enquo(treatment)
   time_q <- enquo(time)
@@ -352,4 +359,18 @@ print.td_ord_advice <- function(x, ...) {
     if (nzchar(r$code)) cli::cli_code(strsplit(r$code, "\n")[[1]])
   }
   invisible(x)
+}
+
+# Add the columns of a site table (one row per site) to long community data
+td_join_env <- function(data, env, site_col, call = rlang::caller_env()) {
+  if (!is.data.frame(env) || !site_col %in% names(env)) {
+    cli::cli_abort("{.arg env} needs a {.field {site_col}} column, one row per site.", call = call)
+  }
+  if (anyDuplicated(env[[site_col]])) {
+    cli::cli_abort("{.arg env} must have one row per site.", call = call)
+  }
+  env[[site_col]] <- as.character(env[[site_col]])
+  data[[site_col]] <- as.character(data[[site_col]])
+  extra <- setdiff(names(env), names(data))
+  dplyr::left_join(data, env[c(site_col, extra)], by = site_col)
 }

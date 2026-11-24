@@ -1,5 +1,13 @@
 # tidydiversity (development version)
 
+* Two classic species-environment pairs in the layout CANOCO uses, a
+  species table (sites by species) and an environment table (one row per
+  site) linked by `site`: `dune_species` and `dune_env` (Dutch dune
+  meadows; Jongman et al. 1987) and `vare_species` and `vare_env` (lichen
+  pastures and soil chemistry; Väre et al. 1995), from vegan.
+* `ord_advise()` gains `env`, like `ord_fit()`, so the environment table of
+  such a pair can be given separately.
+
 * `ord_advise()` measures the gradient length as CANOCO reports it, on the
   longest of the four DCA axes rather than the first alone, and states the
   rule with its thresholds: below 3 SD linear, above 4 SD unimodal, 3 to 4 SD

@@ -169,6 +169,8 @@ reference:
       - wanang_butterflies
       - wanang_caterpillars
       - portal_rodents
+      - dune_species
+      - vare_species
   - title: Alpha diversity
     contents:
       - div_hill
