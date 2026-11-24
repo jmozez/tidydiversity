@@ -170,10 +170,13 @@ when a function needs them, so `library(tidydiversity)` stays light.
 | Beta diversity partitioning, distance decay and decay models                              | `beta_pair()`, `beta_multi()`, `beta_decay()`, `beta_decay_model()`                      | betapart                                |
 | Pairwise Hill-number dissimilarity (Sorensen, Jaccard, Horn, Morisita-Horn)               | `beta_hill_pair()`                                                                       | vegan                                   |
 | Coverage-standardised beta diversity (TD, PD, FD)                                         | `beta_hill()`                                                                            | iNEXT.beta3D                            |
-| Ordination (PCA to db-RDA) with biplots                                                   | `ord_fit()`, `autoplot()`                                                                | vegan, ggvegan, ggord                   |
+| Ordination (PCA to db-RDA, log-ratio analysis) with biplots, downweighting of rare species, species fit, supplementary sites | `ord_fit()`, `autoplot()`, `ord_species_fit()`, `ord_predict()` | vegan, ggvegan, ggord, CANOCO |
+| Restricted permutations (blocks, split-plot, time series, grids); simple and conditional term effects with adjusted p-values | `ord_design()`, `ord_test()`, `ord_effects()` | permute, CANOCO |
+| Canonical variate analysis; co-correspondence analysis | `ord_cva()`, `ord_coca()` | MASS, cocorresp, CANOCO |
+| Which analysis, and what the result means | `ord_advise()`, `ord_interpret()`, `tidyvisor()` | a statistician |
 | PERMANOVA (classic and Welch-type), dispersion, variation partitioning, forward selection | `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `ord_varpart()`, `ord_select()` | vegan, adespatial                       |
 | Indicator species, corrected for multiple testing                                         | `beta_indicator()`                                                                       | indicspecies                            |
-| Traits: CWM, FD indices, null models, ITV, fourth corner                                  | `trait_*()`                                                                              | FD, gawdis, picante, cati, ade4, weimea |
+| Traits: CWM, FD indices, null models, ITV, fourth corner, dc-CA, RLQ | `trait_*()` | FD, gawdis, picante, cati, ade4, weimea, douconca |
 | Trait probability densities                                                               | `trait_tpd()`                                                                            | TPD                                     |
 | Phylogenetic signal and distances                                                         | `phylo_*()`                                                                              | phytools, picante, ape                  |
 | Modelling with tidymodels                                                                 | `model_*()`, `step_hill()`                                                               | hand-written glue                       |
@@ -212,6 +215,13 @@ to report them.
 4. [Beta diversity](https://tidydiversity.in4metrix.dev/articles/guide-04-beta.html)
 5. [Community composition: ordination and tests](https://tidydiversity.in4metrix.dev/articles/guide-05-composition.html)
 6. [Functional and phylogenetic diversity](https://tidydiversity.in4metrix.dev/articles/guide-06-dimensions.html)
+
+Which method for which question? The article
+[Which multivariate method?](https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html)
+explains how ordination relates to multivariate tests, classification and
+dissimilarity, and how CANOCO's gradient-length rule (below 3 SD linear,
+above 4 SD unimodal) guides the choice.
+
 
 ## Maps with tidymapr
 
@@ -298,6 +308,14 @@ deposits by scripts in `data-raw/`.
 | `wanang_butterflies`  | Butterflies on 36 days over three years, Wanang forest plot                           | Luk et al. (2019) *Biotropica*, [doi:10.1111/btp.12671](https://doi.org/10.1111/btp.12671)                        |
 | `wanang_caterpillars` | 9363 reared caterpillars of 849 morphospecies, primary and secondary forest at Wanang | Butterill and Redmond (2023) GBIF, [doi:10.15468/7e96ht](https://doi.org/10.15468/7e96ht) (CC BY 4.0)             |
 
+Two classic species-environment pairs are included in the layout CANOCO
+uses (a sites-by-species table and a site table, linked by `site`), from
+the vegan package: `dune_species` and `dune_env` (Dutch dune meadows;
+Jongman et al. 1987) and `vare_species` and `vare_env` (lichen pastures and
+soil chemistry; Väre et al. 1995). Units are given in their help pages
+where the sources confirm them.
+
+
 ## TD, PD and FD on one scale
 
 The same verbs give all three dimensions. Here are rarefaction and
@@ -370,14 +388,15 @@ of unequal sampling effort before you compare sites.
 | Community data                 | `as_community()`, `community_wide()`, `community_long()`, `add_site_data()`                                                                                                                        |
 | Alpha diversity (`div_`)       | `div_hill()`, `div_estimate()`, `div_coverage()`, `div_rarefy()`, `div_standardise()`, `div_completeness()`, `div_evenness()`, `div_boot()`                                                        |
 | Beta diversity (`beta_`)       | `beta_pair()`, `beta_multi()`, `beta_hill()`, `beta_hill_pair()`, `beta_decay()`, `beta_decay_model()`, `beta_dist()`, `beta_permanova()`, `beta_welch()`, `beta_dispersion()`, `beta_indicator()` |
-| Ordination (`ord_`)            | `ord_fit()`, `ord_test()`, `ord_select()`, `ord_varpart()`                                                                                                                                         |
-| Traits (`trait_`)              | `trait_dist()`, `trait_cwm()`, `trait_cwm_test()`, `trait_fd_indices()`, `trait_rao()`, `trait_ses()`, `trait_itv()`, `trait_fourth_corner()`, `trait_tpd()`, `trait_tpd_dissim()`                 |
+| Ordination (`ord_`) | `ord_fit()`, `ord_test()`, `ord_design()`, `ord_effects()`, `ord_select()`, `ord_varpart()`, `ord_prc()`, `ord_species_fit()`, `ord_predict()`, `ord_cva()`, `ord_coca()`, `ord_advise()`, `ord_interpret()` |
+| Traits (`trait_`) | `trait_dist()`, `trait_cwm()`, `trait_cwm_test()`, `trait_fd_indices()`, `trait_rao()`, `trait_ses()`, `trait_itv()`, `trait_fourth_corner()`, `trait_dcca()`, `trait_rlq()`, `trait_tpd()`, `trait_tpd_dissim()` |
 | Phylogeny (`phylo_`)           | `phylo_signal()`, `phylo_dist()`, `phylo_combine_dist()`                                                                                                                                           |
 | Modelling (`model_`)           | `model_group_folds()`, `model_case_weights()`, `step_hill()`, `tidy()`, `glance()`                                                                                                                 |
 | ForestGEO (`stems_`)           | `stems_as_trees()`, `stems_abundance()`, `stems_basal_area()`, `stems_size_class()`, `stems_demography()`, `stems_as_community()`                                                                  |
 | Count models and partial plots | `model_count()`, `plot_partial()`, `plot_surface()`                                                                                                                                                |
 | Plots and tables (`plot_`)     | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `plot_partial()`, `plot_surface()`, `plot_phylo()`, `plot_trait_space()`, `plot_venn()`, `theme_tidydiversity()`, `div_table()`     |
-| Example data                   | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `wanang_caterpillars`, `data_aravo()`                                                                                              |
+| Advice | `tidyvisor()` (from the tidyvisor package) |
+| Example data | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `wanang_caterpillars`, `dune_species`, `dune_env`, `vare_species`, `vare_env`, `data_aravo()` |
 
 ## Gallery
 
