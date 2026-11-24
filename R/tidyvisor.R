@@ -12,6 +12,9 @@
 #'
 #' @param x Community data in long format (to be advised), or the result of
 #'   [ord_fit()], [ord_prc()] or [ord_varpart()] (to be interpreted).
+#'   tidymapr results and mapping questions (`question = "spread"` and so
+#'   on) are passed to `tidyvisor()` in tidymapr, so it does not matter which
+#'   of the two packages was attached last.
 #' @param ... Passed to [ord_advise()] (data) or [ord_interpret()] (results).
 #' @return A `td_ord_advice` or a `td_ord_interpretation` object.
 #' @export
@@ -29,8 +32,12 @@
 #' )
 #' tidyvisor(o, permutations = 199)
 tidyvisor <- function(x, ...) {
+  # tidymapr has its own tidyvisor(); whichever package is attached last
+  # masks the other, so each hands over what belongs to the other.
   if (inherits(x, c("td_ordination", "td_prc", "td_varpart"))) {
     ord_interpret(x, ...)
+  } else if (td_for_tidymapr(x, ...)) {
+    td_companion("tidymapr", "tidyvisor")(x, ...)
   } else if (is.data.frame(x)) {
     ord_advise(x, ...)
   } else {
@@ -39,4 +46,24 @@ tidyvisor <- function(x, ...) {
       i = "Got an object of class {.cls {class(x)}}."
     ))
   }
+}
+
+# Objects and questions that belong to tidyvisor() in tidymapr
+td_for_tidymapr <- function(x, ...) {
+  # read `question` alone: other arguments may be bare column names
+  q <- if ("question" %in% ...names()) ...elt(match("question", ...names()))
+  mapping <- c("distribution", "spread", "epidemic", "range_shift", "autocorrelation")
+  any(grepl("^tmr_", class(x))) ||
+    (is.data.frame(x) && !is.null(q) && q[1] %in% mapping)
+}
+
+# A function from a companion package, looked up at run time
+td_companion <- function(pkg, fun, call = rlang::caller_env()) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    cli::cli_abort(c(
+      "This needs the {.pkg {pkg}} package, which is not installed.",
+      i = "Install it with {.code remotes::install_github(\"jmozez/{pkg}\")}."
+    ), call = call)
+  }
+  getExportedValue(pkg, fun)
 }

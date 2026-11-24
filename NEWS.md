@@ -1,3 +1,9 @@
+# tidydiversity (development version)
+
+* `tidyvisor()` now hands tidymapr results and mapping questions to
+  `tidyvisor()` in tidymapr, so it works whichever of the two packages was
+  attached last (both export a function of that name).
+
 # tidydiversity 0.3.0
 
 * Argument names from vegan, betapart and indicspecies are accepted as
