@@ -13,7 +13,7 @@
 #' @param x Community data in long format (to be advised), or the result of
 #'   [ord_fit()], [ord_prc()] or [ord_varpart()] (to be interpreted).
 #'   tidymapr results and mapping questions (`question = "spread"` and so
-#'   on) are passed to tidymapr's `tidyvisor()`, so it does not matter which
+#'   on) are passed to `tidyvisor()` in tidymapr, so it does not matter which
 #'   of the two packages was attached last.
 #' @param ... Passed to [ord_advise()] (data) or [ord_interpret()] (results).
 #' @return A `td_ord_advice` or a `td_ord_interpretation` object.
@@ -48,7 +48,7 @@ tidyvisor <- function(x, ...) {
   }
 }
 
-# Objects and questions that belong to tidymapr's tidyvisor
+# Objects and questions that belong to tidyvisor() in tidymapr
 td_for_tidymapr <- function(x, ...) {
   # read `question` alone: other arguments may be bare column names
   q <- if ("question" %in% ...names()) ...elt(match("question", ...names()))

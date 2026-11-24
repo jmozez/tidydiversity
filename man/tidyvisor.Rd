@@ -10,7 +10,7 @@ tidyvisor(x, ...)
 \item{x}{Community data in long format (to be advised), or the result of
 \code{\link[=ord_fit]{ord_fit()}}, \code{\link[=ord_prc]{ord_prc()}} or \code{\link[=ord_varpart]{ord_varpart()}} (to be interpreted).
 tidymapr results and mapping questions (\code{question = "spread"} and so
-on) are passed to tidymapr's \code{tidyvisor()}, so it does not matter which
+on) are passed to \code{tidyvisor()} in tidymapr, so it does not matter which
 of the two packages was attached last.}
 
 \item{...}{Passed to \code{\link[=ord_advise]{ord_advise()}} (data) or \code{\link[=ord_interpret]{ord_interpret()}} (results).}
