@@ -97,6 +97,9 @@
 #' @param species Number of species to draw and label, those best
 #'   represented in the plotted plane (longest scores). Use `Inf` for all
 #'   and `0` for none.
+#' @param species_fit Minimum fit (percent of a species' variation
+#'   explained by the plotted axes, [ord_species_fit()]) for a species to be
+#'   drawn, as CANOCO's species fit range. For PCA, CA, RDA and CCA.
 #' @param arrows Draw environmental arrows and factor centroids.
 #' @param ellipse `"none"` (the default), `"sd"`, `"ci"` or `"se"`.
 #' @param level Coverage of `"ci"` and `"se"` ellipses.
@@ -141,6 +144,7 @@ autoplot.td_ordination <- function(object,
                                    site_labels = FALSE,
                                    species = 10,
                                    species_arrows = FALSE,
+                                   species_fit = NULL,
                                    arrows = TRUE,
                                    ellipse = c("none", "sd", "ci", "se"),
                                    level = 0.95,
@@ -284,6 +288,10 @@ autoplot.td_ordination <- function(object,
     spp$.x <- spp[[ax[1]]]
     spp$.y <- spp[[ax[2]]]
     spp <- spp[is.finite(spp$.x) & is.finite(spp$.y), ]
+    if (!is.null(species_fit)) {
+      fit <- ord_species_fit(object, axes = max(axes))
+      spp <- spp[spp$species %in% fit$species[fit$fit_pct >= species_fit], ]
+    }
     spp <- spp[order(-(spp$.x^2 + spp$.y^2)), ][seq_len(min(species, nrow(spp))), ]
     spp$.label <- spp$species
     if (linear) {

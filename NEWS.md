@@ -1,5 +1,20 @@
 # tidydiversity (development version)
 
+* Components of CANOCO that were missing:
+  - `ord_design()`: restricted permutation designs (blocks, split-plot
+    with whole plots, time series and transects, rectangular grids, with
+    mirror images), for `ord_test()`, `ord_select()` and `ord_effects()`
+    (`design` argument).
+  - `ord_effects()`: CANOCO's simple and conditional effects of each
+    explanatory variable (variation explained, pseudo-F, p-value), with
+    Holm or false-discovery-rate adjusted p-values.
+  - `ord_select()` reports p-values adjusted for the number of candidate
+    variables (`adjust`, Holm by default).
+  - `ord_fit(downweight = TRUE)`: downweighting of rare species for CA, DCA
+    and CCA.
+  - `ord_species_fit()`: the fit of each species or site to the first axes;
+    `autoplot(species_fit = )` draws only species above a fit threshold.
+
 * Two classic species-environment pairs in the layout CANOCO uses, a
   species table (sites by species) and an environment table (one row per
   site) linked by `site`: `dune_species` and `dune_env` (Dutch dune

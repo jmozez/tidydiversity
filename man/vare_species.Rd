@@ -9,12 +9,24 @@
 \code{vare_species}: a tibble with 24 rows (sites) and 45 columns:
 \code{site} and 44 species of vascular plants, mosses and lichens
 (abbreviated Latin names, such as \code{Cla.ste} for \emph{Cladina stellaris}),
-with estimated cover in percent.
+with estimated cover values (the source does not state the scale).
 
-\code{vare_env}: a tibble with 24 rows and 15 columns: \code{site}, the soil
-nutrients \code{N}, \code{P}, \code{K}, \code{Ca}, \code{Mg}, \code{S}, \code{Al}, \code{Fe}, \code{Mn}, \code{Zn} and
-\code{Mo}, \code{Baresoil} (cover of bare soil), \code{Humdepth} (thickness of the
-humus layer) and \code{pH}.
+\code{vare_env}: a tibble with 24 rows and 15 columns:
+\describe{
+\item{site}{Site number, matching \code{vare_species}.}
+\item{N, P, K, Ca, Mg, S, Al, Fe, Mn, Zn, Mo}{Concentrations of soil
+nutrients and metals (units not stated; see below).}
+\item{Baresoil}{Estimated cover of bare soil.}
+\item{Humdepth}{Thickness of the humus layer.}
+\item{pH}{Soil pH.}
+}
+
+\strong{Units.} The source of these data (vegan) does not state the units
+of the soil variables, and they could not be confirmed from the
+original publication (Väre et al. 1995), so none are given here. The
+variation that RDA or CCA attributes to a variable does not depend on
+its units. Do not compare the values with other soil data without
+checking the original publication.
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 24 rows and 15 columns.
 }

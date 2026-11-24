@@ -9,18 +9,22 @@
 \code{dune_species}: a tibble with 20 rows (sites) and 31 columns:
 \code{site} and 30 plant species (abbreviated Latin names, such as
 \code{Achimill} for \emph{Achillea millefolium}), with cover classes from 1 to 9
-(0 where absent).
+(an ordinal scale, not percent cover; 0 where absent).
 
 \code{dune_env}: a tibble with 20 rows and six columns:
 \describe{
 \item{site}{Site number, matching \code{dune_species}.}
-\item{A1}{Thickness of the soil A1 horizon (cm).}
-\item{Moisture}{Moisture class, ordered: 1, 2, 4, 5.}
+\item{A1}{Thickness of the soil A1 horizon, in cm; 9 means 9 cm or
+more. Where sand deposition left several A1 horizons, only the top
+one was measured.}
+\item{Moisture}{Moisture class, an ordinal scale from 1 (dry) to 5
+(wet); classes 1, 2, 4 and 5 occur.}
 \item{Management}{\code{BF} biological farming, \code{HF} hobby farming, \code{NM}
 nature conservation management, \code{SF} standard farming.}
 \item{Use}{Land use, ordered: \code{Hayfield}, \code{Haypastu} (hay pasture),
 \code{Pasture}.}
-\item{Manure}{Amount of manure, ordered: 0 to 4.}
+\item{Manure}{Amount of manure applied, an ordinal class from 0 (none)
+to 4 (the most); not a quantity in kg.}
 }
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 20 rows and 6 columns.
@@ -59,6 +63,10 @@ ord_fit(d,
 \dontshow{\}) # examplesIf}
 }
 \references{
+Batterink, M. and Wijffels, G. (1983). Report (in Dutch)
+on the dune meadows of Terschelling. Agricultural University,
+Wageningen. (The original survey.)
+
 Jongman, R. H., ter Braak, C. J. F. and van Tongeren, O. F. R.
 (1987). \emph{Data Analysis in Community and Landscape Ecology}. Pudoc,
 Wageningen.

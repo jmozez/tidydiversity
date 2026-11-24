@@ -224,6 +224,9 @@ reference:
       - ord_style
       - ord_prc
       - ord_test
+      - ord_design
+      - ord_effects
+      - ord_species_fit
       - ord_select
       - ord_varpart
       - autoplot.td_ordination

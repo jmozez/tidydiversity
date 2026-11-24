@@ -19,6 +19,7 @@ ord_fit(
   permutations = 999,
   choices = 1:2,
   seed = NULL,
+  downweight = FALSE,
   ...
 )
 }
@@ -71,6 +72,11 @@ as in \code{\link[vegan:envfit]{vegan::envfit()}}. The default, the first two, m
 biplot; the axes used are reported in the \code{envfit} table.}
 
 \item{seed}{Optional random seed for the permutation tests.}
+
+\item{downweight}{For CA, DCA and CCA: downweight rare species
+(\code{\link[vegan:downweight]{vegan::downweight()}}), as the "downweighting of rare species" option
+of CANOCO. Rare species otherwise have a large influence on
+chi-square-based methods.}
 
 \item{...}{Passed to the vegan function that fits the ordination.}
 }

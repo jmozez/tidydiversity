@@ -14,6 +14,7 @@
   site_labels = FALSE,
   species = 10,
   species_arrows = FALSE,
+  species_fit = NULL,
   arrows = TRUE,
   ellipse = c("none", "sd", "ci", "se"),
   level = 0.95,
@@ -66,6 +67,10 @@ and \code{0} for none.}
 are taxa and are drawn as points (crosses) with italic labels, as in
 \code{vegan::plot.rda()}; arrows are kept for continuous explanatory
 variables.}
+
+\item{species_fit}{Minimum fit (percent of a species' variation
+explained by the plotted axes, \code{\link[=ord_species_fit]{ord_species_fit()}}) for a species to be
+drawn, as CANOCO's species fit range. For PCA, CA, RDA and CCA.}
 
 \item{arrows}{Draw environmental arrows and factor centroids.}
 

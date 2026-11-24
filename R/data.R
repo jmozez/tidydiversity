@@ -245,22 +245,30 @@
 #' @format `dune_species`: a tibble with 20 rows (sites) and 31 columns:
 #'   `site` and 30 plant species (abbreviated Latin names, such as
 #'   `Achimill` for *Achillea millefolium*), with cover classes from 1 to 9
-#'   (0 where absent).
+#'   (an ordinal scale, not percent cover; 0 where absent).
 #'
 #'   `dune_env`: a tibble with 20 rows and six columns:
 #' \describe{
 #'   \item{site}{Site number, matching `dune_species`.}
-#'   \item{A1}{Thickness of the soil A1 horizon (cm).}
-#'   \item{Moisture}{Moisture class, ordered: 1, 2, 4, 5.}
+#'   \item{A1}{Thickness of the soil A1 horizon, in cm; 9 means 9 cm or
+#'     more. Where sand deposition left several A1 horizons, only the top
+#'     one was measured.}
+#'   \item{Moisture}{Moisture class, an ordinal scale from 1 (dry) to 5
+#'     (wet); classes 1, 2, 4 and 5 occur.}
 #'   \item{Management}{`BF` biological farming, `HF` hobby farming, `NM`
 #'     nature conservation management, `SF` standard farming.}
 #'   \item{Use}{Land use, ordered: `Hayfield`, `Haypastu` (hay pasture),
 #'     `Pasture`.}
-#'   \item{Manure}{Amount of manure, ordered: 0 to 4.}
+#'   \item{Manure}{Amount of manure applied, an ordinal class from 0 (none)
+#'     to 4 (the most); not a quantity in kg.}
 #' }
 #' @source The vegan package (Oksanen et al.), data sets `dune` and
 #'   `dune.env`. Built by `data-raw/canoco_pairs.R` in the package source.
-#' @references Jongman, R. H., ter Braak, C. J. F. and van Tongeren, O. F. R.
+#' @references Batterink, M. and Wijffels, G. (1983). Report (in Dutch)
+#'   on the dune meadows of Terschelling. Agricultural University,
+#'   Wageningen. (The original survey.)
+#'
+#'   Jongman, R. H., ter Braak, C. J. F. and van Tongeren, O. F. R.
 #'   (1987). *Data Analysis in Community and Landscape Ecology*. Pudoc,
 #'   Wageningen.
 #' @name dune_species
@@ -292,12 +300,24 @@
 #' @format `vare_species`: a tibble with 24 rows (sites) and 45 columns:
 #'   `site` and 44 species of vascular plants, mosses and lichens
 #'   (abbreviated Latin names, such as `Cla.ste` for *Cladina stellaris*),
-#'   with estimated cover in percent.
+#'   with estimated cover values (the source does not state the scale).
 #'
-#'   `vare_env`: a tibble with 24 rows and 15 columns: `site`, the soil
-#'   nutrients `N`, `P`, `K`, `Ca`, `Mg`, `S`, `Al`, `Fe`, `Mn`, `Zn` and
-#'   `Mo`, `Baresoil` (cover of bare soil), `Humdepth` (thickness of the
-#'   humus layer) and `pH`.
+#'   `vare_env`: a tibble with 24 rows and 15 columns:
+#' \describe{
+#'   \item{site}{Site number, matching `vare_species`.}
+#'   \item{N, P, K, Ca, Mg, S, Al, Fe, Mn, Zn, Mo}{Concentrations of soil
+#'     nutrients and metals (units not stated; see below).}
+#'   \item{Baresoil}{Estimated cover of bare soil.}
+#'   \item{Humdepth}{Thickness of the humus layer.}
+#'   \item{pH}{Soil pH.}
+#' }
+#'
+#'   **Units.** The source of these data (vegan) does not state the units
+#'   of the soil variables, and they could not be confirmed from the
+#'   original publication (Väre et al. 1995), so none are given here. The
+#'   variation that RDA or CCA attributes to a variable does not depend on
+#'   its units. Do not compare the values with other soil data without
+#'   checking the original publication.
 #' @source The vegan package (Oksanen et al.), data sets `varespec` and
 #'   `varechem`. Built by `data-raw/canoco_pairs.R` in the package source.
 #' @references Väre, H., Ohtonen, R. and Oksanen, J. (1995). Effects of

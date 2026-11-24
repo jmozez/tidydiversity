@@ -4,7 +4,12 @@
 \alias{ord_test}
 \title{Permutation tests for constrained ordinations}
 \usage{
-ord_test(x, by = c("model", "axis", "terms", "margin"), permutations = 999)
+ord_test(
+  x,
+  by = c("model", "axis", "terms", "margin"),
+  permutations = 999,
+  design = NULL
+)
 }
 \arguments{
 \item{x}{A \code{td_ordination} from a constrained method.}
@@ -15,6 +20,9 @@ constrained axis), \code{"terms"} (each term, added sequentially) or
 \code{\link[vegan:anova.cca]{vegan::anova.cca()}}, means \code{"model"}.}
 
 \item{permutations}{Number of permutations.}
+
+\item{design}{Optional restricted permutation design from
+\code{\link[=ord_design]{ord_design()}} (blocks, split-plot, time series, grids).}
 }
 \value{
 A tibble with \code{term}, \code{df}, \code{variance} (or \code{chi_square} for

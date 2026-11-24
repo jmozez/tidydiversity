@@ -15,7 +15,9 @@ ord_select(
   transform = NULL,
   distance = "bray",
   alpha = 0.05,
-  permutations = 999
+  permutations = 999,
+  design = NULL,
+  adjust = c("holm", "fdr", "bonferroni", "none")
 )
 }
 \arguments{
@@ -52,10 +54,17 @@ passed to \code{\link[vegan:vegdist]{vegan::vegdist()}}, such as \code{"bray"} (
 number, or \code{"exact"} for complete enumeration of all n! orderings of
 the sites (feasible up to about 9 sites; with 7 sites, 5,040), which
 gives exact p-values.}
+
+\item{design}{Optional restricted permutation design from \code{\link[=ord_design]{ord_design()}}.}
+
+\item{adjust}{Adjustment of the step p-values for the number of
+candidate variables tested (\code{\link[stats:p.adjust]{stats::p.adjust()}}), as CANOCO 5 reports:
+\code{"holm"}, \code{"fdr"}, \code{"bonferroni"} or \code{"none"}.}
 }
 \value{
 A tibble with one row per selected step: \code{step}, \code{term},
-\code{adj_r2} (cumulative), \code{statistic} and \code{p.value}, and the adjusted \eqn{R^2}
+\code{adj_r2} (cumulative), \code{statistic}, \code{p.value} and \code{p.adjusted}, and
+the adjusted \eqn{R^2}
 of the full model as attribute \code{"adj_r2_full"}.
 }
 \description{
