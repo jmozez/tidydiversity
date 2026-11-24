@@ -73,6 +73,9 @@
 #'
 #'   Oksanen, J. et al. vegan: Community Ecology Package.
 #'   <https://CRAN.R-project.org/package=vegan>
+#' @seealso The article [Which multivariate method?](https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html)
+#'   explains how ordination relates to the other multivariate methods and
+#'   how to choose among them.
 #' @export
 #' @examplesIf requireNamespace("vegan", quietly = TRUE)
 #' # Tree-nesting ants: one sample per plot and subplot

@@ -63,6 +63,9 @@
 #'
 #' Legendre, P. and Legendre, L. (2012). Numerical Ecology, third edition.
 #' Elsevier.
+#' @seealso The article [Which multivariate method?](https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html)
+#'   explains how ordination relates to the other multivariate methods and
+#'   how to choose among them.
 #' @export
 #' @examplesIf rlang::is_installed("vegan")
 #' data("dune", "dune.env", package = "vegan")
