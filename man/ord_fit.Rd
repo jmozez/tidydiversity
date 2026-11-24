@@ -19,6 +19,7 @@ ord_fit(
   permutations = 999,
   choices = 1:2,
   seed = NULL,
+  downweight = FALSE,
   ...
 )
 }
@@ -46,7 +47,10 @@ column that is constant within each site.}
 analysis: \code{"hellinger"} (the default for PCA and RDA, which
 otherwise overweight abundant species; Legendre and Gallagher 2001),
 \code{"chord"}, \code{"log"} (log(x) + 1 for x > 0), \code{"sqrt"}, \code{"pa"}
-(presence-absence) or \code{"none"} (the default for the other methods).}
+(presence-absence), \code{"logratio"} or \code{"none"} (the default for the other
+methods). \code{"logratio"} takes log(y + 1) and centres it by both sites
+and species: PCA of it is CANOCO's log-ratio analysis (LRA), and RDA
+of it is constrained log-ratio analysis.}
 
 \item{distance}{Dissimilarity for \code{"pcoa"}, \code{"nmds"} and \code{"dbrda"},
 passed to \code{\link[vegan:vegdist]{vegan::vegdist()}}, such as \code{"bray"} (the default) or
@@ -71,6 +75,11 @@ as in \code{\link[vegan:envfit]{vegan::envfit()}}. The default, the first two, m
 biplot; the axes used are reported in the \code{envfit} table.}
 
 \item{seed}{Optional random seed for the permutation tests.}
+
+\item{downweight}{For CA, DCA and CCA: downweight rare species
+(\code{\link[vegan:downweight]{vegan::downweight()}}), as the "downweighting of rare species" option
+of CANOCO. Rare species otherwise have a large influence on
+chi-square-based methods.}
 
 \item{...}{Passed to the vegan function that fits the ordination.}
 }
@@ -136,4 +145,10 @@ Power, Ithaca, USA.
 
 Oksanen, J. et al. vegan: Community Ecology Package.
 \url{https://CRAN.R-project.org/package=vegan}
+}
+\seealso{
+The article "Which multivariate method?" explains how
+ordination relates to the other multivariate methods and how to choose
+among them:
+\url{https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html}
 }

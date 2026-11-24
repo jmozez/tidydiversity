@@ -229,3 +229,106 @@
 #' portal_rodents
 #' div_hill(portal_rodents, q = 0, .by = c(treatment, year))
 "portal_rodents"
+
+#' Dune meadow vegetation and environment (a species-environment pair)
+#'
+#' Real field data: the Dutch dune meadow data, a classic teaching example
+#' for ordination (Jongman et al. 1987), as two tables in the layout CANOCO
+#' uses: a species table with one row per site and one column per species,
+#' and an environment table with one row per site. The two are linked by
+#' `site`. Taken unchanged from the vegan package (`dune` and `dune.env`).
+#'
+#' To analyse the pair, put the species table in long format with
+#' [community_long()] and give the environment table as `env` to
+#' [ord_fit()] or [ord_advise()].
+#'
+#' @format `dune_species`: a tibble with 20 rows (sites) and 31 columns:
+#'   `site` and 30 plant species (abbreviated Latin names, such as
+#'   `Achimill` for *Achillea millefolium*), with cover classes from 1 to 9
+#'   (an ordinal scale, not percent cover; 0 where absent).
+#'
+#'   `dune_env`: a tibble with 20 rows and six columns:
+#' \describe{
+#'   \item{site}{Site number, matching `dune_species`.}
+#'   \item{A1}{Thickness of the soil A1 horizon, in cm; 9 means 9 cm or
+#'     more. Where sand deposition left several A1 horizons, only the top
+#'     one was measured.}
+#'   \item{Moisture}{Moisture class, an ordinal scale from 1 (dry) to 5
+#'     (wet); classes 1, 2, 4 and 5 occur.}
+#'   \item{Management}{`BF` biological farming, `HF` hobby farming, `NM`
+#'     nature conservation management, `SF` standard farming.}
+#'   \item{Use}{Land use, ordered: `Hayfield`, `Haypastu` (hay pasture),
+#'     `Pasture`.}
+#'   \item{Manure}{Amount of manure applied, an ordinal class from 0 (none)
+#'     to 4 (the most); not a quantity in kg.}
+#' }
+#' @source The vegan package (Oksanen et al.), data sets `dune` and
+#'   `dune.env`. Built by `data-raw/canoco_pairs.R` in the package source.
+#' @references Batterink, M. and Wijffels, G. (1983). Report (in Dutch)
+#'   on the dune meadows of Terschelling. Agricultural University,
+#'   Wageningen. (The original survey.)
+#'
+#'   Jongman, R. H., ter Braak, C. J. F. and van Tongeren, O. F. R.
+#'   (1987). *Data Analysis in Community and Landscape Ecology*. Pudoc,
+#'   Wageningen.
+#' @name dune_species
+#' @aliases dune_env
+#' @examplesIf rlang::is_installed("vegan")
+#' dune_species
+#' dune_env
+#' d <- community_long(dune_species, cols = -site)
+#' ord_advise(d, abundance = abundance, formula = ~ A1 + Management, env = dune_env)
+#' ord_fit(d,
+#'   abundance = abundance, method = "rda", formula = ~ A1 + Management,
+#'   env = dune_env
+#' )
+"dune_species"
+
+#' @rdname dune_species
+"dune_env"
+
+#' Lichen pasture vegetation and soil chemistry (a species-environment pair)
+#'
+#' Real field data: understorey vegetation and soil of 24 lichen pastures in
+#' dry *Pinus sylvestris* forests of northern Finland grazed by reindeer
+#' (Väre et al. 1995), as two tables in the layout CANOCO uses: a species
+#' table with one row per site and one column per species, and an
+#' environment table of soil variables with one row per site. The two are
+#' linked by `site`. Taken unchanged from the vegan package (`varespec` and
+#' `varechem`).
+#'
+#' @format `vare_species`: a tibble with 24 rows (sites) and 45 columns:
+#'   `site` and 44 species of vascular plants, mosses and lichens
+#'   (abbreviated Latin names, such as `Cladstel` for *Cladina stellaris*),
+#'   with estimated cover values (the source does not state the scale).
+#'
+#'   `vare_env`: a tibble with 24 rows and 15 columns:
+#' \describe{
+#'   \item{site}{Site number, matching `vare_species`.}
+#'   \item{N, P, K, Ca, Mg, S, Al, Fe, Mn, Zn, Mo}{Concentrations of soil
+#'     nutrients and metals (units not stated; see below).}
+#'   \item{Baresoil}{Estimated cover of bare soil.}
+#'   \item{Humdepth}{Thickness of the humus layer.}
+#'   \item{pH}{Soil pH.}
+#' }
+#'
+#'   **Units.** The source of these data (vegan) does not state the units
+#'   of the soil variables, and they could not be confirmed from the
+#'   original publication (Väre et al. 1995), so none are given here. The
+#'   variation that RDA or CCA attributes to a variable does not depend on
+#'   its units. Do not compare the values with other soil data without
+#'   checking the original publication.
+#' @source The vegan package (Oksanen et al.), data sets `varespec` and
+#'   `varechem`. Built by `data-raw/canoco_pairs.R` in the package source.
+#' @references Väre, H., Ohtonen, R. and Oksanen, J. (1995). Effects of
+#'   reindeer grazing on understorey vegetation in dry *Pinus sylvestris*
+#'   forests. *Journal of Vegetation Science*, 6, 523-530.
+#' @name vare_species
+#' @aliases vare_env
+#' @examplesIf rlang::is_installed("vegan")
+#' v <- community_long(vare_species, cols = -site)
+#' ord_advise(v, abundance = abundance, formula = ~ Al + P + K, env = vare_env)
+"vare_species"
+
+#' @rdname vare_species
+"vare_env"

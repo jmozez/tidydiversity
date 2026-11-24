@@ -14,12 +14,14 @@
 #'   To *test* whether, and how much, measured variables explain
 #'   composition, use a constrained (direct, canonical) ordination: RDA, CCA
 #'   or distance-based RDA, with a permutation test.
-#' * **linear or unimodal.** The length of the first axis of a detrended
-#'   correspondence analysis, in standard-deviation units of species
-#'   turnover, measures how heterogeneous the data are: below about 3, most
-#'   species change monotonically and linear methods (PCA, RDA) fit; above
-#'   about 4, species rise and fall along the gradient and unimodal methods
-#'   (CA, CCA) fit; in between, either (ter Braak and Smilauer 2012).
+#' * **linear or unimodal.** The gradient length is the length of the
+#'   longest axis of a detrended correspondence analysis (on log(y + 1)
+#'   abundances, or presence-absence), in standard-deviation (SD) units of
+#'   species turnover, as CANOCO reports it. Below 3 SD, most species change
+#'   monotonically and linear methods (PCA, RDA) fit; above 4 SD, species
+#'   rise and fall along the gradient and unimodal methods (CA, CCA) fit;
+#'   from 3 to 4 SD, both are appropriate (Leps and Smilauer 2003; ter Braak
+#'   and Smilauer 2012).
 #'   Hellinger-transformed PCA and RDA (Legendre and Gallagher 2001) work
 #'   well whatever the length, and NMDS or distance-based RDA with
 #'   Bray-Curtis or Jaccard dissimilarity suit any data.
@@ -46,7 +48,13 @@
 #'   measured in the data, its value and what it means), `advice` (a tibble
 #'   of steps: `step`, `recommendation`, `reason` and `code`) and
 #'   `gradient_length`. Printing it shows the advice.
+#' @param env A data frame of site variables with a column named like the
+#'   site column, as in [ord_fit()]: the environment table of a
+#'   species-environment pair. Its columns are added to `data` by site.
 #' @references
+#' Leps, J. and Smilauer, P. (2003). Multivariate Analysis of Ecological Data
+#' using CANOCO. Cambridge University Press.
+#'
 #' ter Braak, C. J. F. and Smilauer, P. (2012). Canoco Reference Manual and
 #' User's Guide: Software for Ordination (version 5.0). Microcomputer Power.
 #'
@@ -55,6 +63,10 @@
 #'
 #' Legendre, P. and Legendre, L. (2012). Numerical Ecology, third edition.
 #' Elsevier.
+#' @seealso The article "Which multivariate method?" explains how
+#'   ordination relates to the other multivariate methods and how to choose
+#'   among them:
+#'   <https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html>
 #' @export
 #' @examplesIf rlang::is_installed("vegan")
 #' data("dune", "dune.env", package = "vegan")
@@ -72,11 +84,15 @@ ord_advise <- function(data,
                        formula = NULL,
                        question = c("auto", "explore", "explain", "groups", "time", "partition"),
                        treatment = NULL,
-                       time = NULL) {
+                       time = NULL,
+                       env = NULL) {
   rlang::check_installed("vegan", "to measure the gradient length.")
   td_check_data(data)
   question <- rlang::arg_match(question)
   site_col <- td_pick(enquo(site), data, "site")
+  if (!is.null(env)) {
+    data <- td_join_env(data, env, site_col)
+  }
   ab_q <- enquo(abundance)
   trt_q <- enquo(treatment)
   time_q <- enquo(time)
@@ -89,7 +105,9 @@ ord_advise <- function(data,
   zeros <- mean(y == 0)
   singletons <- mean(colSums(y > 0) == 1)
   dca <- suppressWarnings(vegan::decorana(if (pa) y else log1p(y)))
-  gl <- unname(diff(range(vegan::scores(dca, display = "sites", choices = 1))))
+  # the longest of the four DCA axes, as CANOCO reports it
+  sc <- vegan::scores(dca, display = "sites", choices = 1:4)
+  gl <- unname(max(apply(sc, 2, function(a) diff(range(a)))))
 
   # Site variables
   vars <- if (is.null(formula)) character() else all.vars(formula)
@@ -144,11 +162,11 @@ ord_advise <- function(data,
       },
       if (singletons > 0.3) "many rare species: they add noise; consider removing or down-weighting" else "",
       if (linear) {
-        "short: most species change monotonically; linear methods (PCA, RDA)"
+        "below 3 SD: short; most species change monotonically; linear methods (PCA, RDA)"
       } else if (unimodal) {
-        "long: species rise and fall along the gradient; unimodal methods (CA, CCA)"
+        "above 4 SD: long; species rise and fall along the gradient; unimodal methods (CA, CCA)"
       } else {
-        "intermediate: linear or unimodal methods both suit"
+        "3 to 4 SD: intermediate; linear and unimodal methods are both appropriate"
       },
       if (k >= n - 1) {
         "as many terms as sites: a constrained ordination is not constrained at all"
@@ -179,7 +197,7 @@ ord_advise <- function(data,
     explore = vctrs::vec_rbind(
       step(
         "Approach", "Unconstrained (indirect) ordination",
-        "You want to describe the main patterns of composition, not test their causes.", ""
+        "Branch: ordination (a picture, no test). You want to describe the main patterns of composition, not test their causes.", ""
       ),
       step(
         "Method", if (unimodal) "CA, or NMDS" else "PCA on Hellinger-transformed data, or NMDS",
@@ -213,7 +231,7 @@ ord_advise <- function(data,
     explain = vctrs::vec_rbind(
       step(
         "Approach", "Constrained (direct, canonical) ordination",
-        "You have a hypothesis that measured site variables explain composition.", ""
+        "Branch: ordination and multivariate test (a picture with a permutation test). You have a hypothesis that measured site variables explain composition.", ""
       ),
       step(
         "Method", if (unimodal) "CCA (or db-RDA)" else "RDA on Hellinger-transformed data (or db-RDA)",
@@ -246,7 +264,7 @@ ord_advise <- function(data,
     groups = vctrs::vec_rbind(
       step(
         "Approach", "Compare groups of sites: PERMANOVA, shown by a constrained ordination",
-        "Your site variables are factors (groups).", ""
+        "Branch: multivariate test (PERMANOVA gives the p-value; the ordination shows it). Your site variables are factors (groups).", ""
       ),
       step(
         "Test", "PERMANOVA, with a test of the dispersion within groups",
@@ -278,7 +296,7 @@ ord_advise <- function(data,
     time = vctrs::vec_rbind(
       step(
         "Approach", "Principal response curves (PRC)",
-        "Treatments followed over time: the question is how each departs from the control.", ""
+        "Branch: constrained ordination of a designed experiment, tested by permutation. Treatments followed over time: the question is how each departs from the control.", ""
       ),
       step(
         "Test", "Permutation test of the first PRC axis, permuting within times",
@@ -302,7 +320,7 @@ ord_advise <- function(data,
     partition = vctrs::vec_rbind(
       step(
         "Approach", "Variation partitioning",
-        "You want the separate and shared contributions of sets of variables (e.g. environment and space).", ""
+        "Branch: constrained ordination, partitioned (adjusted R2 for each set). You want the separate and shared contributions of sets of variables (e.g. environment and space).", ""
       ),
       step(
         "Test", "Adjusted R2 of each fraction; permutation tests of the testable fractions",
@@ -345,4 +363,18 @@ print.td_ord_advice <- function(x, ...) {
     if (nzchar(r$code)) cli::cli_code(strsplit(r$code, "\n")[[1]])
   }
   invisible(x)
+}
+
+# Add the columns of a site table (one row per site) to long community data
+td_join_env <- function(data, env, site_col, call = rlang::caller_env()) {
+  if (!is.data.frame(env) || !site_col %in% names(env)) {
+    cli::cli_abort("{.arg env} needs a {.field {site_col}} column, one row per site.", call = call)
+  }
+  if (anyDuplicated(env[[site_col]])) {
+    cli::cli_abort("{.arg env} must have one row per site.", call = call)
+  }
+  env[[site_col]] <- as.character(env[[site_col]])
+  data[[site_col]] <- as.character(data[[site_col]])
+  extra <- setdiff(names(env), names(data))
+  dplyr::left_join(data, env[c(site_col, extra)], by = site_col)
 }

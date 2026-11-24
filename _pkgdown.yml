@@ -169,6 +169,8 @@ reference:
       - wanang_butterflies
       - wanang_caterpillars
       - portal_rodents
+      - dune_species
+      - vare_species
   - title: Alpha diversity
     contents:
       - div_hill
@@ -213,7 +215,7 @@ reference:
       - beta_indicator
   - title: tidyvisor (advice and interpretation)
     contents:
-      - tidyvisor
+      - reexports
       - ord_advise
       - ord_interpret
   - title: Ordination
@@ -222,6 +224,12 @@ reference:
       - ord_style
       - ord_prc
       - ord_test
+      - ord_design
+      - ord_effects
+      - ord_species_fit
+      - ord_predict
+      - ord_cva
+      - ord_coca
       - ord_select
       - ord_varpart
       - autoplot.td_ordination
@@ -236,6 +244,8 @@ reference:
       - trait_ses
       - trait_itv
       - trait_fourth_corner
+      - trait_dcca
+      - trait_rlq
       - trait_tpd
       - phylo_signal
       - phylo_dist
@@ -282,6 +292,7 @@ articles:
       - beta-partitioning
       - elevational-gradient
       - articles/modelling
+      - articles/multivariate-methods
       - articles/ordination
       - articles/ordination-gallery
       - articles/composition-tests

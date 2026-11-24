@@ -32,7 +32,10 @@
 #'   analysis: `"hellinger"` (the default for PCA and RDA, which
 #'   otherwise overweight abundant species; Legendre and Gallagher 2001),
 #'   `"chord"`, `"log"` (log(x) + 1 for x > 0), `"sqrt"`, `"pa"`
-#'   (presence-absence) or `"none"` (the default for the other methods).
+#'   (presence-absence), `"logratio"` or `"none"` (the default for the other
+#'   methods). `"logratio"` takes log(y + 1) and centres it by both sites
+#'   and species: PCA of it is CANOCO's log-ratio analysis (LRA), and RDA
+#'   of it is constrained log-ratio analysis.
 #' @param distance Dissimilarity for `"pcoa"`, `"nmds"` and `"dbrda"`,
 #'   passed to [vegan::vegdist()], such as `"bray"` (the default) or
 #'   `"jaccard"`.
@@ -51,6 +54,10 @@
 #'   as in [vegan::envfit()]. The default, the first two, matches the
 #'   biplot; the axes used are reported in the `envfit` table.
 #' @param seed Optional random seed for the permutation tests.
+#' @param downweight For CA, DCA and CCA: downweight rare species
+#'   ([vegan::downweight()]), as the "downweighting of rare species" option
+#'   of CANOCO. Rare species otherwise have a large influence on
+#'   chi-square-based methods.
 #' @param ... Passed to the vegan function that fits the ordination.
 #' @return A `td_ordination` object: a list with tibbles `sites` (site
 #'   scores joined to the site variables), `species`, `vectors`
@@ -69,6 +76,10 @@
 #'
 #'   Oksanen, J. et al. vegan: Community Ecology Package.
 #'   <https://CRAN.R-project.org/package=vegan>
+#' @seealso The article "Which multivariate method?" explains how
+#'   ordination relates to the other multivariate methods and how to choose
+#'   among them:
+#'   <https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html>
 #' @export
 #' @examplesIf requireNamespace("vegan", quietly = TRUE)
 #' # Tree-nesting ants: one sample per plot and subplot
@@ -104,6 +115,7 @@ ord_fit <- function(data,
                     permutations = 999,
                     choices = 1:2,
                     seed = NULL,
+                    downweight = FALSE,
                     ...) {
   rlang::check_installed("vegan", "to fit ordinations.")
   if (!is.numeric(choices) || length(choices) < 1 || any(choices < 1) ||
@@ -126,7 +138,7 @@ ord_fit <- function(data,
   }
   transform <- transform %||% if (method %in% c("pca", "rda")) "hellinger" else "none"
   transform <- rlang::arg_match0(
-    transform, c("none", "hellinger", "chord", "log", "sqrt", "pa"), "transform"
+    transform, c("none", "hellinger", "chord", "log", "sqrt", "pa", "logratio"), "transform"
   )
 
   prep <- td_prepare(
@@ -137,6 +149,12 @@ ord_fit <- function(data,
   site_col <- prep$site
   env <- ord_env(data, env, site_col, rownames(y), formula)
   y <- ord_transform(y, transform)
+  if (isTRUE(downweight)) {
+    if (!method %in% c("ca", "dca", "cca")) {
+      cli::cli_abort("{.arg downweight} applies to CA, DCA and CCA only.")
+    }
+    y <- vegan::downweight(y)
+  }
 
   scale_num <- c(sites = 1L, species = 2L, symmetric = 3L)[[scaling]]
   fit <- ord_vegan(method, y, formula, env, distance, k, ...)
@@ -186,7 +204,8 @@ ord_fit <- function(data,
       distance = if (method %in% c("pcoa", "nmds", "dbrda")) distance else NA,
       stress = if (method == "nmds") fit$stress else NA_real_,
       envfit = envfit, site_col = site_col, fit = fit,
-      community = y_raw, env = env, formula = formula
+      community = y_raw, env = env, formula = formula,
+      analysed = y, downweight = isTRUE(downweight)
     ),
     class = "td_ordination"
   )
@@ -209,7 +228,11 @@ ord_transform <- function(y, transform) {
     chord = vegan::decostand(y, "normalize"),
     log = vegan::decostand(y, "log"),
     sqrt = sqrt(y),
-    pa = (y > 0) * 1
+    pa = (y > 0) * 1,
+    logratio = {
+      z <- log1p(y)
+      z - outer(rowMeans(z), colMeans(z), "+") + mean(z)
+    }
   )
 }
 
@@ -469,6 +492,8 @@ glance.td_ordination <- function(x, ...) {
 #'   `"margin"` (each term given the others). `by = NULL`, as in
 #'   [vegan::anova.cca()], means `"model"`.
 #' @param permutations Number of permutations.
+#' @param design Optional restricted permutation design from
+#'   [ord_design()] (blocks, split-plot, time series, grids).
 #' @return A tibble with `term`, `df`, `variance` (or `chi_square` for
 #'   CCA), `statistic` (pseudo-F) and `p.value`.
 #' @export
@@ -481,7 +506,7 @@ glance.td_ordination <- function(x, ...) {
 #' ord_test(ord, permutations = 199)
 #' ord_test(ord, by = "margin", permutations = 199)
 ord_test <- function(x, by = c("model", "axis", "terms", "margin"),
-                     permutations = 999) {
+                     permutations = 999, design = NULL) {
   if (!inherits(x, "td_ordination") || !x$constrained) {
     cli::cli_abort("{.arg x} must be a constrained ordination (rda, cca or dbrda).")
   }
@@ -489,7 +514,7 @@ ord_test <- function(x, by = c("model", "axis", "terms", "margin"),
   by <- rlang::arg_match(by)
   a <- vegan::anova.cca(x$fit,
     by = if (by == "model") NULL else by,
-    permutations = permutations
+    permutations = td_how(design, as.data.frame(x$env), permutations)
   )
   a <- as.data.frame(a)
   stat_col <- intersect(c("Variance", "ChiSquare", "SumOfSqs"), names(a))[1]

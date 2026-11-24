@@ -252,9 +252,10 @@ test_that("ord_advise() follows the question and the gradient length", {
   expect_s3_class(a, "td_ord_advice")
   expect_identical(a$question, "explore")
   expect_match(a$advice$recommendation[1], "Unconstrained")
-  # gradient length equals vegan's DCA axis 1 on log(x + 1)
+  # gradient length equals the longest of vegan's four DCA axes on log(x + 1)
   y <- as.matrix(dune)
-  ref <- diff(range(vegan::scores(vegan::decorana(log1p(y)), display = "sites", choices = 1)))
+  sc <- vegan::scores(vegan::decorana(log1p(y)), display = "sites", choices = 1:4)
+  ref <- max(apply(sc, 2, function(a) diff(range(a))))
   expect_equal(a$gradient_length, unname(ref), tolerance = 1e-6)
   e <- ord_advise(d, abundance = abundance, formula = ~ A1 + Management)
   expect_identical(e$question, "explain")
@@ -299,7 +300,7 @@ test_that("tidyvisor() advises on data and interprets results", {
   expect_s3_class(tidyvisor(d, abundance = abundance), "td_ord_advice")
   o <- ord_fit(d, abundance = abundance, method = "pca", transform = "hellinger")
   expect_s3_class(tidyvisor(o), "td_ord_interpretation")
-  expect_error(tidyvisor(1:3), "community data")
+  expect_error(tidyvisor(1:3), "No advis[eo]r")
 })
 
 test_that("tidyvisor() hands tidymapr's work to tidymapr", {

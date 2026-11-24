@@ -12,7 +12,8 @@ ord_advise(
   formula = NULL,
   question = c("auto", "explore", "explain", "groups", "time", "partition"),
   treatment = NULL,
-  time = NULL
+  time = NULL,
+  env = NULL
 )
 }
 \arguments{
@@ -35,6 +36,10 @@ followed over time) or \code{"partition"} (separate the effects of sets of
 variables).}
 
 \item{treatment, time}{Optional columns for a treatment followed over time.}
+
+\item{env}{A data frame of site variables with a column named like the
+site column, as in \code{\link[=ord_fit]{ord_fit()}}: the environment table of a
+species-environment pair. Its columns are added to \code{data} by site.}
 }
 \value{
 A list of class \code{td_ord_advice}: \code{checks} (a tibble of what was
@@ -56,12 +61,14 @@ be fitted afterwards (arrows, contours) but are not part of the analysis.
 To \emph{test} whether, and how much, measured variables explain
 composition, use a constrained (direct, canonical) ordination: RDA, CCA
 or distance-based RDA, with a permutation test.
-\item \strong{linear or unimodal.} The length of the first axis of a detrended
-correspondence analysis, in standard-deviation units of species
-turnover, measures how heterogeneous the data are: below about 3, most
-species change monotonically and linear methods (PCA, RDA) fit; above
-about 4, species rise and fall along the gradient and unimodal methods
-(CA, CCA) fit; in between, either (ter Braak and Smilauer 2012).
+\item \strong{linear or unimodal.} The gradient length is the length of the
+longest axis of a detrended correspondence analysis (on log(y + 1)
+abundances, or presence-absence), in standard-deviation (SD) units of
+species turnover, as CANOCO reports it. Below 3 SD, most species change
+monotonically and linear methods (PCA, RDA) fit; above 4 SD, species
+rise and fall along the gradient and unimodal methods (CA, CCA) fit;
+from 3 to 4 SD, both are appropriate (Leps and Smilauer 2003; ter Braak
+and Smilauer 2012).
 Hellinger-transformed PCA and RDA (Legendre and Gallagher 2001) work
 well whatever the length, and NMDS or distance-based RDA with
 Bray-Curtis or Jaccard dissimilarity suit any data.
@@ -89,6 +96,9 @@ ord_advise(d, abundance = abundance, formula = ~ A1 + Moisture + Management)
 \dontshow{\}) # examplesIf}
 }
 \references{
+Leps, J. and Smilauer, P. (2003). Multivariate Analysis of Ecological Data
+using CANOCO. Cambridge University Press.
+
 ter Braak, C. J. F. and Smilauer, P. (2012). Canoco Reference Manual and
 User's Guide: Software for Ordination (version 5.0). Microcomputer Power.
 
@@ -97,4 +107,10 @@ transformations for ordination of species data. Oecologia, 129, 271-280.
 
 Legendre, P. and Legendre, L. (2012). Numerical Ecology, third edition.
 Elsevier.
+}
+\seealso{
+The article "Which multivariate method?" explains how
+ordination relates to the other multivariate methods and how to choose
+among them:
+\url{https://tidydiversity.in4metrix.dev/articles/multivariate-methods.html}
 }

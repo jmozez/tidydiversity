@@ -1,8 +1,50 @@
 # tidydiversity (development version)
 
-* `tidyvisor()` now hands tidymapr results and mapping questions to
-  `tidyvisor()` in tidymapr, so it works whichever of the two packages was
-  attached last (both export a function of that name).
+* Components of CANOCO that were missing:
+  - `ord_design()`: restricted permutation designs (blocks, split-plot
+    with whole plots, time series and transects, rectangular grids, with
+    mirror images), for `ord_test()`, `ord_select()` and `ord_effects()`
+    (`design` argument).
+  - `ord_effects()`: CANOCO's simple and conditional effects of each
+    explanatory variable (variation explained, pseudo-F, p-value), with
+    Holm or false-discovery-rate adjusted p-values.
+  - `ord_select()` reports p-values adjusted for the number of candidate
+    variables (`adjust`, Holm by default).
+  - `ord_fit(downweight = TRUE)`: downweighting of rare species for CA, DCA
+    and CCA.
+  - `ord_species_fit()`: the fit of each species or site to the first axes;
+    `autoplot(species_fit = )` draws only species above a fit threshold.
+  - Log-ratio analysis: `ord_fit(transform = "logratio")` (log(y + 1),
+    centred by sites and species); PCA of it is LRA, RDA of it is
+    constrained LRA.
+  - `ord_predict()`: supplementary sites placed in an existing PCA, CA, RDA
+    or CCA from their species composition.
+  - `ord_cva()`: canonical variate analysis (discriminant analysis) of
+    groups of sites, with a permutation test of their separation.
+  - `trait_dcca()`: double constrained correspondence analysis (dc-CA) of
+    traits and environment, with the max test (douconca).
+  - `trait_rlq()`: RLQ analysis with the combined fourth-corner test
+    (models 2 and 4).
+  - `ord_coca()`: co-correspondence analysis of two communities at the
+    same sites, predictive or symmetric (cocorresp).
+
+* Two classic species-environment pairs in the layout CANOCO uses, a
+  species table (sites by species) and an environment table (one row per
+  site) linked by `site`: `dune_species` and `dune_env` (Dutch dune
+  meadows; Jongman et al. 1987) and `vare_species` and `vare_env` (lichen
+  pastures and soil chemistry; Väre et al. 1995), from vegan.
+* `ord_advise()` gains `env`, like `ord_fit()`, so the environment table of
+  such a pair can be given separately.
+
+* `ord_advise()` measures the gradient length as CANOCO reports it, on the
+  longest of the four DCA axes rather than the first alone, and states the
+  rule with its thresholds: below 3 SD linear, above 4 SD unimodal, 3 to 4 SD
+  both appropriate.
+
+* tidyvisor is now a package of its own, shared with tidymapr.
+  tidydiversity imports it, registers its advisor (`ord_advise()` and
+  `ord_interpret()`) when loaded, and re-exports `tidyvisor()`, so one
+  `tidyvisor()` serves both packages, whichever is loaded.
 
 # tidydiversity 0.3.0
 
@@ -16,7 +58,7 @@
   alias of `index`, the name used by betapart, so
   `beta_multi(x, index.family = "sorensen")` works as it does there.
 
-* New **tidyvisor**, the package's adviser: `tidyvisor()` advises on the
+* New **tidyvisor**, the package's advisor: `tidyvisor()` advises on the
   analysis when given data and interprets the results when given a fit.
 * New `ord_advise()` recommends an ordination and its test from the question
   and the data: unconstrained or constrained, linear or unimodal (from the

@@ -1,0 +1,102 @@
+---
+title: "Which multivariate method? Ordination and the rest"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  dev.args = list(bg = "white"),
+  collapse = TRUE, comment = "#>", out.width = "100%",
+  dpi = 150, fig.width = 7, fig.height = 5
+)
+```
+
+```{r setup, message = FALSE}
+library(tidydiversity)
+```
+
+## Multivariate analysis and ordination are not the same thing
+
+**Multivariate analysis** is the whole family of methods for data with many
+response variables measured on the same units: in community ecology, the
+abundances of all the species at each site. **Ordination** is one branch of
+that family. The four branches answer different questions:
+
+| Branch | The question | Methods | tidydiversity |
+|---|---|---|---|
+| **Ordination** | What are the main gradients in composition, and where do sites and species lie along them? | PCA, CA, DCA, PCoA, NMDS (unconstrained); RDA, CCA, db-RDA (constrained) | `ord_fit()`, `autoplot()` |
+| **Multivariate tests** | Does composition differ between groups, or change with a variable? | PERMANOVA, test of dispersion, Mantel test, permutation tests of constrained ordinations | `beta_permanova()`, `beta_dispersion()`, `beta_mantel()`, `ord_test()`, `ord_effects()` |
+| **Classification** | Which sites form groups, and which species characterise them? | Cluster analysis, indicator species | `stats::hclust()` on `beta_dist()`; `beta_indicator()` |
+| **Dissimilarity** | How different is each pair of sites? | Bray-Curtis, Jaccard, Sørensen, beta diversity | `beta_dist()`, `beta_pair()`, `beta_multi()` |
+
+Ordination is a *picture*: it reduces many species to a few axes you can
+plot. A multivariate test is a *decision*: it gives a p-value. **Constrained
+ordination** (RDA, CCA, db-RDA) belongs to both branches: it draws the
+gradients that your explanatory variables explain, and a permutation test
+then says whether that explanation is more than chance. Unconstrained
+ordination (PCA, CA, DCA, PCoA, NMDS) only draws; it tests nothing.
+
+## Choosing: question first, then data, then method
+
+**1. What is the question?**
+
+* *Describe* the main patterns, with no explanatory variables in mind:
+  unconstrained ordination.
+* *Explain* composition with measured variables (soil, elevation,
+  treatment): constrained ordination, with `ord_test()` and
+  `ord_effects()`.
+* *Compare groups* of sites (treatments, habitats): PERMANOVA
+  (`beta_permanova()`) with its test of dispersion (`beta_dispersion()`),
+  or a constrained ordination with the factor.
+* *Relate two distance matrices* (composition and geography, say): Mantel
+  test (`beta_mantel()`).
+* *Follow treatments over time*: principal response curves (`ord_prc()`).
+* *Separate the effects of sets of variables* (environment and space):
+  variation partitioning (`ord_varpart()`).
+
+**2. What are the data?** For ordination, the length of the main gradient
+decides between linear and unimodal methods. `ord_advise()` measures it as
+CANOCO does (the longest axis of a detrended correspondence analysis, in
+standard-deviation units of species turnover):
+
+| Gradient length | Use |
+|---|---|
+| below 3 SD | linear methods: PCA, RDA (on Hellinger-transformed abundances) |
+| 3 to 4 SD | either; both are appropriate |
+| above 4 SD | unimodal methods: CA, CCA |
+
+Distance-based methods (PCoA, NMDS, db-RDA, PERMANOVA) suit any gradient
+length, with a dissimilarity chosen for the data (Bray-Curtis for
+abundances, Jaccard or Sørensen for presence-absence).
+
+**3. Let the advisor check.** `ord_advise()` (or `tidyvisor()`) puts
+the question and the data together and says which method, which test and
+which plots, with its reasons:
+
+```{r, eval = rlang::is_installed("vegan")}
+d <- community_long(dune_species, cols = -site)
+ord_advise(d, abundance = abundance, formula = ~ A1 + Management, env = dune_env)
+```
+
+## The words, briefly
+
+* **Axis (gradient)**: a combination of species abundances along which
+  sites differ most (unconstrained), or most in relation to the
+  explanatory variables (constrained).
+* **Eigenvalue**: the variation an axis represents; divided by the total,
+  the share of the variation it shows.
+* **Constrained / canonical / direct**: the axes are combinations of the
+  explanatory variables. **Unconstrained / indirect**: the axes come from
+  the species data alone; variables can be fitted afterwards (passively).
+* **Partial**: the effect of covariables (`Condition()` in the formula) is
+  removed first.
+* **Permutation test**: shuffles sites to see how often chance alone gives
+  as strong a result; the shuffling can be restricted for blocked,
+  split-plot, time-series or spatial designs (`ord_design()`).
+
+## Further reading
+
+Legendre, P. and Legendre, L. (2012). *Numerical Ecology*, third edition.
+Elsevier.
+
+Leps, J. and Smilauer, P. (2003). *Multivariate Analysis of Ecological
+Data using CANOCO*. Cambridge University Press.

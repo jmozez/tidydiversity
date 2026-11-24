@@ -319,8 +319,13 @@ varpart_labels <- function(nm, n) {
 #' @param formula One-sided formula of all candidate site variables.
 #' @param method `"rda"`, `"cca"` or `"dbrda"`.
 #' @param alpha Significance level for entry.
+#' @param design Optional restricted permutation design from [ord_design()].
+#' @param adjust Adjustment of the step p-values for the number of
+#'   candidate variables tested ([stats::p.adjust()]), as CANOCO 5 reports:
+#'   `"holm"`, `"fdr"`, `"bonferroni"` or `"none"`.
 #' @return A tibble with one row per selected step: `step`, `term`,
-#'   `adj_r2` (cumulative), `statistic` and `p.value`, and the adjusted \eqn{R^2}
+#'   `adj_r2` (cumulative), `statistic`, `p.value` and `p.adjusted`, and
+#'   the adjusted \eqn{R^2}
 #'   of the full model as attribute `"adj_r2_full"`.
 #' @references Blanchet, F. G., Legendre, P. and Borcard, D. (2008).
 #'   Forward selection of explanatory variables. *Ecology*, 89, 2623-2632.
@@ -341,8 +346,11 @@ ord_select <- function(data,
                        transform = NULL,
                        distance = "bray",
                        alpha = 0.05,
-                       permutations = 999) {
+                       permutations = 999,
+                       design = NULL,
+                       adjust = c("holm", "fdr", "bonferroni", "none")) {
   rlang::check_installed("vegan", "for forward selection.")
+  adjust <- rlang::arg_match(adjust)
   check_one_sided(formula)
   method <- rlang::arg_match(method)
   transform <- transform %||% if (method == "rda") "hellinger" else "none"
@@ -371,14 +379,14 @@ ord_select <- function(data,
   m0 <- eval(as.call(c(list(fun, f0, data = env_df), extra)), e)
   m1 <- eval(as.call(c(list(fun, f1, data = env_df), extra)), e)
   sel <- vegan::ordiR2step(m0, scope = stats::formula(m1),
-    Pin = alpha, permutations = permutations, trace = FALSE
+    Pin = alpha, permutations = td_how(design, env_df, permutations), trace = FALSE
   )
   a <- as.data.frame(sel$anova)
   full <- vegan::RsquareAdj(m1)$adj.r.squared
   if (nrow(a) == 0) {
     out <- tibble::tibble(
       step = integer(), term = character(), adj_r2 = double(),
-      statistic = double(), p.value = double()
+      statistic = double(), p.value = double(), p.adjusted = double()
     )
   } else {
     a <- a[rownames(a) != "<All variables>", , drop = FALSE]
@@ -389,6 +397,8 @@ ord_select <- function(data,
       statistic = a$F,
       p.value = a$`Pr(>F)`
     )
+    n_cand <- length(attr(stats::terms(formula), "term.labels"))
+    out$p.adjusted <- stats::p.adjust(out$p.value, adjust, n = max(n_cand, nrow(out)))
   }
   attr(out, "adj_r2_full") <- full
   out
