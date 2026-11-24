@@ -8,7 +8,7 @@
 \format{
 \code{vare_species}: a tibble with 24 rows (sites) and 45 columns:
 \code{site} and 44 species of vascular plants, mosses and lichens
-(abbreviated Latin names, such as \code{Cla.ste} for \emph{Cladina stellaris}),
+(abbreviated Latin names, such as \code{Cladstel} for \emph{Cladina stellaris}),
 with estimated cover values (the source does not state the scale).
 
 \code{vare_env}: a tibble with 24 rows and 15 columns:

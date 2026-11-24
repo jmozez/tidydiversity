@@ -299,7 +299,7 @@
 #'
 #' @format `vare_species`: a tibble with 24 rows (sites) and 45 columns:
 #'   `site` and 44 species of vascular plants, mosses and lichens
-#'   (abbreviated Latin names, such as `Cla.ste` for *Cladina stellaris*),
+#'   (abbreviated Latin names, such as `Cladstel` for *Cladina stellaris*),
 #'   with estimated cover values (the source does not state the scale).
 #'
 #'   `vare_env`: a tibble with 24 rows and 15 columns:

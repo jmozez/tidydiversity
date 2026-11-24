@@ -47,7 +47,10 @@ column that is constant within each site.}
 analysis: \code{"hellinger"} (the default for PCA and RDA, which
 otherwise overweight abundant species; Legendre and Gallagher 2001),
 \code{"chord"}, \code{"log"} (log(x) + 1 for x > 0), \code{"sqrt"}, \code{"pa"}
-(presence-absence) or \code{"none"} (the default for the other methods).}
+(presence-absence), \code{"logratio"} or \code{"none"} (the default for the other
+methods). \code{"logratio"} takes log(y + 1) and centres it by both sites
+and species: PCA of it is CANOCO's log-ratio analysis (LRA), and RDA
+of it is constrained log-ratio analysis.}
 
 \item{distance}{Dissimilarity for \code{"pcoa"}, \code{"nmds"} and \code{"dbrda"},
 passed to \code{\link[vegan:vegdist]{vegan::vegdist()}}, such as \code{"bray"} (the default) or

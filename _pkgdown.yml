@@ -227,6 +227,9 @@ reference:
       - ord_design
       - ord_effects
       - ord_species_fit
+      - ord_predict
+      - ord_cva
+      - ord_coca
       - ord_select
       - ord_varpart
       - autoplot.td_ordination
@@ -241,6 +244,8 @@ reference:
       - trait_ses
       - trait_itv
       - trait_fourth_corner
+      - trait_dcca
+      - trait_rlq
       - trait_tpd
       - phylo_signal
       - phylo_dist

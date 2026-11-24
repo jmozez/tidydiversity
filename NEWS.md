@@ -14,6 +14,19 @@
     and CCA.
   - `ord_species_fit()`: the fit of each species or site to the first axes;
     `autoplot(species_fit = )` draws only species above a fit threshold.
+  - Log-ratio analysis: `ord_fit(transform = "logratio")` (log(y + 1),
+    centred by sites and species); PCA of it is LRA, RDA of it is
+    constrained LRA.
+  - `ord_predict()`: supplementary sites placed in an existing PCA, CA, RDA
+    or CCA from their species composition.
+  - `ord_cva()`: canonical variate analysis (discriminant analysis) of
+    groups of sites, with a permutation test of their separation.
+  - `trait_dcca()`: double constrained correspondence analysis (dc-CA) of
+    traits and environment, with the max test (douconca).
+  - `trait_rlq()`: RLQ analysis with the combined fourth-corner test
+    (models 2 and 4).
+  - `ord_coca()`: co-correspondence analysis of two communities at the
+    same sites, predictive or symmetric (cocorresp).
 
 * Two classic species-environment pairs in the layout CANOCO uses, a
   species table (sites by species) and an environment table (one row per

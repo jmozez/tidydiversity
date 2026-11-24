@@ -32,7 +32,10 @@
 #'   analysis: `"hellinger"` (the default for PCA and RDA, which
 #'   otherwise overweight abundant species; Legendre and Gallagher 2001),
 #'   `"chord"`, `"log"` (log(x) + 1 for x > 0), `"sqrt"`, `"pa"`
-#'   (presence-absence) or `"none"` (the default for the other methods).
+#'   (presence-absence), `"logratio"` or `"none"` (the default for the other
+#'   methods). `"logratio"` takes log(y + 1) and centres it by both sites
+#'   and species: PCA of it is CANOCO's log-ratio analysis (LRA), and RDA
+#'   of it is constrained log-ratio analysis.
 #' @param distance Dissimilarity for `"pcoa"`, `"nmds"` and `"dbrda"`,
 #'   passed to [vegan::vegdist()], such as `"bray"` (the default) or
 #'   `"jaccard"`.
@@ -135,7 +138,7 @@ ord_fit <- function(data,
   }
   transform <- transform %||% if (method %in% c("pca", "rda")) "hellinger" else "none"
   transform <- rlang::arg_match0(
-    transform, c("none", "hellinger", "chord", "log", "sqrt", "pa"), "transform"
+    transform, c("none", "hellinger", "chord", "log", "sqrt", "pa", "logratio"), "transform"
   )
 
   prep <- td_prepare(
@@ -225,7 +228,11 @@ ord_transform <- function(y, transform) {
     chord = vegan::decostand(y, "normalize"),
     log = vegan::decostand(y, "log"),
     sqrt = sqrt(y),
-    pa = (y > 0) * 1
+    pa = (y > 0) * 1,
+    logratio = {
+      z <- log1p(y)
+      z - outer(rowMeans(z), colMeans(z), "+") + mean(z)
+    }
   )
 }
 
