@@ -183,21 +183,17 @@ when a function needs them, so `library(tidydiversity)` stays light.
 
 ## Installation
 
-Install a ready-built binary from r-universe (Windows, macOS and Linux; no
-compiler needed):
-
 ```r
-install.packages("tidydiversity",
-  repos = c("https://jmozez.r-universe.dev", "https://cloud.r-project.org"))
+# install.packages("remotes")
+remotes::install_github("jmozez/tidyvisor")
+
+# and the packages it advises on
+remotes::install_github("jmozez/tidydiversity")
+remotes::install_github("jmozez/tidymapr")
 ```
 
-Or build the latest development version from GitHub source (needs Rtools on
-Windows or the Xcode command-line tools on macOS):
-
-```r
-# install.packages("pak")
-pak::pak("jmozez/tidydiversity")
-```
+The packages are built from source, which needs Rtools on Windows or the
+Xcode command-line tools on macOS (`xcode-select --install`).
 
 The source code lives on GitHub, <https://github.com/jmozez/tidydiversity>, with a mirror on GitLab, <https://gitlab.com/jimmy.moses/tidydiversity>.
 
@@ -228,7 +224,6 @@ uses and returns tibbles and ggplots, so the two packages share one
 workflow, the way dplyr and ggplot2 do:
 
 ``` r
-pak::pak("jmozez/tidymapr")
 library(tidydiversity)
 library(tidymapr)
 

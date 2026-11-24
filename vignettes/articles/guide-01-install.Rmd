@@ -20,11 +20,10 @@ estimate. No previous R experience is needed.
 |---|---|---|
 | **R** (4.1 or newer) | The language that runs the analysis | <https://cran.r-project.org> |
 | **RStudio Desktop** | The program you type and run code in | <https://posit.co/download/rstudio-desktop/> |
-| **Build tools** | Only to build tidydiversity from source (option 2) | See below |
+| **Build tools** | To build tidydiversity from source | See below |
 
-The quickest way is a ready-built binary from r-universe (option 1 below):
-nothing to compile. To build the development version from source instead
-(option 2), your computer compiles it once, which needs:
+tidydiversity is installed from GitHub source, so your computer compiles it
+once, which needs:
 
 | Operating system | Install once |
 |---|---|
@@ -34,29 +33,11 @@ nothing to compile. To build the development version from source instead
 
 ## Install tidydiversity
 
-In RStudio's **Console** (bottom left):
-
-**Option 1 (recommended): a ready-built binary from r-universe.** Works on
-Windows, macOS and Linux, with no compiler:
-
-```r
-install.packages("tidydiversity",
-  repos = c("https://jmozez.r-universe.dev", "https://cloud.r-project.org"))
-```
-
-**Option 2: build the development version from GitHub source** (needs the
-build tools above):
-
-```r
-install.packages("pak")
-pak::pak("jmozez/tidydiversity")
-```
-
-Then add the packages used throughout this guide:
-
-```r
-install.packages(c("vegan", "ggplot2", "dplyr"))
-```
+Install tidydiversity, tidymapr and tidyvisor with the commands in the
+[Installation](https://tidydiversity.in4metrix.dev/#installation) section of
+the home page, typed in RStudio's **Console** (bottom left). This guide also
+uses vegan, ggplot2 and dplyr; install them with
+`install.packages(c("vegan", "ggplot2", "dplyr"))`.
 
 Then check:
 
@@ -64,10 +45,6 @@ Then check:
 library(tidydiversity)
 packageVersion("tidydiversity")
 ```
-
-For maps of diversity, add the companion package
-[tidymapr](https://tidymapr.in4metrix.dev) the same way:
-`install.packages("tidymapr", repos = c("https://jmozez.r-universe.dev", "https://cloud.r-project.org"))`.
 
 ## Work in an RStudio project
 
@@ -149,7 +126,7 @@ instead.
 
 | Message | Cause | Fix |
 |---|---|---|
-| `Could not find tools necessary to compile` | Building from source (option 2) without build tools | Use option 1 (r-universe binary), or install the build tools and restart RStudio |
+| `Could not find tools necessary to compile` | Building from source without build tools | Install the build tools above and restart RStudio |
 | `Can't subset columns that don't exist` | Column name differs from `site`, `species` | Name them: `div_hill(data, site = plot, species = taxon)` |
 | `abundance must be numeric` | Counts stored as text (e.g. "12 ") | `data$n <- as.numeric(data$n)` |
 | Diversity is the same for q = 0, 1 and 2 | Each row is a species total but `abundance` was not given, so every species counts once | Add `abundance = n` |
