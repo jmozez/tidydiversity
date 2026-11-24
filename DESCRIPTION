@@ -33,6 +33,7 @@ Imports:
     utils,
     tibble (>= 3.2.0),
     tidyselect (>= 1.2.0),
+    tidyvisor (>= 0.1.0),
     tools,
     vctrs (>= 0.6.0)
 LinkingTo: 
@@ -84,3 +85,5 @@ Language: en-NZ
 LazyData: true
 Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.1.1
+Remotes: 
+    jmozez/tidyvisor

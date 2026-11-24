@@ -213,7 +213,7 @@ reference:
       - beta_indicator
   - title: tidyvisor (advice and interpretation)
     contents:
-      - tidyvisor
+      - reexports
       - ord_advise
       - ord_interpret
   - title: Ordination

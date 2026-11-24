@@ -146,4 +146,5 @@ importFrom(rlang,
   enquo,
   quo_is_null
 )
+importFrom(tidyvisor,tidyvisor)
 useDynLib(tidydiversity, .registration = TRUE)

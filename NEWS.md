@@ -1,8 +1,9 @@
 # tidydiversity (development version)
 
-* `tidyvisor()` now hands tidymapr results and mapping questions to
-  `tidyvisor()` in tidymapr, so it works whichever of the two packages was
-  attached last (both export a function of that name).
+* tidyvisor is now a package of its own, shared with tidymapr.
+  tidydiversity imports it, registers its adviser (`ord_advise()` and
+  `ord_interpret()`) when loaded, and re-exports `tidyvisor()`, so one
+  `tidyvisor()` serves both packages, whichever is loaded.
 
 # tidydiversity 0.3.0
 
