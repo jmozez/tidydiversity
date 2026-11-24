@@ -5,7 +5,7 @@
     package = pkgname,
     title = "Community ecology: ordination and its tests",
     questions = c("explore", "explain", "groups", "time", "partition"),
-    classes = c("td_ordination", "td_prc", "td_varpart"),
+    classes = c("td_ordination", "td_prc", "td_varpart", "td_cva", "td_dcca", "td_rlq", "td_coca"),
     advise = ord_advise,
     interpret = ord_interpret,
     claims = function(x, args) any(c("abundance", "formula", "treatment") %in% args)

@@ -84,3 +84,21 @@ test_that("co-correspondence analysis relates two communities", {
   s <- ord_coca(a, b, abundance = abundance, method = "symmetric")
   expect_true(all(s$axes$eigenvalue >= 0))
 })
+
+test_that("tidyvisor explains CVA, dc-CA and RLQ results", {
+  skip_if_not_installed("MASS")
+  v <- community_long(vare_species, cols = -site)
+  v <- v[v$species %in% c("Cladstel", "Cladrang", "Pleuschr", "Vaccviti", "Empenigr"), ]
+  env <- vare_env
+  env$humus <- ifelse(env$Humdepth > stats::median(env$Humdepth), "deep", "shallow")
+  set.seed(1)
+  cv <- ord_cva(v, abundance = abundance, group = "humus", env = env, permutations = 49)
+  i <- tidyvisor(cv)
+  expect_match(i$sections$Overview, "Canonical variate analysis")
+  skip_if_not_installed("ade4")
+  a <- data_aravo()
+  r <- trait_rlq(a$community, abundance = cover, traits = a$traits,
+                 env_vars = c("Snow", "PhysD"), trait_vars = c("Height", "SLA"),
+                 permutations = 19)
+  expect_match(paste(tidyvisor(r)$sections$Test), "fourth-corner")
+})
