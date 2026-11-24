@@ -14,12 +14,14 @@
 #'   To *test* whether, and how much, measured variables explain
 #'   composition, use a constrained (direct, canonical) ordination: RDA, CCA
 #'   or distance-based RDA, with a permutation test.
-#' * **linear or unimodal.** The length of the first axis of a detrended
-#'   correspondence analysis, in standard-deviation units of species
-#'   turnover, measures how heterogeneous the data are: below about 3, most
-#'   species change monotonically and linear methods (PCA, RDA) fit; above
-#'   about 4, species rise and fall along the gradient and unimodal methods
-#'   (CA, CCA) fit; in between, either (ter Braak and Smilauer 2012).
+#' * **linear or unimodal.** The gradient length is the length of the
+#'   longest axis of a detrended correspondence analysis (on log(y + 1)
+#'   abundances, or presence-absence), in standard-deviation (SD) units of
+#'   species turnover, as CANOCO reports it. Below 3 SD, most species change
+#'   monotonically and linear methods (PCA, RDA) fit; above 4 SD, species
+#'   rise and fall along the gradient and unimodal methods (CA, CCA) fit;
+#'   from 3 to 4 SD, both are appropriate (Leps and Smilauer 2003; ter Braak
+#'   and Smilauer 2012).
 #'   Hellinger-transformed PCA and RDA (Legendre and Gallagher 2001) work
 #'   well whatever the length, and NMDS or distance-based RDA with
 #'   Bray-Curtis or Jaccard dissimilarity suit any data.
@@ -47,6 +49,9 @@
 #'   of steps: `step`, `recommendation`, `reason` and `code`) and
 #'   `gradient_length`. Printing it shows the advice.
 #' @references
+#' Leps, J. and Smilauer, P. (2003). Multivariate Analysis of Ecological Data
+#' using CANOCO. Cambridge University Press.
+#'
 #' ter Braak, C. J. F. and Smilauer, P. (2012). Canoco Reference Manual and
 #' User's Guide: Software for Ordination (version 5.0). Microcomputer Power.
 #'
@@ -89,7 +94,9 @@ ord_advise <- function(data,
   zeros <- mean(y == 0)
   singletons <- mean(colSums(y > 0) == 1)
   dca <- suppressWarnings(vegan::decorana(if (pa) y else log1p(y)))
-  gl <- unname(diff(range(vegan::scores(dca, display = "sites", choices = 1))))
+  # the longest of the four DCA axes, as CANOCO reports it
+  sc <- vegan::scores(dca, display = "sites", choices = 1:4)
+  gl <- unname(max(apply(sc, 2, function(a) diff(range(a)))))
 
   # Site variables
   vars <- if (is.null(formula)) character() else all.vars(formula)
@@ -144,11 +151,11 @@ ord_advise <- function(data,
       },
       if (singletons > 0.3) "many rare species: they add noise; consider removing or down-weighting" else "",
       if (linear) {
-        "short: most species change monotonically; linear methods (PCA, RDA)"
+        "below 3 SD: short; most species change monotonically; linear methods (PCA, RDA)"
       } else if (unimodal) {
-        "long: species rise and fall along the gradient; unimodal methods (CA, CCA)"
+        "above 4 SD: long; species rise and fall along the gradient; unimodal methods (CA, CCA)"
       } else {
-        "intermediate: linear or unimodal methods both suit"
+        "3 to 4 SD: intermediate; linear and unimodal methods are both appropriate"
       },
       if (k >= n - 1) {
         "as many terms as sites: a constrained ordination is not constrained at all"

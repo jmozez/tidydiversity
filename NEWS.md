@@ -1,5 +1,10 @@
 # tidydiversity (development version)
 
+* `ord_advise()` measures the gradient length as CANOCO reports it, on the
+  longest of the four DCA axes rather than the first alone, and states the
+  rule with its thresholds: below 3 SD linear, above 4 SD unimodal, 3 to 4 SD
+  both appropriate.
+
 * tidyvisor is now a package of its own, shared with tidymapr.
   tidydiversity imports it, registers its advisor (`ord_advise()` and
   `ord_interpret()`) when loaded, and re-exports `tidyvisor()`, so one
