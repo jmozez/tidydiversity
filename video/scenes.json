@@ -7,7 +7,7 @@
       "kind": "title",
       "title": "tidydiversity",
       "subtitle": "Version 0.3.0 \u00b7 taxonomic, phylogenetic and functional diversity in one tidy workflow",
-      "say": "Meet Tidy Diversity version zero point three: biodiversity analysis in R that is fair, fast, and ready to publish."
+      "say": "Meet Tidy Diversity zero point three: biodiversity in R, fair, fast, and ready to publish."
     },
     {
       "id": "problem",
@@ -18,7 +18,7 @@
         "Fair comparisons need equal sample coverage",
         "Taxonomic, phylogenetic and functional diversity on one scale"
       ],
-      "say": "Sites are never sampled equally. Compare raw species counts, and you compare sampling effort, not nature."
+      "say": "Sites are never sampled equally. Raw species counts measure effort, not nature."
     },
     {
       "id": "gap",
@@ -41,7 +41,7 @@
         "Fits the tidyverse and tidymodels",
         "Checked against the references in 400+ tests"
       ],
-      "say": "Every project used to mean juggling packages: i-next, vegan, betapart, F D, each with its own format, and glue code in between. Tidy Diversity was built to end that: one simple, consistent workflow that fits the tidyverse and tidymodels, checked against the reference packages in more than four hundred tests."
+      "say": "Every project used to mean juggling packages, each with its own format and glue code. Tidy Diversity ends that: one consistent workflow that fits the tidyverse and tidymodels, checked in over four hundred tests."
     },
     {
       "id": "hill",
@@ -49,7 +49,7 @@
       "title": "Tidy in, tidy out",
       "code": "library(tidydiversity)\nwet <- dplyr::filter(png_ants, season == \"wet\")\ndiv_hill(wet)",
       "output": "hill_out.txt",
-      "say": "One row per site and species goes in. A tidy table of Hill numbers comes out, for richness, Shannon and Simpson diversity, ready for d-plyr and g-g-plot."
+      "say": "Tidy data goes in. A tidy table of Hill numbers comes out."
     },
     {
       "id": "teach",
@@ -60,7 +60,7 @@
         "The same arguments everywhere: site, species, abundance",
         "Learn one pattern, use every function"
       ],
-      "say": "No more studying each package just to fit it into your workflow. Every function follows predictable prefixes and the same arguments, so once you learn one, you can use the rest. Easy to learn, and easy to teach."
+      "say": "Predictable prefixes and the same arguments everywhere: learn one function, and you can use the rest. Easy to learn, easy to teach."
     },
     {
       "id": "coverage",
@@ -68,7 +68,7 @@
       "title": "Rarefaction and extrapolation by coverage",
       "code": "curves <- div_rarefy(wet, q = c(0, 1, 2))\nautoplot(curves, x = \"coverage\")",
       "figure": "coverage.png",
-      "say": "Rarefy and extrapolate to any sample coverage, and plot the curves in one line."
+      "say": "Rarefy and extrapolate by coverage, and plot in one line."
     },
     {
       "id": "threed",
@@ -76,7 +76,7 @@
       "title": "Taxonomic, phylogenetic and functional diversity",
       "code": "div_rarefy(brazil, abundance = n, type = \"PD\", tree = tree)\ndiv_rarefy(brazil, abundance = n, type = \"FD\", distance = dist)",
       "figure": "threed.png",
-      "say": "Taxonomic, phylogenetic and functional diversity share one framework, shown here for two Brazilian rainforest assemblages."
+      "say": "Taxonomic, phylogenetic and functional diversity share one framework."
     },
     {
       "id": "sota",
@@ -88,7 +88,7 @@
         "Max test for trait means, Welch PERMANOVA (Zeleny 2018; Hamidi et al. 2019)",
         "Trait probability densities and gawdis distances (Carmona et al. 2019; de Bello et al. 2021)"
       ],
-      "say": "It is built on the current state of the art: coverage-based Hill numbers, beta diversity at equal coverage, the max test, Welch PERMANOVA, and trait probability densities, straight from the recent literature."
+      "say": "All built on the current state of the art, straight from the recent literature."
     },
     {
       "id": "speed",
@@ -97,7 +97,7 @@
       "code": "bench::mark(iNEXT::iNEXT(wide, q = c(0, 1, 2)))\nbench::mark(div_rarefy(brazil, abundance = n))\nbench::mark(div_rarefy(brazil, abundance = n, type = \"PD\", tree = tree))",
       "figure": "bench.png",
       "badge": "Up to {pd_x}x faster",
-      "say": "And it is fast. On real rainforest data, taxonomic rarefaction runs {td_w} times faster than i-next, and phylogenetic rarefaction about {pd_w} times faster than i-next 3 D, with identical results."
+      "say": "And it is fast: {td_w} times faster than i-next, and about {pd_w} times faster than i-next 3 D, with identical results."
     },
     {
       "id": "scale",
@@ -105,7 +105,7 @@
       "title": "The bigger your data, the bigger the gain",
       "figure": "bench_scale.png",
       "badge": "{scale_x}x faster at {scale_s} species",
-      "say": "The advantage grows with your data. At {scale_sw} species, Tidy Diversity is about {scale_w} times faster, thanks to compiled C plus plus kernels."
+      "say": "At {scale_sw} species, about {scale_w} times faster."
     },
     {
       "id": "advice",
@@ -114,7 +114,7 @@
       "code": "ord <- ord_fit(dune, method = \"rda\", formula = ~ Management + A1)\ntidyvisor(ord)",
       "figure": "ordination.png",
       "advice": "advice.txt",
-      "say": "Coming soon: Tidy Visor, in development. It explains your results in plain sentences, says when post hoc tests are needed, and writes the results sentence for your paper."
+      "say": "Coming soon, Tidy Visor: plain-language advice, post hoc guidance, and the results sentence for your paper."
     },
     {
       "id": "website",
@@ -122,7 +122,7 @@
       "title": "Full documentation online",
       "url": "tidydiversity.in4metrix.dev",
       "note": "Reference \u00b7 User guide \u00b7 Tutorials \u00b7 Gallery",
-      "say": "Every function, tutorial and gallery example is on the package website, at tidy diversity dot in four metrix dot dev."
+      "say": "Everything is documented at tidy diversity dot in four metrix dot dev."
     },
     {
       "id": "family",
@@ -146,7 +146,7 @@
           "Epidemiology \u00b7 in development"
         ]
       ],
-      "say": "Tidy Diversity works with Tidy Mapper for spatial ecology. Tidy Visor and Tidy Epidemio are in development."
+      "say": "It works with Tidy Mapper. Tidy Visor and Tidy Epidemio are in development."
     },
     {
       "id": "cta",
@@ -154,7 +154,7 @@
       "title": "Get started",
       "code": "remotes::install_github(\"jmozez/tidydiversity\")",
       "url": "tidydiversity.in4metrix.dev",
-      "say": "Install Tidy Diversity from GitHub today, and cite it with its Zenodo D O I.",
+      "say": "Install it from GitHub, and cite it with its Zenodo D O I.",
       "doi": "10.5281/zenodo.24182679"
     }
   ]

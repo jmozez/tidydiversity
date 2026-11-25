@@ -171,7 +171,7 @@ window.render = function (t) {
   document.getElementById("head").style.opacity = t < T.scenes[0].duration ? 0 : 1;
   let cap = "";
   for (const tm of T.scenes) {
-    const a = tm.start + 0.6, lt = t - a;
+    const a = tm.start + 0.4, lt = t - a;
     if (lt < 0 || lt > tm.speech) continue;
     const ws = tm.say.split(/\s+/), chunks = [];
     for (let i = 0; i < ws.length; i += 7) chunks.push(ws.slice(i, i + 7).join(" "));

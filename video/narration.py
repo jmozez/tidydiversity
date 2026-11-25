@@ -60,7 +60,7 @@ os.makedirs(os.path.join(build, "audio"), exist_ok=True)
 k = Kokoro(model, voices)
 timing = []
 t = 0.0
-lead, tail = 0.6, 0.9  # silence before and after each line
+lead, tail = 0.4, 1.7  # silence before and after each line
 for s in spec["scenes"]:
     text = s["say"].format(**say)
     audio, sr = k.create(text, voice=spec["voice"], speed=spec["speed"], lang="en-us")
