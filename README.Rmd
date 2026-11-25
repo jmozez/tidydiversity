@@ -381,7 +381,7 @@ the effect of unequal sampling effort before you compare sites.
 | ForestGEO (`stems_`) | `stems_as_trees()`, `stems_abundance()`, `stems_basal_area()`, `stems_size_class()`, `stems_demography()`, `stems_as_community()` |
 | Count models and partial plots | `model_count()`, `plot_partial()`, `plot_surface()` |
 | Plots and tables (`plot_`) | `autoplot()`, `plot_panel()`, `plot_save()`, `plot_palette()`, `plot_partial()`, `plot_surface()`, `plot_phylo()`, `plot_trait_space()`, `plot_venn()`, `theme_tidydiversity()`, `div_table()` |
-| Advice | `tidyvisor()` (from the tidyvisor package) |
+| Advice | `tidyvisor()` (from the tidyvisor package); save the advice to a file with `tidyvisor::tv_save()` |
 | Example data | `png_ants`, `png_tree_ants`, `png_frogs`, `wanang_butterflies`, `wanang_caterpillars`, `dune_species`, `dune_env`, `vare_species`, `vare_env`, `data_aravo()` |
 
 ## Gallery
