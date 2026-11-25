@@ -1,5 +1,8 @@
 # tidydiversity (development version)
 
+* Ordination advice prints its values without quotes (`Sites: 8`), and its
+  heading names the question ("what are the main patterns?").
+
 * README and website: installation lists tidydiversity first, then tidymapr and
   tidyvisor, saying what each does; the navigation bar links to the
   tidyvisor website.
