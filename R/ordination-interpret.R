@@ -237,6 +237,8 @@ ord_interpret.td_ordination <- function(x, permutations = 999, n_species = 3, ..
     if (!is.null(cen) && nrow(cen)) "Triangles are the centroids of the factor levels: the average position of their sites."
   )
   sec$`Reading the diagram` <- read
+  sec$`After the overall test` <- td_ord_after(x, if (x$constrained) tt else NULL)
+  sec$`For the paper` <- td_ord_paper(x, if (x$constrained) tm else NULL, if (x$constrained) tt else NULL, permutations = permutations)
   structure(list(sections = sec, tables = tabs), class = "td_ord_interpretation")
 }
 
@@ -275,7 +277,8 @@ ord_interpret.td_prc <- function(x, ...) {
         paste(neg, collapse = ", ")
       ),
       "The expected change of a species is roughly exp(weight \u00d7 coefficient) times its abundance in the control, on the scale of the transformation used."
-    )
+    ),
+    `For the paper` = td_prc_paper(x)
   )
   structure(list(sections = sec, tables = list(curves = x$curves, species = x$species)),
     class = "td_ord_interpretation"
@@ -309,7 +312,8 @@ ord_interpret.td_varpart <- function(x, ...) {
         "Negative fractions (shown as < 0%) arise from adjusting R\u00b2 and mean the sets explain less together than apart; read them as zero."
       }
     ),
-    `Reading the diagram` = "Each circle is a set of variables; the number in each region is the adjusted R\u00b2 of that fraction; an asterisk marks a unique fraction significant by permutation."
+    `Reading the diagram` = "Each circle is a set of variables; the number in each region is the adjusted R\u00b2 of that fraction; an asterisk marks a unique fraction significant by permutation.",
+    `For the paper` = td_varpart_paper(x)
   )
   structure(list(sections = sec, tables = list(fractions = x)), class = "td_ord_interpretation")
 }
