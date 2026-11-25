@@ -13,6 +13,8 @@ const here = path.dirname(url.fileURLToPath(import.meta.url));
 const build = path.resolve(process.argv[2] || path.join(here, "build"));
 const fps = Number(process.argv[3] && !process.argv[3].startsWith("--") ? process.argv[3] : 30);
 const stillArg = process.argv.indexOf("--still");
+const fmt = (process.argv.find(a => a.startsWith("--format=")) || "--format=wide").slice(9);
+const size = { wide: [1920, 1080], vertical: [1080, 1920], square: [1080, 1080] }[fmt];
 const stills = stillArg > 0 ? process.argv[stillArg + 1].split(",").map(Number) : null;
 
 // A tiny static server: /video/* from this folder, /build/* from the build dir.
@@ -30,19 +32,19 @@ await new Promise(r => server.listen(0, r));
 const port = server.address().port;
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
-await page.goto(`http://127.0.0.1:${port}/scenes.html?build=/build`);
+const page = await browser.newPage({ viewport: { width: size[0], height: size[1] } });
+await page.goto(`http://127.0.0.1:${port}/scenes.html?build=/build&format=${fmt}`);
 const total = await page.evaluate(() => window.ready);
 
 if (stills) {
   for (const t of stills) {
     await page.evaluate(x => window.render(x), t);
-    await page.screenshot({ path: path.join(build, `still-${t}.png`) });
+    await page.screenshot({ path: path.join(build, `still-${fmt}-${t}.png`) });
   }
 } else {
   const frames = Math.ceil(total * fps);
   const ff = spawn("ffmpeg", ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(fps), "-c:v", "mjpeg", "-i", "-",
-    "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", path.join(build, "video-silent.mp4")], { stdio: ["pipe", "inherit", "inherit"] });
+    "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", path.join(build, `video-silent-${fmt}.mp4`)], { stdio: ["pipe", "inherit", "inherit"] });
   for (let i = 0; i < frames; i++) {
     await page.evaluate(x => window.render(x), i / fps);
     const buf = await page.screenshot({ type: "jpeg", quality: 92 });

@@ -58,35 +58,6 @@ p3 <- ggplot(curves3, aes(m, diversity, colour = site)) +
   labs(x = "Number of individuals", y = "Diversity", linetype = "Extrapolated", colour = NULL)
 sv(p3, "threed.png", h = 5.6)
 
-# Speed: PD rarefaction, the same 40 sample sizes and no bootstrap, median of
-# three runs. Results agree with iNEXT.3D to within 1e-11 (checked below).
-med <- function(f) stats::median(replicate(3, system.time(f())[["elapsed"]]))
-t_inext <- med(function() iNEXT.3D::iNEXT3D(wide, diversity = "PD", PDtree = tr, nboot = 0, knots = 40))
-t_td <- med(function() div_rarefy(brazil, abundance = n, type = "PD", tree = tr, knots = 40))
-a <- iNEXT.3D::iNEXT3D(wide, diversity = "PD", PDtree = tr, nboot = 0, knots = 40)[[2]]$size_based
-b <- div_rarefy(brazil, abundance = n, type = "PD", tree = tr, knots = 40)
-j <- merge(
-  data.frame(site = a$Assemblage, q = a$Order.q, m = a$m, x = a$qPD),
-  data.frame(site = b$site, q = b$q, m = b$m, y = b$diversity)
-)
-bench <- tibble(
-  package = c("iNEXT.3D", "tidydiversity"),
-  seconds = c(t_inext, t_td)
-)
-attr(bench, "speedup") <- t_inext / t_td
-attr(bench, "max_rel_diff") <- max(abs(j$x - j$y) / j$x)
-utils::write.csv(transform(bench, speedup = t_inext / t_td, max_rel_diff = attr(bench, "max_rel_diff")),
-                 file.path(out, "bench.csv"), row.names = FALSE)
-keep(bench, "bench_out.txt")
-pb <- ggplot(bench, aes(seconds, package, fill = package)) +
-  geom_col(width = 0.6) +
-  geom_text(aes(label = sprintf("%.2f s", seconds)), hjust = -0.15, size = 6) +
-  scale_x_continuous(expand = expansion(mult = c(0, 0.25))) +
-  scale_fill_manual(values = c("iNEXT.3D" = "#9AA5B1", tidydiversity = "#1A9E93"), guide = "none") +
-  labs(x = "Seconds (PD rarefaction and extrapolation, Brazil rainforest data)", y = NULL) +
-  theme_tidydiversity(base_size = 16)
-sv(pb, "bench.png", h = 3.6)
-
 # 6. Ordination and the tidyvisor advice (post hoc and for the paper)
 data(dune, dune.env, package = "vegan")
 long <- data.frame(

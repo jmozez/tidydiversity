@@ -4,9 +4,28 @@
      Everything on screen is a pure function of t, so frames are reproducible. -->
 <html><head><meta charset="utf-8">
 <style>
-  :root { --navy:#0E2A47; --navy2:#13365c; --teal:#1A9E93; --teal2:#2BB3A6; --gold:#E3B455; --ink:#E8EEF5; --mute:#9DB0C4; --code:#0A1F36; }
+  :root { --W:1920px; --H:1080px; --navy:#0E2A47; --navy2:#13365c; --teal:#1A9E93; --teal2:#2BB3A6; --gold:#E3B455; --ink:#E8EEF5; --mute:#9DB0C4; --code:#0A1F36; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--navy); font-family: Inter, "Inter Display", sans-serif; color: var(--ink); }
+  html, body { width: var(--W); height: var(--H); overflow: hidden; background: var(--navy); font-family: Inter, "Inter Display", sans-serif; color: var(--ink); }
+  #frame { position:absolute; left:0; top:0; width:1920px; height:1080px; transform-origin: 0 0; overflow:hidden; }
+  body.vertical { --W:1080px; --H:1920px; } body.square { --W:1080px; --H:1080px; }
+  body.vertical #frame { transform: translateY(560px) scale(.5625); } body.square #frame { transform: translateY(200px) scale(.5625); }
+  #head { display:none; position:absolute; left:0; right:0; top:0; align-items:center; justify-content:center; gap:28px; }
+  body.vertical #head, body.square #head { display:flex; }
+  body.vertical #head { height:560px; flex-direction:column; } body.square #head { height:200px; }
+  #head img { height: 150px; } body.vertical #head img { height: 260px; }
+  #head .n { font-size: 64px; font-weight: 800; } #head .n span { color: var(--teal2); } #head .v { font-size: 30px; color: var(--mute); }
+  #cap { position:absolute; left:60px; right:60px; text-align:center; font-weight:700; color:#fff; }
+  #cap span { background: rgba(6,20,36,.82); padding: 10px 22px; border-radius: 14px; box-decoration-break: clone; -webkit-box-decoration-break: clone; line-height:1.55; }
+  body.wide #cap { bottom: 60px; font-size: 40px; left: 200px; right: 200px; }
+  body.vertical #cap { top: 1220px; font-size: 54px; } body.square #cap { top: 830px; font-size: 40px; }
+  .gap { display:grid; grid-template-columns: 1fr 120px 1fr; align-items:center; margin-top: 30px; }
+  .pk { display:flex; flex-wrap:wrap; gap:16px; } .pk span { background:#3a2430; border:1px solid #7a3b4b; color:#f3c7cf; padding:14px 22px; border-radius:12px; font-size:32px; font-family:"DejaVu Sans Mono",monospace; }
+  .arrow { font-size: 90px; color: var(--gold); text-align:center; }
+  .ok div { background:#0f3a3a; border:1px solid var(--teal); padding:22px 28px; border-radius:14px; font-size:36px; margin-bottom:20px; }
+  #foot { display:none; position:absolute; left:0; right:0; bottom:110px; text-align:center; font-size:50px; font-weight:800; color:var(--gold); }
+  #foot small { display:block; font-size:32px; color:var(--mute); font-weight:500; margin-top:12px; }
+  body.vertical #foot { display:block; }
   #stage { position: absolute; inset: 0; background: radial-gradient(1200px 700px at 75% 20%, #1b4772 0%, var(--navy) 60%); }
   .scene { position: absolute; inset: 0; padding: 90px 110px; opacity: 0; }
   h1.t { font-size: 58px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 40px; }
@@ -22,7 +41,7 @@
   .fig img { width: 100%; display: block; border-radius: 8px; }
   .two { display: grid; grid-template-columns: 46% 50%; gap: 4%; align-items: start; }
   .badge { position: absolute; right: 120px; bottom: 150px; background: var(--gold); color: var(--navy); font-weight: 800; font-size: 44px; padding: 18px 34px; border-radius: 999px; box-shadow: 0 16px 40px rgba(0,0,0,.35); }
-  ul.b { list-style: none; margin-top: 30px; } ul.b li { font-size: 44px; margin: 34px 0; padding-left: 60px; position: relative; }
+  ul.b { list-style: none; margin-top: 30px; } ul.b li { font-size: 40px; margin: 34px 0; padding-left: 60px; position: relative; }
   ul.b li::before { content: ""; position: absolute; left: 0; top: 18px; width: 26px; height: 26px; border-radius: 50%; background: var(--teal); }
   .card { background: #102f50; border: 1px solid #24507a; border-radius: 16px; padding: 24px 28px; margin-bottom: 22px; font-size: 25px; line-height: 1.45; }
   .card b { color: var(--gold); display:block; font-size: 21px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
@@ -30,14 +49,19 @@
   .fam div { background:#102f50; border:1px solid #24507a; border-radius: 20px; padding: 40px 30px; text-align:center; }
   .fam h3 { font-size: 40px; color: var(--teal2); margin-bottom: 14px; } .fam p { font-size: 26px; color: var(--mute); }
   #chrome { position:absolute; inset:0; pointer-events:none; }
-  #logo { position:absolute; right: 50px; bottom: 34px; height: 70px; opacity: .9; }
+  #logo { position:absolute; right: 44px; top: 34px; height: 120px; opacity: .95; }
   #prog { position:absolute; left:0; bottom:0; height:6px; background: linear-gradient(90deg, var(--teal), var(--gold)); }
   .center { display:flex; flex-direction:column; align-items:center; justify-content:center; height: 100%; text-align:center; }
 </style></head>
-<body><div id="stage"></div>
-<div id="chrome"><img id="logo"><div id="prog"></div></div>
+<body><div id="frame"><div id="stage"></div>
+<div id="chrome"><img id="logo"><div id="prog"></div></div></div>
+<div id="head"><img id="hlogo"><div><div class="n">tidy<span>diversity</span></div><div class="v">R package · v0.3.0</div></div></div>
+<div id="cap"></div>
+<div id="foot">tidydiversity.in4metrix.dev<small>doi.org/10.5281/zenodo.24182679</small></div>
 <script>
-const P = new URLSearchParams(location.search), B = P.get("build");
+const P = new URLSearchParams(location.search), B = P.get("build"), FMT = P.get("format") || "wide";
+document.body.className = FMT;
+const fill = s => s.replace(/\{(\w+)\}/g, (m, k) => (T.nums[k] ?? m));
 let S, T, TXT = {};
 const ease = x => x < 0 ? 0 : x > 1 ? 1 : 1 - Math.pow(1 - x, 3);
 const clamp = x => Math.max(0, Math.min(1, x));
@@ -85,9 +109,10 @@ function sceneHTML(s, lt, dur) {
     const o = ease((lt - tDone - 0.3) / 0.7);
     const blink = !done || Math.floor(lt * 2) % 2 === 0;
     if (k === "cta") {
-      return `<div class="center" style="gap:50px"><h1 class="t" style="font-size:80px">${s.title}</h1>
+      return `<div class="center" style="gap:34px"><img src="${B}/logo.png" style="height:230px">
         <div style="width:1400px;text-align:left">${consoleHTML(s.code, n, blink)}</div>
-        <div style="font-size:56px;color:var(--gold);font-weight:700;opacity:${o}">${s.url}</div></div>`;
+        <div style="font-size:60px;color:var(--gold);font-weight:800;opacity:${o}">${s.url}</div>
+        <div style="font-size:40px;opacity:${o}">Cite: <b>doi.org/${s.doi}</b> <span style="color:var(--mute)">(Zenodo)</span></div></div>`;
     }
     if (s.output) {
       const out = TXT[s.output] || "";
@@ -102,13 +127,22 @@ function sceneHTML(s, lt, dur) {
         <div style="opacity:${ease((lt - t2) / 0.4)}"><div class="card"><b>After the overall test</b>${esc(c.slice(0, tc))}</div>
         <div class="card" style="opacity:${ease((lt - t2 - 4.6) / 0.4)}"><b>For the paper</b>${esc(d.slice(0, td))}</div></div></div>`;
     }
-    const badge = s.badge ? `<div class="badge" style="opacity:${ease((lt - tDone - 1.5) / 0.5)};transform:scale(${0.8 + 0.2 * ease((lt - tDone - 1.5) / 0.5)})">${s.badge.replace("{speedup}", T.speedup)}</div>` : "";
+    const badge = s.badge ? `<div class="badge" style="opacity:${ease((lt - tDone - 1.5) / 0.5)};transform:scale(${0.8 + 0.2 * ease((lt - tDone - 1.5) / 0.5)})">${fill(s.badge)}</div>` : "";
     return `${title}<div class="two"><div>${consoleHTML(s.code, n, blink)}</div>
       <div class="fig" style="opacity:${o};transform:translateY(${40 * (1 - o)}px)"><img src="${B}/fig/${s.figure}"></div></div>${badge}`;
   }
   if (k === "figure") {
     const o = ease((lt - 0.4) / 0.8);
-    return `${title}<div class="fig" style="width:1300px;margin:0 auto;opacity:${o};transform:scale(${0.95 + 0.05 * o})"><img src="${B}/fig/${s.figure}"></div>`;
+    const bd = s.badge ? `<div class="badge" style="top:170px;bottom:auto;opacity:${ease((lt - 2) / 0.5)}">${fill(s.badge)}</div>` : "";
+    return `${title}<div class="fig" style="width:1300px;margin:0 auto;opacity:${o};transform:scale(${0.95 + 0.05 * o})"><img src="${B}/fig/${s.figure}"></div>${bd}`;
+  }
+  if (k === "gap") {
+    const l = s.left.map((x, i) => `<span style="opacity:${ease((lt - 0.5 - i * 0.35) / 0.4)}">${x}</span>`).join("");
+    const t2 = 0.5 + s.left.length * 0.35 + 1.5;
+    const r = s.right.map((x, i) => `<div style="opacity:${ease((lt - t2 - 1 - i * 1.6) / 0.5)}">✓ ${x}</div>`).join("");
+    return `${title}<div class="gap"><div><div class="pk">${l}</div><p style="font-size:30px;color:#f3c7cf;margin-top:26px;opacity:${ease((lt - t2 + 1) / 0.5)}">${s.leftnote}</p></div>
+      <div class="arrow" style="opacity:${ease((lt - t2) / 0.5)}">→</div>
+      <div class="ok"><div style="opacity:${ease((lt - t2) / 0.5)};background:var(--teal);color:var(--navy);font-weight:800;font-size:44px">tidydiversity</div>${r}</div></div>`;
   }
   if (k === "link") {
     const a = ease((lt - 0.4) / 0.8), b = ease((lt - 1.4) / 0.8);
@@ -133,13 +167,24 @@ window.render = function (t) {
   });
   stage.innerHTML = html;
   document.getElementById("prog").style.width = (100 * t / T.total) + "%";
-  document.getElementById("logo").style.opacity = t < T.scenes[0].duration ? 0 : 0.9;
+  document.getElementById("logo").style.opacity = (t < T.scenes[0].duration || t > T.scenes[T.scenes.length - 1].start) ? 0 : 0.95;
+  document.getElementById("head").style.opacity = t < T.scenes[0].duration ? 0 : 1;
+  let cap = "";
+  for (const tm of T.scenes) {
+    const a = tm.start + 0.6, lt = t - a;
+    if (lt < 0 || lt > tm.speech) continue;
+    const ws = tm.say.split(/\s+/), chunks = [];
+    for (let i = 0; i < ws.length; i += 7) chunks.push(ws.slice(i, i + 7).join(" "));
+    const tot = chunks.reduce((x, c) => x + c.length, 0); let acc = 0;
+    for (const c of chunks) { acc += c.length; if (lt <= tm.speech * acc / tot) { cap = c; break; } }
+  }
+  document.getElementById("cap").innerHTML = cap ? `<span>${esc(cap)}</span>` : "";
 };
 window.ready = (async () => {
   S = await (await fetch("scenes.json")).json();
   T = await (await fetch(`${B}/timing.json`)).json();
   for (const s of S.scenes) for (const f of [s.output, s.advice]) if (f) TXT[f] = (await (await fetch(`${B}/fig/${f}`)).text()).trimEnd();
-  document.getElementById("logo").src = `${B}/logo.png`;
+  document.getElementById("logo").src = document.getElementById("hlogo").src = `${B}/logo.png`;
   const imgs = S.scenes.filter(s => s.figure).map(s => `${B}/fig/${s.figure}`).concat([`${B}/logo.png`]);
   await Promise.all(imgs.map(u => new Promise(r => { const i = new Image(); i.onload = i.onerror = r; i.src = u; })));
   return T.total;
