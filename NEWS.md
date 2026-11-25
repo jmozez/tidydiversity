@@ -1,5 +1,20 @@
 # tidydiversity (development version)
 
+* `ord_interpret()` ends with the same two sections as the interpretations
+  of tidyvisor:
+  - "After the overall test": after a constrained ordination, each factor
+    with three or more levels that has a significant effect is followed up
+    with pairwise PERMANOVA (Holm-adjusted; code that runs on the fitted
+    ordination) and a check of dispersion; a non-significant factor is not;
+    an unconstrained ordination points to `beta_permanova()` and
+    `beta_dispersion()`.
+  - "For the paper": a sentence for the Results (pseudo-F, p, permutations,
+    adjusted R-squared; or the variation of the axes, or the stress), the
+    figure with `autoplot()` and `ggsave()` at a journal column width, the
+    table, and what the Methods must state (method, transformation,
+    dissimilarity, scaling, permutations, vegan version). PRC and variation
+    partitioning get their own versions.
+
 * Ordination advice prints its values without quotes (`Sites: 8`), and its
   heading names the question ("what are the main patterns?").
 
