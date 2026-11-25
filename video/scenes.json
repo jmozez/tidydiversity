@@ -1,0 +1,132 @@
+{
+  "voice": "am_michael",
+  "speed": 1.0,
+  "scenes": [
+    {
+      "id": "title",
+      "kind": "title",
+      "title": "tidydiversity",
+      "subtitle": "Version 0.3.0 \u00b7 coverage-based biodiversity in R: fair, fast, publication-ready",
+      "say": "Meet Tidy Diversity version zero point three: biodiversity analysis in R that is fair, fast, and ready to publish."
+    },
+    {
+      "id": "problem",
+      "kind": "statement",
+      "title": "Unequal sampling, unfair comparisons",
+      "bullets": [
+        "Raw species counts measure sampling effort",
+        "Compare communities at equal sample coverage",
+        "Hill numbers: richness, Shannon, Simpson in one family"
+      ],
+      "say": "Sites are never sampled equally. Compare raw species counts, and you compare sampling effort, not nature. Tidy Diversity standardises by sample coverage, so every comparison is fair."
+    },
+    {
+      "id": "hill",
+      "kind": "code",
+      "title": "Tidy in, tidy out",
+      "code": "library(tidydiversity)\nwet <- dplyr::filter(png_ants, season == \"wet\")\ndiv_hill(wet)",
+      "output": "hill_out.txt",
+      "say": "One row per site and species goes in. A tidy table of Hill numbers comes out, for richness, Shannon and Simpson diversity, ready for d-plyr and g-g-plot."
+    },
+    {
+      "id": "coverage",
+      "kind": "code",
+      "title": "Rarefaction and extrapolation by coverage",
+      "code": "curves <- div_rarefy(wet, q = c(0, 1, 2))\nautoplot(curves, x = \"coverage\")",
+      "figure": "coverage.png",
+      "say": "Rarefy and extrapolate to any sample coverage, and plot the curves in one line."
+    },
+    {
+      "id": "estimate",
+      "kind": "code",
+      "title": "How much diversity is still unseen?",
+      "code": "est <- div_estimate(png_ants, .by = season, nboot = 50)\nautoplot(est)",
+      "figure": "estimate.png",
+      "say": "Asymptotic estimates, with bootstrap intervals, show how much diversity is still unseen in each season."
+    },
+    {
+      "id": "threed",
+      "kind": "code",
+      "title": "Taxonomic, phylogenetic and functional diversity",
+      "code": "div_rarefy(brazil, abundance = n, type = \"PD\", tree = tree)\ndiv_rarefy(brazil, abundance = n, type = \"FD\", distance = dist)",
+      "figure": "threed.png",
+      "say": "Taxonomic, phylogenetic and functional diversity share one framework, shown here for two Brazilian rainforest assemblages."
+    },
+    {
+      "id": "speed",
+      "kind": "code",
+      "title": "Fast where it matters",
+      "code": "system.time(iNEXT.3D::iNEXT3D(wide, diversity = \"PD\", PDtree = tree))\nsystem.time(div_rarefy(brazil, abundance = n, type = \"PD\", tree = tree))",
+      "figure": "bench.png",
+      "badge": "{speedup}x faster, identical results",
+      "say": "And it is fast. On the same data, phylogenetic rarefaction runs about {speedup_words} times faster than i-next 3 D, with identical results, thanks to compiled C plus plus kernels."
+    },
+    {
+      "id": "beta",
+      "kind": "figure",
+      "title": "Beta diversity, turnover and nestedness",
+      "figure": "betapair.png",
+      "say": "Beta diversity, turnover and nestedness come out as tidy tables and clear figures."
+    },
+    {
+      "id": "advice",
+      "kind": "advice",
+      "title": "New: ask tidyvisor",
+      "code": "ord <- ord_fit(dune, method = \"rda\", formula = ~ Management + A1)\ntidyvisor(ord)",
+      "figure": "ordination.png",
+      "advice": "advice.txt",
+      "say": "New in this version: ask Tidy Visor. It explains your ordination in plain sentences, says when to follow up with pairwise PERMANOVA, and writes the results sentence for your paper."
+    },
+    {
+      "id": "publish",
+      "kind": "statement",
+      "title": "Ready for the journal",
+      "bullets": [
+        "Figures sized for journal columns",
+        "Colour-blind-safe palettes",
+        "Results sentences, tables and methods from tidyvisor"
+      ],
+      "say": "Every figure is sized for journal columns, with colour-blind-safe palettes, and the advice tells you what to report."
+    },
+    {
+      "id": "website",
+      "kind": "link",
+      "title": "Full documentation online",
+      "url": "tidydiversity.in4metrix.dev",
+      "note": "Reference \u00b7 User guide \u00b7 Tutorials \u00b7 Gallery",
+      "say": "Every function, tutorial and gallery example is on the package website, at tidy diversity dot in four metrix dot dev."
+    },
+    {
+      "id": "family",
+      "kind": "family",
+      "title": "One family of packages",
+      "items": [
+        [
+          "tidydiversity",
+          "Community ecology"
+        ],
+        [
+          "tidymapr",
+          "Spatial ecology"
+        ],
+        [
+          "tidyepidemio",
+          "Epidemiology"
+        ],
+        [
+          "tidyvisor",
+          "The statistical advisor for all three"
+        ]
+      ],
+      "say": "Tidy Diversity works with Tidy Mapper and Tidy Epidemio, and Tidy Visor advises across all three."
+    },
+    {
+      "id": "cta",
+      "kind": "cta",
+      "title": "Get started",
+      "code": "remotes::install_github(\"jmozez/tidydiversity\")",
+      "url": "tidydiversity.in4metrix.dev",
+      "say": "Install Tidy Diversity from GitHub today, and find the full guide on the website."
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+<!doctype html>
+<!-- Scenes for the tidydiversity video. render.mjs loads this page with
+     ?build=<dir>, then calls window.render(t) for every frame (t in seconds).
+     Everything on screen is a pure function of t, so frames are reproducible. -->
+<html><head><meta charset="utf-8">
+<style>
+  :root { --navy:#0E2A47; --navy2:#13365c; --teal:#1A9E93; --teal2:#2BB3A6; --gold:#E3B455; --ink:#E8EEF5; --mute:#9DB0C4; --code:#0A1F36; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--navy); font-family: Inter, "Inter Display", sans-serif; color: var(--ink); }
+  #stage { position: absolute; inset: 0; background: radial-gradient(1200px 700px at 75% 20%, #1b4772 0%, var(--navy) 60%); }
+  .scene { position: absolute; inset: 0; padding: 90px 110px; opacity: 0; }
+  h1.t { font-size: 58px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 40px; }
+  h1.t span { color: var(--teal2); }
+  .console { background: var(--code); border-radius: 18px; padding: 30px 34px; box-shadow: 0 20px 60px rgba(0,0,0,.35); border: 1px solid #1e3d5e; }
+  .console .bar { display:flex; gap:10px; margin-bottom: 20px; align-items:center; color: var(--mute); font-size: 20px; }
+  .console .dot { width:14px; height:14px; border-radius:50%; background:#33506e; }
+  pre { font-family: "DejaVu Sans Mono", monospace; font-size: 27px; line-height: 1.5; white-space: pre-wrap; }
+  pre.out { color: #cfe0ee; font-size: 24px; margin-top: 18px; border-top: 1px dashed #2a4a6c; padding-top: 16px; }
+  .k-fn { color: #5fd3c6; } .k-str { color: #b8e07a; } .k-num { color: var(--gold); } .k-arg { color: #c9a7f5; } .k-op { color: #8fa9c4; } .prompt { color: var(--teal2); }
+  .cursor { display:inline-block; width: 14px; height: 30px; background: var(--teal2); vertical-align: -5px; }
+  .fig { background: #fff; border-radius: 16px; padding: 14px; box-shadow: 0 24px 70px rgba(0,0,0,.4); }
+  .fig img { width: 100%; display: block; border-radius: 8px; }
+  .two { display: grid; grid-template-columns: 46% 50%; gap: 4%; align-items: start; }
+  .badge { position: absolute; right: 120px; bottom: 150px; background: var(--gold); color: var(--navy); font-weight: 800; font-size: 44px; padding: 18px 34px; border-radius: 999px; box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+  ul.b { list-style: none; margin-top: 30px; } ul.b li { font-size: 44px; margin: 34px 0; padding-left: 60px; position: relative; }
+  ul.b li::before { content: ""; position: absolute; left: 0; top: 18px; width: 26px; height: 26px; border-radius: 50%; background: var(--teal); }
+  .card { background: #102f50; border: 1px solid #24507a; border-radius: 16px; padding: 24px 28px; margin-bottom: 22px; font-size: 25px; line-height: 1.45; }
+  .card b { color: var(--gold); display:block; font-size: 21px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .fam { display:grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin-top: 60px; }
+  .fam div { background:#102f50; border:1px solid #24507a; border-radius: 20px; padding: 40px 30px; text-align:center; }
+  .fam h3 { font-size: 40px; color: var(--teal2); margin-bottom: 14px; } .fam p { font-size: 26px; color: var(--mute); }
+  #chrome { position:absolute; inset:0; pointer-events:none; }
+  #logo { position:absolute; right: 50px; bottom: 34px; height: 70px; opacity: .9; }
+  #prog { position:absolute; left:0; bottom:0; height:6px; background: linear-gradient(90deg, var(--teal), var(--gold)); }
+  .center { display:flex; flex-direction:column; align-items:center; justify-content:center; height: 100%; text-align:center; }
+</style></head>
+<body><div id="stage"></div>
+<div id="chrome"><img id="logo"><div id="prog"></div></div>
+<script>
+const P = new URLSearchParams(location.search), B = P.get("build");
+let S, T, TXT = {};
+const ease = x => x < 0 ? 0 : x > 1 ? 1 : 1 - Math.pow(1 - x, 3);
+const clamp = x => Math.max(0, Math.min(1, x));
+function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+// R syntax highlighting of the first n characters
+function hl(code, n) {
+  const re = /("[^"]*"?)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_.][A-Za-z0-9_.]*(?:::[A-Za-z_.][A-Za-z0-9_.]*)?)(\s*\()|([A-Za-z_.][A-Za-z0-9_.]*)(\s*=(?!=))|(<-|\|>|::|==|~)|([\s\S])/g;
+  let out = "", used = 0, m;
+  while ((m = re.exec(code)) && used < n) {
+    let tok = m[0], take = tok.slice(0, n - used); used += take.length;
+    let cls = m[1] ? "k-str" : m[2] ? "k-num" : m[3] ? "k-fn" : m[5] ? "k-arg" : m[7] ? "k-op" : "";
+    if (m[3]) { const name = m[3].slice(0, take.length); out += `<span class="k-fn">${esc(name)}</span>` + esc(take.slice(name.length)); continue; }
+    if (m[5]) { const name = m[5].slice(0, take.length); out += `<span class="k-arg">${esc(name)}</span>` + esc(take.slice(name.length)); continue; }
+    out += cls ? `<span class="${cls}">${esc(take)}</span>` : esc(take);
+  }
+  return out;
+}
+function consoleHTML(code, n, showCursor, extra = "") {
+  const lines = code.split("\n");
+  let typed = hl(code, n).split("\n").map((l, i) => `<span class="prompt">${i ? "+ " : "&gt; "}</span>${l}`).join("\n");
+  typed = typed.replace(/\+ /, "&gt; ");
+  // every code line is its own command: use the R prompt on each
+  typed = typed.split("\n").map(l => l.replace(/^<span class="prompt">\+ <\/span>/, '<span class="prompt">&gt; </span>')).join("\n");
+  return `<div class="console"><div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp; R console</div><pre>${typed}${showCursor ? '<span class="cursor"></span>' : ""}</pre>${extra}</div>`;
+}
+function typing(code, lt, dur) {           // characters typed at local time lt
+  const start = 0.5, cps = Math.min(38, code.length / Math.max(1.2, dur * 0.42));
+  return Math.floor(clamp((lt - start) * cps / code.length) * code.length);
+}
+function sceneHTML(s, lt, dur) {
+  const k = s.kind, title = `<h1 class="t">${s.title}</h1>`;
+  if (k === "title") {
+    const a = ease(lt / 1.2), b = ease((lt - 1) / 1.2);
+    return `<div class="center"><img src="${B}/logo.png" style="height:${300}px;transform:scale(${0.7 + 0.3 * a});opacity:${a}">
+      <div style="font-size:120px;font-weight:800;letter-spacing:-2px;margin-top:30px;opacity:${a}">tidy<span style="color:var(--teal2)">diversity</span></div>
+      <div style="font-size:40px;color:var(--mute);margin-top:22px;opacity:${b}">${s.subtitle}</div></div>`;
+  }
+  if (k === "statement") {
+    const li = s.bullets.map((x, i) => `<li style="opacity:${ease((lt - 1 - i * 1.6) / 0.6)};transform:translateX(${30 * (1 - ease((lt - 1 - i * 1.6) / 0.6))}px)">${x}</li>`).join("");
+    return `${title}<ul class="b">${li}</ul>`;
+  }
+  if (k === "code" || k === "advice" || k === "cta") {
+    const n = typing(s.code, lt, dur), done = n >= s.code.length;
+    const tDone = 0.5 + s.code.length / Math.min(38, s.code.length / Math.max(1.2, dur * 0.42));
+    const o = ease((lt - tDone - 0.3) / 0.7);
+    const blink = !done || Math.floor(lt * 2) % 2 === 0;
+    if (k === "cta") {
+      return `<div class="center" style="gap:50px"><h1 class="t" style="font-size:80px">${s.title}</h1>
+        <div style="width:1400px;text-align:left">${consoleHTML(s.code, n, blink)}</div>
+        <div style="font-size:56px;color:var(--gold);font-weight:700;opacity:${o}">${s.url}</div></div>`;
+    }
+    if (s.output) {
+      const out = TXT[s.output] || "";
+      return `${title}<div style="width:1500px">${consoleHTML(s.code, n, blink && !done, `<pre class="out" style="opacity:${o}">${esc(out)}</pre>`)}</div>`;
+    }
+    if (k === "advice") {
+      const adv = (TXT[s.advice] || "").split("\n");
+      const t2 = tDone + 1.0, c = adv[0] || "", d = adv[1] || "";
+      const tc = Math.floor(clamp((lt - t2) / 4.5) * c.length), td = Math.floor(clamp((lt - t2 - 4.8) / 4.0) * d.length);
+      return `${title}<div class="two" style="grid-template-columns:40% 56%"><div>${consoleHTML(s.code, n, blink && !done)}
+        <div class="fig" style="margin-top:26px;width:560px;opacity:${o}"><img src="${B}/fig/${s.figure}"></div></div>
+        <div style="opacity:${ease((lt - t2) / 0.4)}"><div class="card"><b>After the overall test</b>${esc(c.slice(0, tc))}</div>
+        <div class="card" style="opacity:${ease((lt - t2 - 4.6) / 0.4)}"><b>For the paper</b>${esc(d.slice(0, td))}</div></div></div>`;
+    }
+    const badge = s.badge ? `<div class="badge" style="opacity:${ease((lt - tDone - 1.5) / 0.5)};transform:scale(${0.8 + 0.2 * ease((lt - tDone - 1.5) / 0.5)})">${s.badge.replace("{speedup}", T.speedup)}</div>` : "";
+    return `${title}<div class="two"><div>${consoleHTML(s.code, n, blink)}</div>
+      <div class="fig" style="opacity:${o};transform:translateY(${40 * (1 - o)}px)"><img src="${B}/fig/${s.figure}"></div></div>${badge}`;
+  }
+  if (k === "figure") {
+    const o = ease((lt - 0.4) / 0.8);
+    return `${title}<div class="fig" style="width:1300px;margin:0 auto;opacity:${o};transform:scale(${0.95 + 0.05 * o})"><img src="${B}/fig/${s.figure}"></div>`;
+  }
+  if (k === "link") {
+    const a = ease((lt - 0.4) / 0.8), b = ease((lt - 1.4) / 0.8);
+    return `<div class="center"><h1 class="t" style="opacity:${a}">${s.title}</h1>
+      <div style="font-size:92px;font-weight:800;color:var(--gold);opacity:${a};transform:scale(${0.9 + 0.1 * a})">${s.url}</div>
+      <div style="font-size:40px;color:var(--mute);margin-top:40px;opacity:${b}">${s.note}</div></div>`;
+  }
+  if (k === "family") {
+    const it = s.items.map(([a, b], i) => `<div style="opacity:${ease((lt - 0.6 - i * 0.8) / 0.6)};transform:translateY(${30 * (1 - ease((lt - 0.6 - i * 0.8) / 0.6))}px)"><h3>${a}</h3><p>${b}</p></div>`).join("");
+    return `${title}<div class="fam">${it}</div>`;
+  }
+  return title;
+}
+window.render = function (t) {
+  const stage = document.getElementById("stage");
+  let html = "";
+  S.scenes.forEach((s, i) => {
+    const tm = T.scenes[i], lt = t - tm.start;
+    if (lt < -0.4 || lt > tm.duration + 0.4) return;
+    const fade = Math.min(ease((lt + 0.4) / 0.6), ease((tm.duration + 0.4 - lt) / 0.6));
+    html += `<div class="scene" style="opacity:${fade}">${sceneHTML(s, Math.max(0, lt), tm.duration)}</div>`;
+  });
+  stage.innerHTML = html;
+  document.getElementById("prog").style.width = (100 * t / T.total) + "%";
+  document.getElementById("logo").style.opacity = t < T.scenes[0].duration ? 0 : 0.9;
+};
+window.ready = (async () => {
+  S = await (await fetch("scenes.json")).json();
+  T = await (await fetch(`${B}/timing.json`)).json();
+  for (const s of S.scenes) for (const f of [s.output, s.advice]) if (f) TXT[f] = (await (await fetch(`${B}/fig/${f}`)).text()).trimEnd();
+  document.getElementById("logo").src = `${B}/logo.png`;
+  const imgs = S.scenes.filter(s => s.figure).map(s => `${B}/fig/${s.figure}`).concat([`${B}/logo.png`]);
+  await Promise.all(imgs.map(u => new Promise(r => { const i = new Image(); i.onload = i.onerror = r; i.src = u; })));
+  return T.total;
+})();
+</script></body></html>
