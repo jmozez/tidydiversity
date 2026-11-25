@@ -347,7 +347,15 @@ ord_advise <- function(data,
 
 #' @export
 print.td_ord_advice <- function(x, ...) {
-  cli::cli_h1("tidyvisor: which analysis?")
+  heading <- switch(x$question,
+    explore = "what are the main patterns?",
+    explain = "do the site variables explain composition?",
+    groups = "do the groups differ?",
+    time = "how do treatments change over time?",
+    partition = "how much does each set of variables explain?",
+    "which analysis?"
+  )
+  cli::cli_h1(paste("tidyvisor:", heading))
   cli::cli_text("Question: {.strong {x$question}}")
   cli::cli_h2("What the data show")
   for (i in seq_len(nrow(x$checks))) {
