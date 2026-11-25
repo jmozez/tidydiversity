@@ -46,8 +46,8 @@ repo:
 navbar:
   bg: dark
   structure:
-    left: [intro, userguide, tutorials, gallery, reference, news]
-    right: [tidymapr, tidyvisor, memorial, search, github, gitlab]
+    left: [intro, userguide, tutorials, gallery, reference, news, tidymapr, tidyvisor, memorial, search, github, gitlab]
+    right: []
   components:
     tidyvisor:
       text: tidyvisor
