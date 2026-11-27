@@ -29,3 +29,15 @@ pkg_data <- function(name, package) {
   utils::data(list = name, package = package, envir = e)
   e[[name]]
 }
+
+# Wide presence or abundance matrix (sites x species) without tidyr.
+tidyr_free_wide <- function(d) {
+  sites <- sort(unique(d$site))
+  spp <- sort(unique(d$species))
+  ab <- if ("abundance" %in% names(d)) d$abundance else rep(1, nrow(d))
+  m <- matrix(0, length(sites), length(spp), dimnames = list(sites, spp))
+  for (i in seq_len(nrow(d))) {
+    m[d$site[i], d$species[i]] <- m[d$site[i], d$species[i]] + ab[i]
+  }
+  m
+}
