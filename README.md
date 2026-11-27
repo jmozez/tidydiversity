@@ -131,7 +131,7 @@ one consistent, tested interface.
 - **Epidemiology lives in tidyepidemio.** Disease incidence and
   prevalence, outbreaks, surveillance and other epidemiological analyses
   are in the separate package
-  [tidyepidemio](https://jmozez.github.io/tidyepidemio/); tidydiversity
+  [tidyepidemio](https://tidyepidemio.in4metrix.dev/); tidydiversity
   has no epidemiology functions.
 
 ### Fast where it matters
