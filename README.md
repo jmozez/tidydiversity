@@ -125,11 +125,13 @@ one consistent, tested interface.
   layers, spatial statistics and species distribution models are in the
   companion package [tidymapr](https://tidymapr.in4metrix.dev/),
   which takes the same tidy tables and returns the same tibbles and
-  ggplots.
+  ggplots. tidymapr is the spatial and remote sensing companion to all
+  these packages: it maps diversity, the spread of invasions and the
+  spread of epidemics.
 - **Epidemiology lives in tidyepidemio.** Disease incidence and
   prevalence, outbreaks, surveillance and other epidemiological analyses
   are in the separate package
-  [tidyepidemio](https://github.com/jmozez/tidyepidemio); tidydiversity
+  [tidyepidemio](https://jmozez.github.io/tidyepidemio/); tidydiversity
   has no epidemiology functions.
 
 ### Fast where it matters
@@ -200,8 +202,9 @@ Install tidydiversity first, then its two companion packages:
 #    functional diversity, beta diversity, ordination and multivariate tests)
 remotes::install_github("jmozez/tidydiversity")
 
-# 2. tidymapr: spatial ecology (maps, species distributions, the spread
-#    of invasions, range shifts, spatial autocorrelation)
+# 2. tidymapr: spatial analysis and remote sensing (maps, species
+#    distributions, the spread of invasions and epidemics, range shifts,
+#    spatial autocorrelation)
 remotes::install_github("jmozez/tidymapr")
 
 # 3. tidyvisor: the statistical advisor for both (study design, power,
