@@ -302,3 +302,17 @@ test_that("tidyvisor() advises on data and interprets results", {
   expect_s3_class(tidyvisor(o), "td_ord_interpretation")
   expect_error(tidyvisor(1:3), "No advis[eo]r")
 })
+
+test_that("tidyvisor() hands tidymapr's work to tidymapr", {
+  skip_if_not_installed("tidymapr")
+  cases <- data.frame(
+    week = seq(as.Date("2024-01-01"), by = "week", length.out = 12),
+    n = c(2, 3, 5, 4, 9, 12, 15, 24, 30, 41, 60, 77)
+  )
+  expect_s3_class(
+    tidyvisor(cases, question = "epidemic", date = "week", cases = "n"),
+    "tmr_advice"
+  )
+  g <- tidymapr::epi_growth_rate(cases, date = week, cases = n, unit = "week")
+  expect_s3_class(tidyvisor(g), "tmr_interpretation")
+})
