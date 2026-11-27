@@ -1,5 +1,14 @@
 # tidydiversity (development version)
 
+* Epidemiology is no longer part of tidydiversity. The epidemiological
+  tools (disease incidence and prevalence, epidemic curves and growth,
+  outbreaks and surveillance) live in the separate package
+  [tidyepidemio](https://github.com/jmozez/tidyepidemio). The test that
+  routed an epidemic question through tidyvisor to tidymapr is removed, and
+  the README no longer lists epidemics among the companion packages' work.
+  Incidence data in the ecological sense (species detected in sampling
+  units, as in `div_hill(unit = )`) are unchanged.
+
 * `ord_interpret()` ends with the same two sections as the interpretations
   of tidyvisor:
   - "After the overall test": after a constrained ordination, each factor
