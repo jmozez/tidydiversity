@@ -148,7 +148,7 @@ incidence_matrix <- function(d, abundance = FALSE) {
   mat <- matrix(0, length(sites), length(spp))
   idx <- cbind(vctrs::vec_match(d$.site, sites), match(d$.species, spp))
   mat[idx] <- if (abundance) d$.n else 1
-  list(mat = mat, sites = sites)
+  list(mat = mat, sites = sites, species = spp)
 }
 
 pair_parts <- function(mat, ij, abundance) {

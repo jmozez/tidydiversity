@@ -135,6 +135,7 @@ Götzenberger
 HOM
 Hamidi
 Hau
+Henriksen
 Hijmans
 Hsieh
 Hu
@@ -144,6 +145,7 @@ Hurtt
 ICE
 Idigel
 IndVal
+Inouye
 Jaccard
 Jetz
 Jongman
@@ -158,8 +160,10 @@ Kongnoo
 Kubota
 Kuo
 Kusumoto
+LCBD
 LRA
 Laliberte
+Latombe
 LazyData
 Lepidoptera
 Leps
@@ -172,8 +176,10 @@ Luk
 MAUP
 Madang
 Magurran
+Marzinelli
 Maxar
 Maxent
+McGeoch
 McGlinn
 Michalski
 Mogador
@@ -189,6 +195,7 @@ NMDS
 Nekola
 NetCDF
 Neto
+Nipperess
 Nonbiological
 Novotny
 Novotný
@@ -234,16 +241,19 @@ Ramu
 RangeModel
 RaoQ
 Rapoport
+Raup
 Rcpp
 Rebins
 Redmond
 Rhône
 Rimandai
+Roige
 Roxygen
 RoxygenNote
 Rtools
 S1
 S4
+SCBD
 SDM
 SDMs
 SES
@@ -267,6 +277,7 @@ SpatRasters
 Statistica
 Swire
 Sørensen
+TBI
 TD
 TPD
 TPDs
@@ -283,6 +294,7 @@ UNDP
 USGS
 Usseglio
 Valone
+Vellend
 Vesk
 Vetaas
 VignetteBuilder

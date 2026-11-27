@@ -1,5 +1,22 @@
 # tidydiversity (development version)
 
+* New beta diversity tools from current methods literature:
+  - `beta_lcbd()` and `beta_scbd()`: local and species contributions to
+    beta diversity (Legendre and De Caceres 2013), with a permutation test
+    and Holm-adjusted p-values for each site. Values match
+    `adespatial::beta.div()`.
+  - `beta_zeta()`: zeta diversity (Hui and McGeoch 2014), the mean number
+    of species shared by any 1 to n sites, computed exactly from species
+    occupancy, with the retention ratio and a Simpson-scaled version;
+    `glance()` compares exponential and power-law forms of the decline.
+  - `beta_raup_crick()`: Raup-Crick dissimilarity against the probabilistic
+    null model of Chase et al. (2011), separating differences in
+    composition from differences in richness.
+  - `beta_tbi()`: the temporal beta diversity index (Legendre 2019), which
+    splits the change at each site between two surveys into species
+    losses and gains and tests which sites changed in exceptional ways.
+    Values match `adespatial::TBI()`.
+
 * Epidemiology is no longer part of tidydiversity. The epidemiological
   tools (disease incidence and prevalence, epidemic curves and growth,
   outbreaks and surveillance) live in the separate package

@@ -207,6 +207,10 @@ reference:
       - beta_hill
       - beta_hill_pair
       - beta_shared
+      - beta_lcbd
+      - beta_zeta
+      - beta_raup_crick
+      - beta_tbi
   - title: Richness along gradients
     contents:
       - range_through
